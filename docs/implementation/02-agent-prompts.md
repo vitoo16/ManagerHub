@@ -10,7 +10,7 @@ Goal: IMPLEMENT THE COMPLETE MANAGERHUB PRODUCT with all MH-01..MH-27 functions;
 
 Mandatory before writing code:
 - Read AGENTS.md; docs/implementation/00-execution-charter.md; 01-full-delivery-plan.md; 03-liquid-glass-motion-spec.md; 04-motion-skills-and-references.md; docs/product/01-full-feature-catalog.md; docs/product/02-design-system.md; docs/business/README.md; docs/system/README.md.
-- Identify available installed agent skills; activate the relevant ones for the task: official Vercel, Impeccable, official GreenSock GSAP, ManagerHub-specific skills; use Taste's current instructions only for marketing/branding/onboarding where appropriate (its v2 skill excludes dashboards).
+- Identify available installed agent skills; activate the relevant ones for the task: official Vercel, Impeccable, official GreenSock GSAP, ManagerHub-specific skills; use Taste v2 `references/app-screens.md` for dashboard/app screens, alongside Impeccable Operate and Vercel; its public website mode is separate.
 - Read, understand and preserve existing repo structure; search for reusable code BEFORE authoring new code.
 - Write small, clean, typed modules. Follow SOLID where helpful, KISS, DRY, YAGNI, separation of domain/view/IO, single source of truth, strict TS/Rust lint and type checks. No duplicated types/formulas/charts/role mappings/GSAP hooks. Reuse a shared package if the semantics truly match, do not overabstract.
 - Never use fabricated player CA/PA/statistics/transfer fees/shot events in production. eCA must be calibrated with verified labels, otherwise call it attribute-strength index. Never write unknown .fm formats or corrupt the original save.
@@ -27,7 +27,7 @@ For each phase: inspect current repo -> produce small file/ownership/task map ->
 
 ## PROMPT 01 — Architecture, CI, Liquid Glass & GSAP foundations
 
-**Applicable skills:** `impeccable` (shape/animate/critique), `web-design-guidelines`, `vercel-react-best-practices`, `vercel-composition-patterns`, `managerhub-motion-glass`, `managerhub-data-ux`, `gsap-core`, `gsap-react`, `gsap-timeline`, `gsap-performance`. `design-taste-frontend` only for branding/onboarding, not core app screens.
+**Applicable skills:** `impeccable` (shape/animate/critique), `web-design-guidelines`, `vercel-react-best-practices`, `vercel-composition-patterns`, `managerhub-motion-glass`, `managerhub-data-ux`, `gsap-core`, `gsap-react`, `gsap-timeline`, `gsap-performance`. `design-taste-frontend` v2 app-screen mode for the analytical workspace; read `references/app-screens.md`.
 
 ```text
 EXECUTE PHASE 1 of docs/implementation/01-full-delivery-plan.md NOW. Read Master Contract and all cited docs.
