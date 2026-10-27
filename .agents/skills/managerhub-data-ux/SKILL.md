@@ -1,4 +1,6 @@
 ---
+
+> **Taste v2 (verified upstream):** supports dashboards and app screens with dedicated `references/app-screens.md` and `library/app.json`. For ManagerHub apply its **app-screen workflow**, not marketing landing layouts. See `.agents/SKILLS-SOURCES.md`.
 name: managerhub-data-ux
 description: Use when designing or coding ManagerHub football dashboards, player scouting reports, radar charts, role comparison, tactical pitch maps, transfer analyses, tables or visualization interactions. Ensures chart provenance, accessibility and data-first design.
 ---
