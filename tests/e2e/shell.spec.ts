@@ -1,5 +1,28 @@
 import { test, expect } from '@playwright/test';
 
+function makeSquadExport(additional: readonly (readonly [string,string])[] = []): string {
+  const attributeHeaders = [
+    'Finishing','Off The Ball','Acceleration','Pace','Anticipation','Composure','First Touch',
+    'Strength','Heading','Jumping Reach','Bravery','Teamwork','Dribbling','Crossing','Agility',
+    'Passing','Vision','Decisions','Technique','Flair','Stamina','Work Rate','Positioning',
+    'Tackling','Marking','Concentration','Handling','Reflexes','One On Ones',
+    'Aerial Reach','Communication'
+  ];
+  const playerPositions = [
+    ['GK Player','GK'],['Left Defender','D (L)'],['Right Defender','D (R)'],
+    ['Centre Back 1','D (C)'],['Centre Back 2','D (C)'],
+    ['Central Midfielder 1','M (C)'],['Central Midfielder 2','M (C)'],['Central Midfielder 3','M (C)'],
+    ['Left Wing','AM (L)'],['Right Wing','AM (R)'],['Striker','ST (C)']
+  ];
+  const escapeCsv = (value: string) => /[,"]/.test(value) ? '"' + value.replaceAll('"','""') + '"' : value;
+  return [
+    ['Name','Position',...attributeHeaders].map(escapeCsv).join(','),
+    ...[...playerPositions,...additional].map(([name,position]) =>
+      [name,position,...attributeHeaders.map(()=>15)].map(value=>escapeCsv(String(value))).join(','))
+  ].join('\n');
+}
+
+
 test('navigation opens a functional module directory', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { name: /Every decision/i })).toBeVisible();
@@ -159,24 +182,7 @@ test('large exported squads render a bounded, accessible player list', async ({ 
 
 
 test('builds a unique eleven for an eligible export and explains infeasible formations', async ({ page }) => {
-  const attributeHeaders = [
-    'Finishing','Off The Ball','Acceleration','Pace','Anticipation','Composure','First Touch',
-    'Strength','Heading','Jumping Reach','Bravery','Teamwork','Dribbling','Crossing','Agility',
-    'Passing','Vision','Decisions','Technique','Flair','Stamina','Work Rate','Positioning',
-    'Tackling','Marking','Concentration','Handling','Reflexes','One On Ones',
-    'Aerial Reach','Communication'
-  ];
-  const playerPositions = [
-    ['GK Player','GK'],['Left Defender','D (L)'],['Right Defender','D (R)'],
-    ['Centre Back 1','D (C)'],['Centre Back 2','D (C)'],
-    ['Central Midfielder 1','M (C)'],['Central Midfielder 2','M (C)'],['Central Midfielder 3','M (C)'],
-    ['Left Wing','AM (L)'],['Right Wing','AM (R)'],['Striker','ST (C)']
-  ];
-  const content = [
-    ['Name','Position',...attributeHeaders].join(','),
-    ...playerPositions.map(([name,position]) => [name,position,...attributeHeaders.map(()=>15)].join(','))
-  ].join('\n');
-
+  const content = makeSquadExport();
   await page.goto('/#/players');
   await page.locator('input[type=file]').setInputFiles({
     name:'registered-export.csv',mimeType:'text/csv',buffer:Buffer.from(content)
@@ -193,4 +199,46 @@ test('builds a unique eleven for an eligible export and explains infeasible form
   await expect(page.getByText('Incomplete XI')).toBeVisible();
   await expect(page.getByText('Hard constraints not met')).toBeVisible();
   await expect(lineup).toHaveCount(0);
+});
+
+
+test('Plan A/B supports versatile player pins, exclusions and honest comparisons', async ({ page }) => {
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name:'squad-scenarios.csv',mimeType:'text/csv',
+    buffer:Buffer.from(makeSquadExport([['Bench Versatile','D (R), AM (R)']]))
+  });
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog',{name:'Quick navigation'})
+    .getByRole('button',{name:/Squad Planner/}).click();
+  await expect(page.getByText('Feasible XI')).toBeVisible();
+
+  await page.getByRole('group',{name:'Squad scenarios'})
+    .getByRole('button',{name:'Plan B'}).click();
+  await page.getByRole('combobox',{name:'Lock RB'}).selectOption('export-row-12');
+  const lineup=page.getByRole('list',{name:'Assigned starting eleven'});
+  await expect(lineup).toContainText('Bench Versatile');
+  await expect(lineup.getByRole('listitem')).toHaveCount(11);
+  await expect(page.getByText('New players in B')).toBeVisible();
+
+  // A versatile player cannot be pinned to both RB and RW.
+  await page.getByRole('combobox',{name:'Lock RW'}).selectOption('export-row-12');
+  await expect(page.getByText('Incomplete XI')).toBeVisible();
+  await expect(page.getByText(/was pinned twice/)).toBeVisible();
+  await page.getByRole('combobox',{name:'Lock RW'}).selectOption('');
+  await expect(page.getByText('Feasible XI')).toBeVisible();
+
+  // Exclusion of a pinned player is a hard conflict, never a silent substitution.
+  await page.getByRole('group',{name:'Exclude players'})
+    .getByRole('checkbox',{name:/Bench Versatile/}).check();
+  await expect(page.getByText(/both excluded and pinned/)).toBeVisible();
+  await page.getByRole('button',{name:'Clear all constraints'}).click();
+  await expect(page.getByText('Feasible XI')).toBeVisible();
+
+  // Explicit scenario copy restores a comparable unmodified XI.
+  await page.getByRole('button',{name:'Copy A into B'}).click();
+  await expect(page.getByText('Position assignments changed')).toBeVisible();
+  await page.getByLabel('Formation').selectOption('4-2-3-1');
+  await expect(page.getByText('Incomplete XI')).toBeVisible();
+  await expect(page.getByText('Not directly comparable')).toBeVisible();
 });
