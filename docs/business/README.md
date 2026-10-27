@@ -17,4 +17,6 @@ These are **fictional self-interviews in the style of a demanding football manag
 | B11 | [Legacy & rebuild](11-interview-long-term-legacy.md) | Multi-season planning |
 | B12 | [Football KPIs](12-football-analytics-glossary.md) | Definitions, caveats, evidence |
 
+| B13 | [Player Intelligence & Scouting](13-player-intelligence-and-scouting.md) | eCA estimates, role suitability, charts and transfer verdicts |
+
 **How to read:** Question → fictional manager answer → operational decisions → Manager Hub requirements. Business rules do not assert they are exactly how the FM match engine works.
