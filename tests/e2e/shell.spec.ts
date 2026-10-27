@@ -98,3 +98,15 @@ test('treats masked scouting attributes as unknown, not zero', async ({page}) =>
   await page.getByRole('tab',{name:'Role fit'}).click();
   await expect(page.getByText('N/A').first()).toBeVisible();
 });
+
+
+test('supports native FM-style print to HTML table without external scripts', async ({page})=>{
+  await page.goto('/#/players');
+  const html = '<!doctype html><html><body><table><thead><tr><th>Name</th><th>Position</th><th>Passing</th><th>Vision</th><th>Decisions</th></tr></thead><tbody><tr><td>Test Native HTML</td><td>CM</td><td>16</td><td>18</td><td>14</td></tr></tbody></table></body></html>';
+  await page.locator('input[type=file]').setInputFiles({name:'fm-print.html',mimeType:'text/html',buffer:Buffer.from(html)});
+  await expect(page.getByRole('heading',{name:'Test Native HTML'})).toBeVisible();
+  await page.getByRole('tab',{name:'Attributes'}).click();
+  await expect(page.getByText('Passing')).toBeVisible();
+  await expect(page.getByText('Vision')).toBeVisible();
+  await expect(page.getByText('Uncalibrated · Not eCA')).toBeVisible();
+});
