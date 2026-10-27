@@ -58,6 +58,18 @@ export interface SlotCoverage {
   readonly eligibleCandidates: number;
   readonly scoredCandidates: number;
 }
+/** User-authored scenario instructions; an invalid instruction fails closed. */
+export interface SquadConstraints {
+  readonly lockedSlots?: Readonly<Record<string, string>>;
+  readonly excludedPlayerIds?: readonly string[];
+}
+export interface SlotCandidate {
+  readonly playerId: string;
+  readonly name: string;
+  readonly score: number;
+  readonly coverage: number;
+}
+
 export interface SquadSolution {
   readonly formation: FormationId;
   readonly complete: boolean;
@@ -150,11 +162,41 @@ function matchSlots(cost: readonly (readonly number[])[]): number[] | null {
   return selected.some((index,i)=>index<0||(cost[i]?.[index]??1e6)>=1e6)?null:selected;
 }
 
-export function optimizeSquad(players: readonly PlayerExport[], formation: FormationId): SquadSolution {
+/**
+ * Provide only players with both declared positional eligibility and enough
+ * role inputs to support a score. Same shared football model as the optimizer.
+ * A UI search is only a shortlist filter, never an engine restriction.
+ */
+export function eligibleSlotCandidates(
+  players: readonly PlayerExport[], slot: LineupSlot, query = '', limit = 60
+): readonly SlotCandidate[] {
+  const role=ROLE_PROFILES.find(profile=>profile.id===slot.roleId);
+  if(!role)return [];
+  const term=query.trim().toLocaleLowerCase();
+  const choices: SlotCandidate[]=[];
+  const seen=new Set<string>();
+  for(const player of players){
+    if(seen.has(player.id))continue;
+    seen.add(player.id);
+    if(!declaredPositions(player.position).has(slot.position) ||
+      (term && ![player.name,player.club,player.position].some(value=>value?.toLocaleLowerCase().includes(term))))continue;
+    const scored=scoreRole(player,role);
+    if(scored.score!==null)choices.push({
+      playerId:player.id,name:player.name,score:scored.score,coverage:scored.coverage
+    });
+  }
+  choices.sort((a,b)=>b.score-a.score||a.name.localeCompare(b.name)||a.playerId.localeCompare(b.playerId));
+  return choices.slice(0,Math.max(0,Math.min(limit,200)));
+}
+
+export function optimizeSquad(
+  players: readonly PlayerExport[], formation: FormationId, constraints: SquadConstraints = {}
+): SquadSolution {
   const slots=FORMATIONS[formation];
+  const excluded = new Set(constraints.excludedPlayerIds ?? []);
   const seen=new Set<string>();
   const available=players.filter(player=>{
-    if(seen.has(player.id))return false;
+    if(seen.has(player.id)||excluded.has(player.id))return false;
     seen.add(player.id);
     return true;
   }).sort((a,b)=>a.id.localeCompare(b.id));
@@ -174,17 +216,43 @@ export function optimizeSquad(players: readonly PlayerExport[], formation: Forma
     slot, eligibleCandidates:matrices[i]!.filter(entry=>entry.eligible).length,
     scoredCandidates:matrices[i]!.filter(entry=>entry.score!==null).length
   }));
+  const failed=(reason:string):SquadSolution=>({
+    formation,complete:false,lineup:[],diagnostics,averageRoleScore:null,
+    reason,model:'role-fit-heuristic-v1'
+  });
+  const pins=constraints.lockedSlots ?? {};
+  const usedPins=new Map<string,string>();
+  const slotIds=new Set(slots.map(slot=>slot.id));
+  for(const [slotId,playerId] of Object.entries(pins)){
+    if(!slotIds.has(slotId)) return failed('Pinned slot '+slotId+' does not exist in the selected formation. Remove the stale pin.');
+    if(!playerId) return failed('An empty locked player ID was supplied for '+slotId+'. Clear the pin instead.');
+    if(excluded.has(playerId)) return failed('Player '+playerId+' is both excluded and pinned to '+slotId+'. Resolve the conflict.');
+    const earlier=usedPins.get(playerId);
+    if(earlier) return failed('Player '+playerId+' was pinned twice ('+earlier+' and '+slotId+'). A player can occupy only one slot.');
+    usedPins.set(playerId,slotId);
+    const slotIndex=slots.findIndex(slot=>slot.id===slotId);
+    const playerIndex=available.findIndex(player=>player.id===playerId);
+    if(playerIndex<0) return failed('Pinned player '+playerId+' is not present in the current export. Re-select a player.');
+    if(matrices[slotIndex]?.[playerIndex]?.score===null ||
+       matrices[slotIndex]?.[playerIndex]?.score===undefined)
+      return failed('Pinned player '+available[playerIndex]!.name+' is not eligible for '+slotId+
+        ' or lacks at least 65% of its required role attributes.');
+  }
   const candidateIndices=available.map((_,index)=>index)
     .filter(index=>matrices.some(row=>row[index]!.score!==null));
   const unmatchedReason='No complete 11-player assignment exists using declared positions and at least 65% of role attributes. Inspect slot coverage; missing/unknown values are not imputed.';
-  if(candidateIndices.length<slots.length||diagnostics.some(d=>d.scoredCandidates===0))
-    return {formation,complete:false,lineup:[],diagnostics,averageRoleScore:null,reason:unmatchedReason,model:'role-fit-heuristic-v1'};
-  const cost=matrices.map(row=>candidateIndices.map(index=>{
+  if(candidateIndices.length<slots.length||diagnostics.some(d=>d.scoredCandidates===0)) return failed(unmatchedReason);
+  const cost=matrices.map((row,slotIndex)=>candidateIndices.map(index=>{
     const score=row[index]!.score;
+    const playerId=available[index]!.id;
+    const slotId=slots[slotIndex]!.id;
+    const pinnedForSlot=pins[slotId];
+    if ((pinnedForSlot && playerId!==pinnedForSlot) ||
+        (usedPins.has(playerId) && usedPins.get(playerId)!==slotId)) return 1e6;
     return score===null?1e6:100-score;
   }));
   const matches=matchSlots(cost);
-  if(!matches)return {formation,complete:false,lineup:[],diagnostics,averageRoleScore:null,reason:unmatchedReason,model:'role-fit-heuristic-v1'};
+  if(!matches)return failed(Object.keys(pins).length ? 'No complete XI satisfies every pinned player, exclusion, position and data requirement. Change your pins or exclusions.' : unmatchedReason);
   const lineup=matches.map((index,slotIndex)=>{
     const slot=slots[slotIndex]!;
     const playerIndex=candidateIndices[index]!;
