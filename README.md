@@ -22,3 +22,11 @@ This installs selected Vercel Web Design Guidelines / React / Composition, Taste
 
 ## Next implementation milestone
 Validate one Football Manager save parser/edition using test fixtures, deliver a read-only player explorer and honest data coverage, then implement calibrated eCA, Role Fit, Squad Planner and source-backed football charts. Treat game editing as a separately gated later phase.
+## Full product implementation — no MVP
+- [Full seven-phase plan](docs/implementation/01-full-delivery-plan.md)
+- [Execution charter — clean code, DRY and no accepted known avoidable debt](docs/implementation/00-execution-charter.md)
+- [Ready-to-paste coding agent prompts (master + phases 01–07)](docs/implementation/02-agent-prompts.md)
+- [Apple-inspired Liquid Glass UI and GSAP motion](docs/implementation/03-liquid-glass-motion-spec.md)
+- [Animation/transition skills and verified references](docs/implementation/04-motion-skills-and-references.md)
+
+The project uses **7 production-grade integration phases**, not an MVP release strategy. The primary motion stack is official GSAP with React; translucency belongs mainly to navigation and controls, while football charts and data remain readable.
