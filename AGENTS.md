@@ -3,7 +3,7 @@
 > **Taste v2 (verified upstream):** supports dashboards and app screens with dedicated `references/app-screens.md` and `library/app.json`. For ManagerHub apply its **app-screen workflow**, not marketing landing layouts. See `.agents/SKILLS-SOURCES.md`.
 
 ## Current status and objective
-ManagerHub currently contains product/domain/system docs, **not a shipped application**. Implement the **entire 27-module scope (MH-01..MH-27)**; user explicitly rejects any MVP milestone. Work in **7 medium integration phases**, each production-grade and tested. No dead UI and no invented FM data. Phase and copy-paste agent prompts:
+ManagerHub now contains product/domain/system docs **plus initial React/Vite application source and experimental read-only local save inspection**. It is NOT a completed/shipped product or validated Football Manager player-data reader. Implement the **entire 27-module scope (MH-01..MH-27)**; user explicitly rejects any MVP milestone. Work in **7 medium integration phases**, each production-grade and tested. No dead UI and no invented FM data. Phase and copy-paste agent prompts:
 - [Mandatory execution charter](docs/implementation/00-execution-charter.md)
 - [Full 7-phase build plan](docs/implementation/01-full-delivery-plan.md)
 - [Prewritten execution prompts](docs/implementation/02-agent-prompts.md)
