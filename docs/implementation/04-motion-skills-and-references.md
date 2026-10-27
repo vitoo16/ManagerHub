@@ -10,7 +10,7 @@
 | MUST | `vercel-react-best-practices` | [Vercel](https://github.com/vercel-labs/agent-skills) | Data-table virtualization, render optimization, async boundaries and bundles | React stack only |
 | MUST | `vercel-composition-patterns` | [Vercel](https://github.com/vercel-labs/agent-skills) | Shared shell, headless stateful component contracts, preventing prop/state duplication | React stack only |
 | MUST | `impeccable` | [Official pbakaus](https://github.com/pbakaus/impeccable) | `shape` → `critique` → `audit` → `animate` → `harden` → `polish`; strongest fit for apps/dashboards | Follow [Operate](https://github.com/pbakaus/impeccable/blob/main/skill/reference/operate.md) and [Animate](https://github.com/pbakaus/impeccable/blob/main/skill/reference/animate.md) |
-| TARGETED | `design-taste-frontend` | [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) | Brand art direction, product website/onboarding and initial visual thesis; user specifically requests it | **Its Oct 2026 SKILL.md explicitly says NOT for dashboards/app screens**. For analytic workspace, prefer Impeccable + project skill; only borrow general art-direction principles, do not force taste prompts into core dashboard |
+| MUST (app UI) | `design-taste-frontend` | [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) | v2 dedicated app-screen rules for dashboard/admin/analytics in `references/app-screens.md` | Use `draw.mjs --app` and app inspector when feasible; avoid fake vanity KPI cards and landing-page defaults |
 | MUST | `gsap-core` | [GreenSock official gsap-skills](https://github.com/greensock/gsap-skills) | Reliable tween/timing primitive in package/motion | GSAP is the primary advanced animation lib |
 | MUST | `gsap-react` | [GreenSock official](https://github.com/greensock/gsap-skills/blob/main/skills/gsap-react/SKILL.md) | Scoped `useGSAP`, cleanup and contextSafe handlers | Required for React + GSAP |
 | MUST | `gsap-timeline` | [GreenSock official](https://github.com/greensock/gsap-skills) | Coordinated sidebar/overlay/route transitions, interruption and reversal | No pointless page-load choreography |
@@ -57,7 +57,7 @@ Project-local vs global installation depends on CLI flags/agent; wrapper script 
 9. [Motion React](https://motion.dev/docs/react) and [useReducedMotion](https://motion.dev/docs/react-use-reduced-motion) — alternative evidence; not extra dependency by default.
 
 ## Task-to-skill dispatch
-- **Visual shell / Glass UI:** `impeccable` shape/animate/critique + `web-design-guidelines` + `managerhub-motion-glass`; `design-taste-frontend` only for branding, onboarding or marketing.
+- **Visual shell / Glass UI:** `impeccable` shape/animate/critique + `web-design-guidelines` + `managerhub-motion-glass`; `design-taste-frontend` dedicated app-screen workflow for dashboard, and separate marketing-page workflow for public pages.
 - **React and shared components:** Vercel best-practices+composition + project Data UX; charts require event/source policy.
 - **Complex motion:** `gsap-core`, `gsap-react`, `gsap-timeline`, `gsap-plugins`, `gsap-performance` + Impeccable animate.
 - **TACTIC field switching:** `managerhub-football-intelligence`, `managerhub-motion-glass`, GSAP Flip, React, a11y; keep source player identity constant.
