@@ -3,7 +3,8 @@ import { test, expect } from '@playwright/test';
 test('navigation opens a functional module directory', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { name: /Every decision/i })).toBeVisible();
-  await page.getByRole('button', { name: /Explore the systems/i }).click();
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' }).getByRole('button', { name: /Football Systems/i }).click();
   await expect(page.getByRole('heading', { name: 'Football Systems' })).toBeVisible();
   await expect(page.getByText('27 of 27 modules')).toBeVisible();
   await page.getByPlaceholder('Search modules or ID…').fill('Player Intelligence');
