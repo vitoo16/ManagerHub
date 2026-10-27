@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "../../packages/domain/src",
+    "../../packages/ui/src",
+    "../../packages/motion/src"
+  ]
+}
