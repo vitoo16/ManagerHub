@@ -16,7 +16,7 @@
 | MH-08 | AI Tactical Advisor | 4/6 | Rules, AI adapter | Grounded recommendations with impact/alternatives and safe unknowns | Not implemented |
 | MH-09 | Role Intelligence | 4 | Role catalogs, scoring | Individual-vs-collective distinctions, partner conflicts and causes | Not implemented |
 | MH-10 | Set Piece Intelligence | 7 | XI, match and roles | Corner/free kick/throw plans and matchup rules work end-to-end | Not implemented |
-| MH-11 | Squad Planner 2.0 | 4 | Tactical optimizer | Best/rotation/coverage/opponent XI, no duplicated player slots | **In progress:** 4-3-3 / 4-2-3-1 unique-player role-fit assignments, strict eligibility and coverage; advanced constraints pending |
+| MH-11 | Squad Planner 2.0 | 4 | Tactical optimizer | Best/rotation/coverage/opponent XI, no duplicated player slots | **In progress:** 4-3-3 / 4-2-3-1 unique-player role-fit assignments, strict eligibility, pin/exclusion constraints and A/B comparison; tactical and match constraints pending |
 | MH-12 | Recruitment & Scouting | 5 | MH-06/11 | Need-driven candidate compare and defensible Buy/Pass alternatives | Not implemented |
 | MH-13 | Transfer/Contracts | 5 | Finance/contract fields | Transfer and wage scenarios, renewal/loan/sell alternatives | Not implemented |
 | MH-14 | Youth Development | 5 | MH-04/11 | Development path, loan/retraining/succession linked to team | Not implemented |

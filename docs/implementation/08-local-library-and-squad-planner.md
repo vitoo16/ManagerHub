@@ -26,6 +26,14 @@ Connected to the same Player Lab data via shared `PlayerDataset` state. It curre
 - Responsive pitch diagram, accompanying accessible eleven-player list, average heuristic role score and positional-coverage diagnostics.
 - No invented players, native CA/PA, predicted win percentages, fitness, contracts, competition registration or squad chemistry.
 
+### Manager-controlled Plan A / Plan B
+
+The Squad Planner now supports two independent, user-editable planning configurations in the same current imported roster. Each plan has a formation, a slot-to-player lock map, and a set of excluded players. From the UI, use **Plan A** and **Plan B**, search candidate dropdowns, pin a player to an eligible position, toggle an exclusion, **Clear all constraints** or **Copy A into B**. Every modification re-runs the exact 11-slot assignment engine across the whole available roster. The plans currently exist in app component state and are intentionally **not silently saved** or synced. IndexedDB persistence applies to player-export snapshots only.
+
+Hard failure conditions include duplicate pins, player exclusion/lock conflict, missing player IDs, unsupported positions, insufficient attribute coverage, unmatched slots and impossible assignments. Under any of these, the pitch shows an explicit infeasible state, not a partial eleven disguised as a playable lineup. Candidate dropdowns list the **50 highest scoring eligible players** or results matching the user search; the solver itself still considers all eligible players.
+
+Comparison reports player changes and role-score changes only for **two complete starting elevens using the exact same formation**. Different formations have different role requirements and their averages are not treated as directly comparable. Comparisons are not claimed to predict the match outcome or measure dressing-room chemistry.
+
 This is **not a validated FM26 in-possession/out-of-possession engine** and not a full Squad Planner 2.0 yet. Position eligibility comes from the exported text; it is **not** in-game positional familiarity. The current optimizer maximizes sum of individual role attribute fit under hard eligibility/uniqueness only; partner interactions, fatigue, phase-specific roles and economic scenarios remain planned. A role-fit index is not the match engine's exact internal score.
 
 Relevant code: `packages/domain/src/squad-optimizer.ts`, `apps/web/src/SquadWorkspace.tsx`, `apps/web/src/squad-workspace.css`.
@@ -35,8 +43,8 @@ Relevant code: `packages/domain/src/squad-optimizer.ts`, `apps/web/src/SquadWork
 - Read-only FM save inspection remains unchanged and isolated from exporter-based Player Lab.
 - 20k-row imports render **only 100 player list rows at a time**, with a visible progressive Show more control and full search over the import.
 - Versioned storage schema and unknown-field handling; no silent 0 substitution for absent attributes.
-- Unit tests verify schema rejection, role coverage, strict position parsing, 11 unique IDs and infeasibility.
-- Playwright desktop/mobile tests cover import, explicit save, reload, restore, delete and 11-player lineup with a formation change.
+- Unit tests verify schema rejection, role coverage, strict position parsing, 11 unique IDs, pins, exclusions, repeated assignments, infeasibility and A/B score-comparison compatibility.
+- Playwright desktop/mobile tests cover import, explicit save, reload, restore, delete, 11-player lineup, formation change, scenario tabs, locked slots and impossible exclusions.
 - Running tests is documented in root README and workflows. **Do not claim CI success for an unverified commit.**
 - Original `.fm` save is never modified or uploaded by these features.
 
