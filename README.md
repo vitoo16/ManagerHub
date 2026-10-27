@@ -11,14 +11,10 @@
 - [Data-first ManagerHub UI/UX design system](docs/product/02-design-system.md).
 - [Agent skills research and install guide](docs/engineering/agent-skills-research.md).
 - [AGENTS.md](AGENTS.md) — instructions for coding agents.
-- [Project skills](.agents/skills/) — our football, FM-save safety and data-UX SKILL.md files.
+- [Installed 14 Agent Skills](.agents/README.md) — Vercel, Taste, Impeccable, official GSAP, and four ManagerHub-specific skills.
 
-## Coding agent setup (local, explicit opt-in)
-After reviewing third-party upstream scripts and license, with Node 22.20+ and Git:
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/install-agent-skills.ps1 -Agent codex
-```
-This installs selected Vercel Web Design Guidelines / React / Composition, Taste and Impeccable **on your local machine**, not on GitHub merely by reading this README. You can also use [individual vendor commands](docs/engineering/agent-skills-research.md). No installer was executed as part of this repository documentation work.
+## Agent Skills are installed directly in GitHub
+**14 project-local skills are checked into `.agents/skills/` (10 pinned upstream + 4 original ManagerHub skills).** No installer is required to retrieve these skill files after cloning. See [installed skills and limitations](.agents/README.md), [upstream SHA lock](.agents/skills-lock.json) and [AGENTS.md](AGENTS.md). The external scripts were not executed, and Impeccable's optional engine/provider hooks require separate reviewed setup; application npm dependencies are not installed by simply cloning. The existing `scripts/install-agent-skills.ps1` is now an optional local refresh/agent-provider setup helper; it may replace vendored copies and should only be run deliberately.
 
 ## Next implementation milestone
 Validate one Football Manager save parser/edition using test fixtures, deliver a read-only player explorer and honest data coverage, then implement calibrated eCA, Role Fit, Squad Planner and source-backed football charts. Treat game editing as a separately gated later phase.
