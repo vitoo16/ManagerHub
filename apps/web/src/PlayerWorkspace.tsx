@@ -70,8 +70,57 @@ function RoleResults({player}:{player:PlayerExport}){
     </div>)}
   </div>;
 }
+
+function PlayerCompare({primary,dataset}:{primary:PlayerExport;dataset:PlayerDataset}){
+  const [query,setQuery]=useState('');
+  const [candidateId,setCandidateId]=useState<string>(()=>dataset.players.find(p=>p.id!==primary.id)?.id??'');
+  const options=useMemo(()=>dataset.players.filter(p=>p.id!==primary.id&&
+    [p.name,p.club,p.position].some(v=>v?.toLowerCase().includes(query.toLowerCase()))).slice(0,30),[dataset,primary.id,query]);
+  const other=dataset.players.find(p=>p.id===candidateId)??null;
+  const ownRoles=analyzeRoles(primary);
+  const otherRoles=other?analyzeRoles(other):[];
+  const seen=(Object.keys(primary.attributes) as AttributeKey[]).filter(k=>other?.attributes[k]!==undefined);
+  const sorted=[...seen].sort((a,b)=>Math.abs((primary.attributes[b]??0)-(other?.attributes[b]??0))-
+    Math.abs((primary.attributes[a]??0)-(other?.attributes[a]??0))).slice(0,12);
+  return <Surface className="scout-panel">
+    <div className="scout-panel__title">Head-to-head analysis <span>Same import · Native attributes only</span></div>
+    <p className="module-disclaimer">Compare observed attributes and product-authored role-fit estimates. Game CA/PA, transfer value, actual positional familiarity and scouting certainty are not part of this comparison.</p>
+    <div className="compare-selector">
+      <label htmlFor="compare-search">Search comparison players</label>
+      <input id="compare-search" placeholder="Type a player or club name…" value={query} onChange={e=>setQuery(e.target.value)}/>
+      <label htmlFor="compare-player">Comparison player</label>
+      <select id="compare-player" value={candidateId} onChange={e=>setCandidateId(e.target.value)}>
+        {other&&!options.some(p=>p.id===other.id)&&<option value={other.id}>{other.name}</option>}
+        {options.map(p=><option key={p.id} value={p.id}>{p.name}{p.club?' · '+p.club:''}</option>)}
+      </select>
+      <small>Showing up to 30 matching players; identities exist only within this export.</small>
+    </div>
+    {other?<div className="compare-results">
+      <div className="compare-head"><strong>{primary.name}</strong><span>VS</span><strong>{other.name}</strong></div>
+      <h3>Largest observed attribute differences</h3>
+      {sorted.length ? <div className="compare-grid" role="table" aria-label="Observed player attribute comparisons">
+        {sorted.map(key=><div className="compare-attribute" role="row" key={key}>
+          <span role="cell" className={(primary.attributes[key]??0)>(other.attributes[key]??0)?'compare-leading':''}>{primary.attributes[key]}</span>
+          <span role="cell">{ATTRIBUTE_LABELS[key]}</span>
+          <span role="cell" className={(other.attributes[key]??0)>(primary.attributes[key]??0)?'compare-leading':''}>{other.attributes[key]}</span>
+        </div>)}
+      </div> : <p className="module-disclaimer">These two exports have no matching exact attributes. A numerical comparison would be misleading.</p>}
+      <h3>Role score comparison</h3>
+      <div className="compare-grid" role="table" aria-label="Role fit comparisons">
+        {ownRoles.map(a=>{const b=otherRoles.find(r=>r.id===a.id);
+          return <div className="compare-attribute" role="row" key={a.id}>
+            <span role="cell" className={a.score!==null&&b?.score!==null&&a.score>b.score?'compare-leading':''}>{a.score??'—'}</span>
+            <span role="cell">{a.title}</span>
+            <span role="cell" className={b?.score!==null&&b?.score!==undefined&&a.score!==null&&b.score>a.score?'compare-leading':''}>{b?.score??'—'}</span>
+          </div>;
+        })}
+      </div>
+    </div>:<p className="player-empty-chart">Import at least two players to compare their attributes and role estimates.</p>}
+  </Surface>;
+}
+
 function PlayerDetails({player,dataset}:{player:PlayerExport;dataset:PlayerDataset}){
-  const [tab,setTab]=useState<'overview'|'attributes'|'roles'|'recruitment'>('overview');
+  const [tab,setTab]=useState<'overview'|'attributes'|'roles'|'recruitment'|'compare'>('overview');
   const insights=getAttributeInsights(player);
   const strength=attributeStrengthIndex(player);
   const roles=analyzeRoles(player);
@@ -87,7 +136,7 @@ function PlayerDetails({player,dataset}:{player:PlayerExport;dataset:PlayerDatas
       <div><span>PA</span><strong>—</strong><small>Not verified</small></div>
     </div>
     <div className="scout-tabs" role="tablist" aria-label="Player report">
-      {(['overview','attributes','roles','recruitment'] as const).map(label=><button key={label} role="tab" aria-selected={tab===label} onClick={()=>setTab(label)} className={tab===label?'scout-tab scout-tab--active':'scout-tab'}>{label==='overview'?'Overview':label==='attributes'?'Attributes':label==='roles'?'Role fit':'Recruitment'}</button>)}
+      {(['overview','attributes','roles','compare','recruitment'] as const).map(label=><button key={label} role="tab" aria-selected={tab===label} onClick={()=>setTab(label)} className={tab===label?'scout-tab scout-tab--active':'scout-tab'}>{label==='overview'?'Overview':label==='attributes'?'Attributes':label==='roles'?'Role fit':label==='compare'?'Compare':'Recruitment'}</button>)}
     </div>
     <div className="scout-tab-content" role="tabpanel">
       {tab==='overview'&&<>
@@ -105,6 +154,7 @@ function PlayerDetails({player,dataset}:{player:PlayerExport;dataset:PlayerDatas
       </>}
       {tab==='attributes'&&<Surface className="scout-panel"><div className="scout-panel__title">Imported player attributes <span>{Object.keys(player.attributes).length} values · Source: {dataset.fileName}</span></div><RankedAttributes player={player}/></Surface>}
       {tab==='roles'&&<Surface className="scout-panel"><div className="scout-panel__title">Tactical roles by observed attributes</div><RoleResults player={player}/></Surface>}
+      {tab==='compare'&&<PlayerCompare primary={player} dataset={dataset}/>}
       {tab==='recruitment'&&<Surface className="scout-panel"><div className="scout-panel__title">Recruitment assessment</div>
         <div className="scouting-verdict"><Status tone="warning">Insufficient data</Status><h3>Do not recommend a transfer yet</h3>
           <p>This export does not establish your club's tactical gap, the player's asking price, wages, contract, eligibility or alternatives in your squad. A score based on attributes alone cannot answer whether signing makes sense.</p>
