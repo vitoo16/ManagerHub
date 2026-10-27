@@ -1,19 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type Dispatch, type SetStateAction } from 'react';
 import {
   FORMATIONS, declaredPositions, eligibleSlotCandidates, optimizeSquad, compareSquadScenarios,
-  type FormationId, type PlayerDataset, type PlayerExport, type SquadSolution, type SlotAssignment, type LineupSlot
+  type FormationId, type PlayerDataset, type SquadSolution, type SlotAssignment, type LineupSlot,
+  type SquadPlanConfig, type SquadPlanKey, type SquadPlans
 } from '@managerhub/domain';
 import { Button, Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
 import './squad-workspace.css';
-
-type PlanKey = 'A' | 'B';
-interface PlanConfig {
-  readonly formation: FormationId;
-  readonly lockedSlots: Readonly<Record<string,string>>;
-  readonly excludedPlayerIds: readonly string[];
-}
-const DEFAULT_PLAN: PlanConfig = {formation:'4-3-3',lockedSlots:{},excludedPlayerIds:[]};
-type Plans = Record<PlanKey,PlanConfig>;
 
 function TacticalPitch({ solution }: { solution: SquadSolution }) {
   const positions=new Map<string,SlotAssignment>(solution.lineup.map(item=>[item.slot.id,item]));
@@ -156,9 +148,14 @@ function ScenarioComparison({left,right}: {left:SquadSolution;right:SquadSolutio
   </Surface>;
 }
 
-export function SquadWorkspace({dataset,onImport}:{dataset:PlayerDataset|null;onImport:()=>void}){
-  const [plans,setPlans]=useState<Plans>({A:{...DEFAULT_PLAN},B:{...DEFAULT_PLAN}});
-  const [active,setActive]=useState<PlanKey>('A');
+export function SquadWorkspace({dataset,onImport,plans,setPlans,active,setActive}:{
+  dataset: PlayerDataset | null;
+  onImport: () => void;
+  plans: SquadPlans;
+  setPlans: Dispatch<SetStateAction<SquadPlans>>;
+  active: SquadPlanKey;
+  setActive: Dispatch<SetStateAction<SquadPlanKey>>;
+}){
   const plan=plans[active];
   const solutions=useMemo(()=>dataset?{
     A:optimizeSquad(dataset.players,plans.A.formation,plans.A),
@@ -167,7 +164,7 @@ export function SquadWorkspace({dataset,onImport}:{dataset:PlayerDataset|null;on
   const solution=solutions?.[active]??null;
   const unknownPositions=useMemo(()=>dataset?dataset.players
     .filter(player=>declaredPositions(player.position).size===0).length:0,[dataset]);
-  const update=(change:(current:PlanConfig)=>PlanConfig)=>{
+  const update=(change:(current:SquadPlanConfig)=>SquadPlanConfig)=>{
     setPlans(previous=>({...previous,[active]:change(previous[active])}));
   };
   const changeFormation=(next:FormationId)=>update(current=>{
