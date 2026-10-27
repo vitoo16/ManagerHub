@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { compareSquadScenarios } from './squad-scenarios';
+import { compareSquadScenarios, createDefaultSquadPlans } from './squad-scenarios';
 import { optimizeSquad } from './squad-optimizer';
 import { ATTRIBUTE_GROUPS, type AttributeKey, type PlayerExport } from './player-import';
 const attributes=Object.fromEntries([...new Set(Object.values(ATTRIBUTE_GROUPS).flat())].map(k=>[k,14])) as Record<AttributeKey,number>;
@@ -12,6 +12,13 @@ const squad=[
   player('lw','AM (L)'),player('st','ST (C)'),player('rw','AM (R)'),player('reserve','M (C)')
 ];
 describe('honest squad scenario comparisons',()=>{
+  it('creates independent defaults for both editable plans',()=>{
+    const plans=createDefaultSquadPlans();
+    expect(plans.A).toEqual(plans.B);
+    expect(plans.A).not.toBe(plans.B);
+    expect(plans.A.lockedSlots).not.toBe(plans.B.lockedSlots);
+    expect(plans.A.excludedPlayerIds).not.toBe(plans.B.excludedPlayerIds);
+  });
   it('reports same XI without inventing effect',()=>{
     const a=optimizeSquad(squad,'4-3-3');
     const comparison=compareSquadScenarios(a,optimizeSquad(squad,'4-3-3'));
