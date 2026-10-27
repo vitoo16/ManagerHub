@@ -54,3 +54,5 @@ For any new functionality add its MH-ID to [catalogue](product/01-full-feature-c
 - [Official GSAP/Vercel/Impeccable/Taste skill research](implementation/04-motion-skills-and-references.md)
 
 The user chose the **complete product**, not an MVP. These implementation documents supersede earlier release-phase suggestions.
+
+- [27-module acceptance ledger and status](implementation/05-feature-acceptance-ledger.md)
