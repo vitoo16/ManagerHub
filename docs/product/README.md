@@ -1,9 +1,12 @@
-# Product design / Thiết kế sản phẩm
+# Product planning & UI/UX
 
-Specifications and mockup descriptions, **not shipped features**.
+ManagerHub is intended as a football decision-support workspace, not just another editor.
 
-- [P04 — Player Intelligence & Scouting UX](04-player-intelligence-ux.md): profile tabs, estimated CA, role analysis, football charts and buy/shortlist decision flow.
+- [27 modules grouped into 6 pillars](01-full-feature-catalog.md)
+- [Professional football analysis Design System](02-design-system.md)
+- [User stories / personas](01-user-stories.md)
+- [Phase roadmap](02-delivery-roadmap.md)
+- [Requirements and risk traceability](03-traceability-and-decisions.md)
+- [Player Intelligence dashboard UX and chart-data requirements](04-player-intelligence-ux.md)
 
-Future product docs: global navigation, squad planner UX, tactical lab, recruitment dashboard, roadmap and release milestones.
-
-User interface principle: tell the user what is known, what is inferred and what remains unknown, in plain language.
+These documents describe desired behavior, not a released application. Agent design process is specified in [skill research](../engineering/agent-skills-research.md) and [AGENTS.md](../../AGENTS.md).
