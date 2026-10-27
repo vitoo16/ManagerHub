@@ -63,3 +63,38 @@ test('discovers a bounded synthetic trailing archive catalogue without extractin
   await expect(page.getByText('game_info.dat')).toBeVisible();
   await expect(page.getByText(/member contents and game records are NOT decoded/i)).toBeVisible();
 });
+
+
+test('imports real observed attributes into Player Lab without fake CA/PA', async ({ page }) => {
+  await page.goto('/#/players');
+  await expect(page.getByRole('heading',{name:'Player Lab'})).toBeVisible();
+  const csv = [
+    'Name;Position;Age;Club;Passing;Vision;Decisions;First Touch;Technique;Composure;Positioning;Teamwork;Tackling;Pace;Stamina;Work Rate',
+    'Test Creator;CM;23;Verified Export FC;18;18;17;17;16;16;11;14;8;14;15;13',
+    'Test Defender;CB;27;Verified Export FC;10;9;13;12;9;14;18;17;19;10;14;16'
+  ].join('\r\n');
+  await page.locator('input[type=file]').setInputFiles({name:'export.csv',mimeType:'text/csv',buffer:Buffer.from(csv)});
+  await expect(page.getByText('2 player records')).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Test Creator'})).toBeVisible();
+  await expect(page.getByText('Uncalibrated · Not eCA')).toBeVisible();
+  await expect(page.getByText('Not verified').first()).toBeVisible();
+  await page.getByRole('tab',{name:'Role fit'}).click();
+  await expect(page.getByText('Deep-Lying Playmaker')).toBeVisible();
+  await page.getByRole('tab',{name:'Recruitment'}).click();
+  await expect(page.getByText('Do not recommend a transfer yet')).toBeVisible();
+  await page.getByRole('button',{name:/Test Defender/}).click();
+  await expect(page.getByRole('heading',{name:'Test Defender'})).toBeVisible();
+});
+
+test('treats masked scouting attributes as unknown, not zero', async ({page}) => {
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name:'masked.tsv',mimeType:'text/tab-separated-values',
+    buffer:Buffer.from('Name\tPassing\tVision\tDecisions\nUnscouted\t-\t14-17\t?')
+  });
+  await expect(page.getByText('1 player records')).toBeVisible();
+  await expect(page.getByText('No recognized, exact 1–20 attributes')).toHaveCount(0); // overview shows an empty radar
+  await expect(page.getByText('No exact attributes observed')).toBeVisible();
+  await page.getByRole('tab',{name:'Role fit'}).click();
+  await expect(page.getByText('N/A').first()).toBeVisible();
+});
