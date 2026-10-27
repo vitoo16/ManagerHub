@@ -128,8 +128,11 @@ function matchSlots(cost: readonly (readonly number[])[]): number[] | null {
       }
       if (!Number.isFinite(delta)) return null;
       for (let j=0;j<=m;j++) {
-        if (used[j]) {u[p[j]!]+=delta;v[j]-=delta;}
-        else minv[j]-=delta;
+        if (used[j]) {
+          const matchedIndex=p[j] ?? 0;
+          u[matchedIndex]=(u[matchedIndex] ?? 0)+delta;
+          v[j]=(v[j] ?? 0)-delta;
+        } else minv[j]=(minv[j] ?? Infinity)-delta;
       }
       j0=j1;
     } while (p[j0]!==0);
@@ -140,7 +143,10 @@ function matchSlots(cost: readonly (readonly number[])[]): number[] | null {
     } while(j0!==0);
   }
   const selected=Array(n).fill(-1) as number[];
-  for(let j=1;j<=m;j++) if(p[j]>0) selected[p[j]-1]=j-1;
+  for(let j=1;j<=m;j++) {
+    const row=p[j] ?? 0;
+    if(row>0) selected[row-1]=j-1;
+  }
   return selected.some((index,i)=>index<0||(cost[i]?.[index]??1e6)>=1e6)?null:selected;
 }
 
