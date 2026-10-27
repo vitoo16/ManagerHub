@@ -1,5 +1,7 @@
 # ManagerHub — Ready-to-Run Agent Prompts (FULL PRODUCT, no MVP)
 
+> **Taste v2 (verified upstream):** supports dashboards and app screens with dedicated `references/app-screens.md` and `library/app.json`. For ManagerHub apply its **app-screen workflow**, not marketing landing layouts. See `.agents/SKILLS-SOURCES.md`.
+
 **How to use:** Give the coding agent the **MASTER CONTRACT** once. Then copy a phase prompt (01→07) into the same working repository. Phase prompts instruct the agent to write code, run checks, commit clean slices and produce evidence — **not merely propose another plan**. Skills are conditional on being actually installed; if absent, read their referenced official documentation and use original project skills without falsely claiming invocation. Team cooperation uses narrow non-overlapping ownership; implement parallel substreams only when contracts are stable.
 
 ## MASTER CONTRACT — Run once before Phase 1
