@@ -45,7 +45,7 @@
 See [sources and evidence](references.md). Read-only/immutable source save by default; editing requires certified compatibility, backup and rollback. Actual CA, eCA, RCA-style estimate, Role Fit and Tactical Fit have different meanings and scales.
 
 ## How to contribute
-For any new functionality add its MH-ID to [catalogue](product/01-full-feature-catalog.md) → business rules → system inputs/results/errors → UI states + charts → test acceptance and evidence. Do not commit private save files. External skills installation is opt-in and belongs in local agent environments, not assumed active because it is documented.
+For any new functionality add its MH-ID to [catalogue](product/01-full-feature-catalog.md) → business rules → system inputs/results/errors → UI states + charts → test acceptance and evidence. Do not commit private save files. The 10 curated external SKILL.md files plus 4 original project skills are actually committed under [`.agents/skills/`](../.agents/README.md); their optional runtime engines/agent hooks are not automatically activated on a developer machine.
 ## Full-product execution (no MVP)
 - [Mandatory engineering charter](implementation/00-execution-charter.md)
 - [Seven-phase detailed plan](implementation/01-full-delivery-plan.md)
