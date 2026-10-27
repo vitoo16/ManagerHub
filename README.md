@@ -32,7 +32,7 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-The current Save Library checks local .fm container signatures and optional SHA-256 only. It does **not** decode game edition, players or CA/PA and does not upload save bytes. The Tauri desktop host and Rust parser have not been built. See [implementation evidence/limits](docs/implementation/06-code-started.md).
+The current Save Library checks local .fm container signatures, optional SHA-256 and an **experimental bounded listing of internal archive member names** when structurally available. It does **not** decode game edition, players or CA/PA and does not upload save bytes. The Tauri desktop host and Rust parser have not been built. See [implementation evidence/limits](docs/implementation/06-code-started.md).
 
 ## Next implementation milestone
 Verify app build and browser tests; implement versioned parser/fixtures and persistent snapshots, then calibrated eCA, Role Fit, Squad Planner and source-backed football charts. Native save editing remains a separately gated phase.
