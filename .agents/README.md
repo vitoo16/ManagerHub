@@ -10,12 +10,13 @@
 | vercel-react-best-practices | Vercel | Official SKILL.md, compiled AGENTS.md rules, directly referenced rule files |
 | vercel-composition-patterns | Vercel | Official SKILL.md, compiled AGENTS.md rules, directly referenced rule files |
 | design-taste-frontend | Taste v2 | Official SKILL.md, **app-screens.md**, relevant reference files, app design library/assets, draw, inspect and lint scripts |
-| impeccable | Impeccable | Official SKILL.md, all 45 Markdown reference files, CLI launcher and basic metadata; **native CLI engine and its full live-browser helpers are not bundled** |
+| impeccable | Impeccable | Official SKILL.md, core reference Markdown files, CLI launcher and basic metadata; **native CLI engine and its full live-browser helpers are not bundled** |
 | gsap-core | GreenSock | Official SKILL.md |
 | gsap-react | GreenSock | Official SKILL.md |
 | gsap-timeline | GreenSock | Official SKILL.md |
 | gsap-plugins | GreenSock | Official SKILL.md |
 | gsap-performance | GreenSock | Official SKILL.md |
+| gsap-scrolltrigger | GreenSock | Official SKILL.md; optional for teaching/tutorial scroll interactions |
 
 Original project skills: `managerhub-football-intelligence`, `managerhub-save-safety`, `managerhub-data-ux`, `managerhub-motion-glass`.
 
@@ -41,6 +42,7 @@ ManagerHub/
 │       ├── gsap-timeline/
 │       ├── gsap-plugins/
 │       ├── gsap-performance/
+│       ├── gsap-scrolltrigger/
 │       ├── managerhub-football-intelligence/
 │       ├── managerhub-save-safety/
 │       ├── managerhub-data-ux/
@@ -61,8 +63,8 @@ For agents recognizing project-local `.agents/skills/` (including Codex), clone 
 
 - **Vendored SKILL.md ≠ installed npm runtime.** The app will still need `gsap` and `@gsap/react` added in the actual application phase.
 - **Impeccable**: the included official launchers can bootstrap/download the external Impeccable engine on first use; this repository does not ship that engine, extensive live-browser helpers or provider hooks. Review the launchers, network behavior, privacy/telemetry settings and [official docs](https://github.com/pbakaus/impeccable) before enabling these features. The core design skill and its Markdown references are present.
-- **Taste**: the selected app-screen workflow is included; the much larger site-gallery libraries for its **public marketing website** workflow are not vendored. For site-generation beyond ManagerHub's app screens, review/install the full upstream distribution.
-- **Vercel**: compiled guidance is included, but the individual complete `rules/` collections were not all duplicated. SKILL.md-linked rule examples are present. The Web Interface Guidelines skill fetches its latest rulebook when invoked.
+- **Taste**: the selected app-screen workflow is included; site-gallery reference libraries and app-specific resources are now vendored. For site-generation beyond ManagerHub's app screens, review/install the full upstream distribution.
+- **Vercel**: compiled guidance is included, but the individual `rules/` collections are now fully vendored (72 React and 10 composition files). SKILL.md-linked rule examples are present. The Web Interface Guidelines skill fetches its latest rulebook when invoked.
 - **Security**: external scripts are checked into the repo but **have not been executed** during this GitHub installation. Neither a developer machine nor a coding agent's runtime is magically initialized by a Git commit. Read source before running scripts, especially network/browser automation.
 - **Licensing**: see `licenses/` and [upstream provenance](skills-lock.json). Vercel React/Composition SKILL.md declare MIT; Web Guidelines SKILL.md does not carry an explicit license field and should be reviewed before redistributing outside intended installation use.
 
