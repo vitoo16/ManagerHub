@@ -107,7 +107,7 @@ test('supports native FM-style print to HTML table without external scripts', as
   await page.locator('input[type=file]').setInputFiles({name:'fm-print.html',mimeType:'text/html',buffer:Buffer.from(html)});
   await expect(page.getByRole('heading',{name:'Test Native HTML'})).toBeVisible();
   await page.getByRole('tab',{name:'Attributes'}).click();
-  await expect(page.getByText('Passing')).toBeVisible();
-  await expect(page.getByText('Vision')).toBeVisible();
+  await expect(page.getByText('Passing', { exact: true })).toBeVisible();
+  await expect(page.getByText('Vision', { exact: true })).toBeVisible();
   await expect(page.getByText('Uncalibrated · Not eCA')).toBeVisible();
 });

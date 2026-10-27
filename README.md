@@ -32,10 +32,10 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-The current Save Library checks local .fm container signatures, optional SHA-256 and an **experimental bounded listing of internal archive member names** when structurally available. It does **not** decode game edition, players or CA/PA and does not upload save bytes. The Tauri desktop host and Rust parser have not been built. See [implementation evidence/limits](docs/implementation/06-code-started.md).
+The Save Library recognizes .fm container signatures, optional SHA-256, and an **experimental bounded listing of internal archive member names** when structurally available. **Player Lab** now imports user-exported **HTML/CSV/TSV/TXT**, analyzes actual visible 1–20 attributes and displays provisional role-fit scores and attribute charts in-browser. It does **not** decode game edition, players or CA/PA and does not upload save bytes. The Tauri desktop host and Rust parser have not been built. See [implementation evidence/limits](docs/implementation/06-code-started.md).
 
 ## Next implementation milestone
-Verify app build and browser tests; implement versioned parser/fixtures and persistent snapshots, then calibrated eCA, Role Fit, Squad Planner and source-backed football charts. Native save editing remains a separately gated phase.
+Validate with real FM print/export fixtures, continue versioned .fm reader/persistent snapshots, then train and calibrate eCA from independently verified same-version CA labels, and integrate Tactical Lab, Squad Planner and decision-aware scouting. Native save editing remains a separately gated phase.
 ## Full product implementation — no MVP
 - [Full seven-phase plan](docs/implementation/01-full-delivery-plan.md)
 - [Execution charter — clean code, DRY and no accepted known avoidable debt](docs/implementation/00-execution-charter.md)
@@ -46,3 +46,6 @@ Verify app build and browser tests; implement versioned parser/fixtures and pers
 The project uses **7 production-grade integration phases**, not an MVP release strategy. The primary motion stack is official GSAP with React; translucency belongs mainly to navigation and controls, while football charts and data remain readable.
 
 - [27-module acceptance ledger and status](docs/implementation/05-feature-acceptance-ledger.md)
+
+## Player Lab (actual exported attributes)
+Open `/#/players` and import your **native HTML printout** from Football Manager, or an exported **CSV/TSV** view with Name, Position and player attributes. The file stays in browser memory and is not uploaded. See [Player Lab implementation and limitations](docs/implementation/07-player-lab-and-export-import.md). Estimated scores are **not actual CA/PA or calibrated eCA**. For FM26 the native Print Screen / Web Page export can produce HTML without third-party plugin.

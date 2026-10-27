@@ -1,17 +1,17 @@
 # ManagerHub — 27-module implementation and acceptance ledger
 
-**Status as of 2026-10-27:** all modules below **NOT IMPLEMENTED**. Do not change to Complete unless integrated code, tests, UI and an acceptance review are evidenced. This is a planning tracker, not claims of available features.
+**Status as of 2026-10-27:** some modules have **partial production code**, while the full 27-module scope remains incomplete. Do not change to Complete unless integrated code, tests, UI and an acceptance review are evidenced. This is a planning tracker, not claims of available features.
 
 **Do not build an MVP:** all modules are in full-product scope. Each is assigned to the earliest phase where it becomes fully integrated; foundational work in earlier phases can be reused. Canonical [7-phase plan](01-full-delivery-plan.md), [agent prompts](02-agent-prompts.md).
 
 | ID | Module | Integration phase | Dependency | End-to-end exit criterion | Initial status |
 |---|---|---:|---|---|---|
-| MH-01 | Save Manager/Reader | 2 | Parser, provenance | Import verified compatible save; explain unsupported and error; immutable original | Not implemented |
-| MH-02 | Player Database/Explorer | 2–3 | MH-01, domain | Search/filter/compare/export with native field evidence and modes | Not implemented |
+| MH-01 | Save Manager/Reader | 2 | Parser, provenance | Import verified compatible save; explain unsupported and error; immutable original | **In progress:** bounded signature and experimental archive index, no player decode |
+| MH-02 | Player Database/Explorer | 2–3 | MH-01, domain | Search/filter/compare/export with native field evidence and modes | **In progress:** HTML/CSV/TSV player list and source-backed attribute display; no native save database decode |
 | MH-03 | Advanced Editor | 7 | Certified exact-build writer | CA/PA patch preview/backup/diff/reparse/game load/restore, unsupported disabled | Not implemented |
 | MH-04 | Player Development History | 3 | Identity, snapshots | Cross-season attribute trend with edit/version markers | Not implemented |
-| MH-05 | Data Integrity/Compatibility | 2 | Format test corpus | Coverage/corruption report + hashed original, no guessed fields | Not implemented |
-| MH-06 | Player Intelligence/eCA | 3 | MH-02, labels | Explainable eCA or attribute index, roles, strengths, charts and confidence | Not implemented |
+| MH-05 | Data Integrity/Compatibility | 2 | Format test corpus | Coverage/corruption report + hashed original, no guessed fields | **In progress:** SHA-256, signatures, unknown status and bounded index metadata |
+| MH-06 | Player Intelligence/eCA | 3 | MH-02, labels | Explainable eCA or attribute index, roles, strengths, charts and confidence | **In progress:** attributes radar, strength index and role heuristic; eCA not calibrated |
 | MH-07 | Tactical Lab | 4 | Roles, MH-06 | Two-phase board where edition supports; keyboard, saving scenarios | Not implemented |
 | MH-08 | AI Tactical Advisor | 4/6 | Rules, AI adapter | Grounded recommendations with impact/alternatives and safe unknowns | Not implemented |
 | MH-09 | Role Intelligence | 4 | Role catalogs, scoring | Individual-vs-collective distinctions, partner conflicts and causes | Not implemented |
@@ -56,3 +56,6 @@ A format-specific capability may be **Blocked by compatibility** even while othe
 - [ ] Docs updated, evidence recorded, code review and no accepted known avoidable technical debt.
 
 **Skill routing:** [skills research](04-motion-skills-and-references.md), [master execution prompt](02-agent-prompts.md), [charter](00-execution-charter.md).
+
+## Actual implementation proof
+[Player Lab HTML/CSV/TSV import, attributes, roles and limitations](07-player-lab-and-export-import.md). Real import data remains local and user-supplied. Full CA/PA save decoding, role/position fit calibration and recruitment financial assessment remain open requirements.
