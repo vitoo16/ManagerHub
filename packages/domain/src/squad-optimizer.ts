@@ -146,8 +146,12 @@ function matchSlots(cost: readonly (readonly number[])[]): number[] | null {
 
 export function optimizeSquad(players: readonly PlayerExport[], formation: FormationId): SquadSolution {
   const slots=FORMATIONS[formation];
-  const available=players.filter((player,index,self)=>self.findIndex(p=>p.id===player.id)===index)
-    .sort((a,b)=>a.id.localeCompare(b.id));
+  const seen=new Set<string>();
+  const available=players.filter(player=>{
+    if(seen.has(player.id))return false;
+    seen.add(player.id);
+    return true;
+  }).sort((a,b)=>a.id.localeCompare(b.id));
   const roles=new Map(ROLE_PROFILES.map(r=>[r.id,r]));
   const eligibilities=available.map(p=>declaredPositions(p.position));
   const matrices: { score: number | null; coverage: number; eligible: boolean }[][] = slots.map(slot => {
