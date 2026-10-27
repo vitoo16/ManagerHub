@@ -142,3 +142,5 @@ Work packages:
 Every MH module needs: business rules, UI flow, data capability, service implementation, test suite, missing-data policy, docs and reviewed acceptance. [Traceability](../product/03-traceability-and-decisions.md) records each.
 
 **Copy-paste implementation prompts:** [02-agent-prompts.md](02-agent-prompts.md).
+
+- [27-module acceptance ledger and status](05-feature-acceptance-ledger.md)
