@@ -110,3 +110,25 @@
 .compare-attribute [role="cell"]:nth-child(2){color:var(--text-sub)}
 .compare-leading{color:var(--accent-strong)}
 @media(max-width:570px){.compare-selector{grid-template-columns:1fr}.compare-selector label:nth-of-type(2){grid-row:3}.compare-selector small{grid-column:1}.compare-head{font-size:11px}}
+
+/* Player snapshots stay on-device and never imply a supported native save parser. */
+.saved-player-library{padding:17px 19px;margin-bottom:20px;}
+.saved-player-library__heading{display:flex;justify-content:space-between;align-items:center;gap:15px}
+.saved-player-library__heading strong,.saved-player-library__heading small{display:block}
+.saved-player-library__heading strong{font-size:13px}
+.saved-player-library__heading small{font-size:10px;color:var(--text-faint);margin-top:6px;line-height:1.55}
+.saved-player-library__empty{font-size:11px;color:var(--text-sub);margin-top:14px;line-height:1.8}
+.saved-player-library__items{display:grid;gap:5px;max-height:250px;overflow:auto;margin-top:15px}
+.saved-player-library__item{display:flex;align-items:center;gap:8px;min-height:57px;padding:8px 3px;border-top:1px solid var(--line);}
+.saved-player-library__meta{flex:1;min-width:0}
+.saved-player-library__meta strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}
+.saved-player-library__meta small{font-size:10px;color:var(--text-faint);line-height:1.6}
+.saved-player-library__item .mh-button{flex:none;min-height:32px;font-size:11px}
+.local-library-error{display:flex;align-items:center;gap:10px;margin-top:14px;padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--warning) 10%,var(--surface));font-size:11px;color:var(--warning)}
+.local-library-error button{display:grid;place-items:center;margin-left:auto;border:0;background:transparent;color:inherit}
+.player-list-more{width:calc(100% - 14px);margin:10px 7px}
+@media(max-width:570px){
+  .saved-player-library__heading{align-items:flex-start;flex-direction:column}
+  .saved-player-library__item{flex-wrap:wrap}
+  .saved-player-library__meta{flex-basis:100%}
+}
