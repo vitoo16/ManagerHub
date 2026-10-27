@@ -1,4 +1,6 @@
 ---
+
+> **Taste v2 (verified upstream):** supports dashboards and app screens with dedicated `references/app-screens.md` and `library/app.json`. For ManagerHub apply its **app-screen workflow**, not marketing landing layouts. See `.agents/SKILLS-SOURCES.md`.
 name: managerhub-motion-glass
 description: Use when designing, implementing, auditing or refactoring ManagerHub's Apple-inspired Liquid Glass navigation, premium football workspace visuals, GSAP/React animations, tactical board player transitions, panels, modals, hover states, page transitions or motion accessibility. Enforces control-layer glass, single animation ownership, source-backed analytics and reduced-motion fallbacks.
 ---
