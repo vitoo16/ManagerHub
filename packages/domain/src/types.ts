@@ -1,3 +1,4 @@
+import type { ArchiveIndex } from './archive';
 export type SourceStatus = 'verified' | 'provisional' | 'unsupported';
 export type MissingReason = 'not_present' | 'not_decoded' | 'incompatible_build' | 'redacted' | 'not_applicable';
 export type SourceKind = 'decoded_save' | 'game_export' | 'manual' | 'derived_model' | 'scenario';
@@ -25,6 +26,7 @@ export interface SaveIdentity {
   readonly support: 'signature_only' | 'unrecognized';
   readonly inspectionStatus: 'inspected' | 'rejected';
   readonly warnings: readonly string[];
+  readonly archiveIndex: ArchiveIndex | null;
 }
 
 export type MetricKind = 'actual_ca' | 'estimated_ca' | 'role_fit' | 'tactical_fit' | 'performance';
