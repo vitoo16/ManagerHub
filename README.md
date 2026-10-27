@@ -30,3 +30,5 @@ Validate one Football Manager save parser/edition using test fixtures, deliver a
 - [Animation/transition skills and verified references](docs/implementation/04-motion-skills-and-references.md)
 
 The project uses **7 production-grade integration phases**, not an MVP release strategy. The primary motion stack is official GSAP with React; translucency belongs mainly to navigation and controls, while football charts and data remain readable.
+
+- [27-module acceptance ledger and status](docs/implementation/05-feature-acceptance-ledger.md)
