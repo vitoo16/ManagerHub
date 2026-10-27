@@ -49,3 +49,6 @@ The project uses **7 production-grade integration phases**, not an MVP release s
 
 ## Player Lab (actual exported attributes)
 Open `/#/players` and import your **native HTML printout** from Football Manager, or an exported **CSV/TSV** view with Name, Position and player attributes. The file stays in browser memory and is not uploaded. See [Player Lab implementation and limitations](docs/implementation/07-player-lab-and-export-import.md). Estimated scores are **not actual CA/PA or calibrated eCA**. For FM26 the native Print Screen / Web Page export can produce HTML without third-party plugin.
+
+## Local Player Library and Squad Planner
+Player Lab can now **opt-in save** a normalized export to IndexedDB, restore it across reloads and delete it from the browser. The connected **Squad Planner** (`/#/squad`) drafts complete 4-3-3 / 4-2-3-1 starting elevens only when visible export positions and role attributes meet hard data requirements; otherwise it reports which positions cannot be filled. These are transparent **heuristics**, not exact FM match-engine predictions, verified CA/PA, or an editor. [Details and privacy limits](docs/implementation/08-local-library-and-squad-planner.md).

@@ -16,7 +16,7 @@
 | MH-08 | AI Tactical Advisor | 4/6 | Rules, AI adapter | Grounded recommendations with impact/alternatives and safe unknowns | Not implemented |
 | MH-09 | Role Intelligence | 4 | Role catalogs, scoring | Individual-vs-collective distinctions, partner conflicts and causes | Not implemented |
 | MH-10 | Set Piece Intelligence | 7 | XI, match and roles | Corner/free kick/throw plans and matchup rules work end-to-end | Not implemented |
-| MH-11 | Squad Planner 2.0 | 4 | Tactical optimizer | Best/rotation/coverage/opponent XI, no duplicated player slots | Not implemented |
+| MH-11 | Squad Planner 2.0 | 4 | Tactical optimizer | Best/rotation/coverage/opponent XI, no duplicated player slots | **In progress:** 4-3-3 / 4-2-3-1 unique-player role-fit assignments, strict eligibility and coverage; advanced constraints pending |
 | MH-12 | Recruitment & Scouting | 5 | MH-06/11 | Need-driven candidate compare and defensible Buy/Pass alternatives | Not implemented |
 | MH-13 | Transfer/Contracts | 5 | Finance/contract fields | Transfer and wage scenarios, renewal/loan/sell alternatives | Not implemented |
 | MH-14 | Youth Development | 5 | MH-04/11 | Development path, loan/retraining/succession linked to team | Not implemented |
@@ -32,7 +32,7 @@
 | MH-24 | AI Sporting Director/Staff | 6 | Domain + permissions | Four evidence-grounded perspectives and offline fallback; no writes | Not implemented |
 | MH-25 | What-if Simulator | 4–5 | Optimizer/finance | Buy/sell/retrain/shape changes recompute whole system | Not implemented |
 | MH-26 | Dashboard/Reports | 3–6 | All analytics | Complete data-source-aware overview, export, season review | Not implemented |
-| MH-27 | Integration/Plugins/Personalize | 1–7 | App shell/services | Format plugins, private storage, settings, role weights and integration review | Not implemented |
+| MH-27 | Integration/Plugins/Personalize | 1–7 | App shell/services | Format plugins, private storage, settings, role weights and integration review | **In progress:** opt-in browser IndexedDB export library; desktop/plugin architecture pending |
 
 ## How to update
 Per module record:
@@ -59,3 +59,5 @@ A format-specific capability may be **Blocked by compatibility** even while othe
 
 ## Actual implementation proof
 [Player Lab HTML/CSV/TSV import, attributes, roles and limitations](07-player-lab-and-export-import.md). Real import data remains local and user-supplied. Full CA/PA save decoding, role/position fit calibration and recruitment financial assessment remain open requirements.
+
+Additional integration evidence: [opt-in local storage + role-fit lineup planner](08-local-library-and-squad-planner.md).
