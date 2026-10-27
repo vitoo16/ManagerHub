@@ -39,3 +39,9 @@ The repo uses npm workspaces for now; `package-lock.json` should be generated an
 Verify the initial UI with actual browser screenshots and tests, fix any CI failures, migrate common state/error primitives into shared packages when actual reuse emerges, then create safe versioned Rust save adapters and Tauri local persistence according to [seven-phase roadmap](01-full-delivery-plan.md).
 
 **Related:** [execution charter](00-execution-charter.md), [agent skills](04-motion-skills-and-references.md), [full feature ledger](05-feature-acceptance-ledger.md).
+
+## Updated: read-only internal archive index prototype
+- `packages/domain/src/archive.ts` implements strictly bounded deflate-based inspection of a candidate trailing FMF directory, with UTF-16LE filenames, offsets, sizes and explicit unverified flag.
+- Tested on a user-provided private file **without committing its bytes**: the observed AFE file includes a 69-entry directory with members such as `game_info.dat`, `game_db.dat` and `tactics_man.dat`.
+- `apps/web` lists member metadata only when the directory passes structural validation. This is NOT proof of player extraction or a safe writer.
+- Added parser malformed/extent tests and a synthetic browser E2E test. Check latest CI before claiming these tests passed.
