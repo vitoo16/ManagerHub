@@ -1,5 +1,7 @@
 # E02 — Researched UI, Animation, GSAP & Agent Skills for ManagerHub
 
+> **Taste v2 (verified upstream):** supports dashboards and app screens with dedicated `references/app-screens.md` and `library/app.json`. For ManagerHub apply its **app-screen workflow**, not marketing landing layouts. See `.agents/SKILLS-SOURCES.md`.
+
 **Research verified:** 2026-10-27. **Status:** skill-selection instructions and references; 4 original ManagerHub skills plus 10 pinned third-party skills are **committed** under `.agents/skills/` (see [installed skills](../../.agents/README.md) and [lock](../../.agents/skills-lock.json)). External engines/provider hooks still require optional local setup.
 
 ## Required / enabled external skills
