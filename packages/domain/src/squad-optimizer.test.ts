@@ -1,5 +1,5 @@
 import {describe,expect,it} from 'vitest';
-import { declaredPositions, optimizeSquad } from './squad-optimizer';
+import { declaredPositions, optimizeSquad, eligibleSlotCandidates, FORMATIONS } from './squad-optimizer';
 import { ATTRIBUTE_GROUPS, type AttributeKey, type PlayerExport } from './player-import';
 
 const allKeys=[...new Set(Object.values(ATTRIBUTE_GROUPS).flat())] as AttributeKey[];
@@ -52,4 +52,49 @@ describe('versioned export-only squad assignment',()=>{
     const second=optimizeSquad([...roster].reverse(),'4-3-3');
     expect(first.lineup.map(x=>x.playerId)).toEqual(second.lineup.map(x=>x.playerId));
   });
+  it('pins a versatile player to exactly one slot, recalculating every other assignment',()=>{
+    const versatile=player('versatile','D (R), AM (R)');
+    const withBench=[...roster,versatile];
+    const result=optimizeSquad(withBench,'4-3-3',{lockedSlots:{rb:'versatile'}});
+    expect(result.complete).toBe(true);
+    expect(result.lineup.find(x=>x.slot.id==='rb')?.playerId).toBe('versatile');
+    expect(result.lineup.find(x=>x.slot.id==='rw')?.playerId).toBe('right-wing');
+    expect(new Set(result.lineup.map(x=>x.playerId)).size).toBe(11);
+  });
+  it('allows a strict excluded-player what-if if replacement is eligible',()=>{
+    const result=optimizeSquad([...roster,player('stand-in','GK')],'4-3-3',
+      {excludedPlayerIds:['goalkeeper']});
+    expect(result.complete).toBe(true);
+    expect(result.lineup.find(x=>x.slot.id==='gk')?.playerId).toBe('stand-in');
+  });
+  it('fails closed on duplicate pins, exclusion conflict and unknown slot',()=>{
+    const list=[...roster,player('versatile','D (R), AM (R)')];
+    const invalid=[
+      {lockedSlots:{rb:'versatile',rw:'versatile'}},
+      {lockedSlots:{rb:'versatile'},excludedPlayerIds:['versatile']},
+      {lockedSlots:{abc:'right-back'}}
+    ];
+    for(const constraints of invalid){
+      const result=optimizeSquad(list,'4-3-3',constraints);
+      expect(result.complete).toBe(false);
+      expect(result.reason).toBeTruthy();
+      expect(result.lineup).toEqual([]);
+    }
+  });
+  it('rejects pinning players without exported suitability and filters eligible candidates',()=>{
+    const sparse=[...roster,player('low-data','D (R)')];
+    const target=sparse.map(p=>p.id==='low-data'?{...p,attributes:{passing:20}}:p);
+    const result=optimizeSquad(target,'4-3-3',{lockedSlots:{rb:'low-data'}});
+    expect(result.complete).toBe(false);
+    expect(result.reason).toMatch(/not eligible|lacks/i);
+    const ranked=eligibleSlotCandidates(target,FORMATIONS['4-3-3'].find(s=>s.id==='rb')!,'right');
+    expect(ranked.map(x=>x.playerId)).toContain('right-back');
+    expect(ranked.map(x=>x.playerId)).not.toContain('low-data');
+  });
+  it('reports impossible exclusions rather than generating a reduced lineup',()=>{
+    const result=optimizeSquad(roster,'4-3-3',{excludedPlayerIds:['goalkeeper']});
+    expect(result.complete).toBe(false);
+    expect(result.lineup).toEqual([]);
+  });
+
 });
