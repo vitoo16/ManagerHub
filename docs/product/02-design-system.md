@@ -1,4 +1,4 @@
-> **2026-10-27 update:** Canonical visual and motion rules: [Apple-inspired Liquid Glass + GSAP](../implementation/03-liquid-glass-motion-spec.md). Current Taste v2 is **not for dashboards/app screens**; use it for branding/onboarding only. For application surfaces rely on Impeccable, Vercel guidelines and ManagerHub Motion/Data UX skills.
+> **2026-10-27 update:** Canonical visual and motion rules: [Apple-inspired Liquid Glass + GSAP](../implementation/03-liquid-glass-motion-spec.md). Taste v2 includes dashboard and analytics app-screen rules in `references/app-screens.md`; use them with Impeccable and Vercel. For application surfaces rely on Impeccable, Vercel guidelines and ManagerHub Motion/Data UX skills.
 
 # P02 — ManagerHub Design System / UI-UX Product Brief
 
@@ -9,7 +9,7 @@ ManagerHub should feel like a well-run football analysis department, **not** a m
 
 Reference frameworks:
 - Vercel Web Interface Guidelines for accessibility/interaction correctness.
-- Taste Skill only for brand direction, marketing and onboarding; current v2 excludes dashboard/app screens, so never apply its page-generation recipe to dense operational UI.
+- Taste v2 app-screen workflow for dashboard and analytics, using its dedicated rules and app inspector; public-page recipes are not for dense operational UI.
 - Impeccable for deliberate shaping, critique, audit, hardening and final polish.
 - Vercel React Performance & Composition Patterns for implementation.
 
@@ -65,7 +65,7 @@ No save; unsupported file; partial parse; no eCA calibration; missing PA; mode-r
 ## Mandatory design loop for each new screen
 1. Read product brief and task-specific business/system documentation.
 2. Impeccable **shape** to define information hierarchy and user journey.
-3. Impeccable Operate and project motion/data UX skill for the analytical workspace; optionally Taste for branding/onboarding only.
+3. Impeccable Operate, Taste v2 app-screen guidance and ManagerHub motion/data UX for the analytical workspace.
 4. Build with Vercel composition/performance principles and official GSAP React/Flip skills for meaningful motion.
 5. Review via Vercel **web-design-guidelines** and Impeccable **critique/audit**.
 6. Browser test keyboard, screen sizes, charts, missing states; capture screenshots.
