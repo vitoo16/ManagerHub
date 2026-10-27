@@ -16,7 +16,7 @@ Use with official external skills **only if installed**:
 - Impeccable: shape, animate, critique, audit, harden, polish; Operate guidance for workstations.
 - Vercel: web-design-guidelines, vercel-react-best-practices, vercel-composition-patterns.
 - GreenSock: gsap-core, gsap-react, gsap-timeline, gsap-plugins, gsap-performance, optionally gsap-scrolltrigger for tutorials.
-- Taste (design-taste-frontend) only for art direction / marketing / onboarding; current v2 excludes dashboards/app screens.
+- Taste (`design-taste-frontend`) v2 supports dashboard and analytics screens; read its `references/app-screens.md` and use the app-screen workflow for ManagerHub.
 - Project managerhub-data-ux for charts and source labels.
 
 ## 9-step implementation method
