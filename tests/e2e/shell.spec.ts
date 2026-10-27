@@ -81,6 +81,9 @@ test('imports real observed attributes into Player Lab without fake CA/PA', asyn
   await expect(page.getByText('Not verified').first()).toBeVisible();
   await page.getByRole('tab',{name:'Role fit'}).click();
   await expect(page.getByText('Deep-Lying Playmaker')).toBeVisible();
+  await page.getByRole('tab',{name:'Compare'}).click();
+  await expect(page.getByText('Head-to-head analysis')).toBeVisible();
+  await expect(page.getByRole('table',{name:'Role fit comparisons'})).toBeVisible();
   await page.getByRole('tab',{name:'Recruitment'}).click();
   await expect(page.getByText('Do not recommend a transfer yet')).toBeVisible();
   await page.getByRole('button',{name:/Test Defender/}).click();
