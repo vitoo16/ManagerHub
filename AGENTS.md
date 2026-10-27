@@ -1,5 +1,7 @@
 # AGENTS.md — ManagerHub development policy
 
+> **Taste v2 (verified upstream):** supports dashboards and app screens with dedicated `references/app-screens.md` and `library/app.json`. For ManagerHub apply its **app-screen workflow**, not marketing landing layouts. See `.agents/SKILLS-SOURCES.md`.
+
 ## Current status and objective
 ManagerHub currently contains product/domain/system docs, **not a shipped application**. Implement the **entire 27-module scope (MH-01..MH-27)**; user explicitly rejects any MVP milestone. Work in **7 medium integration phases**, each production-grade and tested. No dead UI and no invented FM data. Phase and copy-paste agent prompts:
 - [Mandatory execution charter](docs/implementation/00-execution-charter.md)
