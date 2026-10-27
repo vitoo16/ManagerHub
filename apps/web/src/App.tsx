@@ -4,11 +4,14 @@ import {
 } from '@managerhub/domain';
 import { Button, Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
 import { useReducedMotion, useWorkspaceTransition } from '@managerhub/motion';
+import { PlayerWorkspace } from './PlayerWorkspace';
+import type { PlayerDataset } from '@managerhub/domain';
 import './app.css';
 
-const NAV: { key: WorkspaceKey; title: string; detail: string; icon: 'grid' | 'database' | 'layers' | 'shield' }[] = [
+const NAV: { key: WorkspaceKey; title: string; detail: string; icon: 'grid' | 'database' | 'layers' | 'shield' | 'compass' }[] = [
   { key: 'overview', title: 'Overview', detail: 'Command center', icon: 'grid' },
   { key: 'saves', title: 'Save Library', detail: 'Local inspection', icon: 'database' },
+  { key: 'players', title: 'Player Lab', detail: 'Exported player scouting', icon: 'compass' },
   { key: 'modules', title: 'Football Systems', detail: 'All 27 workstreams', icon: 'layers' },
   { key: 'architecture', title: 'Data & Trust', detail: 'How it works', icon: 'shield' }
 ];
@@ -78,7 +81,7 @@ function Overview({ imports, go }: { imports: readonly SaveIdentity[]; go: (key:
         <p>A single command center for your career. Built around verified Football Manager data, transparent analysis and a system designed to grow with the club.</p>
         <div className="hero-actions">
           <Button variant="primary" onClick={() => go('saves')}><Icon name="plus" size={17}/> Inspect a save</Button>
-          <Button onClick={() => go('modules')}><Icon name="layers" size={17}/> Explore the systems</Button>
+          <Button onClick={() => go('players')}><Icon name="compass" size={17}/> Player Lab</Button>
         </div>
       </div>
       <div className="hero-art" aria-hidden="true">
@@ -204,7 +207,7 @@ function Systems() {
     <div className="module-count">{visible.length} of 27 modules</div>
     <div className="module-grid">{visible.map(item => <Surface className="module-card" key={item.id}>
       <div className="module-card__top"><span className="module-id">{item.id}</span><span className="module-phase">PHASE {String(item.phase).padStart(2, '0')}</span></div>
-      <h2>{item.title}</h2><div className="module-card__bottom"><span>{item.group}</span><Status>Planned</Status></div>
+      <h2>{item.title}</h2><div className="module-card__bottom"><span>{item.group}</span><Status tone={['MH-01','MH-02','MH-05','MH-06'].includes(item.id) ? 'info' : 'neutral'}>{['MH-01','MH-02','MH-05','MH-06'].includes(item.id) ? 'In development' : 'Planned'}</Status></div>
     </Surface>)}</div>
     {visible.length === 0 && <Surface className="empty-library"><h3>No matching modules</h3><p>Adjust the department filter or search term.</p></Surface>}
     <div className="reference-link"><Icon name="book" size={18}/><span>Full specification and acceptance criteria:</span><a target="_blank" rel="noreferrer" href="https://github.com/vitoo16/ManagerHub/blob/main/docs/product/01-full-feature-catalog.md">Feature Catalogue <Icon name="arrow" size={14}/></a></div>
@@ -241,6 +244,7 @@ export default function App() {
   const [theme, setTheme] = useState<Theme>(() => loadPreference('mh-theme', 'dark', ['dark', 'light']));
   const [glass, setGlass] = useState(() => loadPreference('mh-glass', 'on', ['on', 'off']));
   const [imports, setImports] = useState<SaveIdentity[]>([]);
+  const [playerDataset, setPlayerDataset] = useState<PlayerDataset | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -332,6 +336,7 @@ export default function App() {
       <main ref={viewScope} className="main-area" id="main-content" tabIndex={-1}>
         <div data-animate="workspace" key={view}>
           {view === 'overview' && <Overview imports={imports} go={navigate}/>}
+          {view === 'players' && <PlayerWorkspace dataset={playerDataset} onDataset={setPlayerDataset}/>}
           {view === 'saves' && <SaveInspector imports={imports} selected={selected} onInspect={onInspect} onRemove={remove} busy={busy} error={error} select={setSelectedId}/>}
           {view === 'modules' && <Systems/>}
           {view === 'architecture' && <Architecture/>}
