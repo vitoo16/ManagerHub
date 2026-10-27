@@ -1,5 +1,7 @@
 > **Updated superseding research (2026-10-27):** [Official GSAP Skills + Motion Reference](../implementation/04-motion-skills-and-references.md) and [Liquid Glass Motion Spec](../implementation/03-liquid-glass-motion-spec.md). Taste Skill v2 **does support dashboards/app screens** via `references/app-screens.md`. Use the app-screen branch with Impeccable, Vercel and the ManagerHub data/motion skills. Official GreenSock gsap-skills are the default GSAP agent source. The installer now includes them.
 
+> **Taste v2 (verified upstream):** supports dashboards and app screens with dedicated `references/app-screens.md` and `library/app.json`. For ManagerHub apply its **app-screen workflow**, not marketing landing layouts. See `.agents/SKILLS-SOURCES.md`.
+
 # E01 — Agent Skills Research & Installation Strategy
 
 **Research date:** 2026-10-27. **Repository:** vitoo16/ManagerHub.
