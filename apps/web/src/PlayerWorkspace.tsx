@@ -109,7 +109,7 @@ function PlayerCompare({primary,dataset}:{primary:PlayerExport;dataset:PlayerDat
       <div className="compare-grid" role="table" aria-label="Role fit comparisons">
         {ownRoles.map(a=>{const b=otherRoles.find(r=>r.id===a.id);
           return <div className="compare-attribute" role="row" key={a.id}>
-            <span role="cell" className={a.score!==null&&b?.score!==null&&a.score>b.score?'compare-leading':''}>{a.score??'—'}</span>
+            <span role="cell" className={a.score!==null&&typeof b?.score==='number'&&a.score>b.score?'compare-leading':''}>{a.score??'—'}</span>
             <span role="cell">{a.title}</span>
             <span role="cell" className={b?.score!==null&&b?.score!==undefined&&a.score!==null&&b.score>a.score?'compare-leading':''}>{b?.score??'—'}</span>
           </div>;
