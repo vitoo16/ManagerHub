@@ -251,7 +251,7 @@ export function PlayerWorkspace({dataset,onDataset}:Props){
             <span className="player-list-avatar" aria-hidden="true">{p.name.slice(0,1)}</span><span className="player-list-entry__copy"><strong>{p.name}</strong><small>{p.position??'Unknown position'} · {p.club??'Unknown club'}</small></span><Icon name="chevron" size={13}/>
           </button></div>)}</div>
           {!visible.length&&<div className="player-search-empty">No players match this search.</div>}
-          {visible.length>visibleLimit&&<Button block className="player-list-more" onClick={()=>setVisibleLimit(n=>n+100)}>
+          {visible.length>visibleLimit&&<Button className="player-list-more" onClick={()=>setVisibleLimit(n=>n+100)}>
             Show next 100 · {visible.length-visibleLimit} remaining
           </Button>}
         </Surface>
