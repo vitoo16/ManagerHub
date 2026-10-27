@@ -1,3 +1,5 @@
+> **2026-10-27 update:** Canonical visual and motion rules: [Apple-inspired Liquid Glass + GSAP](../implementation/03-liquid-glass-motion-spec.md). Current Taste v2 is **not for dashboards/app screens**; use it for branding/onboarding only. For application surfaces rely on Impeccable, Vercel guidelines and ManagerHub Motion/Data UX skills.
+
 # P02 — ManagerHub Design System / UI-UX Product Brief
 
 **Status:** target design contract for future implementation; no frontend code shipped yet. **Product type:** dense desktop-first football analytics workstation with responsive mobile read-only/secondary usage.
@@ -7,7 +9,7 @@ ManagerHub should feel like a well-run football analysis department, **not** a m
 
 Reference frameworks:
 - Vercel Web Interface Guidelines for accessibility/interaction correctness.
-- Taste Skill for purposeful art direction, typography and non-generic craft (avoid landing-page aesthetics on dense work screens).
+- Taste Skill only for brand direction, marketing and onboarding; current v2 excludes dashboard/app screens, so never apply its page-generation recipe to dense operational UI.
 - Impeccable for deliberate shaping, critique, audit, hardening and final polish.
 - Vercel React Performance & Composition Patterns for implementation.
 
@@ -63,8 +65,8 @@ No save; unsupported file; partial parse; no eCA calibration; missing PA; mode-r
 ## Mandatory design loop for each new screen
 1. Read product brief and task-specific business/system documentation.
 2. Impeccable **shape** to define information hierarchy and user journey.
-3. Taste Skill for visual direction and anti-generic craft, tuned to dense workspace.
-4. Build with Vercel composition/performance principles.
+3. Impeccable Operate and project motion/data UX skill for the analytical workspace; optionally Taste for branding/onboarding only.
+4. Build with Vercel composition/performance principles and official GSAP React/Flip skills for meaningful motion.
 5. Review via Vercel **web-design-guidelines** and Impeccable **critique/audit**.
 6. Browser test keyboard, screen sizes, charts, missing states; capture screenshots.
 7. Impeccable **harden** for overflow/errors/i18n, then **polish** for alignment/typography.
