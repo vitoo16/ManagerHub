@@ -126,6 +126,7 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
   busy: boolean; error: string | null; select: (id: string) => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [showAllMembers, setShowAllMembers] = useState(false);
   const fileId = useId();
   const [drag, setDrag] = useState(false);
   const openPicker = () => { if (!busy) inputRef.current?.click(); };
@@ -173,6 +174,15 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
             <dt>SHA-256</dt><dd className="mono digest">{selected.sha256 || 'Not calculated'}</dd>
             <dt>Player / CA / PA</dt><dd>Not decoded</dd>
           </dl>
+          {selected.archiveIndex && <div className="archive-preview">
+            <div className="archive-preview__head"><div><strong>Internal archive index</strong><small>Experimental metadata discovery · Not decoded gameplay records</small></div><Status tone="warning">{selected.archiveIndex.memberCount} entries</Status></div>
+            <div className="archive-preview__list" role="list" aria-label="Internal save archive members">
+              {selected.archiveIndex.members.slice(0, showAllMembers ? undefined : 8).map((entry, i) => <div className="archive-preview__row" role="listitem" key={entry.filename + i}>
+                <span className="archive-preview__filename" title={entry.filename}>{entry.filename}</span><span>{formatBytes(entry.storedBytes)}</span>
+              </div>)}
+            </div>
+            {selected.archiveIndex.memberCount > 8 && <button className="text-link archive-preview__expand" onClick={() => setShowAllMembers(v => !v)}>{showAllMembers ? 'Show fewer' : 'Show all ' + selected.archiveIndex.memberCount + ' entries'} <Icon name="chevron" size={14}/></button>}
+          </div>}
           <div className="inspector-note"><Icon name="warning" size={16}/><p>{selected.warnings.join(' ')}</p></div>
         </Surface>}
       </div>}
