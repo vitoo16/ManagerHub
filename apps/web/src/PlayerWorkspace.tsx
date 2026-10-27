@@ -1,7 +1,7 @@
 import {useId,useMemo,useRef,useState,type ChangeEvent} from 'react';
 import {
-  ATTRIBUTE_GROUPS,ATTRIBUTE_LABELS,attributeGroupSummary,attributeStrengthIndex,
-  analyzeRoles,getAttributeInsights,parsePlayerExport,type PlayerDataset,
+  ATTRIBUTE_LABELS,attributeGroupSummary,attributeStrengthIndex,
+  analyzeRoles,getAttributeInsights,parsePlayerExport,parsePlayerHtml,type PlayerDataset,
   type PlayerExport,type AttributeKey
 } from '@managerhub/domain';
 import {Button,Icon,SectionHeading,Status,Surface} from '@managerhub/ui';
@@ -126,9 +126,10 @@ export function PlayerWorkspace({dataset,onDataset}:Props){
     if(!file)return;
     setError(null);
     try{
-      if(!/\.(csv|tsv|txt)$/i.test(file.name))throw new Error('Choose a CSV, TSV or TXT export with player columns.');
+      if(!/\.(csv|tsv|txt|html|htm)$/i.test(file.name))throw new Error('Choose an HTML, CSV, TSV or TXT export with player columns.');
       if(!file.size||file.size>MAX_EXPORT_BYTES)throw new Error('Player export must be between 1 byte and 12 MB.');
-      const parsed=parsePlayerExport(await file.text(),file.name);
+      const source=await file.text();
+      const parsed=/\.(html|htm)$/i.test(file.name)?parsePlayerHtml(source,file.name):parsePlayerExport(source,file.name);
       onDataset(parsed);
       setChosenId(parsed.players[0]?.id??null);
       setSearch('');
@@ -139,8 +140,8 @@ export function PlayerWorkspace({dataset,onDataset}:Props){
   return <div className="view-flow">
     <div className="page-title"><span className="mh-eyebrow">PLAYER INTELLIGENCE / PROVISIONAL EXPORTS</span><h1>Player Lab</h1><p>Analyze real visible attributes exported from Football Manager. Every score is explainable and distinct from verified game CA or a calibrated eCA prediction.</p></div>
     <div className="player-lab-header">
-      <div><input id={fileInputId} ref={inputRef} type="file" accept=".csv,.tsv,.txt,text/csv,text/tab-separated-values" className="visually-hidden" onChange={onFile}/>
-        <Button variant="primary" onClick={()=>inputRef.current?.click()}><Icon name="plus" size={16}/>{dataset?'Replace player export':'Import player CSV / TSV'}</Button>
+      <div><input id={fileInputId} ref={inputRef} type="file" accept=".csv,.tsv,.txt,.html,.htm,text/csv,text/tab-separated-values,text/html" className="visually-hidden" onChange={onFile}/>
+        <Button variant="primary" onClick={()=>inputRef.current?.click()}><Icon name="plus" size={16}/>{dataset?'Replace player export' :'Import player CSV / HTML'}</Button>
         {dataset&&<Button variant="quiet" onClick={()=>{onDataset(null);setChosenId(null);setSearch('');}}><Icon name="trash" size={16}/> Clear session</Button>}
       </div>
       <Status tone="info">No data uploaded</Status>
@@ -149,9 +150,9 @@ export function PlayerWorkspace({dataset,onDataset}:Props){
     {!dataset?<Surface className="player-intro">
       <div className="player-intro__symbol"><Icon name="sparkles" size={26}/></div>
       <h2>Turn attributes into football insights.</h2>
-      <p>In Football Manager, create a player-list view with Name, Position, and as many technical, mental and physical attributes as possible. Export the view as CSV or TSV and import it here. The file is analyzed entirely in your browser.</p>
+      <p>In Football Manager, create a player-list view with Name, Position, and as many technical, mental and physical attributes as possible. Export the view as HTML (native Print Screen) or CSV/TSV and import it here. The file is analyzed entirely in your browser.</p>
       <div className="player-intro__checks"><span>Attribute distribution</span><span>Position / role profile</span><span>Explainable scores</span><span>Missing data visibility</span></div>
-      <p className="module-disclaimer">FM26's native Print Screen can produce HTML; CSV/TSV support is available here first. An in-game export or separately converted table is required; a .fm save itself is not yet a validated player-data source.</p>
+      <p className="module-disclaimer">FM26's native Print Screen can produce HTML. ManagerHub reads a local exported HTML table or CSV/TSV; a .fm save itself is not yet a validated player-data source.</p>
     </Surface>:<>
       <div className="dataset-banner"><div><strong>{dataset.players.length.toLocaleString()} player records</strong><span>{dataset.fileName} · {dataset.attributeColumns.length} recognized attributes · Import-local identities</span></div><Status tone="warning">Provisional</Status></div>
       {dataset.warnings.length>0&&<div className="dataset-warnings" role="status">{dataset.warnings.map((warning,i)=><p key={i}><Icon name="warning" size={14}/>{warning}</p>)}</div>}
