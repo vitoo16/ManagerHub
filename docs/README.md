@@ -1,26 +1,48 @@
-# Manager Hub — Knowledge Base
+# ManagerHub Knowledge Base — docs/
 
-**Status:** Product discovery / specification, not implemented features. **Language:** Vietnamese with canonical English football and engineering terms. **Last reviewed:** 2026-10-27.
+**Updated 2026-10-27.** These are specifications, original fictional coaching interviews and a researched agent workflow, **not built application features**.
 
-Manager Hub is a local-first Football Manager companion: inspect compatible saves, distinguish true game fields from derived metrics, compare squads and tactical systems, plan recruitment and development, and eventually offer safe editing where a verified adapter exists.
+## Product (WHAT and user experience)
+- [Complete 27-module Feature Catalogue](product/01-full-feature-catalog.md)
+- [UI/UX design contract: professional football analytics workstation](product/02-design-system.md)
+- [User stories and personas](product/01-user-stories.md)
+- [Phased delivery roadmap](product/02-delivery-roadmap.md)
+- [Traceability, decisions and risks](product/03-traceability-and-decisions.md)
+- [Player Intelligence / Scouting Report UX + chart inventory](product/04-player-intelligence-ux.md)
 
-## Navigate
-- [Business / Nghiệp vụ bóng đá](business/README.md): simulated Ferguson-style interviews, coaching principles, scouting, youth, finance and football measurement.
-- [System / Đặc tả kỹ thuật](system/README.md): versioned save adapters, typed domain model, ability editing, tactical rules, optimizers, validation and security.
-- [Product / Sản phẩm](product/README.md): personas, user stories, priorities, release gates and end-to-end traceability.
-- [Sources and evidence policy](references.md): verified references, assumptions, limitations.
+## Business (WHY, domain rules)
+- [B01–B13: Fictional Ferguson-inspired football management interviews](business/README.md)
+- [Football analytics terms and data warnings](business/12-football-analytics-glossary.md)
+- [Player Intelligence, estimated CA and recruitment verdict](business/13-player-intelligence-and-scouting.md)
 
-## Editorial contract
-1. **REAL_FOOTBALL:** general coaching concepts supported by known practice; never claim precise quantitative effects without data.
-2. **FM_VERIFIED:** game-specific behavior confirmed through official manuals/release notes or repeatable in-game observation, always versioned.
-3. **EXTERNAL_TOOL:** behavior of third-party editors/parsers documented by their authors; never assume equivalent Manager Hub capability.
-4. **PROPOSED_MODEL:** product scoring, optimization, and simulations we invent. They are NOT internal Football Manager algorithms.
-5. **UNVERIFIED:** reverse-engineering hypotheses and missing fields; must never silently become facts.
-6. **FICTIONAL_INTERVIEW:** imagined questions and answers inspired by Ferguson's publicly discussed management principles. **Not Sir Alex Ferguson's own words or an actual interview**.
+## System (HOW, engineering contracts)
+- [System index](system/README.md)
+- [S01 Requirements](system/01-product-requirements.md)
+- [S02 Architecture](system/02-architecture-and-deployment.md)
+- [S03 Data schema and provenance](system/03-domain-schema-and-provenance.md)
+- [S04 Save reader/compatibility](system/04-save-reader-compatibility.md)
+- [S05 Future player editor](system/05-player-editor-ca-pa.md)
+- [S06 Tactical Role Fit engine](system/06-tactical-engine-role-fit.md)
+- [S07 Squad optimization](system/07-squad-optimizer.md)
+- [S08 Recruitment and development](system/08-recruitment-and-development.md)
+- [S08e Player Intelligence eCA model](system/08-player-intelligence-engine.md)
+- [S09 Security, privacy and tests](system/09-security-privacy-and-testing.md)
+- [S10 API and workflows](system/10-api-and-workflow-contracts.md)
 
-Each business document should yield decisions and business rules. Each system document specifies inputs/outputs, acceptance tests, failure states and safeguards. Maintain cross-references rather than duplicating rules. For any new FM version, refresh [compatibility](system/04-save-reader-compatibility.md), [role-fit design](system/06-tactical-engine-role-fit.md) and [sources](references.md).
+## Engineering (AI agents)
+- [Research and curated skill selection](engineering/agent-skills-research.md)
+- [Agent workflow root](../AGENTS.md)
+- [Three in-repo original project skills](../.agents/skills/)
 
-## Product boundaries
-Read-only analysis first; never write a user's save or running-game memory as part of exploratory analysis. Original save is immutable by default. Editing requires explicit opt-in, validated compatible version, backup, transactional checks and a recovery path.
+## Evidence policy
+1. **REAL_FOOTBALL:** football concepts interpreted from credible practice.
+2. **FM_VERIFIED:** game fields only if verified against the exact edition/build and test fixture.
+3. **EXTERNAL_TOOL:** FMRTE or independent parser behavior, not automatically ManagerHub features.
+4. **PROPOSED_MODEL:** our own scores, eCA estimator, optimizers, what-if forecasts.
+5. **UNVERIFIED:** assumptions or hypotheses, never silently promoted to facts.
+6. **FICTIONAL_INTERVIEW:** invented questions and answers styled as a demanding manager, NOT authentic Sir Alex Ferguson quotations.
 
-This documentation is independent of Football Manager, Sports Interactive, SEGA and FMRTE. No affiliation is implied.
+See [sources and evidence](references.md). Read-only/immutable source save by default; editing requires certified compatibility, backup and rollback. Actual CA, eCA, RCA-style estimate, Role Fit and Tactical Fit have different meanings and scales.
+
+## How to contribute
+For any new functionality add its MH-ID to [catalogue](product/01-full-feature-catalog.md) → business rules → system inputs/results/errors → UI states + charts → test acceptance and evidence. Do not commit private save files. External skills installation is opt-in and belongs in local agent environments, not assumed active because it is documented.
