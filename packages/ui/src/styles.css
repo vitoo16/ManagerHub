@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root {
+  font-family: 'DM Sans', ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif;
+  font-synthesis: none;
+  color-scheme: dark;
+  --bg: #080d12;
+  --surface: #101821;
+  --surface-up: #16212d;
+  --surface-hover: #1e2a36;
+  --line: #293744;
+  --text: #eaf0f3;
+  --text-sub: #9eabb7;
+  --text-faint: #738391;
+  --accent: #a7e4bb;
+  --accent-strong: #6bc89a;
+  --accent-ink: #10281a;
+  --warning: #e4bc7c;
+  --negative: #f1a39e;
+  --glass-tint: rgba(25, 36, 45, .73);
+  --glass-border: rgba(209, 231, 238, .17);
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #edf2f1;
+  --surface: #fff;
+  --surface-up: #f6f9f9;
+  --surface-hover: #e8efed;
+  --line: #d9e4e1;
+  --text: #172525;
+  --text-sub: #4f6063;
+  --text-faint: #7a8989;
+  --accent: #25784d;
+  --accent-strong: #13683c;
+  --accent-ink: #fff;
+  --warning: #9c6720;
+  --negative: #b84e41;
+  --glass-tint: rgba(255, 255, 255, .84);
+  --glass-border: rgba(72, 103, 105, .18);
+}
+* { box-sizing: border-box; }
+html { height: 100%; background: var(--bg); }
+body { margin: 0; min-height: 100%; color: var(--text); background: var(--bg); -webkit-font-smoothing: antialiased; }
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: .48; }
+a { color: inherit; }
+a:hover { color: var(--accent-strong); }
+:focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 3px; }
+::selection { background: #4e957c88; color: var(--text); }
+h1,h2,h3,h4,p { margin: 0; }
+h1,h2,h3,h4 { font-family: Manrope, 'DM Sans', sans-serif; letter-spacing: -.035em; }
+small { font-size: 12px; }
+.mh-button { display: inline-flex; justify-content: center; align-items: center; gap: 9px; min-height: 38px; padding: 0 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--surface-up); color: var(--text); font-weight: 600; font-size: 13px; transition: background .14s ease, border-color .14s ease, transform .14s ease; white-space: nowrap; }
+.mh-button:hover { background: var(--surface-hover); border-color: var(--text-faint); }
+.mh-button:active { transform: translateY(1px); }
+.mh-button--primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.mh-button--primary:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
+.mh-button--quiet { background: transparent; border-color: transparent; }
+.mh-button--danger { color: var(--negative); background: transparent; }
+.mh-surface { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); }
+.mh-surface--glass { background: var(--glass-tint); border-color: var(--glass-border); }
+@supports (backdrop-filter: blur(14px)) { :root:not([data-glass="off"]) .mh-surface--glass { backdrop-filter: blur(14px) saturate(1.13); -webkit-backdrop-filter: blur(14px) saturate(1.13); } }
+:root[data-glass="off"] .mh-surface--glass { background: var(--surface); }
+.mh-status { display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border:1px solid var(--line);border-radius:100px;font-size:11px;font-weight:700;white-space:nowrap;background:var(--surface-up);color:var(--text-sub); }
+.mh-status__dot {width:6px;height:6px;border-radius:50%;background:currentColor}
+.mh-status--positive {color:var(--accent-strong)}
+.mh-status--warning {color:var(--warning)}
+.mh-status--info {color:#93b9eb}
+.mh-section-heading {display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin:30px 0 17px;}
+.mh-section-heading h2 {font-size:19px;margin-top:5px}
+.mh-eyebrow {display:block;font-size:10px;letter-spacing:.17em;text-transform:uppercase;font-weight:800;color:var(--accent-strong)}
+@media(prefers-reduced-motion:reduce) {
+ *,*::before,*::after {scroll-behavior:auto!important;animation-duration:0.01ms!important;transition-duration:0.01ms!important;}
+}
+@media(forced-colors:active){
+ .mh-surface--glass {background:Canvas; color:CanvasText; border-color:ButtonBorder; backdrop-filter:none!important;}
+ .mh-button {border:1px solid ButtonBorder;}
+ .mh-status__dot{border:1px solid currentColor}
+}
