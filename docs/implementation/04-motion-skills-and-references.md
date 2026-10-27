@@ -1,6 +1,6 @@
 # E02 — Researched UI, Animation, GSAP & Agent Skills for ManagerHub
 
-**Research verified:** 2026-10-27. **Status:** skill-selection instructions and references; 3 original ManagerHub skills exist in repo, external skills are NOT considered locally installed until the user executes/inspects the installer.
+**Research verified:** 2026-10-27. **Status:** skill-selection instructions and references; 4 original ManagerHub skills plus 10 pinned third-party skills are **committed** under `.agents/skills/` (see [installed skills](../../.agents/README.md) and [lock](../../.agents/skills-lock.json)). External engines/provider hooks still require optional local setup.
 
 ## Required / enabled external skills
 
@@ -43,7 +43,7 @@ npx skills add https://github.com/greensock/gsap-skills --skill gsap-core --skil
 npx skills list
 npx skills check
 ```
-Project-local vs global installation depends on CLI flags/agent; wrapper script uses project scope. Do not claim these were installed on any user machine or that Apple native Liquid Glass runs in Chrome merely because skills were selected. Inspect upstream content, scripts, licenses, package requirements and version pinning before running. Do not automatically commit installed third-party source without licensing review.
+These SKILL.md sources are now vendored in Git. Optional installer commands are for updating/provider setup; do not overwrite pinned copies without review. External engines and hooks are not activated automatically on user machines. Apple native Liquid Glass is not web CSS. Inspect upstream content, scripts, licenses, package requirements and version pinning before running. Do not automatically commit installed third-party source without licensing review.
 
 ## Runtime references (direct primary docs)
 1. [Apple HIG Materials](https://developer.apple.com/design/human-interface-guidelines/materials) — glass for functional navigation/controls, not entire content; use sparingly.
