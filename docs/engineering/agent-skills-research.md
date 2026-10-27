@@ -3,7 +3,7 @@
 # E01 — Agent Skills Research & Installation Strategy
 
 **Research date:** 2026-10-27. **Repository:** vitoo16/ManagerHub.
-**State:** This file is a reviewed skills catalogue and instructions, **not proof that third-party skills have been installed in any developer machine**. Our original project-specific skills are stored in `.agents/skills`.
+**State (updated):** 10 pinned third-party SKILL.md plus 4 original project skills have been **committed to the repository**. See [`.agents/README.md`](../../.agents/README.md) and [lock](../../.agents/skills-lock.json). No developer machine's optional binary engine or provider hooks are guaranteed to be enabled.
 
 ## Why curated skills, not "install everything"
 ManagerHub spans FM binary ingestion, quantitative football analysis, professional dashboards, desktop integrations and optional AI assistance. An agent that loads dozens of overlapping style skills will be inconsistent. Apply skills **by task**, prioritize official maintainers, review executable scripts and licenses, and pin versions/commits in a reproducible team setup once production coding starts. Never execute code from a new third-party skill without review.
@@ -78,7 +78,7 @@ For Codex-specific non-interactive installation, each `npx skills add` supports 
 
 Impeccable's preferred full-featured installer is `npx impeccable install`; do not run both installers blindly and create duplicate skills. Read [Impeccable install docs](https://impeccable.style/docs/). For Microsoft Playwright CLI specifically, install the `@playwright/cli` package first, then `playwright-cli install --skills=agents` for shared `.agents/skills`; verify the CLI version/documentation before use.
 
-A team setup can use [scripts/install-agent-skills.ps1](../../scripts/install-agent-skills.ps1) which targets Codex by default; inspect the script and skill source first. It is a setup convenience, **not evidence that skills are present in the remote repo**. Installation changes local project files and should be reviewed before committing generated third-party sources (licensing, size, security).
+A team setup can use [scripts/install-agent-skills.ps1](../../scripts/install-agent-skills.ps1) which targets Codex by default; inspect the script and skill source first. It is an optional update/setup helper; the vendored files **are present** in the remote repo, so review before overwriting them. Installation changes local project files and should be reviewed before committing generated third-party sources (licensing, size, security).
 
 ## Mandatory UI workflow / Agent orchestration
 
