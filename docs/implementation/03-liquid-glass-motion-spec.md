@@ -1,5 +1,7 @@
 # ManagerHub — Liquid Glass UI, Motion, Transition & GSAP Design Spec
 
+> **Taste v2 (verified upstream):** supports dashboards and app screens with dedicated `references/app-screens.md` and `library/app.json`. For ManagerHub apply its **app-screen workflow**, not marketing landing layouts. See `.agents/SKILLS-SOURCES.md`.
+
 **Design intent:** Original premium football-management workstation influenced by Apple's **Liquid Glass principles**, not a pixel-for-pixel Apple copy and not native `glassEffect` on web. Apple limits prominent Liquid Glass to functional navigation/controls over a solid/standard-material content layer; use that distinction to protect dense statistics and football pitch clarity. Sources at bottom.
 
 ## Product identity
