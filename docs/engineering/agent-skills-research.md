@@ -1,3 +1,5 @@
+> **Updated superseding research (2026-10-27):** [Official GSAP Skills + Motion Reference](../implementation/04-motion-skills-and-references.md) and [Liquid Glass Motion Spec](../implementation/03-liquid-glass-motion-spec.md). Taste Skill v2 states **NOT for dashboards/app screens**. Use its art direction for branding/onboarding; for product dashboard use Impeccable, Vercel and our data/motion skills. Official GreenSock gsap-skills are the default GSAP agent source. The installer now includes them.
+
 # E01 — Agent Skills Research & Installation Strategy
 
 **Research date:** 2026-10-27. **Repository:** vitoo16/ManagerHub.
@@ -11,7 +13,7 @@ ManagerHub spans FM binary ingestion, quantitative football analysis, profession
 | Skill (exact name) | Upstream | Priority | Use in ManagerHub |
 |---|---|---|---|
 | `web-design-guidelines` | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) | **Must** | Accessibility, keyboard, focus rings, validation, forms, motion, chart legibility, responsive review |
-| `design-taste-frontend` | [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) | **Must** | Design direction, hierarchy, fonts, layouts, anti-generic UI; use its app/dashboard behavior, **not** flashy landing-page composition |
+| `design-taste-frontend` | [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) | **Must** | Brand art direction and onboarding/marketing only; **the current v2 skill excludes dashboards/app screens** |
 | `impeccable` | [pbakaus/impeccable](https://github.com/pbakaus/impeccable) | **Must** | Shape before code; critique, audit, polish, harden and reusable product design context |
 | `vercel-react-best-practices` | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) | **Must if React** | Tables with thousands of players, split views, chart lazy-load, render perf, no waterfalls |
 | `vercel-composition-patterns` | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) | **Must if React** | Reusable tactical board, slots, cards, tables and flexible role-based UI |
@@ -57,8 +59,11 @@ npx skills add vercel-labs/agent-skills --skill web-design-guidelines --skill ve
 # Taste Skill — verified install name
 npx skills add https://github.com/Leonxlnx/taste-skill --skill design-taste-frontend
 
-# Impeccable — shared SKILL.md; vendor installer npx impeccable install offers deeper tool-specific integration
+# Impeccable — app UI reviews, motion and polish
 npx skills add pbakaus/impeccable
+
+# Official GreenSock GSAP animation skills
+npx skills add https://github.com/greensock/gsap-skills --skill gsap-core --skill gsap-react --skill gsap-timeline --skill gsap-plugins --skill gsap-performance
 
 # Optional — only if using this workflow
 npx skills add anthropics/skills --skill webapp-testing --skill skill-creator
@@ -79,7 +84,7 @@ A team setup can use [scripts/install-agent-skills.ps1](../../scripts/install-ag
 
 1. **Read** `AGENTS.md`, product catalogue, B01–B13 relevant topics and our DESIGN specification.
 2. **Impeccable shape**: list task, real data constraints, user journey, empty/error states, layout choices.
-3. **Taste Skill**: declare design direction for a **dense football workstation**, not a hero landing page; preserve information and contrast.
+3. **Impeccable Operate** and ManagerHub motion/data skills: establish data-first design for the football workstation. Use **Taste** only for marketing/onboarding, never force landing page patterns into dashboards.
 4. **Vercel composition + React**: implement lean components, charts with valid numeric units, keyboard alternatives.
 5. **Impeccable critique + Vercel web-design-guidelines**: review with file:line/actionable findings, test keyboard/focus and responsive behavior.
 6. **Browser QA**: actual screenshots desktop/tablet/mobile, keyboard-only workflow, reduced motion, missing data states; no claim tested unless run.
