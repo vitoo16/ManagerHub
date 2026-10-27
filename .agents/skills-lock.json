@@ -20,13 +20,13 @@
           "name": "vercel-react-best-practices",
           "source": "skills/react-best-practices",
           "path": ".agents/skills/vercel-react-best-practices",
-          "files": "SKILL.md, compiled AGENTS.md, linked rule examples"
+          "files": "SKILL.md, compiled AGENTS.md and all 72 original rule Markdown files"
         },
         {
           "name": "vercel-composition-patterns",
           "source": "skills/composition-patterns",
           "path": ".agents/skills/vercel-composition-patterns",
-          "files": "SKILL.md, compiled AGENTS.md, linked rule examples"
+          "files": "SKILL.md, compiled AGENTS.md and all 10 original rule Markdown files"
         }
       ]
     },
@@ -40,8 +40,7 @@
           "name": "design-taste-frontend",
           "source": "skills/taste-skill",
           "path": ".agents/skills/design-taste-frontend",
-          "files": "SKILL.md, app-screen references, relevant design references, app library/assets, draw/inspect/lint scripts and dependencies",
-          "scope": "Dashboard/app mode included; large website reference galleries not vendored"
+          "files": "Full SKILL.md, app-screen and all reference Markdown, script and library assets"
         }
       ]
     },
@@ -90,6 +89,12 @@
           "name": "gsap-performance",
           "source": "skills/gsap-performance",
           "path": ".agents/skills/gsap-performance"
+        },
+        {
+          "name": "gsap-scrolltrigger",
+          "source": "skills/gsap-scrolltrigger",
+          "path": ".agents/skills/gsap-scrolltrigger",
+          "scope": "Optional for tutorials; not for routine data tables"
         }
       ]
     }
