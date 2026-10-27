@@ -5,3 +5,4 @@ export * from './archive';
 export * from './player-import';
 export * from './player-analysis';
 export * from './player-library';
+export * from './squad-optimizer';
