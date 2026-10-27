@@ -2,7 +2,7 @@
 
 **Football Management Intelligence Platform** — một công cụ phân tích và hỗ trợ quyết định cho Football Manager, hướng tới đọc save, đánh giá cầu thủ, eCA, chiến thuật, Squad Planner, tuyển trạch, quản trị CLB và (chỉ khi xác minh được) chỉnh sửa CA/PA an toàn.
 
-**Project status (2026-10-27):** Documentation-first; **features not implemented yet**. Parser/save editor support is not established. No affiliation with Sports Interactive, SEGA, Football Manager or FMRTE.
+**Project status (2026-10-27):** Implementation has started. React/Vite application shell, local .fm signature inspection, the 27-module directory, theme/motion primitives and automated tests are committed. Full game-save decoding and native editing are NOT implemented. No affiliation with Sports Interactive, SEGA, Football Manager or FMRTE.
 
 ## Project documentation
 - [Docs Home](docs/README.md) — Business, System, Product and Engineering.
@@ -16,8 +16,26 @@
 ## Agent Skills are installed directly in GitHub
 **15 project-local skills are checked into `.agents/skills/` (11 pinned upstream + 4 original ManagerHub skills).** No installer is required to retrieve these skill files after cloning. See [installed skills and limitations](.agents/README.md), [upstream SHA lock](.agents/skills-lock.json) and [AGENTS.md](AGENTS.md). The external scripts were not executed, and Impeccable's optional engine/provider hooks require separate reviewed setup; application npm dependencies are not installed by simply cloning. The existing `scripts/install-agent-skills.ps1` is now an optional local refresh/agent-provider setup helper; it may replace vendored copies and should only be run deliberately.
 
+## Run the actual app (Phase 1 source)
+Requires Node.js 22.12+ and npm with registry access.
+
+```bash
+git clone https://github.com/vitoo16/ManagerHub.git
+cd ManagerHub
+npm install
+npm run dev
+# browse http://127.0.0.1:4173/
+npm run typecheck
+npm run test
+npm run build
+npx playwright install chromium
+npm run test:e2e
+```
+
+The current Save Library checks local .fm container signatures and optional SHA-256 only. It does **not** decode game edition, players or CA/PA and does not upload save bytes. The Tauri desktop host and Rust parser have not been built. See [implementation evidence/limits](docs/implementation/06-code-started.md).
+
 ## Next implementation milestone
-Validate one Football Manager save parser/edition using test fixtures, deliver a read-only player explorer and honest data coverage, then implement calibrated eCA, Role Fit, Squad Planner and source-backed football charts. Treat game editing as a separately gated later phase.
+Verify app build and browser tests; implement versioned parser/fixtures and persistent snapshots, then calibrated eCA, Role Fit, Squad Planner and source-backed football charts. Native save editing remains a separately gated phase.
 ## Full product implementation — no MVP
 - [Full seven-phase plan](docs/implementation/01-full-delivery-plan.md)
 - [Execution charter — clean code, DRY and no accepted known avoidable debt](docs/implementation/00-execution-charter.md)
