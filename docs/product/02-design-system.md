@@ -1,5 +1,7 @@
 > **2026-10-27 update:** Canonical visual and motion rules: [Apple-inspired Liquid Glass + GSAP](../implementation/03-liquid-glass-motion-spec.md). Taste v2 includes dashboard and analytics app-screen rules in `references/app-screens.md`; use them with Impeccable and Vercel. For application surfaces rely on Impeccable, Vercel guidelines and ManagerHub Motion/Data UX skills.
 
+> **Taste v2 (verified upstream):** supports dashboards and app screens with dedicated `references/app-screens.md` and `library/app.json`. For ManagerHub apply its **app-screen workflow**, not marketing landing layouts. See `.agents/SKILLS-SOURCES.md`.
+
 # P02 — ManagerHub Design System / UI-UX Product Brief
 
 **Status:** target design contract for future implementation; no frontend code shipped yet. **Product type:** dense desktop-first football analytics workstation with responsive mobile read-only/secondary usage.
