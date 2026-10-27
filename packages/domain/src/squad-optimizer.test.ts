@@ -1,5 +1,5 @@
 import {describe,expect,it} from 'vitest';
-import { declaredPositions, optimizeSquad, eligibleSlotCandidates, FORMATIONS } from './squad-optimizer';
+import { declaredPositions, optimizeSquad, eligibleSlotCandidates, FORMATIONS, type SquadConstraints } from './squad-optimizer';
 import { ATTRIBUTE_GROUPS, type AttributeKey, type PlayerExport } from './player-import';
 
 const allKeys=[...new Set(Object.values(ATTRIBUTE_GROUPS).flat())] as AttributeKey[];
@@ -69,7 +69,7 @@ describe('versioned export-only squad assignment',()=>{
   });
   it('fails closed on duplicate pins, exclusion conflict and unknown slot',()=>{
     const list=[...roster,player('versatile','D (R), AM (R)')];
-    const invalid=[
+    const invalid: SquadConstraints[]=[
       {lockedSlots:{rb:'versatile',rw:'versatile'}},
       {lockedSlots:{rb:'versatile'},excludedPlayerIds:['versatile']},
       {lockedSlots:{abc:'right-back'}}

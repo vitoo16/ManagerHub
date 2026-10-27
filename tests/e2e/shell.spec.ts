@@ -196,7 +196,7 @@ test('builds a unique eleven for an eligible export and explains infeasible form
   await expect(page.getByText('One player per slot')).toBeVisible();
 
   await page.getByLabel('Formation').selectOption('4-2-3-1');
-  await expect(page.getByText('Incomplete XI')).toBeVisible();
+  await expect(page.getByText('Incomplete XI', { exact: true })).toBeVisible();
   await expect(page.getByText('Hard constraints not met')).toBeVisible();
   await expect(lineup).toHaveCount(0);
 });
@@ -223,7 +223,7 @@ test('Plan A/B supports versatile player pins, exclusions and honest comparisons
 
   // A versatile player cannot be pinned to both RB and RW.
   await page.getByRole('combobox',{name:'Lock RW'}).selectOption('export-row-12');
-  await expect(page.getByText('Incomplete XI')).toBeVisible();
+  await expect(page.getByText('Incomplete XI', { exact: true })).toBeVisible();
   await expect(page.getByText(/was pinned twice/)).toBeVisible();
   await page.getByRole('combobox',{name:'Lock RW'}).selectOption('');
   await expect(page.getByText('Feasible XI')).toBeVisible();
@@ -239,6 +239,6 @@ test('Plan A/B supports versatile player pins, exclusions and honest comparisons
   await page.getByRole('button',{name:'Copy A into B'}).click();
   await expect(page.getByText('Position assignments changed')).toBeVisible();
   await page.getByLabel('Formation').selectOption('4-2-3-1');
-  await expect(page.getByText('Incomplete XI')).toBeVisible();
+  await expect(page.getByText('Incomplete XI', { exact: true })).toBeVisible();
   await expect(page.getByText('Not directly comparable')).toBeVisible();
 });
