@@ -156,3 +156,41 @@ test('large exported squads render a bounded, accessible player list', async ({ 
   await expect(list.getByRole('listitem')).toHaveCount(1);
   await expect(page.getByText('1 shown')).toBeVisible();
 });
+
+
+test('builds a unique eleven for an eligible export and explains infeasible formations', async ({ page }) => {
+  const attributeHeaders = [
+    'Finishing','Off The Ball','Acceleration','Pace','Anticipation','Composure','First Touch',
+    'Strength','Heading','Jumping Reach','Bravery','Teamwork','Dribbling','Crossing','Agility',
+    'Passing','Vision','Decisions','Technique','Flair','Stamina','Work Rate','Positioning',
+    'Tackling','Marking','Concentration','Handling','Reflexes','One On Ones',
+    'Aerial Reach','Communication'
+  ];
+  const playerPositions = [
+    ['GK Player','GK'],['Left Defender','D (L)'],['Right Defender','D (R)'],
+    ['Centre Back 1','D (C)'],['Centre Back 2','D (C)'],
+    ['Central Midfielder 1','M (C)'],['Central Midfielder 2','M (C)'],['Central Midfielder 3','M (C)'],
+    ['Left Wing','AM (L)'],['Right Wing','AM (R)'],['Striker','ST (C)']
+  ];
+  const content = [
+    ['Name','Position',...attributeHeaders].join(','),
+    ...playerPositions.map(([name,position]) => [name,position,...attributeHeaders.map(()=>15)].join(','))
+  ].join('\n');
+
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name:'registered-export.csv',mimeType:'text/csv',buffer:Buffer.from(content)
+  });
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', {name:'Quick navigation'}).getByRole('button', {name:/Squad Planner/}).click();
+  await expect(page.getByRole('heading', {name:'Squad Planner'})).toBeVisible();
+  await expect(page.getByText('Feasible XI')).toBeVisible();
+  const lineup=page.getByRole('list', {name:'Assigned starting eleven'});
+  await expect(lineup.getByRole('listitem')).toHaveCount(11);
+  await expect(page.getByText('One player per slot')).toBeVisible();
+
+  await page.getByLabel('Formation').selectOption('4-2-3-1');
+  await expect(page.getByText('Incomplete XI')).toBeVisible();
+  await expect(page.getByText('Hard constraints not met')).toBeVisible();
+  await expect(lineup).toHaveCount(0);
+});
