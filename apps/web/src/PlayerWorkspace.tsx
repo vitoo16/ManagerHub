@@ -159,9 +159,9 @@ export function PlayerWorkspace({dataset,onDataset}:Props){
       <div className="player-lab-layout">
         <Surface className="player-list-panel"><div className="player-list-panel__heading"><span>Players</span><span>{visible.length} shown</span></div>
           <label className="search-box player-search"><Icon name="search" size={16}/><span className="visually-hidden">Search imported players</span><input placeholder="Search player, team, position…" value={search} onChange={e=>setSearch(e.target.value)}/></label>
-          <div className="player-list-scroll" role="list" aria-label="Imported players">{visible.map(p=><button key={p.id} role="listitem" className={'player-list-entry '+(selected?.id===p.id?'player-list-entry--active':'')} onClick={()=>setChosenId(p.id)}>
+          <div className="player-list-scroll" role="list" aria-label="Imported players">{visible.map(p=><div key={p.id} role="listitem"><button className={'player-list-entry '+(selected?.id===p.id?'player-list-entry--active':'')} onClick={()=>setChosenId(p.id)}>
             <span className="player-list-avatar" aria-hidden="true">{p.name.slice(0,1)}</span><span className="player-list-entry__copy"><strong>{p.name}</strong><small>{p.position??'Unknown position'} · {p.club??'Unknown club'}</small></span><Icon name="chevron" size={13}/>
-          </button>)}</div>
+          </button></div>)}</div>
           {!visible.length&&<div className="player-search-empty">No players match this search.</div>}
         </Surface>
         <div className="player-detail-column">{selected?<PlayerDetails key={selected.id} player={selected} dataset={dataset}/>:<Surface className="empty-library">Choose a player from the imported list.</Surface>}</div>
