@@ -82,7 +82,7 @@ See [technical engine](../system/08-player-intelligence-engine.md) and [UI spec]
 **Realistic Manager:** hides verifiable hidden game fields where restricted, filters AI context, uses scouted uncertainties. **Advanced Editor:** may show exact hidden game fields if supported, with a separate gated editing action.
 
 ## Release dependency and phases
-P0: MH-01/05 ingestion + trust. P1: MH-02/06/07/09/11 and MH-26 basic overview. P2: MH-08/12/14/25. P3: MH-13/15/16/17/18/19/20/21/22/23/24 and MH-10. P4: MH-03 only after writer safety; MH-27 progresses across all phases. This is dependency ordering, not delivery-time promise.
+**No MVP release.** Full-product delivery is now organized into **seven medium integration phases**: (1) shared architecture/UI/Glass/GSAP, (2) verified game data, (3) Player Intelligence, (4) Tactics/Squad, (5) Sporting Department, (6) Match/Club/AI, (7) Set Pieces/certified editing/integration/release. See [detailed 7-phase plan](../implementation/01-full-delivery-plan.md). Each phase has production quality gates; no fake unsupported save editor.
 
 ## Global acceptance
 G1 no fake exact CA/PA or invented performance data; G2 role fit never mislabeled Actual CA; G3 all recommendations show assumptions and reasons; G4 XI players unique and eligibility respected; G5 keyboard accessible UI, reduced-motion support and missing-data states; G6 immutable original save unless user explicitly authorizes certified writer; G7 every module supports partial data with honest capability status.
