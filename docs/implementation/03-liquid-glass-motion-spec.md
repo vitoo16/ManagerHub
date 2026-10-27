@@ -6,7 +6,7 @@
 - Football club command center: visual language based on dark graphite, field green, cool neutral glass and restrained team-color highlights. Strong typographic hierarchy, fixed-width tabular digits for money/attributes, sober charts and tactical diagram.
 - Desktop-first: multi-pane squad board + depth chart and scouting tables. Tablet collapses navigation and split panels. Mobile keeps readable essential workflows with alternatives to drag.
 - Dark and light themes, high-contrast variant, accessibility-safe glass-off preference.
-- **Taste Skill v2 caveat:** its SKILL.md explicitly excludes dashboard/app screens; use Taste for top-level art direction, marketing/onboarding and initial visual ideation only. For actual data-heavy workstation use **Impeccable Operate/Shape/Animate**, Vercel Web Design Guidelines and our `managerhub-data-ux` and `managerhub-motion-glass`. Do not violate skill's stated applicability.
+- **Taste Skill v2 app mode:** upstream explicitly supports dashboard/admin/analytics screens in `references/app-screens.md`. Apply that dedicated app-screen workflow alongside Impeccable Operate, Vercel guidelines and ManagerHub data/motion skills; do not substitute its public-website run.
 
 ## Material system — five semantic surfaces
 | Surface | Usage | Material behavior |
