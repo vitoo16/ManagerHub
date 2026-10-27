@@ -44,3 +44,22 @@ test('command navigation supports keyboard access', async ({ page, isMobile }) =
     await expect(page.getByRole('navigation', { name: 'Main navigation' })).toBeVisible();
   }
 });
+
+test('discovers a bounded synthetic trailing archive catalogue without extracting player data', async ({ page }) => {
+  const { deflateSync } = await import('node:zlib');
+  const index: number[] = [];
+  const u32 = (n: number) => index.push(n & 255, (n >>> 8) & 255, (n >>> 16) & 255, (n >>> 24) & 255);
+  const name = (s: string) => { u32(s.length); for (const char of s) index.push(char.charCodeAt(0), 0); index.push(0, 0); };
+  u32(0); u32(1); name('game_info'); name('.dat'); u32(0); u32(128); u32(256);
+  const file = Buffer.concat([
+    Buffer.from([2, 1, 97, 102, 101, 46]),
+    Buffer.alloc(128, 0),
+    Buffer.from([2, 1, 102, 109, 102, 46, 4, 0, 0]),
+    deflateSync(Buffer.from(index))
+  ]);
+  await page.goto('/#/saves');
+  await page.locator('input[type="file"]').setInputFiles({ name: 'synthetic.fm', mimeType: 'application/octet-stream', buffer: file });
+  await expect(page.getByText('Internal archive index')).toBeVisible();
+  await expect(page.getByText('game_info.dat')).toBeVisible();
+  await expect(page.getByText(/member contents and game records are NOT decoded/i)).toBeVisible();
+});
