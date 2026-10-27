@@ -149,7 +149,7 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
       <Button variant="primary" disabled={busy} onClick={openPicker}><Icon name={busy ? 'monitor' : 'plus'} size={16}/>{busy ? 'Inspecting file…' : 'Choose .fm file'}</Button>
       <span className="file-drop__limit">Browser inspection limit · 256 MB · No cloud upload</span>
     </Surface>
-    {error && <div role="alert" className="inline-alert"><Icon name="warning" size={18}/><span>{error}</span><button aria-label="Dismiss error" onClick={() => { /* errors clear on retry */ }}>Retry by choosing another file</button></div>}
+    {error && <div role="alert" className="inline-alert"><Icon name="warning" size={18}/><span>{error}</span><button aria-label="Dismiss error" onClick={openPicker}>Choose another file</button></div>}
     <SectionHeading eyebrow="IMPORTED METADATA ONLY" title={'Inspected files (' + imports.length + ')'}><Status>Local browser session</Status></SectionHeading>
     {imports.length === 0
       ? <Surface className="empty-library"><Icon name="database" size={29}/><h3>No files inspected yet</h3><p>Once selected, file signatures and available inspection details will appear here. This is not a player database.</p></Surface>
@@ -235,6 +235,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const viewScope = useRef<HTMLElement>(null);
+  const commandDialogRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
 
   useWorkspaceTransition(viewScope, view, reduced);
@@ -261,12 +262,29 @@ export default function App() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, []);
+  useEffect(() => {
+    if (!commandOpen) return;
+    const restore = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const first = commandDialogRef.current?.querySelector<HTMLButtonElement>('.command-item');
+    first?.focus();
+    const trap = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab') return;
+      const buttons = Array.from(commandDialogRef.current?.querySelectorAll<HTMLButtonElement>('button:not([disabled])') ?? []);
+      if (!buttons.length) return;
+      const firstButton = buttons[0];
+      const lastButton = buttons[buttons.length - 1];
+      if (event.shiftKey && document.activeElement === firstButton) { event.preventDefault(); lastButton?.focus(); }
+      else if (!event.shiftKey && document.activeElement === lastButton) { event.preventDefault(); firstButton?.focus(); }
+    };
+    window.addEventListener('keydown', trap);
+    return () => { window.removeEventListener('keydown', trap); restore?.focus(); };
+  }, [commandOpen]);
   const navigate = useCallback((key: WorkspaceKey) => {
     const next = '#/' + key;
     if (window.location.hash === next) setView(key);
     else window.location.hash = next;
     setCommandOpen(false); setMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    window.scrollTo({ top: 0, behavior: 'auto' });
   }, []);
   const onInspect = async (file: File) => {
     setBusy(true); setError(null);
@@ -312,7 +330,7 @@ export default function App() {
       </main>
     </div>
     {commandOpen && <div className="command-overlay" role="presentation" onMouseDown={event => {if(event.target === event.currentTarget) setCommandOpen(false);}}>
-      <div className="command-dialog mh-surface mh-surface--glass" role="dialog" aria-modal="true" aria-label="Quick navigation">
+      <div ref={commandDialogRef} className="command-dialog mh-surface mh-surface--glass" role="dialog" aria-modal="true" aria-label="Quick navigation">
         <div className="command-top"><Icon name="search" size={19}/><span>Jump to a workspace</span><button className="icon-action" onClick={() => setCommandOpen(false)} aria-label="Close quick navigation"><Icon name="close" size={17}/></button></div>
         {NAV.map(item => <button key={item.key} className="command-item" onClick={() => navigate(item.key)}><Icon name={item.icon}/><span>{item.title}</span><Icon name="arrow" size={15}/></button>)}
         <div className="command-footer">Esc to close · Ctrl/⌘ K to open</div>
