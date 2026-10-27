@@ -114,3 +114,45 @@ test('supports native FM-style print to HTML table without external scripts', as
   await expect(page.getByText('Vision', { exact: true })).toBeVisible();
   await expect(page.getByText('Uncalibrated · Not eCA')).toBeVisible();
 });
+
+
+test('locally saved player exports survive reload and can be explicitly deleted', async ({ page }) => {
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'persistent-squad.csv',
+    mimeType: 'text/csv',
+    buffer: Buffer.from('Name,Position,Passing,Vision,Decisions\nPreserved Prospect,CM,18,17,15')
+  });
+  await expect(page.getByRole('heading', { name: 'Preserved Prospect' })).toBeVisible();
+  await page.getByRole('button', { name: 'Save on this browser' }).click();
+  await expect(page.getByRole('button', { name: 'Saved to this browser' })).toBeDisabled();
+  await expect(page.getByRole('list', { name: 'Saved exports' }).getByRole('listitem')).toHaveCount(1);
+
+  await page.reload();
+  await expect(page.getByText('No saved exports yet')).toHaveCount(0);
+  await page.getByRole('list', { name: 'Saved exports' }).getByRole('button', { name: 'Open' }).click();
+  await expect(page.getByRole('heading', { name: 'Preserved Prospect' })).toBeVisible();
+  await expect(page.getByText('Uncalibrated · Not eCA')).toBeVisible();
+
+  await page.getByRole('list', { name: 'Saved exports' }).getByRole('button', { name: 'Delete' }).click();
+  await page.getByRole('button', { name: 'Confirm delete' }).click();
+  await expect(page.getByText('No saved exports yet')).toBeVisible();
+  await page.reload();
+  await expect(page.getByText('No saved exports yet')).toBeVisible();
+});
+
+test('large exported squads render a bounded, accessible player list', async ({ page }) => {
+  const rows = ['Name,Position,Passing,Decisions'];
+  for (let i = 1; i <= 115; i++) rows.push('Player '+i+',CM,15,13');
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'large-squad.csv', mimeType: 'text/csv', buffer: Buffer.from(rows.join('\n'))
+  });
+  const list = page.getByRole('list', { name: 'Imported players' });
+  await expect(list.getByRole('listitem')).toHaveCount(100);
+  await page.getByRole('button', { name: /Show next 100/ }).click();
+  await expect(list.getByRole('listitem')).toHaveCount(115);
+  await page.getByPlaceholder('Search player, team, position…').fill('Player 115');
+  await expect(list.getByRole('listitem')).toHaveCount(1);
+  await expect(page.getByText('1 shown')).toBeVisible();
+});
