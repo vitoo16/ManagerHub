@@ -158,8 +158,34 @@ function cleanedText(value: string | undefined): string | null {
   const result=value?.trim()??'';
   return result && result!=='-' && result!=='—' ? result : null;
 }
+/**
+ * Native print-to-HTML table or an external CSV export share the same typed
+ * normalization rules. HTML is never inserted into the live document.
+ */
 export function parsePlayerExport(text: string, fileName: string, importedAt = new Date().toISOString()): PlayerDataset {
-  const rows=parseRows(text);
+  return normalizePlayerRows(parseRows(text), fileName, importedAt);
+}
+
+export function parsePlayerHtml(text: string, fileName: string, importedAt = new Date().toISOString()): PlayerDataset {
+  if (text.length > MAX_TEXT_CHARS) throw new Error('HTML export exceeds safe inspection limits.');
+  if (typeof DOMParser === 'undefined') throw new Error('HTML imports require browser DOM parsing.');
+  // Strip active / remote resource elements before parsing an inert detached document.
+  const safe = text
+    .replace(/<(script|style|iframe|object)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, '')
+    .replace(/<(img|link|video|audio|source)\b[^>]*\/?>/gi, '');
+  const parsed = new DOMParser().parseFromString(safe, 'text/html');
+  const tables = Array.from(parsed.querySelectorAll('table'));
+  if (!tables.length) throw new Error('No player table found in the HTML export.');
+  const candidates = tables.map(table => Array.from(table.querySelectorAll('tr')).map(row =>
+    Array.from(row.children).filter(node => node.tagName === 'TH' || node.tagName === 'TD')
+      .map(node => (node.textContent ?? '').replace(/\u00a0/g, ' ').trim()))
+    .filter(row => row.length > 1));
+  const rows = candidates.sort((a, b) => b.length - a.length)[0] ?? [];
+  if (rows.length > MAX_ROWS + 1 || rows.some(row => row.length > MAX_COLUMNS))
+    throw new Error('HTML export exceeds safe row/column limits.');
+  return normalizePlayerRows(rows, fileName, importedAt);
+}
+function normalizePlayerRows(rows: readonly string[][], fileName: string, importedAt: string): PlayerDataset {
   if(rows.length<2) throw new Error('The export must include a header and at least one player.');
   const headers=rows[0]!.map(x=>x.trim());
   const nameIndex=headerIndex(headers,['Name','Player','Player Name','Full Name','Tên','Tên cầu thủ']);
