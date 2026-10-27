@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "installedAt": "2026-10-27",
+  "installationScope": "repository:.agents/skills",
+  "type": "pinned vendored source snapshot",
+  "note": "Files are committed; runtime npm dependencies/Impeccable engine are not installed in this GitHub repository and may require local setup.",
+  "upstream": [
+    {
+      "repo": "vercel-labs/agent-skills",
+      "commit": "6ec269328bc400712ee225a173a14b6b29128df7",
+      "license": "MIT declared in React/Composition SKILL; web-design-guidelines has no explicit license field",
+      "skills": [
+        {
+          "name": "web-design-guidelines",
+          "source": "skills/web-design-guidelines",
+          "path": ".agents/skills/web-design-guidelines",
+          "files": "SKILL.md; uses upstream live guideline fetch"
+        },
+        {
+          "name": "vercel-react-best-practices",
+          "source": "skills/react-best-practices",
+          "path": ".agents/skills/vercel-react-best-practices",
+          "files": "SKILL.md, compiled AGENTS.md, linked rule examples"
+        },
+        {
+          "name": "vercel-composition-patterns",
+          "source": "skills/composition-patterns",
+          "path": ".agents/skills/vercel-composition-patterns",
+          "files": "SKILL.md, compiled AGENTS.md, linked rule examples"
+        }
+      ]
+    },
+    {
+      "repo": "Leonxlnx/taste-skill",
+      "commit": "12af471f627f866411b4bd785b19646d3672784c",
+      "license": "MIT",
+      "licenseNotice": ".agents/licenses/TASTE-SKILL-MIT.txt",
+      "skills": [
+        {
+          "name": "design-taste-frontend",
+          "source": "skills/taste-skill",
+          "path": ".agents/skills/design-taste-frontend",
+          "files": "SKILL.md, app-screen references, relevant design references, app library/assets, draw/inspect/lint scripts and dependencies",
+          "scope": "Dashboard/app mode included; large website reference galleries not vendored"
+        }
+      ]
+    },
+    {
+      "repo": "pbakaus/impeccable",
+      "commit": "d34c87e1a00989ae8dbdd7f6b30b70f23319e860",
+      "license": "Apache-2.0",
+      "licenseNotice": ".agents/licenses/IMPECCABLE-APACHE-2.0.txt",
+      "skills": [
+        {
+          "name": "impeccable",
+          "source": ".agents/skills/impeccable",
+          "path": ".agents/skills/impeccable",
+          "files": "SKILL.md, complete 45 Markdown reference files, CLI launchers and metadata, selected agent configs",
+          "scope": "Design skill installed; external CLI engine/download, browser live helpers and provider hooks not bundled; review before enabling"
+        }
+      ]
+    },
+    {
+      "repo": "greensock/gsap-skills",
+      "commit": "aed9cfd3277740755f6bfc1155c7aa645403b760",
+      "license": "MIT",
+      "licenseNotice": ".agents/licenses/GSAP-SKILLS-MIT.txt",
+      "skills": [
+        {
+          "name": "gsap-core",
+          "source": "skills/gsap-core",
+          "path": ".agents/skills/gsap-core"
+        },
+        {
+          "name": "gsap-react",
+          "source": "skills/gsap-react",
+          "path": ".agents/skills/gsap-react"
+        },
+        {
+          "name": "gsap-timeline",
+          "source": "skills/gsap-timeline",
+          "path": ".agents/skills/gsap-timeline"
+        },
+        {
+          "name": "gsap-plugins",
+          "source": "skills/gsap-plugins",
+          "path": ".agents/skills/gsap-plugins"
+        },
+        {
+          "name": "gsap-performance",
+          "source": "skills/gsap-performance",
+          "path": ".agents/skills/gsap-performance"
+        }
+      ]
+    }
+  ],
+  "projectAuthored": [
+    "managerhub-football-intelligence",
+    "managerhub-save-safety",
+    "managerhub-data-ux",
+    "managerhub-motion-glass"
+  ],
+  "updatePolicy": "Review upstream changes, permissions and licenses; update source commit and files together; do not overlay npx-installed duplicates without review."
+}
