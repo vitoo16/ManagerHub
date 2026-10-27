@@ -12,12 +12,12 @@ Read also [full feature catalogue](docs/product/01-full-feature-catalog.md), [da
 
 ## Skills — activate relevant skills if actually installed
 - For **app UI and dashboard**: Impeccable (shape/operate/animate/critique/audit/harden/polish), Vercel web-design-guidelines, vercel-react-best-practices, vercel-composition-patterns, original `managerhub-data-ux` & `managerhub-motion-glass`.
-- **Taste Skill (`design-taste-frontend`)**: current v2 describes itself as **NOT for dashboards/app screens**; use for branding, onboarding and marketing/art direction only. Never force its landing-page rules into the operator dashboard.
+- **Taste Skill (`design-taste-frontend`)**: the pinned v2 explicitly supports dashboard, admin and analytics screens. Read its vendored `references/app-screens.md` and use the app-screen workflow, combined with Impeccable Operate and Vercel guidelines. The public marketing-page workflow is separate.
 - **Motion/GSAP**: official GreenSock skills `gsap-core`, `gsap-react`, `gsap-timeline`, `gsap-plugins` (Flip/Draggable), `gsap-performance`, optionally `gsap-scrolltrigger` only on justified tutorial scroll experiences.
 - **Save reader / data editing**: original `managerhub-save-safety`.
 - **CA/eCA/role/scouting/tactics**: original `managerhub-football-intelligence`.
 - **Charts/scouting dashboard**: original `managerhub-data-ux`; chart event requirements are mandatory.
-- Optional external tools must be reviewed for source, license, version, permissions and skill overlap before installation. This repo only includes its 4 original skills; third-party skills are not considered installed until setup explicitly runs.
+- Optional external tools must be reviewed for source, license, version, permissions and skill overlap before installation. This repo vendors 4 original skills and pinned external Vercel, Taste, Impeccable and GSAP skills in `.agents/skills/`. Optional engine and provider-specific hooks may need additional reviewed local setup.
 
 ## Engineering non-negotiables
 1. **Clean Code / reuse / DRY:** single canonical domain schema, role version catalog, source-aware metric registry, format adapter interface, money formatter, chart wrapper, shared components, animation facade; use existing code first. Extract abstractions from real repeated semantics, not speculative frameworks.
