@@ -46,3 +46,11 @@ See [sources and evidence](references.md). Read-only/immutable source save by de
 
 ## How to contribute
 For any new functionality add its MH-ID to [catalogue](product/01-full-feature-catalog.md) → business rules → system inputs/results/errors → UI states + charts → test acceptance and evidence. Do not commit private save files. External skills installation is opt-in and belongs in local agent environments, not assumed active because it is documented.
+## Full-product execution (no MVP)
+- [Mandatory engineering charter](implementation/00-execution-charter.md)
+- [Seven-phase detailed plan](implementation/01-full-delivery-plan.md)
+- [Copy-paste prompts for coding agents](implementation/02-agent-prompts.md)
+- [Apple-inspired Liquid Glass and GSAP motion design](implementation/03-liquid-glass-motion-spec.md)
+- [Official GSAP/Vercel/Impeccable/Taste skill research](implementation/04-motion-skills-and-references.md)
+
+The user chose the **complete product**, not an MVP. These implementation documents supersede earlier release-phase suggestions.
