@@ -1,4 +1,23 @@
-import type { SquadSolution } from './squad-optimizer';
+import type { SquadConstraints, SquadSolution, FormationId } from './squad-optimizer';
+
+export type SquadPlanKey = 'A' | 'B';
+
+export interface SquadPlanConfig extends SquadConstraints {
+  readonly formation: FormationId;
+  readonly lockedSlots: Readonly<Record<string,string>>;
+  readonly excludedPlayerIds: readonly string[];
+}
+
+export type SquadPlans = Readonly<Record<SquadPlanKey, SquadPlanConfig>>;
+
+/** Separate copies, never a shared mutable lock/exclusion collection. */
+export function createDefaultSquadPlans(): SquadPlans {
+  const create = (): SquadPlanConfig => ({
+    formation:'4-3-3',lockedSlots:{},excludedPlayerIds:[]
+  });
+  return {A:create(),B:create()};
+}
+
 
 export interface SquadScenarioComparison {
   readonly comparable: boolean;
