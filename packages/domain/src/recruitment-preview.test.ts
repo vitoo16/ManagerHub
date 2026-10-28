@@ -43,6 +43,7 @@ describe('same-export squad contribution preview', () => {
     expect(result.status).toBe('not-selected');
     expect(result.assignment).toBeNull();
     expect(result.roleFitDelta).toBeNull();
+    expect(result.changedSlots).toBeNull();
   });
 
   it('returns per-slot coverage diagnostics instead of guessing an incomplete XI', () => {
