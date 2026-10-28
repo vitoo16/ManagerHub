@@ -3,8 +3,8 @@ import { readableImportError, readableImportWarning } from './i18n/player-import
 import {useId,useMemo,useRef,useState,type ChangeEvent} from 'react';
 import {
   ATTRIBUTE_LABELS,attributeGroupSummary,attributeStrengthIndex,
-  analyzeRoles,getAttributeInsights,parsePlayerExport,parsePlayerHtml,type PlayerDataset,
-  type PlayerExport,type AttributeKey
+  analyzeRoles,assessSquadContribution,FORMATIONS,ROLE_PROFILES,getAttributeInsights,parsePlayerExport,parsePlayerHtml,
+  type FormationId,type PlayerDataset,type PlayerExport,type AttributeKey
 } from '@managerhub/domain';
 import {Button,Icon,SectionHeading,Status,Surface} from '@managerhub/ui';
 import { usePlayerLibrary } from './usePlayerLibrary';
@@ -15,6 +15,7 @@ const MAX_EXPORT_BYTES=12*1024*1024;
 type Props={
   dataset:PlayerDataset|null;
   onDataset:(dataset:PlayerDataset|null)=>void;
+  onOpenSquad:()=>void;
 };
 function AttributeRadar({player}: {player:PlayerExport}){
   const { t } = useTranslation();
@@ -127,13 +128,17 @@ function PlayerCompare({primary,dataset}:{primary:PlayerExport;dataset:PlayerDat
   </Surface>;
 }
 
-function PlayerDetails({player,dataset}:{player:PlayerExport;dataset:PlayerDataset}){
+function PlayerDetails({player,dataset,onOpenSquad}:{player:PlayerExport;dataset:PlayerDataset;onOpenSquad:()=>void}){
   const { t } = useTranslation();
   const [tab,setTab]=useState<'overview'|'attributes'|'roles'|'recruitment'|'compare'>('overview');
   const insights=getAttributeInsights(player);
   const strength=attributeStrengthIndex(player);
   const roles=analyzeRoles(player);
   const top=roles.find(x=>x.score!==null);
+  const [impactFormation,setImpactFormation]=useState<FormationId>('4-3-3');
+  const squadImpact=useMemo(()=>assessSquadContribution(dataset.players,player.id,impactFormation),[dataset,player.id,impactFormation]);
+  const coverageGaps=squadImpact.baseline?.diagnostics.filter(item=>item.scoredCandidates===0||item.scoredCandidates<item.eligibleCandidates)??[];
+  const assignedRole=ROLE_PROFILES.find(role=>role.id===squadImpact.assignment?.slot.roleId);
   return <section aria-label={t('Scouting report for')+' '+player.name}>
     <div className="scout-identity"><div className="scout-avatar" aria-hidden="true">{player.name.slice(0,1).toUpperCase()}</div>
       <div className="scout-identity__copy"><span className="mh-eyebrow">{t("PLAYER INTELLIGENCE / EXPORT VIEW")}</span><h2>{player.name}</h2><p>{[player.club,player.position,player.age!==null?player.age+' '+t('years'):null,player.nationality].filter(Boolean).join(' · ')||t('Only identity data available')}</p></div>
@@ -176,15 +181,50 @@ function PlayerDetails({player,dataset}:{player:PlayerExport;dataset:PlayerDatas
       {tab==='roles'&&<Surface className="scout-panel"><div className="scout-panel__title">{t("Tactical roles by observed attributes")}</div><RoleResults player={player}/></Surface>}
       {tab==='compare'&&<PlayerCompare primary={player} dataset={dataset}/>}
       {tab==='recruitment'&&<Surface className="scout-panel"><div className="scout-panel__title">{t("Recruitment assessment")}</div>
-        <div className="scouting-verdict"><Status tone="warning">{t("Insufficient data")}</Status><h3>{t("Do not recommend a transfer yet")}</h3>
-          <p>{t("This export does not establish your club's tactical gap, the player's asking price, wages, contract, eligibility or alternatives in your squad. A score based on attributes alone cannot answer whether signing makes sense.")}</p>
-          <p>{t("When financial and squad inputs are available, ManagerHub will compare this player's marginal role value against your existing options and the transfer's total cost.")}</p>
+        <div className="scouting-verdict">
+          <h3>{t("Squad contribution preview")}</h3>
+          <p>{t("Test whether this player helps complete the best-fit starting eleven using the same imported list as Squad Planner. This is a role-fit scenario, not a transfer recommendation or match prediction.")}</p>
+          <label className="squad-editor-filter" htmlFor="recruitment-formation">{t("Formation to test")}
+            <select id="recruitment-formation" value={impactFormation} onChange={event=>setImpactFormation(event.target.value as FormationId)}>
+              {Object.keys(FORMATIONS).map(formation=><option key={formation} value={formation}>{formation}</option>)}
+            </select>
+          </label>
+          {squadImpact.status==='player-not-found'&&<Status tone="warning">{t("This player is not part of the active export. Reopen the intended player list and try again.")}</Status>}
+          {squadImpact.status==='insufficient-data'&&<>
+            <Status tone="warning">{t("A complete starting eleven cannot be built from this list yet.")}</Status>
+            <p>{t("The optimizer needs eleven distinct players with declared positions and enough exact role attributes. Unknown or masked values are not filled in.")}</p>
+            {coverageGaps.length>0&&<div className="squad-coverage-list" role="list" aria-label={t("Position data coverage")}>
+              {coverageGaps.map(item=><div role="listitem" key={item.slot.id}><strong>{item.slot.label}</strong><span>{t("{{scored}} of {{eligible}} eligible players",{scored:item.scoredCandidates,eligible:item.eligibleCandidates})}</span></div>)}
+            </div>}
+          </>}
+          {squadImpact.status==='not-selected'&&<>
+            <Status tone="neutral">{t("Not selected in the best-fit XI")}</Status>
+            <p>{t("The optimizer did not select this player for the highest-scoring complete eleven in this formation. This is not a judgement of overall quality; it reflects only declared positions and observed attributes.")}</p>
+          </>}
+          {squadImpact.status==='required-for-complete-xi'&&squadImpact.assignment&&<>
+            <Status tone="info">{t("Needed to complete the starting eleven")}</Status>
+            <p>{t("Without this player, the current export cannot fill all eleven positions under the selected formation and data rules.")}</p>
+            <p><strong>{t("Selected position:")}</strong> {squadImpact.assignment.slot.label} · {assignedRole?t(assignedRole.title):squadImpact.assignment.slot.roleId} · {t("Role fit")} {squadImpact.assignment.roleScore}/100</p>
+          </>}
+          {squadImpact.status==='comparison-ready'&&squadImpact.assignment&&squadImpact.baseline&&squadImpact.withoutPlayer&&<>
+            <Status tone="positive">{t("Included in the best-fit XI")}</Status>
+            <p><strong>{t("Selected position:")}</strong> {squadImpact.assignment.slot.label} · {assignedRole?t(assignedRole.title):squadImpact.assignment.slot.roleId} · {t("Role fit")} {squadImpact.assignment.roleScore}/100</p>
+            <div className="scout-metrics">
+              <div><span>{t("With this player")}</span><strong>{squadImpact.baseline.averageRoleScore}</strong><small>{t("Average role fit / 100")}</small></div>
+              <div><span>{t("Without this player")}</span><strong>{squadImpact.withoutPlayer.averageRoleScore}</strong><small>{t("Best replacement XI")}</small></div>
+              <div><span>{t("Role-fit difference")}</span><strong>{squadImpact.roleFitDelta!==null&&squadImpact.roleFitDelta>0?'+':''}{squadImpact.roleFitDelta}</strong><small>{t("Points across the full XI")}</small></div>
+              <div><span>{t("Changed positions")}</span><strong>{squadImpact.changedSlots}</strong><small>{t("When this player is excluded")}</small></div>
+            </div>
+            <p>{t("The difference compares the best complete XI with and without this player. It reflects this export and this formation only; it is not expected match performance or transfer value.")}</p>
+          </>}
+          <p>{t("A transfer verdict still needs the club's verified squad need, fee, wages, contract terms, registration and availability. Those details are not established by this player export, so ManagerHub will not label a transfer Buy or Pass yet.")}</p>
+          <Button variant="primary" onClick={onOpenSquad}>{t("Open this roster in Squad Planner")} <Icon name="arrow" size={15}/></Button>
         </div></Surface>}
     </div>
     <div className="evidence-strip"><Icon name="shield" size={15}/> {t("This report uses your exported attributes. CA and PA remain unknown until verified.")}</div>
   </section>;
 }
-export function PlayerWorkspace({dataset,onDataset}:Props){
+export function PlayerWorkspace({dataset,onDataset,onOpenSquad}:Props){
   const { t } = useTranslation();
   const inputRef=useRef<HTMLInputElement>(null);
   const [error,setError]=useState<string|null>(null);
@@ -275,7 +315,7 @@ export function PlayerWorkspace({dataset,onDataset}:Props){
             {t('Show next 100')} · {visible.length-visibleLimit} {t('remaining')}
           </Button>}
         </Surface>
-        <div className="player-detail-column">{selected?<PlayerDetails key={selected.id} player={selected} dataset={dataset}/>:<Surface className="empty-library">{t("Choose a player from the imported list.")}</Surface>}</div>
+        <div className="player-detail-column">{selected?<PlayerDetails key={selected.id} player={selected} dataset={dataset} onOpenSquad={onOpenSquad}/>:<Surface className="empty-library">{t("Choose a player from the imported list.")}</Surface>}</div>
       </div>
     </>}
     <div className="coverage-note"><Icon name="shield" size={16}/><p><strong>{t("Data integrity:")}</strong> {t("CA, PA and hidden personality are not recovered from a CSV unless independently verified. Role profiles are authored ManagerHub heuristics, not Sports Interactive ratings. Player identities in different imports are not assumed to match.")}</p></div>
