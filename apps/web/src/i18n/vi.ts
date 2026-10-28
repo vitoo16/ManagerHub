@@ -417,5 +417,16 @@ export default {
   "unknown positions": "vị trí chưa xác định",
   "Not enough observed attributes": "Chưa đủ chỉ số trong file",
   "File type": "Loại file",
-  "Phase": "Giai đoạn"
+  "Phase": "Giai đoạn",
+  "years": "tuổi",
+  "Scouting report for": "Báo cáo của cầu thủ",
+  "Radar showing average native 1 to 20 attributes for": "Biểu đồ chỉ số thang 1–20 của",
+  "attribute coverage": "dữ liệu vai trò đã có",
+  "N/A": "—",
+  "weight": "trọng số",
+  "saved": "đã lưu",
+  "locale": "vi-VN",
+  "Show next 100": "Xem thêm 100 cầu thủ",
+  "remaining": "còn lại",
+  "Source:": "Nguồn:"
 } as const;

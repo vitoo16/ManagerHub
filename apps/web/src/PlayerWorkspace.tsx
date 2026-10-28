@@ -30,14 +30,14 @@ function AttributeRadar({player}: {player:PlayerExport}){
   const points=coordinates.map(([x,y])=>x?.toFixed(2)+','+y?.toFixed(2)).join(' ');
   const ring=(value:number)=>groups.map((_,i)=>point(i,value).map(v=>v.toFixed(2)).join(',')).join(' ');
   return <div className="player-radar">
-    <svg viewBox="0 0 250 250" role="img" aria-label={'Radar showing average native 1 to 20 attributes for '+player.name}>
+    <svg viewBox="0 0 250 250" role="img" aria-label={t('Radar showing average native 1 to 20 attributes for')+' '+player.name}>
       {[5,10,15,20].map(n=><polygon key={n} points={ring(n)} fill="none" stroke="var(--line)" strokeWidth="1"/>)}
       {groups.map((g,i)=>{const [x,y]=point(i,20);return <line key={g.name} x1={center} y1={center} x2={x} y2={y} stroke="var(--line)" strokeWidth="1"/>;})}
       <polygon points={points} fill="color-mix(in srgb, var(--accent-strong) 22%, transparent)" stroke="var(--accent-strong)" strokeWidth="2.2" strokeLinejoin="round"/>
       {coordinates.map(([x,y],i)=><circle key={i} cx={x} cy={y} r="3.1" fill="var(--accent-strong)"/>)}
     </svg>
     <div className="radar-legend" role="list" aria-label={t("Exact radar values")}>
-      {groups.map(g=><div key={g.name} role="listitem"><span>{g.name}</span><strong>{g.score?.toFixed(1)??'—'}<small> / 20</small></strong></div>)}
+      {groups.map(g=><div key={g.name} role="listitem"><span>{t(g.name)}</span><strong>{g.score?.toFixed(1)??'—'}<small> / 20</small></strong></div>)}
     </div>
   </div>;
 }
@@ -49,7 +49,7 @@ function RankedAttributes({player}: {player:PlayerExport}){
   if(!values.length)return <div className="player-empty-chart">{t("No recognized, exact 1–20 attributes were included in the export.")}</div>;
   return <div className="player-attributes" role="list" aria-label={t("Player attributes ordered strongest to weakest")}>
     {values.map(([key,value])=><div className="player-attribute" role="listitem" key={key}>
-      <span>{ATTRIBUTE_LABELS[key]}</span>
+      <span>{t(ATTRIBUTE_LABELS[key])}</span>
       <div className="player-attribute__track" aria-hidden="true"><div style={{width:(value/20*100)+'%'}}/></div>
       <strong>{value}</strong>
     </div>)}
@@ -63,14 +63,14 @@ function RoleResults({player}:{player:PlayerExport}){
     <p className="module-disclaimer">{t("Derived 0–100 attribute-fit scores; not FM star ratings, positional familiarity or match-engine formulas. A role is left unscored below 65% weighted data coverage.")}</p>
     {roles.map(role=><div key={role.id} className="role-result">
       <button className="role-result__button" aria-expanded={expanded===role.id} onClick={()=>setExpanded(x=>x===role.id?null:role.id)}>
-        <span className="role-result__slot">{role.slot}</span><span className="role-result__title">{role.title}<small>{Math.round(role.coverage*100)}% attribute coverage</small></span>
+        <span className="role-result__slot">{role.slot}</span><span className="role-result__title">{t(role.title)}<small>{Math.round(role.coverage*100)}% {t('attribute coverage')}</small></span>
         <div className="role-result__bar" aria-hidden="true"><div style={{width:(role.score??0)+'%'}}/></div>
-        <strong>{role.score??'N/A'}</strong><Icon name="chevron" size={14}/>
+        <strong>{role.score??t('N/A')}</strong><Icon name="chevron" size={14}/>
       </button>
       {expanded===role.id&&<div className="role-result__evidence">
         <strong>{t("Inputs used for this role")}</strong>
-        <p>{role.evidence.map(e=>ATTRIBUTE_LABELS[e.attribute]+' '+e.value+' (weight '+e.weight+')').join(' · ')||'Not enough observed attributes.'}</p>
-        {role.missing.length>0&&<p className="role-missing">Missing: {role.missing.map(k=>ATTRIBUTE_LABELS[k]).join(', ')}</p>}
+        <p>{role.evidence.map(e=>t(ATTRIBUTE_LABELS[e.attribute])+' '+e.value+' (weight '+e.weight+')').join(' · ')||'Not enough observed attributes.'}</p>
+        {role.missing.length>0&&<p className="role-missing">{t('Missing:')} {role.missing.map(k=>t(ATTRIBUTE_LABELS[k])).join(', ')}</p>}
       </div>}
     </div>)}
   </div>;
@@ -107,7 +107,7 @@ function PlayerCompare({primary,dataset}:{primary:PlayerExport;dataset:PlayerDat
       {sorted.length ? <div className="compare-grid" role="table" aria-label={t("Observed player attribute comparisons")}>
         {sorted.map(key=><div className="compare-attribute" role="row" key={key}>
           <span role="cell" className={(primary.attributes[key]??0)>(other.attributes[key]??0)?'compare-leading':''}>{primary.attributes[key]}</span>
-          <span role="cell">{ATTRIBUTE_LABELS[key]}</span>
+          <span role="cell">{t(ATTRIBUTE_LABELS[key])}</span>
           <span role="cell" className={(other.attributes[key]??0)>(primary.attributes[key]??0)?'compare-leading':''}>{other.attributes[key]}</span>
         </div>)}
       </div> : <p className="module-disclaimer">{t("These two exports have no matching exact attributes. A numerical comparison would be misleading.")}</p>}
@@ -116,7 +116,7 @@ function PlayerCompare({primary,dataset}:{primary:PlayerExport;dataset:PlayerDat
         {ownRoles.map(a=>{const b=otherRoles.find(r=>r.id===a.id);
           return <div className="compare-attribute" role="row" key={a.id}>
             <span role="cell" className={a.score!==null&&typeof b?.score==='number'&&a.score>b.score?'compare-leading':''}>{a.score??'—'}</span>
-            <span role="cell">{a.title}</span>
+            <span role="cell">{t(a.title)}</span>
             <span role="cell" className={b?.score!==null&&b?.score!==undefined&&a.score!==null&&b.score>a.score?'compare-leading':''}>{b?.score??'—'}</span>
           </div>;
         })}
@@ -132,18 +132,18 @@ function PlayerDetails({player,dataset}:{player:PlayerExport;dataset:PlayerDatas
   const strength=attributeStrengthIndex(player);
   const roles=analyzeRoles(player);
   const top=roles.find(x=>x.score!==null);
-  return <section aria-label={'Scouting report for '+player.name}>
+  return <section aria-label={t('Scouting report for')+' '+player.name}>
     <div className="scout-identity"><div className="scout-avatar" aria-hidden="true">{player.name.slice(0,1).toUpperCase()}</div>
       <div className="scout-identity__copy"><span className="mh-eyebrow">{t("PLAYER INTELLIGENCE / EXPORT VIEW")}</span><h2>{player.name}</h2><p>{[player.club,player.position,player.age!==null?player.age+' years':null,player.nationality].filter(Boolean).join(' · ')||'Only identity data available'}</p></div>
       <Status tone="info">{t("Game export")}</Status></div>
     <div className="scout-metrics">
       <div><span>{t("Actual CA")}</span><strong>—</strong><small>{t("Not verified")}</small></div>
       <div><span>{t("Attribute index")}</span><strong>{strength.index??'—'}{strength.index!==null&&<small> / 100</small>}</strong><small>{t("Uncalibrated · Not eCA")}</small></div>
-      <div><span>{t("Best observed role")}</span><strong>{top?.score??'—'}{top?.score!==null&&<small> / 100</small>}</strong><small>{top?.title??'Insufficient data'}</small></div>
+      <div><span>{t("Best observed role")}</span><strong>{top?.score??'—'}{top?.score!==null&&<small> / 100</small>}</strong><small>{top?.title ? t(top.title) : t('Insufficient data')}</small></div>
       <div><span>PA</span><strong>—</strong><small>{t("Not verified")}</small></div>
     </div>
     <div className="scout-tabs" role="tablist" aria-label={t("Player report")}>
-      {(['overview','attributes','roles','compare','recruitment'] as const).map(label=><button key={label} role="tab" aria-selected={tab===label} onClick={()=>setTab(label)} className={tab===label?'scout-tab scout-tab--active':'scout-tab'}>{label==='overview'?'Overview':label==='attributes'?'Attributes':label==='roles'?'Role fit':label==='compare'?'Compare':'Recruitment'}</button>)}
+      {(['overview','attributes','roles','compare','recruitment'] as const).map(label=><button key={label} role="tab" aria-selected={tab===label} onClick={()=>setTab(label)} className={tab===label?'scout-tab scout-tab--active':'scout-tab'}>{t(label==='overview'?'Overview':label==='attributes'?'Attributes':label==='roles'?'Role fit':label==='compare'?'Compare':'Recruitment')}</button>)}
     </div>
     <div className="scout-tab-content" role="tabpanel">
       {tab==='overview'&&<>
@@ -151,15 +151,15 @@ function PlayerDetails({player,dataset}:{player:PlayerExport;dataset:PlayerDatas
           <Surface className="scout-panel"><div className="scout-panel__title">{t("Attribute profile")} <span>{t("Native 1–20 mean")}</span></div><AttributeRadar player={player}/></Surface>
           <Surface className="scout-panel"><div className="scout-panel__title">{t("Strengths & development areas")}</div>
             {insights.strongest.length?<div className="insight-columns">
-              <div><h3>{t("Highest observed attributes")}</h3>{insights.strongest.map(a=><div className="insight-line" key={a.key}><span>{a.label}</span><strong>{a.value}</strong></div>)}</div>
-              <div><h3>{t("Lowest observed attributes")}</h3>{insights.weakest.map(a=><div className="insight-line" key={a.key}><span>{a.label}</span><strong>{a.value}</strong></div>)}</div>
+              <div><h3>{t("Highest observed attributes")}</h3>{insights.strongest.map(a=><div className="insight-line" key={a.key}><span>{t(a.label)}</span><strong>{a.value}</strong></div>)}</div>
+              <div><h3>{t("Lowest observed attributes")}</h3>{insights.weakest.map(a=><div className="insight-line" key={a.key}><span>{t(a.label)}</span><strong>{a.value}</strong></div>)}</div>
             </div>:<p className="module-disclaimer">{t("No exact attributes observed. Upload a view with technical, mental and physical columns.")}</p>}
             <div className="scout-note">{t("These are observed numerical extremes, not professional scouting verdicts. Role-specific demands and sample completeness matter.")}</div>
           </Surface>
         </div>
         <Surface className="scout-panel role-overview"><div className="scout-panel__title">{t("Role suitability ranking")} <span>{t("Heuristic · Explanation available under Role fit")}</span></div><RoleResults player={player}/></Surface>
       </>}
-      {tab==='attributes'&&<Surface className="scout-panel"><div className="scout-panel__title">{t("Imported player attributes")} <span>{Object.keys(player.attributes).length} values · Source: {dataset.fileName}</span></div><RankedAttributes player={player}/></Surface>}
+      {tab==='attributes'&&<Surface className="scout-panel"><div className="scout-panel__title">{t("Imported player attributes")} <span>{Object.keys(player.attributes).length} {t('values')} · {t('Source:')} {dataset.fileName}</span></div><RankedAttributes player={player}/></Surface>}
       {tab==='roles'&&<Surface className="scout-panel"><div className="scout-panel__title">{t("Tactical roles by observed attributes")}</div><RoleResults player={player}/></Surface>}
       {tab==='compare'&&<PlayerCompare primary={player} dataset={dataset}/>}
       {tab==='recruitment'&&<Surface className="scout-panel"><div className="scout-panel__title">{t("Recruitment assessment")}</div>
@@ -216,9 +216,9 @@ export function PlayerWorkspace({dataset,onDataset}:Props){
     <div className="page-title"><span className="mh-eyebrow">{t("PLAYER INTELLIGENCE / PROVISIONAL EXPORTS")}</span><h1>{t("Player Lab")}</h1><p>{t("Analyze real visible attributes exported from Football Manager. Every score is explainable and distinct from verified game CA or a calibrated eCA prediction.")}</p></div>
     <div className="player-lab-header">
       <div><input id={fileInputId} ref={inputRef} type="file" accept=".csv,.tsv,.txt,.html,.htm,text/csv,text/tab-separated-values,text/html" className="visually-hidden" onChange={onFile}/>
-        <Button variant="primary" onClick={()=>inputRef.current?.click()}><Icon name="plus" size={16}/>{dataset?'Replace player export' :'Import player CSV / HTML'}</Button>
+        <Button variant="primary" onClick={()=>inputRef.current?.click()}><Icon name="plus" size={16}/>{t(dataset?'Replace player export' :'Import player CSV / HTML')}</Button>
         {dataset&&<Button disabled={savedCurrent||library.activity!==null} onClick={()=>void library.save(dataset)}>
-          <Icon name="download" size={16}/>{savedCurrent?'Saved to this browser':library.activity==='saving'?'Saving…':'Save on this browser'}
+          <Icon name="download" size={16}/>{t(savedCurrent?'Saved to this browser':library.activity==='saving'?'Saving…':'Save on this browser')}
         </Button>}
         {dataset&&<Button variant="quiet" onClick={()=>{onDataset(null);setChosenId(null);setSearch('');setVisibleLimit(100);}}><Icon name="trash" size={16}/> {t("Clear session")}</Button>}
       </div>
@@ -228,17 +228,17 @@ export function PlayerWorkspace({dataset,onDataset}:Props){
     <Surface className="saved-player-library">
       <div className="saved-player-library__heading">
         <div><strong>{t("Saved player exports")}</strong><small>{t("IndexedDB · This browser only · Explicit opt-in · Up to 20 exports")}</small></div>
-        <Status tone={library.error?'warning':'neutral'}>{library.loading?'Loading…':library.items.length+' saved'}</Status>
+        <Status tone={library.error?'warning':'neutral'}>{library.loading?t('Loading…'):library.items.length+' '+t('saved')}</Status>
       </div>
       {library.error&&<div role="alert" className="local-library-error"><Icon name="warning" size={16}/>{library.error}
         <button onClick={library.clearError} aria-label={t("Dismiss local library error")}><Icon name="close" size={15}/></button></div>}
       {!library.loading&&library.items.length===0&&<p className="saved-player-library__empty">{t("No saved exports yet. Import an HTML/CSV/TSV player list, then select “Save on this browser” to keep it after reloading.")}</p>}
       {library.items.length>0&&<div className="saved-player-library__items" role="list" aria-label={t("Saved exports")}>
         {library.items.map(item=><div className="saved-player-library__item" role="listitem" key={item.id}>
-          <div className="saved-player-library__meta"><strong title={item.fileName}>{item.fileName}</strong><small>{item.playerCount.toLocaleString()} players · {item.attributeCount} attributes · Saved {new Date(item.savedAt).toLocaleDateString()}</small></div>
+          <div className="saved-player-library__meta"><strong title={item.fileName}>{item.fileName}</strong><small>{item.playerCount.toLocaleString()} {t('players')} · {item.attributeCount} {t('attributes')} · {t('Saved')} {new Date(item.savedAt).toLocaleDateString(t('locale'))}</small></div>
           <Button disabled={library.activity!==null} onClick={()=>void openSaved(item.id)}><Icon name="file" size={14}/> {t("Open")}</Button>
           <Button variant={pendingDelete===item.id?'danger':'quiet'} disabled={library.activity!==null}
-            onClick={()=>void deleteSaved(item.id)}>{pendingDelete===item.id?'Confirm delete':'Delete'}</Button>
+            onClick={()=>void deleteSaved(item.id)}>{t(pendingDelete===item.id?'Confirm delete':'Delete')}</Button>
         </div>)}
       </div>}
     </Surface>
@@ -249,17 +249,17 @@ export function PlayerWorkspace({dataset,onDataset}:Props){
       <div className="player-intro__checks"><span>{t("Attribute distribution")}</span><span>{t("Position / role profile")}</span><span>{t("Explainable scores")}</span><span>{t("Missing data visibility")}</span></div>
       <p className="module-disclaimer">{t("FM26's native Print Screen can produce HTML. ManagerHub reads a local exported HTML table or CSV/TSV; a .fm save itself is not yet a validated player-data source.")}</p>
     </Surface>:<>
-      <div className="dataset-banner"><div><strong>{dataset.players.length.toLocaleString()} player records</strong><span>{dataset.fileName} · {dataset.attributeColumns.length} recognized attributes · Import-local identities</span></div><Status tone="warning">{t("Provisional")}</Status></div>
+      <div className="dataset-banner"><div><strong>{dataset.players.length.toLocaleString()} {t('player records')}</strong><span>{dataset.fileName} · {dataset.attributeColumns.length} {t('recognized attributes')}</span></div><Status tone="warning">{t("Provisional")}</Status></div>
       {dataset.warnings.length>0&&<div className="dataset-warnings" role="status">{dataset.warnings.map((warning,i)=><p key={i}><Icon name="warning" size={14}/>{warning}</p>)}</div>}
       <div className="player-lab-layout">
-        <Surface className="player-list-panel"><div className="player-list-panel__heading"><span>{t("Players")}</span><span>{visible.length} shown</span></div>
+        <Surface className="player-list-panel"><div className="player-list-panel__heading"><span>{t("Players")}</span><span>{visible.length} {t('shown')}</span></div>
           <label className="search-box player-search"><Icon name="search" size={16}/><span className="visually-hidden">{t("Search imported players")}</span><input placeholder={t("Search player, team, position…")} value={search} onChange={e=>{setSearch(e.target.value);setVisibleLimit(100);}}/></label>
           <div className="player-list-scroll" role="list" aria-label={t("Imported players")}>{visible.slice(0,visibleLimit).map(p=><div key={p.id} role="listitem"><button className={'player-list-entry '+(selected?.id===p.id?'player-list-entry--active':'')} onClick={()=>setChosenId(p.id)}>
-            <span className="player-list-avatar" aria-hidden="true">{p.name.slice(0,1)}</span><span className="player-list-entry__copy"><strong>{p.name}</strong><small>{p.position??'Unknown position'} · {p.club??'Unknown club'}</small></span><Icon name="chevron" size={13}/>
+            <span className="player-list-avatar" aria-hidden="true">{p.name.slice(0,1)}</span><span className="player-list-entry__copy"><strong>{p.name}</strong><small>{p.position??t('Unknown position')} · {p.club??t('Unknown club')}</small></span><Icon name="chevron" size={13}/>
           </button></div>)}</div>
           {!visible.length&&<div className="player-search-empty">{t("No players match this search.")}</div>}
           {visible.length>visibleLimit&&<Button className="player-list-more" onClick={()=>setVisibleLimit(n=>n+100)}>
-            Show next 100 · {visible.length-visibleLimit} remaining
+            {t('Show next 100')} · {visible.length-visibleLimit} {t('remaining')}
           </Button>}
         </Surface>
         <div className="player-detail-column">{selected?<PlayerDetails key={selected.id} player={selected} dataset={dataset}/>:<Surface className="empty-library">{t("Choose a player from the imported list.")}</Surface>}</div>
