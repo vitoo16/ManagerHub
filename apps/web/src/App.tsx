@@ -47,7 +47,7 @@ function Logo({ compact = false }: { compact?: boolean }) {
   const { t } = useTranslation();
   return <div className="logo-row">
     <div className="logo-mark"><div className="logo-mark__inner"><span className="logo-orbit"/></div></div>
-    {!compact && <div><strong>MANAGER<span>HUB</span></strong><small>FOOTBALL INTELLIGENCE</small></div>}
+    {!compact && <div><strong>MANAGER<span>HUB</span></strong><small>{t("FOOTBALL INTELLIGENCE")}</small></div>}
   </div>;
 }
 
