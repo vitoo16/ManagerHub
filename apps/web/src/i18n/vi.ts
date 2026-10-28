@@ -464,5 +464,21 @@ export default {
   "Some rows had no player name and were skipped.": "Một số dòng không có tên cầu thủ nên đã được bỏ qua.",
   "Some attributes were hidden or unavailable and were left blank rather than guessed.": "Một số chỉ số chưa hiện hoặc bị che. ManagerHub giữ trống thay vì tự đoán.",
   "Some columns could not be read. Check the exported view and try again.": "Một số cột chưa đọc được. Hãy kiểm tra lại bảng dữ liệu đã xuất.",
-  "Could not access your saved lists. Please check browser storage settings or try again.": "Không thể mở danh sách đã lưu. Hãy kiểm tra quyền lưu trữ của trình duyệt rồi thử lại."
+  "Could not access your saved lists. Please check browser storage settings or try again.": "Không thể mở danh sách đã lưu. Hãy kiểm tra quyền lưu trữ của trình duyệt rồi thử lại.",
+  "Choose a player list exported as HTML, CSV, TSV or TXT.": "Hãy chọn danh sách cầu thủ đã xuất dưới dạng HTML, CSV, TSV hoặc TXT.",
+  "This file is empty or larger than 12 MB. Choose a smaller player export and try again.": "File trống hoặc lớn hơn 12 MB. Hãy xuất danh sách nhỏ hơn rồi thử lại.",
+  "We could not find columns in this file. Export your player list as CSV or TSV.": "Không tìm thấy các cột trong file. Hãy xuất danh sách cầu thủ dưới dạng CSV hoặc TSV.",
+  "This file is too large to analyze safely in your browser. Export a smaller list and try again.": "File quá lớn để phân tích an toàn trên trình duyệt. Hãy xuất ít cầu thủ hơn rồi thử lại.",
+  "This export has too many rows or columns. Choose a smaller player list and export again.": "File có quá nhiều dòng hoặc cột. Hãy xuất một danh sách nhỏ hơn rồi thử lại.",
+  "This list is too large to analyze at once. Export a smaller group of players and try again.": "Danh sách quá lớn để xử lý cùng lúc. Hãy xuất một nhóm cầu thủ nhỏ hơn rồi thử lại.",
+  "This CSV/TSV file has a formatting issue. Export it again from Football Manager or your spreadsheet, then retry.": "File CSV/TSV có lỗi định dạng. Hãy xuất lại từ Football Manager hoặc bảng tính rồi thử lại.",
+  "This browser cannot read HTML tables. Export the player list as CSV or TSV instead.": "Trình duyệt này không đọc được bảng HTML. Hãy xuất danh sách cầu thủ dưới dạng CSV hoặc TSV.",
+  "We could not find a player table in this HTML file. Export a table that includes player names, or use CSV/TSV.": "Không tìm thấy bảng cầu thủ trong file HTML. Hãy xuất bảng có tên cầu thủ hoặc dùng CSV/TSV.",
+  "The file is empty or has no player rows. Export a list with column headings and at least one player.": "File trống hoặc chưa có dòng cầu thủ. Hãy xuất danh sách có tiêu đề cột và ít nhất một cầu thủ.",
+  "The export is missing player names. Include the Name column, then try again.": "File chưa có tên cầu thủ. Hãy thêm cột Name khi xuất rồi thử lại.",
+  "No player names were found. Check the Name column and try again.": "Không tìm thấy tên cầu thủ. Hãy kiểm tra cột Name rồi thử lại.",
+  "We couldn't read this player list. Use an HTML table or CSV/TSV file that includes player names, then try again.": "ManagerHub chưa đọc được danh sách này. Hãy dùng file HTML có bảng hoặc CSV/TSV có cột Name rồi thử lại.",
+  "Role importance": "Mức độ ảnh hưởng trong vai trò",
+  "These weights only explain ManagerHub's role-fit score. They are not Football Manager's CA costs.": "Các mức ảnh hưởng này chỉ dùng để tính độ hợp vai trò của ManagerHub, không phải chi phí CA của Football Manager.",
+  "From your export (not game-verified)": "Từ file bạn xuất (chưa xác minh với game)"
 } as const;
