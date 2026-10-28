@@ -278,7 +278,7 @@ test('Plan B remains intact across workspace navigation and resets for a differe
   await page.keyboard.press('Control+k');
   await page.getByRole('dialog',{name:'Quick navigation'})
     .getByRole('button',{name:/Squad Planner/}).click();
-  await expect(page.getByRole('button',{name:'Plan A'})).toHaveAttribute('aria-pressed','true');
+  await expect(page.getByRole('button',{name:'Plan A',exact:true})).toHaveAttribute('aria-pressed','true');
   await page.getByRole('button',{name:'Plan B',exact:true}).click();
   await expect(page.getByRole('combobox',{name:'Lock RB'})).toHaveValue('');
 });
