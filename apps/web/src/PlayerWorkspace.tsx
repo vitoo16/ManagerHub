@@ -208,7 +208,7 @@ export function PlayerWorkspace({dataset,onDataset}:Props){
       setChosenId(parsed.players[0]?.id??null);
       setSearch('');
       setVisibleLimit(100);
-    }catch(ex){setError(t(readableImportError(ex)));}
+    }catch(ex){setError(readableImportError(ex));}
   };
   const visible=useMemo(()=>dataset?.players.filter(p=>[p.name,p.club,p.position].some(v=>v?.toLowerCase().includes(search.toLowerCase())))??[],[dataset,search]);
   const selected=dataset?.players.find(p=>p.id===chosenId)??dataset?.players[0]??null;
@@ -237,7 +237,7 @@ export function PlayerWorkspace({dataset,onDataset}:Props){
       </div>
       <Status tone="info">{t("No data uploaded")}</Status>
     </div>
-    {error&&<div role="alert" className="inline-alert"><Icon name="warning" size={16}/>{error}</div>}
+    {error&&<div role="alert" className="inline-alert"><Icon name="warning" size={16}/>{t(error)}</div>}
     <Surface className="saved-player-library">
       <div className="saved-player-library__heading">
         <div><strong>{t("Saved player exports")}</strong><small>{t("IndexedDB · This browser only · Explicit opt-in · Up to 20 exports")}</small></div>
