@@ -111,7 +111,7 @@ function auditRawJsxText(file: string, source: string): RawTextUse[] {
   for (const match of source.matchAll(pattern)) {
     const text = match[1]!.replace(/\s+/g, ' ').trim();
     if (!text || text.length > 160 || !/[A-Za-zÀ-ỹ]/.test(text)) continue;
-    if (/[(){}[\\];=&]/.test(text) || ALLOWED_RAW_JSX_TEXT.has(text)) continue;
+    if (/[(){};=&]/.test(text) || text.includes('[') || text.includes(']') || ALLOWED_RAW_JSX_TEXT.has(text)) continue;
     raw.push({ text, file: relative(process.cwd(), file), line: lineAt(source, match.index!) });
   }
   return raw;
