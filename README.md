@@ -53,6 +53,8 @@ Open `/#/players` and import your **native HTML printout** from Football Manager
 ## Local Player Library and Squad Planner
 Player Lab can now **opt-in save** a normalized export to IndexedDB, restore it across reloads and delete it from the browser. The connected **Squad Planner** (`/#/squad`) drafts complete 4-3-3 / 4-2-3-1 starting elevens only when visible export positions and role attributes meet hard data requirements; otherwise it reports which positions cannot be filled. These are transparent **heuristics**, not exact FM match-engine predictions, verified CA/PA, or an editor. [Details and privacy limits](docs/implementation/08-local-library-and-squad-planner.md).
 
+The Player Lab **Recruitment** tab can also compare the best-fit XI from the same imported list with and without a selected player, explain when position/attribute coverage blocks a complete lineup, and open that roster in Squad Planner. This is a lineup sensitivity check—not a transfer recommendation, player value or match prediction; verified club needs and financial/contract data are still required.
+
 ### Plan A / Plan B in Squad Planner
 In `/#/squad`, pin an eligible player to an exact position, exclude players or copy Plan A into Plan B. The engine recalculates the entire XI and refuses invalid duplicate or unsupported assignments. The same-formation comparison identifies roster changes and heuristic Role Fit differences; **this is not a validated prediction of match performance**. Plans are temporary in-page scenarios; only explicitly saved player exports persist in IndexedDB. [Implementation details](docs/implementation/08-local-library-and-squad-planner.md).
 
