@@ -37,3 +37,13 @@ export function readableImportError(cause: unknown): string {
   }
   return "We couldn't read this player list. Use an HTML table or CSV/TSV file that includes player names, then try again.";
 }
+
+/** Translate parser warnings into next steps rather than exposing internal flags. */
+export function readableImportWarning(warning: string): string {
+  if (warning.startsWith('No recognized attribute columns')) return 'No player attributes were found. Include passing, pace and other 1–20 columns when exporting.';
+  if (warning.startsWith('No position column')) return 'Your list is missing a Position column. Add it to compare roles and plan a lineup.';
+  if (warning.startsWith('CA/PA-like export columns')) return 'We do not treat values labeled CA/PA in an exported list as verified hidden game values.';
+  if (warning.includes('rows without a player name')) return 'Some rows had no player name and were skipped.';
+  if (warning.includes('unavailable or unrecognized attribute cells')) return 'Some attributes were hidden or unavailable and were left blank rather than guessed.';
+  return 'Some columns could not be read. Check the exported view and try again.';
+}
