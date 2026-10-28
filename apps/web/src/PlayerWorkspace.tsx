@@ -138,6 +138,7 @@ function PlayerDetails({player,dataset,onOpenSquad}:{player:PlayerExport;dataset
   const [impactFormation,setImpactFormation]=useState<FormationId>('4-3-3');
   const squadImpact=useMemo(()=>assessSquadContribution(dataset.players,player.id,impactFormation),[dataset,player.id,impactFormation]);
   const coverageGaps=squadImpact.baseline?.diagnostics.filter(item=>item.scoredCandidates===0||item.scoredCandidates<item.eligibleCandidates)??[];
+  const replacementGaps=squadImpact.withoutPlayer?.diagnostics.filter(item=>item.scoredCandidates===0||item.scoredCandidates<item.eligibleCandidates)??[];
   const assignedRole=ROLE_PROFILES.find(role=>role.id===squadImpact.assignment?.slot.roleId);
   return <section aria-label={t('Scouting report for')+' '+player.name}>
     <div className="scout-identity"><div className="scout-avatar" aria-hidden="true">{player.name.slice(0,1).toUpperCase()}</div>
@@ -204,6 +205,9 @@ function PlayerDetails({player,dataset,onOpenSquad}:{player:PlayerExport;dataset
           {squadImpact.status==='required-for-complete-xi'&&squadImpact.assignment&&<>
             <Status tone="info">{t("Needed to complete the starting eleven")}</Status>
             <p>{t("Without this player, the current export cannot fill all eleven positions under the selected formation and data rules.")}</p>
+            {replacementGaps.length>0&&<div className="squad-coverage-list" role="list" aria-label={t("Position data coverage")}>
+              {replacementGaps.map(item=><div role="listitem" key={item.slot.id}><strong>{item.slot.label}</strong><span>{t("{{scored}} of {{eligible}} eligible players",{scored:item.scoredCandidates,eligible:item.eligibleCandidates})}</span></div>)}
+            </div>}
             <p><strong>{t("Selected position:")}</strong> {squadImpact.assignment.slot.label} · {assignedRole?t(assignedRole.title):squadImpact.assignment.slot.roleId} · {t("Role fit")} {squadImpact.assignment.roleScore}/100</p>
           </>}
           {squadImpact.status==='comparison-ready'&&squadImpact.assignment&&squadImpact.baseline&&squadImpact.withoutPlayer&&<>
