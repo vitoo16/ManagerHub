@@ -44,6 +44,8 @@ test('inspects AFE header locally and never claims full save support', async ({ 
   });
   await expect(page.getByText('Signature recognized')).toBeVisible();
   await expect(page.getByText('Not decoded')).toBeVisible();
+  await expect(page.getByText(/We can check this save’s format/)).toBeVisible();
+  await page.getByText('Technical details').click();
   await expect(page.getByText(/Container family detected; player records/i)).toBeVisible();
   await expect(page.getByText('career.fm').first()).toBeVisible();
 });
