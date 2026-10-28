@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { readableImportError } from './i18n/player-import-copy';
+import { readableImportError, readableImportWarning } from './i18n/player-import-copy';
 import {useId,useMemo,useRef,useState,type ChangeEvent} from 'react';
 import {
   ATTRIBUTE_LABELS,attributeGroupSummary,attributeStrengthIndex,
@@ -11,15 +11,6 @@ import { usePlayerLibrary } from './usePlayerLibrary';
 import './player-workspace.css';
 
 const MAX_EXPORT_BYTES=12*1024*1024;
-
-function readableImportWarning(warning:string):string {
-  if(warning.startsWith('No recognized attribute columns')) return 'No player attributes were found. Include passing, pace and other 1–20 columns when exporting.';
-  if(warning.startsWith('No position column')) return 'Your list is missing a Position column. Add it to compare roles and plan a lineup.';
-  if(warning.startsWith('CA/PA-like export columns')) return 'We do not treat values labeled CA/PA in an exported list as verified hidden game values.';
-  if(warning.includes('rows without a player name')) return 'Some rows had no player name and were skipped.';
-  if(warning.includes('unavailable or unrecognized attribute cells')) return 'Some attributes were hidden or unavailable and were left blank rather than guessed.';
-  return 'Some columns could not be read. Check the exported view and try again.';
-}
 
 type Props={
   dataset:PlayerDataset|null;
