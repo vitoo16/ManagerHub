@@ -480,5 +480,7 @@ export default {
   "We couldn't read this player list. Use an HTML table or CSV/TSV file that includes player names, then try again.": "ManagerHub chưa đọc được danh sách này. Hãy dùng file HTML có bảng hoặc CSV/TSV có cột Name rồi thử lại.",
   "Role importance": "Mức độ ảnh hưởng trong vai trò",
   "These weights only explain ManagerHub's role-fit score. They are not Football Manager's CA costs.": "Các mức ảnh hưởng này chỉ dùng để tính độ hợp vai trò của ManagerHub, không phải chi phí CA của Football Manager.",
-  "From your export (not game-verified)": "Từ file bạn xuất (chưa xác minh với game)"
+  "From your export (not game-verified)": "Từ file bạn xuất (chưa xác minh với game)",
+  "No players match your search.": "Không tìm thấy cầu thủ phù hợp với nội dung tìm kiếm.",
+  "Plan {{plan}}": "Phương án {{plan}}"
 } as const;
