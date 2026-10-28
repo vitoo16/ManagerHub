@@ -39,4 +39,4 @@ export async function setAppLocale(locale: AppLocale): Promise<void> {
   document.documentElement.lang = locale;
   try { localStorage.setItem('mh-locale',locale); } catch { /* Keep in-memory locale */ }
 }
-document.documentElement.lang = i18n.language || 'en';
+if (typeof document !== 'undefined') document.documentElement.lang = i18n.language || 'en';

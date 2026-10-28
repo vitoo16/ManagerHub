@@ -100,7 +100,7 @@ test('imports real observed attributes into Player Lab without fake CA/PA', asyn
   await page.locator('input[type=file]').setInputFiles({name:'export.csv',mimeType:'text/csv',buffer:Buffer.from(csv)});
   await expect(page.getByText('2 player records')).toBeVisible();
   await expect(page.getByRole('heading',{name:'Test Creator'})).toBeVisible();
-  await expect(page.getByText('Uncalibrated · Not eCA')).toBeVisible();
+  await expect(page.getByText('Visible attributes only · Not CA')).toBeVisible();
   await expect(page.getByText('Not verified').first()).toBeVisible();
   await page.getByRole('tab',{name:'Role fit'}).click();
   await expect(page.getByText('Deep-Lying Playmaker')).toBeVisible();
@@ -135,7 +135,7 @@ test('supports native FM-style print to HTML table without external scripts', as
   await page.getByRole('tab',{name:'Attributes'}).click();
   await expect(page.getByText('Passing', { exact: true })).toBeVisible();
   await expect(page.getByText('Vision', { exact: true })).toBeVisible();
-  await expect(page.getByText('Uncalibrated · Not eCA')).toBeVisible();
+  await expect(page.getByText('Visible attributes only · Not CA')).toBeVisible();
 });
 
 
@@ -155,7 +155,7 @@ test('locally saved player exports survive reload and can be explicitly deleted'
   await expect(page.getByText('No saved exports yet')).toHaveCount(0);
   await page.getByRole('list', { name: 'Saved exports' }).getByRole('button', { name: 'Open' }).click();
   await expect(page.getByRole('heading', { name: 'Preserved Prospect' })).toBeVisible();
-  await expect(page.getByText('Uncalibrated · Not eCA')).toBeVisible();
+  await expect(page.getByText('Visible attributes only · Not CA')).toBeVisible();
 
   await page.getByRole('list', { name: 'Saved exports' }).getByRole('button', { name: 'Delete' }).click();
   await page.getByRole('button', { name: 'Confirm delete' }).click();
@@ -197,7 +197,7 @@ test('builds a unique eleven for an eligible export and explains infeasible form
 
   await page.getByLabel('Formation').selectOption('4-2-3-1');
   await expect(page.getByText('Incomplete XI', { exact: true })).toBeVisible();
-  await expect(page.getByText('Hard constraints not met')).toBeVisible();
+  await expect(page.getByText('We couldn't fill every position')).toBeVisible();
   await expect(lineup).toHaveCount(0);
 });
 
@@ -278,4 +278,45 @@ test('Plan B remains intact across workspace navigation and resets for a differe
   await expect(page.getByRole('button',{name:'Plan A'})).toHaveAttribute('aria-pressed','true');
   await page.getByRole('button',{name:'Plan B'}).click();
   await expect(page.getByRole('combobox',{name:'Lock RB'})).toHaveValue('');
+});
+
+
+test('VI/EN language switch localizes onboarding, saves choice and restores English', async ({page})=>{
+  await page.goto('/#/overview');
+  await expect(page.locator('html')).toHaveAttribute('lang','en');
+  await page.getByRole('button',{name:'Chuyển sang tiếng Việt'}).click();
+  await expect(page.locator('html')).toHaveAttribute('lang','vi');
+  await expect(page.getByRole('heading',{name:/Mọi quyết định/})).toBeVisible();
+  await expect(page.getByRole('navigation',{name:'Điều hướng chính'})).toContainText('Phân tích cầu thủ');
+
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('lang','vi');
+  await expect(page.getByRole('heading',{name:/Mọi quyết định/})).toBeVisible();
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog',{name:'Chuyển trang nhanh'})
+    .getByRole('button',{name:/Phân tích cầu thủ/}).click();
+  await expect(page.getByRole('heading',{name:'Phân tích cầu thủ'})).toBeVisible();
+  await expect(page.getByText(/Trong FM, mở danh sách cầu thủ/)).toBeVisible();
+
+  await page.getByRole('button',{name:'Switch to English'}).click();
+  await expect(page.locator('html')).toHaveAttribute('lang','en');
+  await expect(page.getByRole('heading',{name:'Player Lab'})).toBeVisible();
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('lang','en');
+  await expect(page.getByRole('heading',{name:'Player Lab'})).toBeVisible();
+});
+
+test('Vietnamese player scouting labels are readable and CA stays unverified',async ({page})=>{
+  await page.goto('/#/players');
+  await page.getByRole('button',{name:'Chuyển sang tiếng Việt'}).click();
+  await page.locator('input[type=file]').setInputFiles({
+    name:'vi-squad.csv',mimeType:'text/csv',
+    buffer:Buffer.from('Name,Position,Passing,Vision,Decisions,Stamina,Work Rate\nCầu thủ thử nghiệm,CM,17,18,16,14,16')
+  });
+  await expect(page.getByRole('heading',{name:'Cầu thủ thử nghiệm'})).toBeVisible();
+  await expect(page.getByText('CA thật')).toBeVisible();
+  await expect(page.getByText('Chưa xác minh').first()).toBeVisible();
+  await page.getByRole('tab',{name:'Chỉ số'}).click();
+  await expect(page.getByText('Chuyền bóng')).toBeVisible();
+  await expect(page.getByText('Tầm nhìn')).toBeVisible();
 });
