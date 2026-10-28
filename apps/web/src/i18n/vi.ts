@@ -268,7 +268,7 @@ export default {
   "Incomplete XI": "Chưa đủ 11 người",
   "Complete XI": "Đủ 11 người",
   "Missing source fields": "Thiếu dữ liệu",
-  "Formation": "Sơ đồ",
+  "Formation": "Sơ đồ chiến thuật",
   "Find players to pin": "Tìm cầu thủ để khóa",
   "Search roster to exclude": "Tìm cầu thủ không sử dụng",
   "unavailable for selection": "cầu thủ không được chọn",
