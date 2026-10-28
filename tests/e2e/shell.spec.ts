@@ -111,7 +111,11 @@ test('imports real observed attributes into Player Lab without fake CA/PA', asyn
   await expect(page.getByText('Head-to-head analysis')).toBeVisible();
   await expect(page.getByRole('table',{name:'Role fit comparisons'})).toBeVisible();
   await page.getByRole('tab',{name:'Recruitment'}).click();
-  await expect(page.getByText('Do not recommend a transfer yet')).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Squad contribution preview'})).toBeVisible();
+  await expect(page.getByText('A complete starting eleven cannot be built from this list yet.')).toBeVisible();
+  await page.getByRole('button',{name:'Open this roster in Squad Planner'}).click();
+  await expect(page.getByRole('heading',{name:'Squad Planner'})).toBeVisible();
+  await expect(page.getByText('Test Creator')).toBeVisible();
   await page.getByRole('button',{name:/Test Defender/}).click();
   await expect(page.getByRole('heading',{name:'Test Defender'})).toBeVisible();
 });
