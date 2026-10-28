@@ -217,7 +217,7 @@ test('Plan A/B supports versatile player pins, exclusions and honest comparisons
   await expect(page.getByText('Starting eleven ready').first()).toBeVisible();
 
   await page.getByRole('group',{name:'Squad scenarios'})
-    .getByRole('button',{name:'Plan B'}).click();
+    .getByRole('button',{name:'Plan B',exact:true}).click();
   await page.getByRole('combobox',{name:'Lock RB'}).selectOption('export-row-12');
   const lineup=page.getByRole('list',{name:'Assigned starting eleven'});
   await expect(lineup).toContainText('Bench Versatile');
@@ -256,7 +256,7 @@ test('Plan B remains intact across workspace navigation and resets for a differe
   await page.keyboard.press('Control+k');
   await page.getByRole('dialog',{name:'Quick navigation'})
     .getByRole('button',{name:/Squad Planner/}).click();
-  await page.getByRole('button',{name:'Plan B'}).click();
+  await page.getByRole('button',{name:'Plan B',exact:true}).click();
   await page.getByRole('combobox',{name:'Lock RB'}).selectOption('export-row-12');
   await expect(page.getByRole('list',{name:'Assigned starting eleven'})).toContainText('Bench Versatile');
 
@@ -266,7 +266,7 @@ test('Plan B remains intact across workspace navigation and resets for a differe
   await page.keyboard.press('Control+k');
   await page.getByRole('dialog',{name:'Quick navigation'})
     .getByRole('button',{name:/Squad Planner/}).click();
-  await expect(page.getByRole('button',{name:'Plan B'})).toHaveAttribute('aria-pressed','true');
+  await expect(page.getByRole('button',{name:'Plan B',exact:true})).toHaveAttribute('aria-pressed','true');
   await expect(page.getByRole('combobox',{name:'Lock RB'})).toHaveValue('export-row-12');
 
   await page.keyboard.press('Control+k');
@@ -279,7 +279,7 @@ test('Plan B remains intact across workspace navigation and resets for a differe
   await page.getByRole('dialog',{name:'Quick navigation'})
     .getByRole('button',{name:/Squad Planner/}).click();
   await expect(page.getByRole('button',{name:'Plan A'})).toHaveAttribute('aria-pressed','true');
-  await page.getByRole('button',{name:'Plan B'}).click();
+  await page.getByRole('button',{name:'Plan B',exact:true}).click();
   await expect(page.getByRole('combobox',{name:'Lock RB'})).toHaveValue('');
 });
 
