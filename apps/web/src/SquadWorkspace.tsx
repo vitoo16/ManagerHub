@@ -69,7 +69,7 @@ function LineupResults({solution}:{solution:SquadSolution}){
         <span className="squad-roster__score">{item.roleScore}</span>
       </li>)}
     </ol> : <div className="squad-feasibility" role="status">
-      <Status tone="warning">{t("This player list can’t fill all eleven positions yet.")}</Status>
+      <Status tone="warning">{t("This player list cannot fill all eleven positions yet.")}</Status>
       <SquadIssue reason={solution.reason}/>
       <p>{t("To complete the lineup, choose a different player for a locked position, remove a player from the exclusion list, or export more attributes.")}</p>
     </div>}
