@@ -223,7 +223,7 @@ export function SquadWorkspace({dataset,onImport,plans,setPlans,active,setActive
         <div className="squad-scenario-tabs" role="group" aria-label={t("Squad scenarios")}>
           {(['A','B'] as const).map(key=><button key={key} aria-pressed={active===key}
             className={active===key?'squad-scenario-tab squad-scenario-tab--active':'squad-scenario-tab'}
-            onClick={()=>setActive(key)}>{t('Plan '+key)}</button>)}
+            onClick={()=>setActive(key)}>{t('Plan {{plan}}',{plan:key})}</button>)}
         </div>
         <Button variant="quiet" onClick={()=>{copyAtoB();setActive('B');}}>
           <Icon name="layers" size={15}/> Copy A into B
