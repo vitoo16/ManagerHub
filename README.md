@@ -55,3 +55,6 @@ Player Lab can now **opt-in save** a normalized export to IndexedDB, restore it 
 
 ### Plan A / Plan B in Squad Planner
 In `/#/squad`, pin an eligible player to an exact position, exclude players or copy Plan A into Plan B. The engine recalculates the entire XI and refuses invalid duplicate or unsupported assignments. The same-formation comparison identifies roster changes and heuristic Role Fit differences; **this is not a validated prediction of match performance**. Plans are temporary in-page scenarios; only explicitly saved player exports persist in IndexedDB. [Implementation details](docs/implementation/08-local-library-and-squad-planner.md).
+
+## Languages and player-facing help
+ManagerHub supports **Vietnamese / English (VI/EN)** with immediate language switching from the top bar and stored preference across reloads. Player Lab includes a plain-language guide distinguishing CA, PA, RCA and ManagerHub's role-fit scoring. See [i18n and content guidelines](docs/engineering/i18n-guidelines.md) and [FM Scout CA/PA research](docs/domain/ca-pa-rca-research.md).
