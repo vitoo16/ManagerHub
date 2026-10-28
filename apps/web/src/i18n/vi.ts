@@ -489,5 +489,16 @@ export default {
   "This pitch is a planning aid, not a replay of player movement. ManagerHub does not simulate team chemistry or win probability.": "Sơ đồ này giúp bạn lên kế hoạch đội hình, không mô phỏng di chuyển trong trận. ManagerHub không mô phỏng độ ăn ý hay xác suất thắng.",
   "Starting eleven ready": "Đội hình xuất phát đã đủ 11 người",
   "Starting eleven incomplete": "Đội hình xuất phát chưa đủ 11 người",
-  "Copy Plan A to Plan B": "Sao chép phương án A sang phương án B"
+  "Copy Plan A to Plan B": "Sao chép phương án A sang phương án B",
+  "You have assigned the same player to more than one position": "Bạn đang xếp cùng một cầu thủ vào nhiều vị trí.",
+  "You cannot exclude a player while keeping them in the starting lineup": "Bạn không thể loại một cầu thủ nhưng vẫn giữ họ trong đội hình xuất phát.",
+  "This position is no longer available in the selected formation": "Vị trí này không còn trong sơ đồ đã chọn.",
+  "This player is not listed as eligible for that position in your export": "Theo file bạn đã xuất, cầu thủ này chưa được xác định là phù hợp với vị trí đó.",
+  "This player is not in the currently imported squad": "Cầu thủ này không có trong danh sách đang được nhập. Hãy chọn cầu thủ khác hoặc nhập đúng danh sách.",
+  "There are not enough eligible players to fill all eleven positions": "Chưa có đủ cầu thủ phù hợp để lấp đầy 11 vị trí.",
+  "These choices conflict, so the starting eleven cannot be completed": "Các lựa chọn hiện tại đang mâu thuẫn nên chưa thể hoàn thiện đội hình xuất phát.",
+  "Some positions are still empty.": "Một số vị trí vẫn còn trống.",
+  "Check the highlighted positions or choose different players.": "Hãy kiểm tra các vị trí được đánh dấu hoặc chọn cầu thủ khác.",
+  "This player list cannot fill all eleven positions yet.": "Danh sách cầu thủ này chưa đủ để xếp kín 11 vị trí.",
+  "To complete the lineup, choose a different player for a locked position, remove a player from the exclusion list, or export more attributes.": "Để xếp đủ đội hình, hãy chọn cầu thủ khác cho vị trí đã khóa, bỏ cầu thủ khỏi danh sách loại trừ hoặc xuất thêm chỉ số."
 } as const;
