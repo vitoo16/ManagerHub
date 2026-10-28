@@ -51,7 +51,7 @@ export function assessSquadContribution(
   if (!assignment) {
     return {
       status: 'not-selected', formation, baseline, withoutPlayer,
-      assignment: null, roleFitDelta: null, changedSlots: 0
+      assignment: null, roleFitDelta: null, changedSlots: null
     };
   }
 
