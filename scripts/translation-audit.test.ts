@@ -70,11 +70,16 @@ function hasPlusOutsideString(text: string): boolean {
 }
 
 function literalStrings(text: string): string[] {
+  const pattern = /^\\s*(?:"((?:\\\\.|[^"\\\\])*)"|'((?:\\\\.|[^'\\\\])*)')\\s*$/;
+  const exact = text.match(pattern);
+  if (exact) return [(exact[1] ?? exact[2] ?? '').replace(/\\\\(["'\\\\])/g, '$1')];
+
+  // For a conditional t(...), only branch literals are translation keys; literals in its condition are internal values.
   const values: string[] = [];
-  const pattern = /"((?:\\.|[^"\\])*)"|'((?:\\.|[^'\\])*)'/g;
-  for (const match of text.matchAll(pattern)) {
-    const value = match[1] ?? match[2];
-    if (value !== undefined) values.push(value.replace(/\\(["'\\])/g, '$1'));
+  const branches = /\\?\\s*"((?:\\\\.|[^"\\\\])*)"|\\?\\s*'((?:\\\\.|[^'\\\\])*)'|:\\s*"((?:\\\\.|[^"\\\\])*)"|:\\s*'((?:\\\\.|[^'\\\\])*)'/g;
+  for (const match of text.matchAll(branches)) {
+    const value = match[1] ?? match[2] ?? match[3] ?? match[4];
+    if (value !== undefined) values.push(value.replace(/\\\\(["'\\\\])/g, '$1'));
   }
   return values;
 }
