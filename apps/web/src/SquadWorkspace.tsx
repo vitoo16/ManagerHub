@@ -102,7 +102,7 @@ function PinEditor({slots,dataset,locks,excluded,onPin,onExclude,onClear}:PinEdi
       <Button variant="quiet" onClick={onClear}>{t("Clear all constraints")}</Button>
     </div>
     <p className="module-disclaimer">{t("Pin an observed, eligible player to a position or exclude a player from selection. Every edit recalculates the entire XI.")}</p>
-    <label className="squad-editor-filter">Find players to pin
+    <label className="squad-editor-filter">{t("Find players to pin")}
       <input type="search" placeholder={t("Search name, club or exported position…")} value={pinSearch}
         onChange={event=>setPinSearch(event.target.value)}/>
     </label>
@@ -117,7 +117,7 @@ function PinEditor({slots,dataset,locks,excluded,onPin,onExclude,onClear}:PinEdi
           <select aria-label={t('Lock')+' '+slot.label} value={value}
             onChange={event=>onPin(slot.id,event.target.value||null)}>
             <option value="">{t("Automatic selection")}</option>
-            {value && !selected && <option value={value}{pinnedName} · {t('current lock')}</option>}
+            {value && !selected && <option value={value}>{pinnedName} · {t('current lock')}</option>}
             {candidates.map(candidate=><option key={candidate.playerId} value={candidate.playerId}>
               {candidate.name} · {t('Fit')} {candidate.score}{excluded.includes(candidate.playerId)?' · '+t('EXCLUDED'):''}
             </option>)}
@@ -125,8 +125,8 @@ function PinEditor({slots,dataset,locks,excluded,onPin,onExclude,onClear}:PinEdi
         </label>;
       })}
     </div>
-    <div className="squad-exclusion-heading"><strong>{t("Exclude players")}</strong><small{excluded.length} {t('unavailable for selection')}</small></div>
-    <label className="squad-editor-filter">Search roster to exclude
+    <div className="squad-exclusion-heading"><strong>{t("Exclude players")}</strong><small>{excluded.length} {t('unavailable for selection')}</small></div>
+    <label className="squad-editor-filter">{t("Search roster to exclude")}
       <input type="search" placeholder={t("Search exported players…")} value={excludeSearch}
         onChange={event=>setExcludeSearch(event.target.value)}/>
     </label>
@@ -136,7 +136,7 @@ function PinEditor({slots,dataset,locks,excluded,onPin,onExclude,onClear}:PinEdi
           onChange={event=>onExclude(player.id,event.target.checked)}/>
         <span>{player.name}</span><small>{player.position??t('Position unknown')}</small>
       </label>)}
-      {searched.length===0 && <p className="module-disclaimer">No players match your search.</p>}
+      {searched.length===0 && <p className="module-disclaimer">{t("No players match your search.")}</p>}
     </div>
     {dataset.players.length>60&&<p className="module-disclaimer">{t("Showing the first 60 matching players. Search by name to find others.")}</p>}
   </Surface>;
