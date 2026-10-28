@@ -42,7 +42,7 @@ Maintain a strict separation among hidden game CA, RCA/CA cost estimation, model
 ## Quality gates
 
 - `apps/web/src/i18n/i18n.test.ts` verifies Vietnamese/English resources and locale resolution.
-- `apps/web/src/i18n/translation-audit.test.ts` scans TSX UI components for literal translation keys missing from Vietnamese resources and rejects string-concatenated keys; use interpolation such as `t('Plan {{plan}}', { plan })` instead.
+- `scripts/translation-audit.test.ts` scans TSX UI components for literal translation keys missing from Vietnamese resources and rejects string-concatenated keys; use interpolation such as `t('Plan {{plan}}', { plan })` instead.
 - Import failures and warnings must be converted into actionable guidance by `player-import-copy.ts`; keep parser diagnostics out of primary onboarding messages and test every returned copy key.
 - Playwright tests check locale switching, persistence across page reload, translated navigation, role-specific labels and player metrics.
 - Run `npm run check` and `npm run test:e2e`; verify the most recent GitHub Actions run before claiming fully green CI.
