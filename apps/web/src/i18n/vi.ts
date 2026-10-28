@@ -447,5 +447,12 @@ export default {
   "Try changing a locked player, removing an exclusion or exporting more player attributes.": "Hãy thử đổi cầu thủ đã khóa, bỏ bớt người bị loại hoặc xuất thêm chỉ số.",
   "Plans A and B stay available while you browse this session. Role-fit estimates don't include match fitness, chemistry or hidden CA and PA.": "Hai phương án A/B được giữ khi bạn chuyển trang trong phiên này. Điểm vai trò chưa tính thể lực, phối hợp hay CA/PA ẩn.",
   "Attribute summary": "Điểm tổng hợp chỉ số",
-  "Visible attributes only · Not CA": "Chỉ số hiển thị · Không phải CA"
+  "Visible attributes only · Not CA": "Chỉ số hiển thị · Không phải CA",
+  "What do CA, PA and role fit mean?": "CA, PA và điểm hợp vai trò khác nhau thế nào?",
+  "CA explains a player’s current ability in FM. Attributes have different ability costs depending on position, so a simple average is not the game’s CA.": "CA phản ánh năng lực hiện tại trong FM. Mỗi chỉ số có trọng số khác nhau tùy vị trí nên không thể lấy trung bình chỉ số để ra CA thật.",
+  "Recommended CA is the ability needed to sustain a set of attributes in the editor. It is not automatically the player’s hidden CA.": "RCA là mức năng lực mà bộ chỉ số hiện tại cần trong trình chỉnh sửa game, không đồng nghĩa với CA ẩn của cầu thủ.",
+  "PA is a potential ceiling assigned within the save. You cannot calculate its exact value from visible attributes.": "PA là giới hạn tiềm năng được xác định trong save. Không thể tính chính xác PA chỉ từ các chỉ số đang hiển thị.",
+  "This score is ManagerHub’s guide to a tactical job, based on the attributes you imported. It is not a game-engine rating.": "Đây là điểm ManagerHub tính để giúp chọn vai trò phù hợp từ chỉ số bạn đã nhập, không phải điểm do game trực tiếp tính.",
+  "FM Scout studied CA weights for older versions. We will not call a result exact FM26 CA until its weights and formula are independently verified.": "FM Scout nghiên cứu trọng số CA trên các phiên bản cũ. ManagerHub chưa coi kết quả là CA chính xác của FM26 khi chưa kiểm chứng riêng phiên bản này.",
+  "Read the CA research": "Đọc nghiên cứu về CA"
 } as const;
