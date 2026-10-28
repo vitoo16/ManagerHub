@@ -482,5 +482,12 @@ export default {
   "These weights only explain ManagerHub's role-fit score. They are not Football Manager's CA costs.": "Các mức ảnh hưởng này chỉ dùng để tính độ hợp vai trò của ManagerHub, không phải chi phí CA của Football Manager.",
   "From your export (not game-verified)": "Từ file bạn xuất (chưa xác minh với game)",
   "No players match your search.": "Không tìm thấy cầu thủ phù hợp với nội dung tìm kiếm.",
-  "Plan {{plan}}": "Phương án {{plan}}"
+  "Plan {{plan}}": "Phương án {{plan}}",
+  "FOOTBALL INTELLIGENCE": "TRÍ TUỆ BÓNG ĐÁ",
+  "We couldn't fill all eleven positions with your current choices.": "Chưa thể xếp đủ 11 vị trí với các lựa chọn hiện tại.",
+  "Check the positions still missing, or choose different players.": "Hãy kiểm tra các vị trí còn thiếu hoặc chọn cầu thủ khác.",
+  "This pitch is a planning aid, not a replay of player movement. ManagerHub does not simulate team chemistry or win probability.": "Sơ đồ này giúp bạn lên kế hoạch đội hình, không mô phỏng di chuyển trong trận. ManagerHub không mô phỏng độ ăn ý hay xác suất thắng.",
+  "Starting eleven ready": "Đội hình xuất phát đã đủ 11 người",
+  "Starting eleven incomplete": "Đội hình xuất phát chưa đủ 11 người",
+  "Copy Plan A to Plan B": "Sao chép phương án A sang phương án B"
 } as const;
