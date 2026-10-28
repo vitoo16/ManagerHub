@@ -13,13 +13,13 @@ const getRoleTitle = (id: string): string => ROLE_PROFILES.find(role=>role.id===
 function SquadIssue({reason}: {reason:string|null}) {
   const {t}=useTranslation();
   if(!reason)return null;
-  const issue=reason.includes('pinned twice')?'same player pinned twice':
-    reason.includes('both excluded and pinned')?'player both pinned and excluded':
-    reason.includes('does not exist')?'position changed':
-    reason.includes('not eligible')?'player in wrong position':
-    reason.includes('not present')?'player not in roster':
-    reason.includes('No complete')?'not enough eligible players':
-    'constraints cannot be met';
+  const issue=reason.includes('pinned twice')?'You have assigned the same player to more than one position':
+    reason.includes('both excluded and pinned')?'You cannot exclude a player while keeping them in the starting lineup':
+    reason.includes('does not exist')?'This position is no longer available in the selected formation':
+    reason.includes('not eligible')?'This player is not listed as eligible for that position in your export':
+    reason.includes('not present')?'This player is not in the currently imported squad':
+    reason.includes('No complete')?'There are not enough eligible players to fill all eleven positions':
+    'These choices conflict, so the starting eleven cannot be completed';
   return <p>{t(issue)}</p>;
 }
 
@@ -46,8 +46,8 @@ function TacticalPitch({ solution }: { solution: SquadSolution }) {
         </div>;
       })}
       {!solution.complete && <div className="squad-pitch__incomplete">
-        <Icon name="warning" size={25}/><strong>{t("We couldn't fill all eleven positions with your current choices.")}</strong>
-        <span>{t("Check the positions still missing, or choose different players.")}</span>
+        <Icon name="warning" size={25}/><strong>{t("Some positions are still empty.")}</strong>
+        <span>{t("Check the highlighted positions or choose different players.")}</span>
       </div>}
     </div>
     <div className="squad-pitch-note">
@@ -69,9 +69,9 @@ function LineupResults({solution}:{solution:SquadSolution}){
         <span className="squad-roster__score">{item.roleScore}</span>
       </li>)}
     </ol> : <div className="squad-feasibility" role="status">
-      <Status tone="warning">{t("We couldn't fill every position")}</Status>
+      <Status tone="warning">{t("This player list can’t fill all eleven positions yet.")}</Status>
       <SquadIssue reason={solution.reason}/>
-      <p>{t("Try changing a locked player, removing an exclusion or exporting more player attributes.")}</p>
+      <p>{t("To complete the lineup, choose a different player for a locked position, remove a player from the exclusion list, or export more attributes.")}</p>
     </div>}
   </Surface>;
 }
