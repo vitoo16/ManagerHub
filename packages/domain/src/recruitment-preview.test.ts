@@ -25,7 +25,8 @@ describe('same-export squad contribution preview', () => {
     expect(result.withoutPlayer?.complete).toBe(true);
     expect(result.assignment?.playerId).toBe('cm-b');
     expect(result.changedSlots).toBeGreaterThan(0);
-    expect(result.roleFitDelta).toBeGreaterThanOrEqual(0);
+    expect(result.roleFitDelta).not.toBeNull();
+    expect(result.roleFitDelta!).toBeGreaterThanOrEqual(0);
   });
 
   it('explains when the imported pool depends on this player to complete eleven', () => {
