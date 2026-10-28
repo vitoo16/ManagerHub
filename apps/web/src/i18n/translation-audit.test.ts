@@ -6,6 +6,10 @@ import vi from './vi';
 
 type KeyUse = { key: string; file: string; line: number };
 type DynamicKeyUse = { file: string; line: number };
+type RawTextUse = { text: string; file: string; line: number };
+
+// Intentional non-translatable tokens: brand wordmark, locale codes, file extension and FM ability acronyms.
+const ALLOWED_RAW_JSX_TEXT = new Set(['MANAGER', 'HUB', 'VI', 'EN', '.fm', 'CA —', 'RCA —', 'PA —', 'PA']);
 
 function listTsx(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
@@ -55,6 +59,23 @@ function auditTranslationCalls(file: string, content: string): { keys: KeyUse[];
   return { keys, dynamic };
 }
 
+function auditRawJsxText(file: string, content: string): RawTextUse[] {
+  const source = ts.createSourceFile(file, content, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  const raw: RawTextUse[] = [];
+  const visit = (node: ts.Node) => {
+    if (ts.isJsxText(node)) {
+      const text = node.text.replace(/\\s+/g, ' ').trim();
+      if (text && /[A-Za-zÀ-ỹ]/.test(text) && !ALLOWED_RAW_JSX_TEXT.has(text)) {
+        const line = source.getLineAndCharacterOfPosition(node.getStart(source)).line + 1;
+        raw.push({ text, file: relative(process.cwd(), file), line });
+      }
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  return raw;
+}
+
 describe('UI translation key coverage', () => {
   it('has Vietnamese copy for every literal key used by app components', () => {
     const sourceRoot = join(process.cwd(), 'apps/web/src');
@@ -63,6 +84,14 @@ describe('UI translation key coverage', () => {
     const missing = uses.filter(use => !Object.prototype.hasOwnProperty.call(vi, use.key));
 
     expect(missing.map(use => `${use.file}:${use.line} — ${use.key}`)).toEqual([]);
+  });
+
+  it('keeps visible English UI copy in i18n except for explicit brand and football tokens', () => {
+    const sourceRoot = join(process.cwd(), 'apps/web/src');
+    const files = listTsx(sourceRoot);
+    const raw = files.flatMap(file => auditRawJsxText(file, readFileSync(file, 'utf8')));
+
+    expect(raw.map(use => `${use.file}:${use.line} — ${use.text}`)).toEqual([]);
   });
 
   it('uses interpolation rather than concatenating translation keys', () => {
