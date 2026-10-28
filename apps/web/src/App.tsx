@@ -194,7 +194,16 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
             </div>
             {selected.archiveIndex.memberCount > 8 && <button className="text-link archive-preview__expand" onClick={() => setShowAllMembers(v => !v)}>{showAllMembers ? t('Show fewer') : t('Show all') + ' ' + selected.archiveIndex.memberCount + ' ' + t('entries')} <Icon name="chevron" size={14}/></button>}
           </div>}
-          <div className="inspector-note"><Icon name="warning" size={16}/><p>{selected.warnings.join(' ')}</p></div>
+          <div className="inspector-note"><Icon name="warning" size={16}/>
+            <div>
+              <p>{t(selected.detectedFamily
+                ? 'We can check this save’s format, but player data is not available yet. Use Player Lab with an exported HTML/CSV squad list.'
+                : 'This save format is not recognized yet. Try another save, or import a player list in Player Lab.')}</p>
+              <details className="inspection-technical"><summary>{t('Technical details')}</summary>
+                <p>{selected.warnings.join(' ')}</p>
+              </details>
+            </div>
+          </div>
         </Surface>}
       </div>}
     <div className="coverage-note"><Icon name="shield" size={17}/><p><strong>{t("Important:")}</strong> {t("recognizing AFE or FMF headers does not establish compatibility, identify your Football Manager version or give access to player attributes. Those capabilities require validated version-specific adapters.")}</p></div>

@@ -454,5 +454,15 @@ export default {
   "PA is a potential ceiling assigned within the save. You cannot calculate its exact value from visible attributes.": "PA là giới hạn tiềm năng được xác định trong save. Không thể tính chính xác PA chỉ từ các chỉ số đang hiển thị.",
   "This score is ManagerHub’s guide to a tactical job, based on the attributes you imported. It is not a game-engine rating.": "Đây là điểm ManagerHub tính để giúp chọn vai trò phù hợp từ chỉ số bạn đã nhập, không phải điểm do game trực tiếp tính.",
   "FM Scout studied CA weights for older versions. We will not call a result exact FM26 CA until its weights and formula are independently verified.": "FM Scout nghiên cứu trọng số CA trên các phiên bản cũ. ManagerHub chưa coi kết quả là CA chính xác của FM26 khi chưa kiểm chứng riêng phiên bản này.",
-  "Read the CA research": "Đọc nghiên cứu về CA"
+  "Read the CA research": "Đọc nghiên cứu về CA",
+  "We can check this save’s format, but player data is not available yet. Use Player Lab with an exported HTML/CSV squad list.": "Đã nhận diện được định dạng save, nhưng chưa thể xem cầu thủ trong đó. Hãy xuất danh sách cầu thủ ra HTML/CSV rồi mở Player Lab.",
+  "This save format is not recognized yet. Try another save, or import a player list in Player Lab.": "ManagerHub chưa nhận diện được định dạng save này. Hãy thử save khác hoặc nhập danh sách cầu thủ trong Player Lab.",
+  "Technical details": "Chi tiết kỹ thuật",
+  "No player attributes were found. Include passing, pace and other 1–20 columns when exporting.": "Không tìm thấy chỉ số cầu thủ. Hãy thêm các cột như Chuyền bóng, Tốc độ và chỉ số 1–20 trước khi xuất.",
+  "Your list is missing a Position column. Add it to compare roles and plan a lineup.": "Danh sách chưa có cột Vị trí. Hãy thêm cột này để so sánh vai trò và lập đội hình.",
+  "We do not treat values labeled CA/PA in an exported list as verified hidden game values.": "Dữ liệu có tên CA/PA trong file xuất chưa được xác minh là chỉ số ẩn thật từ game, nên không được dùng để kết luận.",
+  "Some rows had no player name and were skipped.": "Một số dòng không có tên cầu thủ nên đã được bỏ qua.",
+  "Some attributes were hidden or unavailable and were left blank rather than guessed.": "Một số chỉ số chưa hiện hoặc bị che. ManagerHub giữ trống thay vì tự đoán.",
+  "Some columns could not be read. Check the exported view and try again.": "Một số cột chưa đọc được. Hãy kiểm tra lại bảng dữ liệu đã xuất.",
+  "Could not access your saved lists. Please check browser storage settings or try again.": "Không thể mở danh sách đã lưu. Hãy kiểm tra quyền lưu trữ của trình duyệt rồi thử lại."
 } as const;

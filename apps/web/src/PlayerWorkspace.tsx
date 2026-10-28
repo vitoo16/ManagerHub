@@ -11,6 +11,15 @@ import './player-workspace.css';
 
 const MAX_EXPORT_BYTES=12*1024*1024;
 
+function readableImportWarning(warning:string):string {
+  if(warning.startsWith('No recognized attribute columns')) return 'No player attributes were found. Include passing, pace and other 1–20 columns when exporting.';
+  if(warning.startsWith('No position column')) return 'Your list is missing a Position column. Add it to compare roles and plan a lineup.';
+  if(warning.startsWith('CA/PA-like export columns')) return 'We do not treat values labeled CA/PA in an exported list as verified hidden game values.';
+  if(warning.includes('rows without a player name')) return 'Some rows had no player name and were skipped.';
+  if(warning.includes('unavailable or unrecognized attribute cells')) return 'Some attributes were hidden or unavailable and were left blank rather than guessed.';
+  return 'Some columns could not be read. Check the exported view and try again.';
+}
+
 type Props={
   dataset:PlayerDataset|null;
   onDataset:(dataset:PlayerDataset|null)=>void;
@@ -241,7 +250,7 @@ export function PlayerWorkspace({dataset,onDataset}:Props){
         <div><strong>{t("Saved player exports")}</strong><small>{t("IndexedDB · This browser only · Explicit opt-in · Up to 20 exports")}</small></div>
         <Status tone={library.error?'warning':'neutral'}>{library.loading?t('Loading…'):library.items.length+' '+t('saved')}</Status>
       </div>
-      {library.error&&<div role="alert" className="local-library-error"><Icon name="warning" size={16}/>{library.error}
+      {library.error&&<div role="alert" className="local-library-error"><Icon name="warning" size={16}/>{t("Could not access your saved lists. Please check browser storage settings or try again.")}
         <button onClick={library.clearError} aria-label={t("Dismiss local library error")}><Icon name="close" size={15}/></button></div>}
       {!library.loading&&library.items.length===0&&<p className="saved-player-library__empty">{t("No saved exports yet. Import an HTML/CSV/TSV player list, then select “Save on this browser” to keep it after reloading.")}</p>}
       {library.items.length>0&&<div className="saved-player-library__items" role="list" aria-label={t("Saved exports")}>
@@ -261,7 +270,7 @@ export function PlayerWorkspace({dataset,onDataset}:Props){
       <p className="module-disclaimer">{t("FM26's native Print Screen can produce HTML. ManagerHub reads a local exported HTML table or CSV/TSV; a .fm save itself is not yet a validated player-data source.")}</p>
     </Surface>:<>
       <div className="dataset-banner"><div><strong>{dataset.players.length.toLocaleString()} {t('player records')}</strong><span>{dataset.fileName} · {dataset.attributeColumns.length} {t('recognized attributes')}</span></div><Status tone="warning">{t("Provisional")}</Status></div>
-      {dataset.warnings.length>0&&<div className="dataset-warnings" role="status">{dataset.warnings.map((warning,i)=><p key={i}><Icon name="warning" size={14}/>{warning}</p>)}</div>}
+      {dataset.warnings.length>0&&<div className="dataset-warnings" role="status">{dataset.warnings.map((warning,i)=><p key={i}><Icon name="warning" size={14}/>{t(readableImportWarning(warning))}</p>)}</div>}
       <div className="player-lab-layout">
         <Surface className="player-list-panel"><div className="player-list-panel__heading"><span>{t("Players")}</span><span>{visible.length} {t('shown')}</span></div>
           <label className="search-box player-search"><Icon name="search" size={16}/><span className="visually-hidden">{t("Search imported players")}</span><input placeholder={t("Search player, team, position…")} value={search} onChange={e=>{setSearch(e.target.value);setVisibleLimit(100);}}/></label>
