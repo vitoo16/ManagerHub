@@ -236,7 +236,7 @@ export function SquadWorkspace({dataset,onImport,plans,setPlans,active,setActive
           </select>
         </label>
         <div className="squad-source-label"><Icon name="shield" size={15}/>
-          <span{dataset.fileName} · {dataset.players.length} {t('players')} · {t('Imported data only')}</span>
+          <span>{dataset.fileName} · {dataset.players.length} {t('players')} · {t('Imported data only')}</span>
         </div>
         <Status tone={solution?.complete?'positive':'warning'}>{t(solution?.complete?'Feasible XI':'Incomplete XI')}</Status>
       </div>
