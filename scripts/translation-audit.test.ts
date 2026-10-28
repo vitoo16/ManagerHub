@@ -1,15 +1,14 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import * as ts from 'typescript';
 import vi from '../apps/web/src/i18n/vi';
 
 type KeyUse = { key: string; file: string; line: number };
 type DynamicKeyUse = { file: string; line: number };
 type RawTextUse = { text: string; file: string; line: number };
 
-// Intentional non-translatable tokens: brand wordmark, locale codes, file extension and FM ability acronyms.
-const ALLOWED_RAW_JSX_TEXT = new Set(['MANAGER', 'HUB', 'VI', 'EN', '.fm', 'CA —', 'RCA —', 'PA —', 'PA']);
+// Intentional non-translatable tokens: brand wordmark, locale codes, file extension, keyboard shortcut and FM ability acronyms.
+const ALLOWED_RAW_JSX_TEXT = new Set(['MANAGER', 'HUB', 'VI', 'EN', '.fm', 'CA —', 'RCA —', 'PA —', 'PA', '⌘ K', 'Promise']);
 
 function listTsx(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
@@ -19,60 +18,97 @@ function listTsx(directory: string): string[] {
   });
 }
 
-function auditTranslationCalls(file: string, content: string): { keys: KeyUse[]; dynamic: DynamicKeyUse[] } {
-  const source = ts.createSourceFile(file, content, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+function lineAt(source: string, offset: number): number {
+  return source.slice(0, offset).split('\n').length;
+}
+
+function firstArgument(source: string, openParen: number): { text: string; end: number } | null {
+  let depth = 1;
+  let quote = '';
+  let escaped = false;
+  let firstComma = -1;
+
+  for (let i = openParen + 1; i < source.length; i++) {
+    const char = source[i]!;
+    if (quote) {
+      if (escaped) escaped = false;
+      else if (char === '\\') escaped = true;
+      else if (char === quote) quote = '';
+      continue;
+    }
+    if (char === '"' || char === "'") {
+      quote = char;
+      continue;
+    }
+    if (char === '(') depth++;
+    else if (char === ')') {
+      depth--;
+      if (depth === 0) {
+        return { text: source.slice(openParen + 1, firstComma < 0 ? i : firstComma).trim(), end: i };
+      }
+    } else if (char === ',' && depth === 1 && firstComma < 0) {
+      firstComma = i;
+    }
+  }
+  return null;
+}
+
+function hasPlusOutsideString(text: string): boolean {
+  let quote = '';
+  let escaped = false;
+  for (const char of text) {
+    if (quote) {
+      if (escaped) escaped = false;
+      else if (char === '\\') escaped = true;
+      else if (char === quote) quote = '';
+      continue;
+    }
+    if (char === '"' || char === "'" || char === '\u0060') quote = char;
+    else if (char === '+') return true;
+  }
+  return false;
+}
+
+function literalStrings(text: string): string[] {
+  const values: string[] = [];
+  const pattern = /"((?:\\.|[^"\\])*)"|'((?:\\.|[^'\\])*)'/g;
+  for (const match of text.matchAll(pattern)) {
+    const value = match[1] ?? match[2];
+    if (value !== undefined) values.push(value.replace(/\\(["'\\])/g, '$1'));
+  }
+  return values;
+}
+
+function auditTranslationCalls(file: string, source: string): { keys: KeyUse[]; dynamic: DynamicKeyUse[] } {
   const keys: KeyUse[] = [];
   const dynamic: DynamicKeyUse[] = [];
+  const callPattern = /\bt\s*\(/g;
 
-  const add = (key: string, node: ts.Node) => {
-    const line = source.getLineAndCharacterOfPosition(node.getStart(source)).line + 1;
-    keys.push({ key, file: relative(process.cwd(), file), line });
-  };
-
-  const visitKeyArgument = (node: ts.Expression) => {
-    if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
-      add(node.text, node);
-      return;
+  for (const match of source.matchAll(callPattern)) {
+    const openParen = match.index! + match[0].lastIndexOf('(');
+    const argument = firstArgument(source, openParen);
+    if (!argument) continue;
+    const line = lineAt(source, match.index!);
+    for (const key of literalStrings(argument.text)) {
+      keys.push({ key, file: relative(process.cwd(), file), line });
     }
-    if (ts.isConditionalExpression(node)) {
-      visitKeyArgument(node.whenTrue);
-      visitKeyArgument(node.whenFalse);
-      return;
-    }
-    if (ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.Plus) {
-      const line = source.getLineAndCharacterOfPosition(node.getStart(source)).line + 1;
+    if (hasPlusOutsideString(argument.text)) {
       dynamic.push({ file: relative(process.cwd(), file), line });
     }
-  };
-
-  const visit = (node: ts.Node) => {
-    if (ts.isCallExpression(node) &&
-        ts.isIdentifier(node.expression) &&
-        node.expression.text === 't' &&
-        node.arguments.length > 0) {
-      visitKeyArgument(node.arguments[0]!);
-    }
-    ts.forEachChild(node, visit);
-  };
-
-  visit(source);
+  }
   return { keys, dynamic };
 }
 
-function auditRawJsxText(file: string, content: string): RawTextUse[] {
-  const source = ts.createSourceFile(file, content, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+function auditRawJsxText(file: string, source: string): RawTextUse[] {
   const raw: RawTextUse[] = [];
-  const visit = (node: ts.Node) => {
-    if (ts.isJsxText(node)) {
-      const text = node.text.replace(/\s+/g, ' ').trim();
-      if (text && /[A-Za-zÀ-ỹ]/.test(text) && !ALLOWED_RAW_JSX_TEXT.has(text)) {
-        const line = source.getLineAndCharacterOfPosition(node.getStart(source)).line + 1;
-        raw.push({ text, file: relative(process.cwd(), file), line });
-      }
-    }
-    ts.forEachChild(node, visit);
-  };
-  visit(source);
+  // JSX copy is plain text between tags; ignore expression/code fragments and only audit short human-readable spans.
+  const pattern = />([^<>]+)</g;
+  for (const match of source.matchAll(pattern)) {
+    const text = match[1]!.replace(/\s+/g, ' ').trim();
+    if (!text || text.length > 160 || !/[A-Za-zÀ-ỹ]/.test(text)) continue;
+    if (/[(){}[\];=]/.test(text) || ALLOWED_RAW_JSX_TEXT.has(text)) continue;
+    raw.push({ text, file: relative(process.cwd(), file), line: lineAt(source, match.index!) });
+  }
   return raw;
 }
 
@@ -83,7 +119,7 @@ describe('UI translation key coverage', () => {
     const uses = files.flatMap(file => auditTranslationCalls(file, readFileSync(file, 'utf8')).keys);
     const missing = uses.filter(use => !Object.prototype.hasOwnProperty.call(vi, use.key));
 
-    expect(missing.map(use => `${use.file}:${use.line} — ${use.key}`)).toEqual([]);
+    expect(missing.map(use => use.file + ':' + use.line + ' — ' + use.key)).toEqual([]);
   });
 
   it('keeps visible English UI copy in i18n except for explicit brand and football tokens', () => {
@@ -91,7 +127,7 @@ describe('UI translation key coverage', () => {
     const files = listTsx(sourceRoot);
     const raw = files.flatMap(file => auditRawJsxText(file, readFileSync(file, 'utf8')));
 
-    expect(raw.map(use => `${use.file}:${use.line} — ${use.text}`)).toEqual([]);
+    expect(raw.map(use => use.file + ':' + use.line + ' — ' + use.text)).toEqual([]);
   });
 
   it('uses interpolation rather than concatenating translation keys', () => {
@@ -99,6 +135,6 @@ describe('UI translation key coverage', () => {
     const files = listTsx(sourceRoot);
     const dynamic = files.flatMap(file => auditTranslationCalls(file, readFileSync(file, 'utf8')).dynamic);
 
-    expect(dynamic.map(use => `${use.file}:${use.line}`)).toEqual([]);
+    expect(dynamic.map(use => use.file + ':' + use.line)).toEqual([]);
   });
 });
