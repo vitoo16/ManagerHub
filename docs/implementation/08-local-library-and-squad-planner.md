@@ -65,6 +65,7 @@ Player Lab's Recruitment tab now runs a **same-export lineup sensitivity check**
 
 - If a complete XI is possible, the preview identifies whether the selected player is in the best-fit XI. When selected and a replacement XI is possible, it compares average role-fit score and changed slots with/without that player.
 - If excluding the player makes the XI incomplete, it explains that the current pool depends on the player under the selected formation and current data rules.
+- The role-fit delta is calculated as the complete XI average with the player minus the best complete XI average without the player; it is rounded to one decimal point. A zero delta can still coincide with different slot assignments, and neither value represents match points or transfer value.
 - If the baseline XI is incomplete, the UI exposes per-slot counts of eligible players versus players with enough exact attributes. Unknown/masked attributes are never filled in.
 - The **Open this roster in Squad Planner** action navigates to the planner with the same in-memory dataset. It does not upload or persist player data.
 - The calculation is a sensitivity analysis of the current export, not an external transfer-candidate assessment, native FM rating, predicted match outcome, player market value or Buy/Pass recommendation. A defensible transfer verdict still needs a verified club need and financial/contract/availability data.
