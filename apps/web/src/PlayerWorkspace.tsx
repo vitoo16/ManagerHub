@@ -60,7 +60,7 @@ function RoleResults({player}:{player:PlayerExport}){
   const roles=analyzeRoles(player);
   const [expanded,setExpanded]=useState<string|null>(null);
   return <div className="role-results">
-    <p className="module-disclaimer">{t("Derived 0–100 attribute-fit scores; not FM star ratings, positional familiarity or match-engine formulas. A role is left unscored below 65% weighted data coverage.")}</p>
+    <p className="module-disclaimer">{t("Role fit shows how well the visible attributes match a role. It isn't CA, star rating or a match prediction. We skip scoring when too many attributes are missing.")}</p>
     {roles.map(role=><div key={role.id} className="role-result">
       <button className="role-result__button" aria-expanded={expanded===role.id} onClick={()=>setExpanded(x=>x===role.id?null:role.id)}>
         <span className="role-result__slot">{role.slot}</span><span className="role-result__title">{t(role.title)}<small>{Math.round(role.coverage*100)}% {t('attribute coverage')}</small></span>
@@ -138,7 +138,7 @@ function PlayerDetails({player,dataset}:{player:PlayerExport;dataset:PlayerDatas
       <Status tone="info">{t("Game export")}</Status></div>
     <div className="scout-metrics">
       <div><span>{t("Actual CA")}</span><strong>—</strong><small>{t("Not verified")}</small></div>
-      <div><span>{t("Attribute index")}</span><strong>{strength.index??'—'}{strength.index!==null&&<small> / 100</small>}</strong><small>{t("Uncalibrated · Not eCA")}</small></div>
+      <div><span>{t("Attribute summary")}</span><strong>{strength.index??'—'}{strength.index!==null&&<small> / 100</small>}</strong><small>{t("Visible attributes only · Not CA")}</small></div>
       <div><span>{t("Best observed role")}</span><strong>{top?.score??'—'}{top?.score!==null&&<small> / 100</small>}</strong><small>{top?.title ? t(top.title) : t('Insufficient data')}</small></div>
       <div><span>PA</span><strong>—</strong><small>{t("Not verified")}</small></div>
     </div>
@@ -168,7 +168,7 @@ function PlayerDetails({player,dataset}:{player:PlayerExport;dataset:PlayerDatas
           <p>{t("When financial and squad inputs are available, ManagerHub will compare this player's marginal role value against your existing options and the transfer's total cost.")}</p>
         </div></Surface>}
     </div>
-    <div className="evidence-strip"><Icon name="shield" size={15}/> {t("Game export · Provisional source · No exact game CA/PA · No eCA calibration · No invented match event maps")}</div>
+    <div className="evidence-strip"><Icon name="shield" size={15}/> {t("This report uses your exported attributes. CA and PA remain unknown until verified.")}</div>
   </section>;
 }
 export function PlayerWorkspace({dataset,onDataset}:Props){
@@ -213,7 +213,7 @@ export function PlayerWorkspace({dataset,onDataset}:Props){
     if(await library.remove(id))setPendingDelete(null);
   };
   return <div className="view-flow">
-    <div className="page-title"><span className="mh-eyebrow">{t("PLAYER INTELLIGENCE / PROVISIONAL EXPORTS")}</span><h1>{t("Player Lab")}</h1><p>{t("Analyze real visible attributes exported from Football Manager. Every score is explainable and distinct from verified game CA or a calibrated eCA prediction.")}</p></div>
+    <div className="page-title"><span className="mh-eyebrow">{t("PLAYER INTELLIGENCE / PROVISIONAL EXPORTS")}</span><h1>{t("Player Lab")}</h1><p>{t("Import a player list from Football Manager to discover each player's strengths, suitable roles and comparisons with teammates.")}</p></div>
     <div className="player-lab-header">
       <div><input id={fileInputId} ref={inputRef} type="file" accept=".csv,.tsv,.txt,.html,.htm,text/csv,text/tab-separated-values,text/html" className="visually-hidden" onChange={onFile}/>
         <Button variant="primary" onClick={()=>inputRef.current?.click()}><Icon name="plus" size={16}/>{t(dataset?'Replace player export' :'Import player CSV / HTML')}</Button>

@@ -100,14 +100,14 @@ function Overview({ imports, go }: { imports: readonly SaveIdentity[]; go: (key:
     <div className="headline-stats" aria-label="Workspace information">
       <Surface className="stat-card"><span className="stat-label">{t("Product scope")}</span><div className="stat-value">27<span>{t("modules")}</span></div><span className="stat-sub">{t("Six interconnected departments")}</span></Surface>
       <Surface className="stat-card"><span className="stat-label">{t("Local files inspected")}</span><div className="stat-value">{imports.length.toString().padStart(2, '0')}<span>{t("files")}</span></div><span className="stat-sub">{t("No save files uploaded to a server")}</span></Surface>
-      <Surface className="stat-card"><span className="stat-label">{t("Current implementation")}</span><div className="stat-value stat-value--word">{t("Foundation")}</div><span className="stat-sub">{t("Read-only signatures · No decoded player data")}</span></Surface>
+      <Surface className="stat-card"><span className="stat-label">{t("Current implementation")}</span><div className="stat-value stat-value--word">{t("Foundation")}</div><span className="stat-sub">{t("Player exports work now · Save reader is still being built")}</span></Surface>
     </div>
     <SectionHeading eyebrow={t("BUILD PROGRESS")} title={t("Your management ecosystem")}>
       <button className="text-link" onClick={() => go('modules')}>{t("All 27 workstreams")} <Icon name="arrow" size={15}/></button>
     </SectionHeading>
     <div className="overview-panels">
       <Surface className="phase-card">
-        <div className="panel-heading"><span>{t("DEVELOPMENT ROADMAP")}</span><Status tone="info">{t("7 integrated phases")}</Status></div>
+        <div className="panel-heading"><span>{t("WHAT'S COMING NEXT")}</span><Status tone="info">{t("7 integrated phases")}</Status></div>
         <div className="phase-list">
           {PHASES.slice(0, 5).map((phase, i) =>
             <div key={phase.name} className="phase-row">
@@ -120,10 +120,10 @@ function Overview({ imports, go }: { imports: readonly SaveIdentity[]; go: (key:
         <div className="phase-card__footer"><button className="text-link" onClick={() => go('modules')}>{t("Full feature directory")} <Icon name="chevron" size={14}/></button></div>
       </Surface>
       <Surface className="principles-card">
-        <div className="panel-heading"><span>{t("ENGINEERING PRINCIPLES")}</span><Icon name="shield" size={17}/></div>
-        <div className="principle"><span className="principle__icon"><Icon name="check" size={18}/></span><div><strong>{t("Evidence over estimates")}</strong><p>{t("Actual CA, estimated ability and tactical suitability stay separate.")}</p></div></div>
-        <div className="principle"><span className="principle__icon"><Icon name="check" size={18}/></span><div><strong>{t("One consistent system")}</strong><p>{t("Shared data contracts, role catalogs and reusable analytics components.")}</p></div></div>
-        <div className="principle"><span className="principle__icon"><Icon name="check" size={18}/></span><div><strong>{t("Your files, your control")}</strong><p>{t("Browser inspection is local. Native save editing is not enabled.")}</p></div></div>
+        <div className="panel-heading"><span>{t("HOW TO READ YOUR RESULTS")}</span><Icon name="shield" size={17}/></div>
+        <div className="principle"><span className="principle__icon"><Icon name="check" size={18}/></span><div><strong>{t("CA and PA are different from role fit")}</strong><p>{t("We label actual CA, estimates and role-fit scores separately, so you know what each number means.")}</p></div></div>
+        <div className="principle"><span className="principle__icon"><Icon name="check" size={18}/></span><div><strong>{t("Use the same squad across tools")}</strong><p>{t("Your player reports and squad plans work from the same list you imported.")}</p></div></div>
+        <div className="principle"><span className="principle__icon"><Icon name="check" size={18}/></span><div><strong>{t("Your files stay yours")}</strong><p>{t("ManagerHub checks files on your device. It never changes your original save.")}</p></div></div>
         <button onClick={() => go('architecture')} className="principles-link">{t("Understand data integrity")} <Icon name="arrow" size={16}/></button>
       </Surface>
     </div>
@@ -152,7 +152,7 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
     if (file && !busy) void onInspect(file);
   };
   return <div className="view-flow">
-    <div className="page-title"><div className="mh-eyebrow">{t("GAME DATA / LOCAL FILES")}</div><h1>{t("Save Library")}</h1><p>{t("Inspect a Football Manager save without uploading it. Only the binary container signature is identified at this stage — player data has not been decoded.")}</p></div>
+    <div className="page-title"><div className="mh-eyebrow">{t("GAME DATA / LOCAL FILES")}</div><h1>{t("Save Library")}</h1><p>{t("Choose a .fm save to check its file type. To analyze players today, export a squad list as HTML or CSV and open Player Lab.")}</p></div>
     <Surface className={'file-drop ' + (drag ? 'file-drop--drag' : '')} onDragOver={e => {e.preventDefault(); setDrag(true);}} onDragLeave={() => setDrag(false)} onDrop={handleDrop}>
       <input ref={inputRef} id={fileId} className="visually-hidden" type="file" accept=".fm" onChange={handleInput} tabIndex={-1}/>
       <div className="file-drop__icon"><Icon name="file" size={29}/></div>
@@ -209,7 +209,7 @@ function Systems() {
     (group === 'All departments' || feature.group === group) &&
     [feature.title, feature.id, feature.group].some(value => value.toLowerCase().includes(query.toLowerCase())));
   return <div className="view-flow">
-    <div className="page-title"><div className="mh-eyebrow">{t("THE FULL PRODUCT / 27 MODULES")}</div><h1>{t("Football Systems")}</h1><p>{t("Every department, one connected operating model. This is the development scope, not a catalogue of features already implemented.")}</p></div>
+    <div className="page-title"><div className="mh-eyebrow">{t("THE FULL PRODUCT / 27 MODULES")}</div><h1>{t("Football Systems")}</h1><p>{t("Explore the features we're building. Some tools are ready to try, while others are still on the way.")}</p></div>
     <div className="module-toolbar"><label className="search-box"><Icon name="search" size={17}/><span className="visually-hidden">{t("Search modules")}</span><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search modules or ID…"/></label>
       <label className="select-label"><span className="visually-hidden">{t("Department filter")}</span><select value={group} onChange={e => setGroup(e.target.value)}><option value="All departments">{t("All departments")}</option>{FEATURE_GROUPS.map(s => <option value={s} key={s}>{t(s)}</option>)}</select></label>
     </div>
@@ -226,7 +226,7 @@ function Systems() {
 function Architecture() {
   const { t } = useTranslation();
   return <div className="view-flow">
-    <div className="page-title"><div className="mh-eyebrow">{t("TRANSPARENT BY DESIGN")}</div><h1>{t("Data & Trust")}</h1><p>{t("A dependable football analysis platform starts by separating what the game actually stores from what our models calculate.")}</p></div>
+    <div className="page-title"><div className="mh-eyebrow">{t("TRANSPARENT BY DESIGN")}</div><h1>{t("Data & Trust")}</h1><p>{t("Here's how to tell the difference between numbers from Football Manager and scores calculated by ManagerHub.")}</p></div>
     <div className="trust-banner"><Icon name="shield" size={24}/><div><strong>{t("Read-only by default")}</strong><p>{t("Your original save remains untouched. A future editor will require independently verified compatibility, backups and full round-trip validation.")}</p></div><Status tone="positive">{t("Design policy")}</Status></div>
     <SectionHeading eyebrow={t("ARCHITECTURE")} title={t("Evidence flows in one direction")}/>
     <div className="architecture-path">{[

@@ -28,7 +28,7 @@ function TacticalPitch({ solution }: { solution: SquadSolution }) {
   const positions=new Map<string,SlotAssignment>(solution.lineup.map(item=>[item.slot.id,item]));
   const formation=solution.formation;
   return <Surface className="squad-pitch-card">
-    <div className="squad-card-heading"><span>{t("Tactical selection")}</span><span>{t("Draft · Not an in-game lineup")}</span></div>
+    <div className="squad-card-heading"><span>{t("Tactical selection")}</span><span>{t("Your draft lineup · Doesn't change your FM save")}</span></div>
     <div className="squad-pitch" role="img" aria-label={solution.complete ? t('Pitch layout with eleven players') : t('Pitch has missing positions')}>
       <div className="squad-pitch__border"/><div className="squad-pitch__half"/>
       <div className="squad-pitch__circle"/><div className="squad-pitch__area squad-pitch__area--top"/>
@@ -69,9 +69,9 @@ function LineupResults({solution}:{solution:SquadSolution}){
         <span className="squad-roster__score">{item.roleScore}</span>
       </li>)}
     </ol> : <div className="squad-feasibility" role="status">
-      <Status tone="warning">{t("Hard constraints not met")}</Status>
+      <Status tone="warning">{t("We couldn't fill every position")}</Status>
       <SquadIssue reason={solution.reason}/>
-      <p>{t("Missing or unverified values are never estimated to fill a team. Try changing locks, exclusions or source data.")}</p>
+      <p>{t("Try changing a locked player, removing an exclusion or exporting more player attributes.")}</p>
     </div>}
   </Surface>;
 }
@@ -146,7 +146,7 @@ function ScenarioComparison({left,right}: {left:SquadSolution;right:SquadSolutio
   const { t } = useTranslation();
   const comparison=compareSquadScenarios(left,right);
   return <Surface className="squad-compare-card">
-    <div className="squad-card-heading"><span>{t("Plan comparison")}</span><span>{t("Source-backed attribute heuristic")}</span></div>
+    <div className="squad-card-heading"><span>{t("Plan comparison")}</span><span>{t("Based on the attributes you imported")}</span></div>
     <div className="squad-compare-summary">
       <div><small>{t("PLAN A")}</small><strong>{left.complete?left.averageRoleScore:'—'}</strong>
         <span>{left.formation} · {t(left.complete?'Complete XI':'Incomplete XI')}</span></div>
@@ -212,7 +212,7 @@ export function SquadWorkspace({dataset,onImport,plans,setPlans,active,setActive
     <div className="page-title">
       <span className="mh-eyebrow">{t("SQUAD MANAGEMENT / CONSTRAINT-BASED ANALYSIS")}</span>
       <h1>{t("Squad Planner")}</h1>
-      <p>{t("Compare two real draft scenarios using visible exported positions, explainable role-fit estimates, pinned player choices and exclusions. No fictional game data is generated.")}</p>
+      <p>{t("Pick a formation, keep your favorite players in position, exclude others and compare two possible starting elevens.")}</p>
     </div>
     {!dataset?<Surface className="squad-no-data"><Icon name="layers" size={34}/>
       <h2>{t("Your squad needs an actual player export.")}</h2>
@@ -271,7 +271,7 @@ export function SquadWorkspace({dataset,onImport,plans,setPlans,active,setActive
         </div>)}
       </Surface>
       <div className="coverage-note"><Icon name="shield" size={17}/>
-        <p><strong>{t("Interpretation:")}</strong> {t("Plan A/B are temporary in-page scenarios. This provisional role-attribute assignment does not establish FM CA/PA, tactical familiarity, chemistry, fitness or match results. Different formations are not given misleading comparable averages.")}</p>
+        <p><strong>{t("Interpretation:")}</strong> {t("Plans A and B stay available while you browse this session. Role-fit estimates don't include match fitness, chemistry or hidden CA and PA.")}</p>
       </div>
     </>}
   </div>;
