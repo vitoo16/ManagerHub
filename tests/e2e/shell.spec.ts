@@ -193,14 +193,14 @@ test('builds a unique eleven for an eligible export and explains infeasible form
   await page.keyboard.press('Control+k');
   await page.getByRole('dialog', {name:'Quick navigation'}).getByRole('button', {name:/Squad Planner/}).click();
   await expect(page.getByRole('heading', {name:'Squad Planner'})).toBeVisible();
-  await expect(page.getByText('Feasible XI')).toBeVisible();
+  await expect(page.getByText('Starting eleven ready').first()).toBeVisible();
   const lineup=page.getByRole('list', {name:'Assigned starting eleven'});
   await expect(lineup.getByRole('listitem')).toHaveCount(11);
   await expect(page.getByText('One player per slot')).toBeVisible();
 
   await page.getByLabel('Formation').selectOption('4-2-3-1');
-  await expect(page.getByText('Incomplete XI', { exact: true })).toBeVisible();
-  await expect(page.getByText("We couldn't fill every position")).toBeVisible();
+  await expect(page.getByText('Starting eleven incomplete', { exact: true }).first()).toBeVisible();
+  await expect(page.getByText('This player list cannot fill all eleven positions yet.')).toBeVisible();
   await expect(lineup).toHaveCount(0);
 });
 
@@ -214,10 +214,10 @@ test('Plan A/B supports versatile player pins, exclusions and honest comparisons
   await page.keyboard.press('Control+k');
   await page.getByRole('dialog',{name:'Quick navigation'})
     .getByRole('button',{name:/Squad Planner/}).click();
-  await expect(page.getByText('Feasible XI')).toBeVisible();
+  await expect(page.getByText('Starting eleven ready').first()).toBeVisible();
 
   await page.getByRole('group',{name:'Squad scenarios'})
-    .getByRole('button',{name:'Plan B'}).click();
+    .getByRole('button',{name:'Plan B',exact:true}).click();
   await page.getByRole('combobox',{name:'Lock RB'}).selectOption('export-row-12');
   const lineup=page.getByRole('list',{name:'Assigned starting eleven'});
   await expect(lineup).toContainText('Bench Versatile');
@@ -226,24 +226,29 @@ test('Plan A/B supports versatile player pins, exclusions and honest comparisons
 
   // A versatile player cannot be pinned to both RB and RW.
   await page.getByRole('combobox',{name:'Lock RW'}).selectOption('export-row-12');
-  await expect(page.getByText('Incomplete XI', { exact: true })).toBeVisible();
-  await expect(page.getByText(/same player pinned twice/)).toBeVisible();
+  await expect(page.getByText('Starting eleven incomplete', { exact: true }).first()).toBeVisible();
+  await expect(page.getByText(/same player to more than one position/)).toBeVisible();
   await page.getByRole('combobox',{name:'Lock RW'}).selectOption('');
-  await expect(page.getByText('Feasible XI')).toBeVisible();
+  await expect(page.getByText('Starting eleven ready').first()).toBeVisible();
 
   // Exclusion of a pinned player is a hard conflict, never a silent substitution.
   await page.getByRole('group',{name:'Exclude players'})
     .getByRole('checkbox',{name:/Bench Versatile/}).check();
-  await expect(page.getByText(/player both pinned and excluded/)).toBeVisible();
+  await expect(page.getByText(/cannot exclude a player while keeping them in the starting lineup/)).toBeVisible();
   await page.getByRole('button',{name:'Clear all constraints'}).click();
-  await expect(page.getByText('Feasible XI')).toBeVisible();
+  await expect(page.getByText('Starting eleven ready').first()).toBeVisible();
 
   // Explicit scenario copy restores a comparable unmodified XI.
-  await page.getByRole('button',{name:'Copy A into B'}).click();
+  await page.getByRole('button',{name:'Copy Plan A to Plan B'}).click();
   await expect(page.getByText('Position assignments changed')).toBeVisible();
   await page.getByLabel('Formation').selectOption('4-2-3-1');
-  await expect(page.getByText('Incomplete XI', { exact: true })).toBeVisible();
+  await expect(page.getByText('Starting eleven incomplete', { exact: true }).first()).toBeVisible();
   await expect(page.getByText('Not directly comparable')).toBeVisible();
+
+  await page.getByRole('button',{name:'Switch language to Vietnamese'}).click();
+  await expect(page.getByRole('button',{name:'Sao chép phương án A sang phương án B'})).toBeVisible();
+  await expect(page.getByLabel('Sơ đồ chiến thuật')).toBeVisible();
+  await expect(page.getByText('Đội hình xuất phát chưa đủ 11 người',{exact:true}).first()).toBeVisible();
 });
 
 
@@ -256,7 +261,7 @@ test('Plan B remains intact across workspace navigation and resets for a differe
   await page.keyboard.press('Control+k');
   await page.getByRole('dialog',{name:'Quick navigation'})
     .getByRole('button',{name:/Squad Planner/}).click();
-  await page.getByRole('button',{name:'Plan B'}).click();
+  await page.getByRole('button',{name:'Plan B',exact:true}).click();
   await page.getByRole('combobox',{name:'Lock RB'}).selectOption('export-row-12');
   await expect(page.getByRole('list',{name:'Assigned starting eleven'})).toContainText('Bench Versatile');
 
@@ -266,7 +271,7 @@ test('Plan B remains intact across workspace navigation and resets for a differe
   await page.keyboard.press('Control+k');
   await page.getByRole('dialog',{name:'Quick navigation'})
     .getByRole('button',{name:/Squad Planner/}).click();
-  await expect(page.getByRole('button',{name:'Plan B'})).toHaveAttribute('aria-pressed','true');
+  await expect(page.getByRole('button',{name:'Plan B',exact:true})).toHaveAttribute('aria-pressed','true');
   await expect(page.getByRole('combobox',{name:'Lock RB'})).toHaveValue('export-row-12');
 
   await page.keyboard.press('Control+k');
@@ -278,8 +283,8 @@ test('Plan B remains intact across workspace navigation and resets for a differe
   await page.keyboard.press('Control+k');
   await page.getByRole('dialog',{name:'Quick navigation'})
     .getByRole('button',{name:/Squad Planner/}).click();
-  await expect(page.getByRole('button',{name:'Plan A'})).toHaveAttribute('aria-pressed','true');
-  await page.getByRole('button',{name:'Plan B'}).click();
+  await expect(page.getByRole('button',{name:'Plan A',exact:true})).toHaveAttribute('aria-pressed','true');
+  await page.getByRole('button',{name:'Plan B',exact:true}).click();
   await expect(page.getByRole('combobox',{name:'Lock RB'})).toHaveValue('');
 });
 
@@ -290,6 +295,7 @@ test('VI/EN language switch localizes onboarding, saves choice and restores Engl
   await page.getByRole('button',{name:'Switch language to Vietnamese'}).click();
   await expect(page.locator('html')).toHaveAttribute('lang','vi');
   await expect(page.getByRole('heading',{name:/Mọi quyết định/})).toBeVisible();
+  await expect(page.getByText('TRÍ TUỆ BÓNG ĐÁ')).toBeVisible();
   await expect(page.getByRole('navigation',{name:'Điều hướng chính'})).toContainText('Phân tích cầu thủ');
 
   await page.reload();

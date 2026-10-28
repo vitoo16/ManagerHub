@@ -13,13 +13,13 @@ const getRoleTitle = (id: string): string => ROLE_PROFILES.find(role=>role.id===
 function SquadIssue({reason}: {reason:string|null}) {
   const {t}=useTranslation();
   if(!reason)return null;
-  const issue=reason.includes('pinned twice')?'same player pinned twice':
-    reason.includes('both excluded and pinned')?'player both pinned and excluded':
-    reason.includes('does not exist')?'position changed':
-    reason.includes('not eligible')?'player in wrong position':
-    reason.includes('not present')?'player not in roster':
-    reason.includes('No complete')?'not enough eligible players':
-    'constraints cannot be met';
+  const issue=reason.includes('pinned twice')?'You have assigned the same player to more than one position':
+    reason.includes('both excluded and pinned')?'You cannot exclude a player while keeping them in the starting lineup':
+    reason.includes('does not exist')?'This position is no longer available in the selected formation':
+    reason.includes('not eligible')?'This player is not listed as eligible for that position in your export':
+    reason.includes('not present')?'This player is not in the currently imported squad':
+    reason.includes('No complete')?'There are not enough eligible players to fill all eleven positions':
+    'These choices conflict, so the starting eleven cannot be completed';
   return <p>{t(issue)}</p>;
 }
 
@@ -46,12 +46,12 @@ function TacticalPitch({ solution }: { solution: SquadSolution }) {
         </div>;
       })}
       {!solution.complete && <div className="squad-pitch__incomplete">
-        <Icon name="warning" size={25}/><strong>{t("Cannot construct a valid XI")}</strong>
-        <span>{t("Review position coverage and the user-selected constraints")}</span>
+        <Icon name="warning" size={25}/><strong>{t("Some positions are still empty.")}</strong>
+        <span>{t("Check the highlighted positions or choose different players.")}</span>
       </div>}
     </div>
     <div className="squad-pitch-note">
-      The pitch is a planning diagram, not tracked match positioning. No simulated chemistry or win probability.
+      {t("This pitch is a planning aid, not a replay of player movement. ManagerHub does not simulate team chemistry or win probability.")}
     </div>
   </Surface>;
 }
@@ -69,9 +69,9 @@ function LineupResults({solution}:{solution:SquadSolution}){
         <span className="squad-roster__score">{item.roleScore}</span>
       </li>)}
     </ol> : <div className="squad-feasibility" role="status">
-      <Status tone="warning">{t("We couldn't fill every position")}</Status>
+      <Status tone="warning">{t("This player list cannot fill all eleven positions yet.")}</Status>
       <SquadIssue reason={solution.reason}/>
-      <p>{t("Try changing a locked player, removing an exclusion or exporting more player attributes.")}</p>
+      <p>{t("To complete the lineup, choose a different player for a locked position, remove a player from the exclusion list, or export more attributes.")}</p>
     </div>}
   </Surface>;
 }
@@ -149,10 +149,10 @@ function ScenarioComparison({left,right}: {left:SquadSolution;right:SquadSolutio
     <div className="squad-card-heading"><span>{t("Plan comparison")}</span><span>{t("Based on the attributes you imported")}</span></div>
     <div className="squad-compare-summary">
       <div><small>{t("PLAN A")}</small><strong>{left.complete?left.averageRoleScore:'—'}</strong>
-        <span>{left.formation} · {t(left.complete?'Complete XI':'Incomplete XI')}</span></div>
+        <span>{left.formation} · {t(left.complete?'Starting eleven ready':'Starting eleven incomplete')}</span></div>
       <div className="squad-compare-separator" aria-hidden="true">{t("VS")}</div>
       <div><small>{t("PLAN B")}</small><strong>{right.complete?right.averageRoleScore:'—'}</strong>
-        <span>{right.formation} · {t(right.complete?'Complete XI':'Incomplete XI')}</span></div>
+        <span>{right.formation} · {t(right.complete?'Starting eleven ready':'Starting eleven incomplete')}</span></div>
     </div>
     {comparison.comparable
       ? <div className="squad-compare-metrics" aria-label={t("Comparison of feasible squads")}>
@@ -223,14 +223,14 @@ export function SquadWorkspace({dataset,onImport,plans,setPlans,active,setActive
         <div className="squad-scenario-tabs" role="group" aria-label={t("Squad scenarios")}>
           {(['A','B'] as const).map(key=><button key={key} aria-pressed={active===key}
             className={active===key?'squad-scenario-tab squad-scenario-tab--active':'squad-scenario-tab'}
-            onClick={()=>setActive(key)}>{t('Plan '+key)}</button>)}
+            onClick={()=>setActive(key)}>{t('Plan {{plan}}',{plan:key})}</button>)}
         </div>
         <Button variant="quiet" onClick={()=>{copyAtoB();setActive('B');}}>
-          <Icon name="layers" size={15}/> Copy A into B
+          <Icon name="layers" size={15}/> {t("Copy Plan A to Plan B")}
         </Button>
       </div>
       <div className="squad-control-row">
-        <label className="squad-formation-control">Formation
+        <label className="squad-formation-control">{t("Formation")}
           <select value={plan.formation} onChange={event=>changeFormation(event.target.value as FormationId)}>
             {Object.keys(FORMATIONS).map(key=><option key={key} value={key}>{key}</option>)}
           </select>
@@ -238,7 +238,7 @@ export function SquadWorkspace({dataset,onImport,plans,setPlans,active,setActive
         <div className="squad-source-label"><Icon name="shield" size={15}/>
           <span>{dataset.fileName} · {dataset.players.length} {t('players')} · {t('Imported data only')}</span>
         </div>
-        <Status tone={solution?.complete?'positive':'warning'}>{t(solution?.complete?'Feasible XI':'Incomplete XI')}</Status>
+        <Status tone={solution?.complete?'positive':'warning'}>{t(solution?.complete?'Starting eleven ready':'Starting eleven incomplete')}</Status>
       </div>
       <div className="squad-summary-row">
         <Surface className="squad-summary-card"><span>{t("Starting XI")}</span>

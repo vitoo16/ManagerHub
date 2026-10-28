@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { readableImportError, readableImportWarning } from './i18n/player-import-copy';
 import {useId,useMemo,useRef,useState,type ChangeEvent} from 'react';
 import {
   ATTRIBUTE_LABELS,attributeGroupSummary,attributeStrengthIndex,
@@ -10,15 +11,6 @@ import { usePlayerLibrary } from './usePlayerLibrary';
 import './player-workspace.css';
 
 const MAX_EXPORT_BYTES=12*1024*1024;
-
-function readableImportWarning(warning:string):string {
-  if(warning.startsWith('No recognized attribute columns')) return 'No player attributes were found. Include passing, pace and other 1–20 columns when exporting.';
-  if(warning.startsWith('No position column')) return 'Your list is missing a Position column. Add it to compare roles and plan a lineup.';
-  if(warning.startsWith('CA/PA-like export columns')) return 'We do not treat values labeled CA/PA in an exported list as verified hidden game values.';
-  if(warning.includes('rows without a player name')) return 'Some rows had no player name and were skipped.';
-  if(warning.includes('unavailable or unrecognized attribute cells')) return 'Some attributes were hidden or unavailable and were left blank rather than guessed.';
-  return 'Some columns could not be read. Check the exported view and try again.';
-}
 
 type Props={
   dataset:PlayerDataset|null;
@@ -78,7 +70,8 @@ function RoleResults({player}:{player:PlayerExport}){
       </button>
       {expanded===role.id&&<div className="role-result__evidence">
         <strong>{t("Inputs used for this role")}</strong>
-        <p>{role.evidence.map(e=>t(ATTRIBUTE_LABELS[e.attribute])+' '+e.value+' (weight '+e.weight+')').join(' · ')||'Not enough observed attributes.'}</p>
+        <p>{role.evidence.map(e=>`${t(ATTRIBUTE_LABELS[e.attribute])}: ${e.value} (${t('Role importance')}: ${e.weight})`).join(' · ')||t('Not enough observed attributes.')}</p>
+        <p className="module-disclaimer">{t("These weights only explain ManagerHub's role-fit score. They are not Football Manager's CA costs.")}</p>
         {role.missing.length>0&&<p className="role-missing">{t('Missing:')} {role.missing.map(k=>t(ATTRIBUTE_LABELS[k])).join(', ')}</p>}
       </div>}
     </div>)}
@@ -215,7 +208,7 @@ export function PlayerWorkspace({dataset,onDataset}:Props){
       setChosenId(parsed.players[0]?.id??null);
       setSearch('');
       setVisibleLimit(100);
-    }catch(ex){setError(ex instanceof Error?ex.message:'Unable to read player export.');}
+    }catch(ex){setError(readableImportError(ex));}
   };
   const visible=useMemo(()=>dataset?.players.filter(p=>[p.name,p.club,p.position].some(v=>v?.toLowerCase().includes(search.toLowerCase())))??[],[dataset,search]);
   const selected=dataset?.players.find(p=>p.id===chosenId)??dataset?.players[0]??null;
@@ -244,7 +237,7 @@ export function PlayerWorkspace({dataset,onDataset}:Props){
       </div>
       <Status tone="info">{t("No data uploaded")}</Status>
     </div>
-    {error&&<div role="alert" className="inline-alert"><Icon name="warning" size={16}/>{error}</div>}
+    {error&&<div role="alert" className="inline-alert"><Icon name="warning" size={16}/>{t(error)}</div>}
     <Surface className="saved-player-library">
       <div className="saved-player-library__heading">
         <div><strong>{t("Saved player exports")}</strong><small>{t("IndexedDB · This browser only · Explicit opt-in · Up to 20 exports")}</small></div>
@@ -269,7 +262,7 @@ export function PlayerWorkspace({dataset,onDataset}:Props){
       <div className="player-intro__checks"><span>{t("Attribute distribution")}</span><span>{t("Position / role profile")}</span><span>{t("Explainable scores")}</span><span>{t("Missing data visibility")}</span></div>
       <p className="module-disclaimer">{t("FM26's native Print Screen can produce HTML. ManagerHub reads a local exported HTML table or CSV/TSV; a .fm save itself is not yet a validated player-data source.")}</p>
     </Surface>:<>
-      <div className="dataset-banner"><div><strong>{dataset.players.length.toLocaleString()} {t('player records')}</strong><span>{dataset.fileName} · {dataset.attributeColumns.length} {t('recognized attributes')}</span></div><Status tone="warning">{t("Provisional")}</Status></div>
+      <div className="dataset-banner"><div><strong>{dataset.players.length.toLocaleString()} {t('player records')}</strong><span>{dataset.fileName} · {dataset.attributeColumns.length} {t('recognized attributes')}</span></div><Status tone="warning">{t("From your export (not game-verified)")}</Status></div>
       {dataset.warnings.length>0&&<div className="dataset-warnings" role="status">{dataset.warnings.map((warning,i)=><p key={i}><Icon name="warning" size={14}/>{t(readableImportWarning(warning))}</p>)}</div>}
       <div className="player-lab-layout">
         <Surface className="player-list-panel"><div className="player-list-panel__heading"><span>{t("Players")}</span><span>{visible.length} {t('shown')}</span></div>
