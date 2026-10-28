@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import vi from './vi';
-import { readableImportError } from './player-import-copy';
+import { readableImportError, readableImportWarning } from './player-import-copy';
 
 describe('player import onboarding copy', () => {
   it('turns common parser failures into actionable user guidance', () => {
@@ -10,6 +10,22 @@ describe('player import onboarding copy', () => {
       .toContain('formatting issue');
     expect(readableImportError(new Error('No player table found in the HTML export.')))
       .toContain('find a player table');
+  });
+
+  it('turns every parser warning into translated next-step guidance', () => {
+    const warnings = [
+      ['No recognized attribute columns. Player names are imported but role analysis is unavailable.', 'No player attributes were found. Include passing, pace and other 1–20 columns when exporting.'],
+      ['No position column. Position familiarity cannot be assessed.', 'Your list is missing a Position column. Add it to compare roles and plan a lineup.'],
+      ['CA/PA-like export columns were not accepted as verified hidden game values.', 'We do not treat values labeled CA/PA in an exported list as verified hidden game values.'],
+      ['2 rows without a player name were skipped.', 'Some rows had no player name and were skipped.'],
+      ['3 unavailable or unrecognized attribute cells were left unknown.', 'Some attributes were hidden or unavailable and were left blank rather than guessed.'],
+      ['An unfamiliar warning.', 'Some columns could not be read. Check the exported view and try again.']
+    ] as const;
+
+    for (const [warning, expected] of warnings) {
+      expect(readableImportWarning(warning)).toBe(expected);
+      expect(vi[expected as keyof typeof vi]).toBeTruthy();
+    }
   });
 
   it('uses a helpful fallback instead of exposing raw technical errors', () => {
