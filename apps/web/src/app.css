@@ -222,3 +222,10 @@
 .archive-preview__row span:last-child {color:var(--text-faint);font-variant-numeric:tabular-nums;white-space:nowrap;}
 .archive-preview__filename {font-family:ui-monospace,Consolas,monospace;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
 .archive-preview__expand {margin-top:10px;}
+
+
+.language-switch{display:inline-flex;align-items:center;gap:2px;padding:3px;border:1px solid var(--line);border-radius:10px;background:var(--surface-up)}
+.language-switch button{height:29px;min-width:33px;border:0;border-radius:7px;background:transparent;color:var(--text-sub);font:700 11px Manrope,sans-serif}
+.language-switch button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.language-switch button:hover:not([aria-pressed="true"]){background:var(--surface-hover);color:var(--text)}
+@media(max-width:480px){.language-switch button{min-width:28px}.topbar{gap:6px}}

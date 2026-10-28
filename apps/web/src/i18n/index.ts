@@ -29,7 +29,7 @@ void i18n.use(initReactI18next).init({
   nsSeparator:false,
   interpolation:{escapeValue:false},
   returnNull:false,
-  initImmediate:false,
+  initAsync:false,
   react:{useSuspense:false}
 });
 

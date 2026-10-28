@@ -415,5 +415,7 @@ export default {
   "Internal save archive members": "Các mục trong file save",
   "unknown position": "vị trí chưa xác định",
   "unknown positions": "vị trí chưa xác định",
-  "Not enough observed attributes": "Chưa đủ chỉ số trong file"
+  "Not enough observed attributes": "Chưa đủ chỉ số trong file",
+  "File type": "Loại file",
+  "Phase": "Giai đoạn"
 } as const;
