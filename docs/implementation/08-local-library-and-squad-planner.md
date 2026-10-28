@@ -57,3 +57,16 @@ Relevant code: `packages/domain/src/squad-optimizer.ts`, `apps/web/src/SquadWork
 5. Calibrate estimated CA only after a labeled, authorized same-edition CA dataset and holdout MAE confidence testing.
 
 See [all 27 requirements](../product/01-full-feature-catalog.md), [core plan](01-full-delivery-plan.md), [Player Lab](07-player-lab-and-export-import.md).
+
+
+## Recruitment-to-squad contribution preview (2026-10-29)
+
+Player Lab's Recruitment tab now runs a **same-export lineup sensitivity check** using the shared Squad Planner optimizer and a user-selected 4-3-3 or 4-2-3-1 formation.
+
+- If a complete XI is possible, the preview identifies whether the selected player is in the best-fit XI. When selected and a replacement XI is possible, it compares average role-fit score and changed slots with/without that player.
+- If excluding the player makes the XI incomplete, it explains that the current pool depends on the player under the selected formation and current data rules.
+- If the baseline XI is incomplete, the UI exposes per-slot counts of eligible players versus players with enough exact attributes. Unknown/masked attributes are never filled in.
+- The **Open this roster in Squad Planner** action navigates to the planner with the same in-memory dataset. It does not upload or persist player data.
+- The calculation is a sensitivity analysis of the current export, not an external transfer-candidate assessment, native FM rating, predicted match outcome, player market value or Buy/Pass recommendation. A defensible transfer verdict still needs a verified club need and financial/contract/availability data.
+
+Domain contract: `packages/domain/src/recruitment-preview.ts`. Tests cover a replaceable player, a player required to complete the XI, a player outside the selected XI, insufficient data and an identity not present in the current export.
