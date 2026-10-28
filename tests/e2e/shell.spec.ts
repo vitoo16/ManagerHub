@@ -116,6 +116,8 @@ test('imports real observed attributes into Player Lab without fake CA/PA', asyn
   await page.getByRole('button',{name:'Open this roster in Squad Planner'}).click();
   await expect(page.getByRole('heading',{name:'Squad Planner'})).toBeVisible();
   await expect(page.getByText('Test Creator')).toBeVisible();
+  await page.getByRole('button',{name:/Player Lab/}).first().click();
+  await expect(page.getByRole('heading',{name:'Player Lab'})).toBeVisible();
   await page.getByRole('button',{name:/Test Defender/}).click();
   await expect(page.getByRole('heading',{name:'Test Defender'})).toBeVisible();
 });
