@@ -1,6 +1,6 @@
 # ManagerHub — 27-module implementation and acceptance ledger
 
-**Status as of 2026-10-27:** some modules have **partial production code**, while the full 27-module scope remains incomplete. Do not change to Complete unless integrated code, tests, UI and an acceptance review are evidenced. This is a planning tracker, not claims of available features.
+**Status as of 2026-10-29:** some modules have **partial production code**, while the full 27-module scope remains incomplete. Do not change to Complete unless integrated code, tests, UI and an acceptance review are evidenced. This is a planning tracker, not claims of available features.
 
 **Do not build an MVP:** all modules are in full-product scope. Each is assigned to the earliest phase where it becomes fully integrated; foundational work in earlier phases can be reused. Canonical [7-phase plan](01-full-delivery-plan.md), [agent prompts](02-agent-prompts.md).
 
@@ -17,7 +17,7 @@
 | MH-09 | Role Intelligence | 4 | Role catalogs, scoring | Individual-vs-collective distinctions, partner conflicts and causes | Not implemented |
 | MH-10 | Set Piece Intelligence | 7 | XI, match and roles | Corner/free kick/throw plans and matchup rules work end-to-end | Not implemented |
 | MH-11 | Squad Planner 2.0 | 4 | Tactical optimizer | Best/rotation/coverage/opponent XI, no duplicated player slots | **In progress:** 4-3-3 / 4-2-3-1 unique-player role-fit assignments, strict eligibility, pin/exclusion constraints and A/B comparison; tactical and match constraints pending |
-| MH-12 | Recruitment & Scouting | 5 | MH-06/11 | Need-driven candidate compare and defensible Buy/Pass alternatives | Not implemented |
+| MH-12 | Recruitment & Scouting | 5 | MH-06/11 | Need-driven candidate compare and defensible Buy/Pass alternatives | **Early integration in progress:** same-export sensitivity preview compares best-fit XI with/without a selected player; no verified club gap, fees, wages, contract, registration or transfer verdict yet |
 | MH-13 | Transfer/Contracts | 5 | Finance/contract fields | Transfer and wage scenarios, renewal/loan/sell alternatives | Not implemented |
 | MH-14 | Youth Development | 5 | MH-04/11 | Development path, loan/retraining/succession linked to team | Not implemented |
 | MH-15 | Training/Performance Centre | 5 | Match+fitness data | Workload/rotation and availability, no false medical prediction | Not implemented |
