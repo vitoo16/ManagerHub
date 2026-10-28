@@ -70,16 +70,16 @@ function hasPlusOutsideString(text: string): boolean {
 }
 
 function literalStrings(text: string): string[] {
-  const pattern = /^\\s*(?:"((?:\\\\.|[^"\\\\])*)"|'((?:\\\\.|[^'\\\\])*)')\\s*$/;
+  const pattern = /^\s*(?:"((?:\\.|[^"\\])*)"|'((?:\\.|[^'\\])*)')\s*$/;
   const exact = text.match(pattern);
-  if (exact) return [(exact[1] ?? exact[2] ?? '').replace(/\\\\(["'\\\\])/g, '$1')];
+  if (exact) return [(exact[1] ?? exact[2] ?? '').replace(/\\(["'\\])/g, '$1')];
 
   // For a conditional t(...), only branch literals are translation keys; literals in its condition are internal values.
   const values: string[] = [];
-  const branches = /\\?\\s*"((?:\\\\.|[^"\\\\])*)"|\\?\\s*'((?:\\\\.|[^'\\\\])*)'|:\\s*"((?:\\\\.|[^"\\\\])*)"|:\\s*'((?:\\\\.|[^'\\\\])*)'/g;
+  const branches = /\?\s*"((?:\\.|[^"\\])*)"|\?\s*'((?:\\.|[^'\\])*)'|:\s*"((?:\\.|[^"\\])*)"|:\s*'((?:\\.|[^'\\])*)'/g;
   for (const match of text.matchAll(branches)) {
     const value = match[1] ?? match[2] ?? match[3] ?? match[4];
-    if (value !== undefined) values.push(value.replace(/\\\\(["'\\\\])/g, '$1'));
+    if (value !== undefined) values.push(value.replace(/\\(["'\\])/g, '$1'));
   }
   return values;
 }
@@ -111,7 +111,7 @@ function auditRawJsxText(file: string, source: string): RawTextUse[] {
   for (const match of source.matchAll(pattern)) {
     const text = match[1]!.replace(/\s+/g, ' ').trim();
     if (!text || text.length > 160 || !/[A-Za-zÀ-ỹ]/.test(text)) continue;
-    if (/[(){}[\];=]/.test(text) || ALLOWED_RAW_JSX_TEXT.has(text)) continue;
+    if (/[(){}[\\];=&]/.test(text) || ALLOWED_RAW_JSX_TEXT.has(text)) continue;
     raw.push({ text, file: relative(process.cwd(), file), line: lineAt(source, match.index!) });
   }
   return raw;
