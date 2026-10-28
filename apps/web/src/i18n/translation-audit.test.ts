@@ -64,7 +64,7 @@ function auditRawJsxText(file: string, content: string): RawTextUse[] {
   const raw: RawTextUse[] = [];
   const visit = (node: ts.Node) => {
     if (ts.isJsxText(node)) {
-      const text = node.text.replace(/\\s+/g, ' ').trim();
+      const text = node.text.replace(/\s+/g, ' ').trim();
       if (text && /[A-Za-zÀ-ỹ]/.test(text) && !ALLOWED_RAW_JSX_TEXT.has(text)) {
         const line = source.getLineAndCharacterOfPosition(node.getStart(source)).line + 1;
         raw.push({ text, file: relative(process.cwd(), file), line });
