@@ -244,6 +244,11 @@ test('Plan A/B supports versatile player pins, exclusions and honest comparisons
   await page.getByLabel('Formation').selectOption('4-2-3-1');
   await expect(page.getByText('Starting eleven incomplete', { exact: true }).first()).toBeVisible();
   await expect(page.getByText('Not directly comparable')).toBeVisible();
+
+  await page.getByRole('button',{name:'Switch language to Vietnamese'}).click();
+  await expect(page.getByRole('button',{name:'Sao chép phương án A sang phương án B'})).toBeVisible();
+  await expect(page.getByLabel('Sơ đồ chiến thuật')).toBeVisible();
+  await expect(page.getByText('Đội hình xuất phát chưa đủ 11 người',{exact:true}).first()).toBeVisible();
 });
 
 
@@ -290,6 +295,7 @@ test('VI/EN language switch localizes onboarding, saves choice and restores Engl
   await page.getByRole('button',{name:'Switch language to Vietnamese'}).click();
   await expect(page.locator('html')).toHaveAttribute('lang','vi');
   await expect(page.getByRole('heading',{name:/Mọi quyết định/})).toBeVisible();
+  await expect(page.getByText('TRÍ TUỆ BÓNG ĐÁ')).toBeVisible();
   await expect(page.getByRole('navigation',{name:'Điều hướng chính'})).toContainText('Phân tích cầu thủ');
 
   await page.reload();
