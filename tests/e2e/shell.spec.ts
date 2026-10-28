@@ -29,9 +29,9 @@ test('navigation opens a functional module directory', async ({ page }) => {
   await page.keyboard.press('Control+k');
   await page.getByRole('dialog', { name: 'Quick navigation' }).getByRole('button', { name: /Football Systems/i }).click();
   await expect(page.getByRole('heading', { name: 'Football Systems' })).toBeVisible();
-  await expect(page.getByText('27 of 27 modules')).toBeVisible();
+  await expect(page.getByText('27 / 27 modules')).toBeVisible();
   await page.getByPlaceholder('Search modules or ID…').fill('Player Intelligence');
-  await expect(page.getByText('1 of 27 modules')).toBeVisible();
+  await expect(page.getByText('1 / 27 modules')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Player Intelligence & eCA' })).toBeVisible();
 });
 
@@ -87,6 +87,7 @@ test('discovers a bounded synthetic trailing archive catalogue without extractin
   await page.locator('input[type="file"]').setInputFiles({ name: 'synthetic.fm', mimeType: 'application/octet-stream', buffer: file });
   await expect(page.getByText('Internal archive index')).toBeVisible();
   await expect(page.getByText('game_info.dat')).toBeVisible();
+  await page.getByText('Technical details').click();
   await expect(page.getByText(/member contents and game records are NOT decoded/i)).toBeVisible();
 });
 
@@ -226,14 +227,14 @@ test('Plan A/B supports versatile player pins, exclusions and honest comparisons
   // A versatile player cannot be pinned to both RB and RW.
   await page.getByRole('combobox',{name:'Lock RW'}).selectOption('export-row-12');
   await expect(page.getByText('Incomplete XI', { exact: true })).toBeVisible();
-  await expect(page.getByText(/was pinned twice/)).toBeVisible();
+  await expect(page.getByText(/same player pinned twice/)).toBeVisible();
   await page.getByRole('combobox',{name:'Lock RW'}).selectOption('');
   await expect(page.getByText('Feasible XI')).toBeVisible();
 
   // Exclusion of a pinned player is a hard conflict, never a silent substitution.
   await page.getByRole('group',{name:'Exclude players'})
     .getByRole('checkbox',{name:/Bench Versatile/}).check();
-  await expect(page.getByText(/both excluded and pinned/)).toBeVisible();
+  await expect(page.getByText(/player both pinned and excluded/)).toBeVisible();
   await page.getByRole('button',{name:'Clear all constraints'}).click();
   await expect(page.getByText('Feasible XI')).toBeVisible();
 
@@ -316,7 +317,7 @@ test('Vietnamese player scouting labels are readable and CA stays unverified',as
     buffer:Buffer.from('Name,Position,Passing,Vision,Decisions,Stamina,Work Rate\nCầu thủ thử nghiệm,CM,17,18,16,14,16')
   });
   await expect(page.getByRole('heading',{name:'Cầu thủ thử nghiệm'})).toBeVisible();
-  await expect(page.getByText('CA thật')).toBeVisible();
+  await expect(page.getByText('CA thật', { exact: true })).toBeVisible();
   await expect(page.getByText('Chưa xác minh').first()).toBeVisible();
   await page.getByRole('tab',{name:'Chỉ số'}).click();
   await expect(page.getByText('Chuyền bóng')).toBeVisible();

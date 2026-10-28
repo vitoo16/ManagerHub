@@ -384,7 +384,7 @@ export default function App() {
     {commandOpen && <div className="command-overlay" role="presentation" onMouseDown={event => {if(event.target === event.currentTarget) setCommandOpen(false);}}>
       <div ref={commandDialogRef} className="command-dialog mh-surface mh-surface--glass" role="dialog" aria-modal="true" aria-label={t("Quick navigation")}>
         <div className="command-top"><Icon name="search" size={19}/><span>{t("Jump to a workspace")}</span><button className="icon-action" onClick={() => setCommandOpen(false)} aria-label={t("Close quick navigation")}><Icon name="close" size={17}/></button></div>
-        {NAV.map(item => <button key={item.key} className="command-item" onClick={() => navigate(item.key)}><Icon name={item.icon}/><span>{item.title}</span><Icon name="arrow" size={15}/></button>)}
+        {NAV.map(item => <button key={item.key} className="command-item" onClick={() => navigate(item.key)}><Icon name={item.icon}/><span>{t(item.title)}</span><Icon name="arrow" size={15}/></button>)}
         <div className="command-footer">{t("Esc to close · Ctrl/⌘ K to open")}</div>
       </div>
     </div>}
