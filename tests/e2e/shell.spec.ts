@@ -200,7 +200,7 @@ test('builds a unique eleven for an eligible export and explains infeasible form
 
   await page.getByLabel('Formation').selectOption('4-2-3-1');
   await expect(page.getByText('Starting eleven incomplete', { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("We couldn't fill every position")).toBeVisible();
+  await expect(page.getByText('This player list cannot fill all eleven positions yet.')).toBeVisible();
   await expect(lineup).toHaveCount(0);
 });
 
@@ -227,14 +227,14 @@ test('Plan A/B supports versatile player pins, exclusions and honest comparisons
   // A versatile player cannot be pinned to both RB and RW.
   await page.getByRole('combobox',{name:'Lock RW'}).selectOption('export-row-12');
   await expect(page.getByText('Starting eleven incomplete', { exact: true }).first()).toBeVisible();
-  await expect(page.getByText(/same player pinned twice/)).toBeVisible();
+  await expect(page.getByText(/same player to more than one position/)).toBeVisible();
   await page.getByRole('combobox',{name:'Lock RW'}).selectOption('');
   await expect(page.getByText('Starting eleven ready').first()).toBeVisible();
 
   // Exclusion of a pinned player is a hard conflict, never a silent substitution.
   await page.getByRole('group',{name:'Exclude players'})
     .getByRole('checkbox',{name:/Bench Versatile/}).check();
-  await expect(page.getByText(/player both pinned and excluded/)).toBeVisible();
+  await expect(page.getByText(/cannot exclude a player while keeping them in the starting lineup/)).toBeVisible();
   await page.getByRole('button',{name:'Clear all constraints'}).click();
   await expect(page.getByText('Starting eleven ready').first()).toBeVisible();
 
