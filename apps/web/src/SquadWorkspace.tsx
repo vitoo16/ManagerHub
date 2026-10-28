@@ -46,12 +46,12 @@ function TacticalPitch({ solution }: { solution: SquadSolution }) {
         </div>;
       })}
       {!solution.complete && <div className="squad-pitch__incomplete">
-        <Icon name="warning" size={25}/><strong>{t("Cannot construct a valid XI")}</strong>
-        <span>{t("Review position coverage and the user-selected constraints")}</span>
+        <Icon name="warning" size={25}/><strong>{t("We couldn't fill all eleven positions with your current choices.")}</strong>
+        <span>{t("Check the positions still missing, or choose different players.")}</span>
       </div>}
     </div>
     <div className="squad-pitch-note">
-      The pitch is a planning diagram, not tracked match positioning. No simulated chemistry or win probability.
+      {t("This pitch is a planning aid, not a replay of player movement. ManagerHub does not simulate team chemistry or win probability.")}
     </div>
   </Surface>;
 }
@@ -149,10 +149,10 @@ function ScenarioComparison({left,right}: {left:SquadSolution;right:SquadSolutio
     <div className="squad-card-heading"><span>{t("Plan comparison")}</span><span>{t("Based on the attributes you imported")}</span></div>
     <div className="squad-compare-summary">
       <div><small>{t("PLAN A")}</small><strong>{left.complete?left.averageRoleScore:'—'}</strong>
-        <span>{left.formation} · {t(left.complete?'Complete XI':'Incomplete XI')}</span></div>
+        <span>{left.formation} · {t(left.complete?'Starting eleven ready':'Starting eleven incomplete')}</span></div>
       <div className="squad-compare-separator" aria-hidden="true">{t("VS")}</div>
       <div><small>{t("PLAN B")}</small><strong>{right.complete?right.averageRoleScore:'—'}</strong>
-        <span>{right.formation} · {t(right.complete?'Complete XI':'Incomplete XI')}</span></div>
+        <span>{right.formation} · {t(right.complete?'Starting eleven ready':'Starting eleven incomplete')}</span></div>
     </div>
     {comparison.comparable
       ? <div className="squad-compare-metrics" aria-label={t("Comparison of feasible squads")}>
@@ -226,11 +226,11 @@ export function SquadWorkspace({dataset,onImport,plans,setPlans,active,setActive
             onClick={()=>setActive(key)}>{t('Plan {{plan}}',{plan:key})}</button>)}
         </div>
         <Button variant="quiet" onClick={()=>{copyAtoB();setActive('B');}}>
-          <Icon name="layers" size={15}/> Copy A into B
+          <Icon name="layers" size={15}/> {t("Copy Plan A to Plan B")}
         </Button>
       </div>
       <div className="squad-control-row">
-        <label className="squad-formation-control">Formation
+        <label className="squad-formation-control">{t("Formation")}
           <select value={plan.formation} onChange={event=>changeFormation(event.target.value as FormationId)}>
             {Object.keys(FORMATIONS).map(key=><option key={key} value={key}>{key}</option>)}
           </select>
@@ -238,7 +238,7 @@ export function SquadWorkspace({dataset,onImport,plans,setPlans,active,setActive
         <div className="squad-source-label"><Icon name="shield" size={15}/>
           <span>{dataset.fileName} · {dataset.players.length} {t('players')} · {t('Imported data only')}</span>
         </div>
-        <Status tone={solution?.complete?'positive':'warning'}>{t(solution?.complete?'Feasible XI':'Incomplete XI')}</Status>
+        <Status tone={solution?.complete?'positive':'warning'}>{t(solution?.complete?'Starting eleven ready':'Starting eleven incomplete')}</Status>
       </div>
       <div className="squad-summary-row">
         <Surface className="squad-summary-card"><span>{t("Starting XI")}</span>
