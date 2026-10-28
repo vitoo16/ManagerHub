@@ -284,7 +284,7 @@ test('Plan B remains intact across workspace navigation and resets for a differe
 test('VI/EN language switch localizes onboarding, saves choice and restores English', async ({page})=>{
   await page.goto('/#/overview');
   await expect(page.locator('html')).toHaveAttribute('lang','en');
-  await page.getByRole('button',{name:'Chuyển sang tiếng Việt'}).click();
+  await page.getByRole('button',{name:'Switch language to Vietnamese'}).click();
   await expect(page.locator('html')).toHaveAttribute('lang','vi');
   await expect(page.getByRole('heading',{name:/Mọi quyết định/})).toBeVisible();
   await expect(page.getByRole('navigation',{name:'Điều hướng chính'})).toContainText('Phân tích cầu thủ');
@@ -308,7 +308,7 @@ test('VI/EN language switch localizes onboarding, saves choice and restores Engl
 
 test('Vietnamese player scouting labels are readable and CA stays unverified',async ({page})=>{
   await page.goto('/#/players');
-  await page.getByRole('button',{name:'Chuyển sang tiếng Việt'}).click();
+  await page.getByRole('button',{name:'Switch language to Vietnamese'}).click();
   await page.locator('input[type=file]').setInputFiles({
     name:'vi-squad.csv',mimeType:'text/csv',
     buffer:Buffer.from('Name,Position,Passing,Vision,Decisions,Stamina,Work Rate\nCầu thủ thử nghiệm,CM,17,18,16,14,16')
