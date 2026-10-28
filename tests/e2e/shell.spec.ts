@@ -197,7 +197,7 @@ test('builds a unique eleven for an eligible export and explains infeasible form
 
   await page.getByLabel('Formation').selectOption('4-2-3-1');
   await expect(page.getByText('Incomplete XI', { exact: true })).toBeVisible();
-  await expect(page.getByText('We couldn't fill every position')).toBeVisible();
+  await expect(page.getByText("We couldn't fill every position")).toBeVisible();
   await expect(lineup).toHaveCount(0);
 });
 
