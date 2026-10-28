@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useMemo, useState, type Dispatch, type SetStateAction } from 'react';
 import {
   FORMATIONS, declaredPositions, eligibleSlotCandidates, optimizeSquad, compareSquadScenarios,
@@ -8,10 +9,11 @@ import { Button, Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
 import './squad-workspace.css';
 
 function TacticalPitch({ solution }: { solution: SquadSolution }) {
+  const { t } = useTranslation();
   const positions=new Map<string,SlotAssignment>(solution.lineup.map(item=>[item.slot.id,item]));
   const formation=solution.formation;
   return <Surface className="squad-pitch-card">
-    <div className="squad-card-heading"><span>Tactical selection</span><span>Draft · Not an in-game lineup</span></div>
+    <div className="squad-card-heading"><span>{t("Tactical selection")}</span><span>{t("Draft · Not an in-game lineup")}</span></div>
     <div className="squad-pitch" role="img" aria-label={solution.complete
       ? formation+' pitch layout with eleven uniquely assigned players. Accessible lineup appears to the right.'
       : 'Incomplete formation: no players positioned because an eligible starting eleven is unavailable.'}>
@@ -31,8 +33,8 @@ function TacticalPitch({ solution }: { solution: SquadSolution }) {
         </div>;
       })}
       {!solution.complete && <div className="squad-pitch__incomplete">
-        <Icon name="warning" size={25}/><strong>Cannot construct a valid XI</strong>
-        <span>Review position coverage and the user-selected constraints</span>
+        <Icon name="warning" size={25}/><strong>{t("Cannot construct a valid XI")}</strong>
+        <span>{t("Review position coverage and the user-selected constraints")}</span>
       </div>}
     </div>
     <div className="squad-pitch-note">
@@ -42,9 +44,10 @@ function TacticalPitch({ solution }: { solution: SquadSolution }) {
 }
 
 function LineupResults({solution}:{solution:SquadSolution}){
+  const { t } = useTranslation();
   return <Surface className="squad-lineup-card">
-    <div className="squad-card-heading"><span>Slot assignments</span><span>{solution.formation}</span></div>
-    {solution.complete ? <ol className="squad-roster" aria-label="Assigned starting eleven">
+    <div className="squad-card-heading"><span>{t("Slot assignments")}</span><span>{solution.formation}</span></div>
+    {solution.complete ? <ol className="squad-roster" aria-label={t("Assigned starting eleven")}>
       {solution.lineup.map(item=><li key={item.slot.id}>
         <span className="squad-roster__slot">{item.slot.label}</span>
         <div className="squad-roster__name"><strong>{item.name}</strong>
@@ -53,9 +56,9 @@ function LineupResults({solution}:{solution:SquadSolution}){
         <span className="squad-roster__score">{item.roleScore}</span>
       </li>)}
     </ol> : <div className="squad-feasibility" role="status">
-      <Status tone="warning">Hard constraints not met</Status>
+      <Status tone="warning">{t("Hard constraints not met")}</Status>
       <p>{solution.reason}</p>
-      <p>Missing or unverified values are never estimated to fill a team. Try changing locks, exclusions or source data.</p>
+      <p>{t("Missing or unverified values are never estimated to fill a team. Try changing locks, exclusions or source data.")}</p>
     </div>}
   </Surface>;
 }
@@ -70,6 +73,7 @@ interface PinEditorProps {
   readonly onClear: ()=>void;
 }
 function PinEditor({slots,dataset,locks,excluded,onPin,onExclude,onClear}:PinEditorProps){
+  const { t } = useTranslation();
   const [pinSearch,setPinSearch]=useState('');
   const [excludeSearch,setExcludeSearch]=useState('');
   const pinnedOptions=useMemo(()=>{
@@ -81,15 +85,15 @@ function PinEditor({slots,dataset,locks,excluded,onPin,onExclude,onClear}:PinEdi
       .some(value=>value?.toLocaleLowerCase().includes(query))).slice(0,60);
   },[dataset,excludeSearch]);
   return <Surface className="squad-edit-card">
-    <div className="squad-card-heading"><span>Manager constraints</span>
-      <Button variant="quiet" onClick={onClear}>Clear all constraints</Button>
+    <div className="squad-card-heading"><span>{t("Manager constraints")}</span>
+      <Button variant="quiet" onClick={onClear}>{t("Clear all constraints")}</Button>
     </div>
-    <p className="module-disclaimer">Pin an observed, eligible player to a position or exclude a player from selection. Every edit recalculates the entire XI.</p>
+    <p className="module-disclaimer">{t("Pin an observed, eligible player to a position or exclude a player from selection. Every edit recalculates the entire XI.")}</p>
     <label className="squad-editor-filter">Find players to pin
-      <input type="search" placeholder="Search name, club or exported position…" value={pinSearch}
+      <input type="search" placeholder={t("Search name, club or exported position…")} value={pinSearch}
         onChange={event=>setPinSearch(event.target.value)}/>
     </label>
-    <div className="squad-lock-list" role="group" aria-label="Lock player positions">
+    <div className="squad-lock-list" role="group" aria-label={t("Lock player positions")}>
       {slots.map(slot=>{
         const value=locks[slot.id]??'';
         const candidates=pinnedOptions.get(slot.id)??[];
@@ -99,7 +103,7 @@ function PinEditor({slots,dataset,locks,excluded,onPin,onExclude,onClear}:PinEdi
           <span><strong>{slot.label}</strong><small>{slot.roleId.replaceAll('-',' ')}</small></span>
           <select aria-label={'Lock '+slot.label} value={value}
             onChange={event=>onPin(slot.id,event.target.value||null)}>
-            <option value="">Automatic selection</option>
+            <option value="">{t("Automatic selection")}</option>
             {value && !selected && <option value={value}>{pinnedName} · current lock</option>}
             {candidates.map(candidate=><option key={candidate.playerId} value={candidate.playerId}>
               {candidate.name} · Fit {candidate.score}{excluded.includes(candidate.playerId)?' · EXCLUDED':''}
@@ -108,12 +112,12 @@ function PinEditor({slots,dataset,locks,excluded,onPin,onExclude,onClear}:PinEdi
         </label>;
       })}
     </div>
-    <div className="squad-exclusion-heading"><strong>Exclude players</strong><small>{excluded.length} unavailable for selection</small></div>
+    <div className="squad-exclusion-heading"><strong>{t("Exclude players")}</strong><small>{excluded.length} unavailable for selection</small></div>
     <label className="squad-editor-filter">Search roster to exclude
-      <input type="search" placeholder="Search exported players…" value={excludeSearch}
+      <input type="search" placeholder={t("Search exported players…")} value={excludeSearch}
         onChange={event=>setExcludeSearch(event.target.value)}/>
     </label>
-    <div className="squad-exclusion-list" role="group" aria-label="Exclude players">
+    <div className="squad-exclusion-list" role="group" aria-label={t("Exclude players")}>
       {searched.map(player=><label key={player.id} className="squad-exclusion-player">
         <input type="checkbox" checked={excluded.includes(player.id)}
           onChange={event=>onExclude(player.id,event.target.checked)}/>
@@ -121,29 +125,30 @@ function PinEditor({slots,dataset,locks,excluded,onPin,onExclude,onClear}:PinEdi
       </label>)}
       {searched.length===0 && <p className="module-disclaimer">No players match your search.</p>}
     </div>
-    {dataset.players.length>60&&<p className="module-disclaimer">Showing the first 60 matching players. Search by name to find others.</p>}
+    {dataset.players.length>60&&<p className="module-disclaimer">{t("Showing the first 60 matching players. Search by name to find others.")}</p>}
   </Surface>;
 }
 
 function ScenarioComparison({left,right}: {left:SquadSolution;right:SquadSolution}){
+  const { t } = useTranslation();
   const comparison=compareSquadScenarios(left,right);
   return <Surface className="squad-compare-card">
-    <div className="squad-card-heading"><span>Plan comparison</span><span>Source-backed attribute heuristic</span></div>
+    <div className="squad-card-heading"><span>{t("Plan comparison")}</span><span>{t("Source-backed attribute heuristic")}</span></div>
     <div className="squad-compare-summary">
-      <div><small>PLAN A</small><strong>{left.complete?left.averageRoleScore:'—'}</strong>
+      <div><small>{t("PLAN A")}</small><strong>{left.complete?left.averageRoleScore:'—'}</strong>
         <span>{left.formation} · {left.complete?'Complete XI':'Incomplete XI'}</span></div>
-      <div className="squad-compare-separator" aria-hidden="true">VS</div>
-      <div><small>PLAN B</small><strong>{right.complete?right.averageRoleScore:'—'}</strong>
+      <div className="squad-compare-separator" aria-hidden="true">{t("VS")}</div>
+      <div><small>{t("PLAN B")}</small><strong>{right.complete?right.averageRoleScore:'—'}</strong>
         <span>{right.formation} · {right.complete?'Complete XI':'Incomplete XI'}</span></div>
     </div>
     {comparison.comparable
-      ? <div className="squad-compare-metrics" aria-label="Comparison of feasible squads">
-        <div><strong>{comparison.changedSlots}</strong><span>Position assignments changed</span></div>
-        <div><strong>{comparison.changedPlayers}</strong><span>New players in B</span></div>
+      ? <div className="squad-compare-metrics" aria-label={t("Comparison of feasible squads")}>
+        <div><strong>{comparison.changedSlots}</strong><span>{t("Position assignments changed")}</span></div>
+        <div><strong>{comparison.changedPlayers}</strong><span>{t("New players in B")}</span></div>
         <div><strong>{comparison.roleFitDelta!==null&&comparison.roleFitDelta>0?'+':''}{comparison.roleFitDelta}</strong>
-          <span>Role-fit point difference</span></div>
+          <span>{t("Role-fit point difference")}</span></div>
       </div>
-      : <Status tone="warning">Not directly comparable</Status>}
+      : <Status tone="warning">{t("Not directly comparable")}</Status>}
     <p className="module-disclaimer">{comparison.explanation}</p>
   </Surface>;
 }
@@ -156,6 +161,7 @@ export function SquadWorkspace({dataset,onImport,plans,setPlans,active,setActive
   active: SquadPlanKey;
   setActive: Dispatch<SetStateAction<SquadPlanKey>>;
 }){
+  const { t } = useTranslation();
   const plan=plans[active];
   const solutions=useMemo(()=>dataset?{
     A:optimizeSquad(dataset.players,plans.A.formation,plans.A),
@@ -191,17 +197,17 @@ export function SquadWorkspace({dataset,onImport,plans,setPlans,active,setActive
 
   return <div className="view-flow">
     <div className="page-title">
-      <span className="mh-eyebrow">SQUAD MANAGEMENT / CONSTRAINT-BASED ANALYSIS</span>
-      <h1>Squad Planner</h1>
-      <p>Compare two real draft scenarios using visible exported positions, explainable role-fit estimates, pinned player choices and exclusions. No fictional game data is generated.</p>
+      <span className="mh-eyebrow">{t("SQUAD MANAGEMENT / CONSTRAINT-BASED ANALYSIS")}</span>
+      <h1>{t("Squad Planner")}</h1>
+      <p>{t("Compare two real draft scenarios using visible exported positions, explainable role-fit estimates, pinned player choices and exclusions. No fictional game data is generated.")}</p>
     </div>
     {!dataset?<Surface className="squad-no-data"><Icon name="layers" size={34}/>
-      <h2>Your squad needs an actual player export.</h2>
-      <p>Import an FM HTML/CSV/TSV squad list first. Unknown positions and attributes will not be filled with invented numbers.</p>
-      <Button variant="primary" onClick={onImport}>Open Player Lab <Icon name="arrow" size={15}/></Button>
+      <h2>{t("Your squad needs an actual player export.")}</h2>
+      <p>{t("Import an FM HTML/CSV/TSV squad list first. Unknown positions and attributes will not be filled with invented numbers.")}</p>
+      <Button variant="primary" onClick={onImport}>{t("Open Player Lab")} <Icon name="arrow" size={15}/></Button>
     </Surface>:<>
       <div className="squad-scenario-header">
-        <div className="squad-scenario-tabs" role="group" aria-label="Squad scenarios">
+        <div className="squad-scenario-tabs" role="group" aria-label={t("Squad scenarios")}>
           {(['A','B'] as const).map(key=><button key={key} aria-pressed={active===key}
             className={active===key?'squad-scenario-tab squad-scenario-tab--active':'squad-scenario-tab'}
             onClick={()=>setActive(key)}>Plan {key}</button>)}
@@ -222,12 +228,12 @@ export function SquadWorkspace({dataset,onImport,plans,setPlans,active,setActive
         <Status tone={solution?.complete?'positive':'warning'}>{solution?.complete?'Feasible XI':'Incomplete XI'}</Status>
       </div>
       <div className="squad-summary-row">
-        <Surface className="squad-summary-card"><span>Starting XI</span>
-          <strong>{solution?.lineup.length??0}<small> / 11</small></strong><small>One player per slot</small></Surface>
-        <Surface className="squad-summary-card"><span>Average role fit</span>
+        <Surface className="squad-summary-card"><span>{t("Starting XI")}</span>
+          <strong>{solution?.lineup.length??0}<small> / 11</small></strong><small>{t("One player per slot")}</small></Surface>
+        <Surface className="squad-summary-card"><span>{t("Average role fit")}</span>
           <strong>{solution?.averageRoleScore??'—'}{solution?.averageRoleScore!==null&&<small> / 100</small>}</strong>
-          <small>Derived attribute heuristic</small></Surface>
-        <Surface className="squad-summary-card"><span>Active constraints</span>
+          <small>{t("Derived attribute heuristic")}</small></Surface>
+        <Surface className="squad-summary-card"><span>{t("Active constraints")}</span>
           <strong>{Object.keys(plan.lockedSlots).length+plan.excludedPlayerIds.length}</strong>
           <small>{Object.keys(plan.lockedSlots).length} locked · {plan.excludedPlayerIds.length} excluded · {unknownPositions} unknown positions</small>
         </Surface>
@@ -237,13 +243,13 @@ export function SquadWorkspace({dataset,onImport,plans,setPlans,active,setActive
         <LineupResults solution={solution}/>
       </div>}
       {solutions&&<ScenarioComparison left={solutions.A} right={solutions.B}/>}
-      <SectionHeading eyebrow="WHAT-IF PLANNING" title={'Adjust Plan '+active}/>
+      <SectionHeading eyebrow={t("WHAT-IF PLANNING")} title={'Adjust Plan '+active}/>
       <PinEditor key={active+plan.formation} slots={FORMATIONS[plan.formation]} dataset={dataset}
         locks={plan.lockedSlots} excluded={plan.excludedPlayerIds}
         onPin={onPin} onExclude={onExclude} onClear={reset}/>
-      <SectionHeading eyebrow="DATA SUFFICIENCY" title="Position coverage and blockers"/>
+      <SectionHeading eyebrow={t("DATA SUFFICIENCY")} title={t("Position coverage and blockers")}/>
       <Surface className="squad-coverage-card">
-        <div className="squad-coverage-columns"><strong>Slot</strong><strong>Known-position candidates</strong><strong>Enough observed attributes</strong></div>
+        <div className="squad-coverage-columns"><strong>{t("Slot")}</strong><strong>{t("Known-position candidates")}</strong><strong>{t("Enough observed attributes")}</strong></div>
         {solution?.diagnostics.map(entry=><div key={entry.slot.id} className="squad-coverage-row">
           <span>{entry.slot.label}</span><span>{entry.eligibleCandidates} player{entry.eligibleCandidates===1?'':'s'}</span>
           <span className={entry.scoredCandidates===0?'squad-coverage-row--missing':''}>
@@ -252,7 +258,7 @@ export function SquadWorkspace({dataset,onImport,plans,setPlans,active,setActive
         </div>)}
       </Surface>
       <div className="coverage-note"><Icon name="shield" size={17}/>
-        <p><strong>Interpretation:</strong> Plan A/B are temporary in-page scenarios. This provisional role-attribute assignment does not establish FM CA/PA, tactical familiarity, chemistry, fitness or match results. Different formations are not given misleading comparable averages.</p>
+        <p><strong>{t("Interpretation:")}</strong> {t("Plan A/B are temporary in-page scenarios. This provisional role-attribute assignment does not establish FM CA/PA, tactical familiarity, chemistry, fitness or match results. Different formations are not given misleading comparable averages.")}</p>
       </div>
     </>}
   </div>;
