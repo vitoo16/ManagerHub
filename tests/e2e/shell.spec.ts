@@ -193,13 +193,13 @@ test('builds a unique eleven for an eligible export and explains infeasible form
   await page.keyboard.press('Control+k');
   await page.getByRole('dialog', {name:'Quick navigation'}).getByRole('button', {name:/Squad Planner/}).click();
   await expect(page.getByRole('heading', {name:'Squad Planner'})).toBeVisible();
-  await expect(page.getByText('Starting eleven ready')).toBeVisible();
+  await expect(page.getByText('Starting eleven ready').first()).toBeVisible();
   const lineup=page.getByRole('list', {name:'Assigned starting eleven'});
   await expect(lineup.getByRole('listitem')).toHaveCount(11);
   await expect(page.getByText('One player per slot')).toBeVisible();
 
   await page.getByLabel('Formation').selectOption('4-2-3-1');
-  await expect(page.getByText('Starting eleven incomplete', { exact: true })).toBeVisible();
+  await expect(page.getByText('Starting eleven incomplete', { exact: true }).first()).toBeVisible();
   await expect(page.getByText("We couldn't fill every position")).toBeVisible();
   await expect(lineup).toHaveCount(0);
 });
@@ -214,7 +214,7 @@ test('Plan A/B supports versatile player pins, exclusions and honest comparisons
   await page.keyboard.press('Control+k');
   await page.getByRole('dialog',{name:'Quick navigation'})
     .getByRole('button',{name:/Squad Planner/}).click();
-  await expect(page.getByText('Starting eleven ready')).toBeVisible();
+  await expect(page.getByText('Starting eleven ready').first()).toBeVisible();
 
   await page.getByRole('group',{name:'Squad scenarios'})
     .getByRole('button',{name:'Plan B'}).click();
@@ -226,23 +226,23 @@ test('Plan A/B supports versatile player pins, exclusions and honest comparisons
 
   // A versatile player cannot be pinned to both RB and RW.
   await page.getByRole('combobox',{name:'Lock RW'}).selectOption('export-row-12');
-  await expect(page.getByText('Starting eleven incomplete', { exact: true })).toBeVisible();
+  await expect(page.getByText('Starting eleven incomplete', { exact: true }).first()).toBeVisible();
   await expect(page.getByText(/same player pinned twice/)).toBeVisible();
   await page.getByRole('combobox',{name:'Lock RW'}).selectOption('');
-  await expect(page.getByText('Starting eleven ready')).toBeVisible();
+  await expect(page.getByText('Starting eleven ready').first()).toBeVisible();
 
   // Exclusion of a pinned player is a hard conflict, never a silent substitution.
   await page.getByRole('group',{name:'Exclude players'})
     .getByRole('checkbox',{name:/Bench Versatile/}).check();
   await expect(page.getByText(/player both pinned and excluded/)).toBeVisible();
   await page.getByRole('button',{name:'Clear all constraints'}).click();
-  await expect(page.getByText('Starting eleven ready')).toBeVisible();
+  await expect(page.getByText('Starting eleven ready').first()).toBeVisible();
 
   // Explicit scenario copy restores a comparable unmodified XI.
   await page.getByRole('button',{name:'Copy Plan A to Plan B'}).click();
   await expect(page.getByText('Position assignments changed')).toBeVisible();
   await page.getByLabel('Formation').selectOption('4-2-3-1');
-  await expect(page.getByText('Starting eleven incomplete', { exact: true })).toBeVisible();
+  await expect(page.getByText('Starting eleven incomplete', { exact: true }).first()).toBeVisible();
   await expect(page.getByText('Not directly comparable')).toBeVisible();
 });
 
