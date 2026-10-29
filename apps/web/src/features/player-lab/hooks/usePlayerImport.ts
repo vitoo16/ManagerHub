@@ -1,6 +1,6 @@
 import { useCallback, useState, type ChangeEvent } from 'react';
 import { parsePlayerExport, parsePlayerHtml, type PlayerDataset } from '@managerhub/domain';
-import { readableImportError } from '../../i18n/player-import-copy';
+import { readableImportError } from '../../../i18n/player-import-copy';
 
 const MAX_EXPORT_BYTES = 12 * 1024 * 1024;
 
