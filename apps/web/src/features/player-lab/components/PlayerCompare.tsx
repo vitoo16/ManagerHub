@@ -1,4 +1,4 @@
-import { memo, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ATTRIBUTE_LABELS, analyzeRoles, type AttributeKey, type PlayerDataset, type PlayerExport } from '@managerhub/domain';
 import { Surface } from '@managerhub/ui';
@@ -7,14 +7,22 @@ function PlayerCompare({primary,dataset}:{primary:PlayerExport;dataset:PlayerDat
   const { t } = useTranslation();
   const [query,setQuery]=useState('');
   const [candidateId,setCandidateId]=useState<string>(()=>dataset.players.find(p=>p.id!==primary.id)?.id??'');
+  const normalizedQuery=query.trim().toLowerCase();
   const options=useMemo(()=>dataset.players.filter(p=>p.id!==primary.id&&
-    [p.name,p.club,p.position].some(v=>v?.toLowerCase().includes(query.toLowerCase()))).slice(0,30),[dataset,primary.id,query]);
-  const other=dataset.players.find(p=>p.id===candidateId)??null;
-  const ownRoles=analyzeRoles(primary);
-  const otherRoles=other?analyzeRoles(other):[];
-  const seen=(Object.keys(primary.attributes) as AttributeKey[]).filter(k=>other?.attributes[k]!==undefined);
-  const sorted=[...seen].sort((a,b)=>Math.abs((primary.attributes[b]??0)-(other?.attributes[b]??0))-
-    Math.abs((primary.attributes[a]??0)-(other?.attributes[a]??0))).slice(0,12);
+    [p.name,p.club,p.position].some(v=>v?.toLowerCase().includes(normalizedQuery))).slice(0,30),
+    [dataset.players,primary.id,normalizedQuery]);
+  const other=useMemo(()=>dataset.players.find(p=>p.id===candidateId&&p.id!==primary.id)??null,[dataset.players,candidateId,primary.id]);
+  const ownRoles=useMemo(()=>analyzeRoles(primary),[primary]);
+  const otherRoles=useMemo(()=>other?analyzeRoles(other):[],[other]);
+  const sorted=useMemo(()=>{
+    const seen=(Object.keys(primary.attributes) as AttributeKey[]).filter(key=>other?.attributes[key]!==undefined);
+    return [...seen].sort((a,b)=>Math.abs((primary.attributes[b]??0)-(other?.attributes[b]??0))-
+      Math.abs((primary.attributes[a]??0)-(other?.attributes[a]??0))).slice(0,12);
+  },[primary.attributes,other?.attributes]);
+  useEffect(()=>{
+    const candidateStillAvailable=dataset.players.some(player=>player.id===candidateId&&player.id!==primary.id);
+    if(!candidateStillAvailable)setCandidateId(dataset.players.find(player=>player.id!==primary.id)?.id??'');
+  },[dataset.players,primary.id,candidateId]);
   return <Surface className="scout-panel">
     <div className="scout-panel__title">{t("Head-to-head analysis")} <span>{t("Same import · Native attributes only")}</span></div>
     <p className="module-disclaimer">{t("Compare observed attributes and product-authored role-fit estimates. Game CA/PA, transfer value, actual positional familiarity and scouting certainty are not part of this comparison.")}</p>
