@@ -9,7 +9,7 @@
 3. **Keep rendered work bounded.** Player Lab virtualizes the loaded portion of the roster with a fixed-height row window and overscan. It loads another 100 records only when requested; the number of DOM nodes stays bounded as the loaded list grows. Squad exclusion and pin options remain capped.
 4. **Do not repeat expensive calculations without a reason.** Player analysis is memoized by immutable player identity. Recruitment's optimizer runs only after its tab is first opened and remains mounted when the user switches tabs. Plan A and Plan B are optimized independently so editing one plan does not re-run the other.
 5. **Cache by a trustworthy lifetime.** Unconstrained XI solutions are cached in a `WeakMap` keyed by the imported players-array identity and formation. This allows Player Lab and Squad Planner to reuse the same baseline while letting discarded datasets be garbage-collected. Do not mutate imported arrays in place.
-6. **Filter before scoring.** Search text is normalized once per imported roster; deferred query values keep input updates responsive. Candidate text filtering happens before positional parsing and role scoring. The optimizer reuses role scores when a formation repeats the same role in multiple slots.
+6. **Filter before scoring.** Each active search surface builds a normalized index once per imported roster; deferred query values keep input updates responsive. Candidate text filtering happens before positional parsing and role scoring. The optimizer reuses role scores when a formation repeats the same role in multiple slots.
 
 ## Implemented controls
 
