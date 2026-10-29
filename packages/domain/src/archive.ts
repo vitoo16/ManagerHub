@@ -124,3 +124,60 @@ export async function inspectArchiveIndex(file: File): Promise<ArchiveIndex | nu
   }
   return null;
 }
+
+export type MemberPrefixKind = 'zlib_candidate' | 'gzip' | 'zip' | 'json_text' | 'unknown';
+
+export interface MemberEnvelopeProbe {
+  readonly filename: string;
+  readonly absoluteOffset: number;
+  readonly sampleBytes: number;
+  readonly prefixHex: string;
+  readonly prefixKind: MemberPrefixKind;
+  readonly storedBytes: number;
+  readonly reportedUncompressedBytes: number;
+}
+
+/**
+ * Read at most 16 bytes from each member's declared start. This probe never
+ * decompresses or returns member payloads and does not assert a codec.
+ * The base offset is an observation from one AFE save, not a universal rule.
+ */
+export async function probeMemberEnvelopes(
+  file: File,
+  index: ArchiveIndex
+): Promise<readonly MemberEnvelopeProbe[]> {
+  const memberDataBoundary = index.directoryOffset - OBSERVED_MEMBER_DATA_BASE_BYTES;
+  if (memberDataBoundary <= 0 || index.directoryOffset > file.size) return [];
+  const probes: MemberEnvelopeProbe[] = [];
+  for (const member of index.members) {
+    if (!Number.isSafeInteger(member.offset) || !Number.isSafeInteger(member.storedBytes) ||
+        member.offset < 0 || member.storedBytes < 1 ||
+        member.offset > memberDataBoundary || member.storedBytes > memberDataBoundary - member.offset) {
+      continue;
+    }
+    const absoluteOffset = OBSERVED_MEMBER_DATA_BASE_BYTES + member.offset;
+    if (absoluteOffset >= file.size) continue;
+    const sample = new Uint8Array(await file.slice(
+      absoluteOffset,
+      Math.min(absoluteOffset + 16, file.size, absoluteOffset + member.storedBytes)
+    ).arrayBuffer());
+    if (sample.length === 0) continue;
+    const first = sample[0] ?? 0;
+    const second = sample[1] ?? 0;
+    let prefixKind: MemberPrefixKind = 'unknown';
+    if (first === 0x1f && second === 0x8b) prefixKind = 'gzip';
+    else if (first === 0x50 && second === 0x4b && sample[2] === 0x03 && sample[3] === 0x04) prefixKind = 'zip';
+    else if ((first & 0x0f) === 8 && ((first << 8) + second) % 31 === 0) prefixKind = 'zlib_candidate';
+    else if (sample[0] === 0x7b || sample[0] === 0x5b) prefixKind = 'json_text';
+    probes.push({
+      filename: member.filename,
+      absoluteOffset,
+      sampleBytes: sample.length,
+      prefixHex: Array.from(sample, byte => byte.toString(16).padStart(2, '0')).join(' '),
+      prefixKind,
+      storedBytes: member.storedBytes,
+      reportedUncompressedBytes: member.reportedUncompressedBytes
+    });
+  }
+  return probes;
+}
