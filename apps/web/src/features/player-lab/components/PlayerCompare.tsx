@@ -8,9 +8,13 @@ function PlayerCompare({primary,dataset}:{primary:PlayerExport;dataset:PlayerDat
   const [query,setQuery]=useState('');
   const [candidateId,setCandidateId]=useState<string>(()=>dataset.players.find(p=>p.id!==primary.id)?.id??'');
   const normalizedQuery=query.trim().toLowerCase();
-  const options=useMemo(()=>dataset.players.filter(p=>p.id!==primary.id&&
-    [p.name,p.club,p.position].some(v=>v?.toLowerCase().includes(normalizedQuery))).slice(0,30),
-    [dataset.players,primary.id,normalizedQuery]);
+  const searchIndex=useMemo(()=>dataset.players.map(player=>({
+    player,
+    normalizedText:[player.name,player.club,player.position].map(value=>value?.toLowerCase()??'').join(' ')
+  })),[dataset.players]);
+  const options=useMemo(()=>searchIndex
+    .filter(entry=>entry.player.id!==primary.id&&entry.normalizedText.includes(normalizedQuery))
+    .slice(0,30).map(entry=>entry.player),[searchIndex,primary.id,normalizedQuery]);
   const other=useMemo(()=>dataset.players.find(p=>p.id===candidateId&&p.id!==primary.id)??null,[dataset.players,candidateId,primary.id]);
   const ownRoles=useMemo(()=>analyzeRoles(primary),[primary]);
   const otherRoles=useMemo(()=>other?analyzeRoles(other):[],[other]);
