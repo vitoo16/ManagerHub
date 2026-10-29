@@ -17,8 +17,10 @@ const budgets = {
 
 const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
 const entries = Object.entries(manifest);
-const appEntry = entries.find(([key, item]) => key === 'index.html' || item.src === 'index.html')
-  ?? entries.find(([key, item]) => item.isEntry && (key.endsWith('main.tsx') || item.src?.endsWith('main.tsx')));
+// Start from the JavaScript application entry, not index.html: the HTML manifest
+// record may list preload candidates that include lazy workspace chunks.
+const appEntry = entries.find(([key, item]) => item.isEntry && (key.endsWith('main.tsx') || item.src?.endsWith('main.tsx')))
+  ?? entries.find(([key, item]) => key === 'index.html' || item.src === 'index.html');
 if (!appEntry) throw new Error('Bundle budget: the app entry was not found in the Vite build manifest.');
 
 const visited = new Set();
