@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { readableImportError, readableImportWarning } from './i18n/player-import-copy';
-import { lazy, memo, Suspense, useId, useMemo, useRef, useState, type ChangeEvent } from 'react';
+import { lazy, memo, Suspense, useDeferredValue, useId, useMemo, useRef, useState, type ChangeEvent } from 'react';
 import {
   parsePlayerExport, parsePlayerHtml, type PlayerDataset
 } from '@managerhub/domain';
@@ -23,6 +23,7 @@ export const PlayerWorkspace = memo(function PlayerWorkspace({dataset,onDataset,
   const inputRef=useRef<HTMLInputElement>(null);
   const [error,setError]=useState<string|null>(null);
   const [search,setSearch]=useState('');
+  const deferredSearch=useDeferredValue(search);
   const [chosenId,setChosenId]=useState<string|null>(null);
   const [visibleLimit,setVisibleLimit]=useState(100);
   const [pendingDelete,setPendingDelete]=useState<string|null>(null);
@@ -44,7 +45,7 @@ export const PlayerWorkspace = memo(function PlayerWorkspace({dataset,onDataset,
       setVisibleLimit(100);
     }catch(ex){setError(readableImportError(ex));}
   };
-  const visible=useMemo(()=>dataset?.players.filter(p=>[p.name,p.club,p.position].some(v=>v?.toLowerCase().includes(search.toLowerCase())))??[],[dataset,search]);
+  const visible=useMemo(()=>{const query=deferredSearch.trim().toLocaleLowerCase();return dataset?.players.filter(p=>[p.name,p.club,p.position].some(v=>v?.toLocaleLowerCase().includes(query)))??[];},[dataset,deferredSearch]);
   const selected=dataset?.players.find(p=>p.id===chosenId)??dataset?.players[0]??null;
   const savedCurrent=dataset!==null&&library.items.some(item=>item.importedAt===dataset.importedAt &&
     item.fileName===dataset.fileName&&item.playerCount===dataset.players.length);
