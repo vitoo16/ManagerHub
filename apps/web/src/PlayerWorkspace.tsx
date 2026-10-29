@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { readableImportError, readableImportWarning } from './i18n/player-import-copy';
 import { useCallback, useDeferredValue, useId, useMemo, useRef, useState, type ChangeEvent, type UIEvent } from 'react';
 import type { PlayerDataset } from '@managerhub/domain';
-import {Button,Icon,SectionHeading,Status,Surface} from '@managerhub/ui';
+import {Button,Icon,Status,Surface} from '@managerhub/ui';
 import { PlayerListItem } from './features/player-lab/components/PlayerListItem';
 import PlayerDetails from './features/player-lab/components/PlayerDetails';
 import { usePlayerLibrary } from './usePlayerLibrary';
