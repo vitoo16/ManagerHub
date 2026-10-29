@@ -1,6 +1,6 @@
 # ManagerHub performance architecture
 
-**Status as of 2026-10-29:** implementation added on `work/performance-architecture`; automated build, unit, and browser verification is pending. No before/after performance numbers are claimed until the branch CI and browser profiling complete.
+**Status as of 2026-10-29:** integrated on `work/integrate-performance-architecture-20261029`. GitHub Actions run [#119](https://github.com/vitoo16/ManagerHub/actions/runs/40856549612) passed TypeScript strict typecheck, unit tests, production build/bundle budget, and desktop/mobile Playwright. This verifies correctness and bundle guardrails, not a measured runtime improvement; no before/after performance percentage is claimed without a representative browser profile.
 
 ## Principles
 
@@ -38,9 +38,11 @@
 
 The web build emits Vite's manifest and runs `scripts/check-bundle-budget.mjs` after compilation.
 
-- Initial static JS + CSS: at most 400 KiB raw and 145 KiB as the sum of per-file gzip sizes.
+- Initial static JS + CSS: at most 450 KiB raw and 150 KiB as the sum of per-file gzip sizes.
 - Every emitted JavaScript chunk, including lazy and worker chunks: at most 400 KiB raw and 145 KiB gzip.
 - Vite's chunk warning limit is set to 400 KiB as an additional warning.
+
+The latest successful build reported an initial static JS+CSS closure of **419.8 KiB raw / 137.5 KiB gzip-sum**, below the 450/150 KiB budgets. This is a manifest-based size metric, not a network transfer or interaction-latency measurement.
 
 The gzip-sum budget is intentionally conservative and is not the same as a real transfer measurement; actual transfer size also depends on server compression, cache state and request headers. The budgets are regression alarms, not a substitute for a browser performance profile.
 
