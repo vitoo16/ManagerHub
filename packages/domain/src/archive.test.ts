@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { deflateSync } from 'node:zlib';
 import { inspectArchiveIndex, parseArchiveDirectory } from './archive';
 
 function syntheticIndex() {
@@ -58,6 +59,76 @@ describe('bounded AFE/FM directory catalogue parser', () => {
         { filename: 'game_db.dat', offset: 128, storedBytes: 512, reportedUncompressedBytes: 1024 }
       ]
     });
+  });
+
+
+  it('inspects a synthetic 69-member save archive end to end', async () => {
+    const names = [
+      'game_info.dat', 'save_game_summary.dat', 'game_db.dat', 'humans.dat',
+      'news.dat', 'transfer_man.dat', 'shortlist_man.dat', 'MANAGER_MANAGER.dat',
+      'tc_record_man.dat', 'tc_history_ls.dat', 'tc_records_history_ls.dat',
+      'tc_league_history_ls.dat', 'tc_cup_history_ls.dat', 'tc_best_eleven_history_ls.dat',
+      'tactics_man.dat', 'regeneration_manager.dat', 'edit_session_man.dat',
+      'weather_manager.dat', 'fog_of_war.sav.dat', 'injury_manager.dat',
+      'injury_histories_ls.dat', 'training_man.dat', 'scout_man.dat', 'awol.dat',
+      'award_man.dat', 'award_year_hist_ls.dat', 'award_club_hist_ls.dat', 'fine.dat.dat',
+      'contract_man.dat', 'person_record_history_ls.dat', 'person_record_manager.dat',
+      'official_manager.dat', 'agent_manager.dat', 'dispute.dat', 'finance_manager.dat',
+      'sim_stats.dat', 'virtual_man.dat', 'network_man.dat', 'hall_of_fame.dat',
+      'backroom_feedback_manager.dat', 'interaction_manager.dat', 'press_conference_manager.dat',
+      'job_centre.dat', 'team_talk_man.dat', 'board_takeover_manager.dat', 'feeder_man.dat',
+      'captain_system.dat', 'media_man.dat', 'match_stats_cfg.dat', 'award_club_hist_dt.cmt',
+      'award_club_hist_id.cmt', 'award_year_hist_dt.cmt', 'award_year_hist_id.cmt',
+      'comp_history_dt.cmt', 'comp_history_id.cmt', 'injury_histories_dt.cmt',
+      'injury_histories_id.cmt', 'person_db_changes.cmt', 'person_record_history_dt.cmt',
+      'person_record_history_id.cmt', 'player_stats_hist_dt.cmt', 'player_stats_hist_id.cmt',
+      'starting_club_debt_db.cmt', 'tc_cup_history_dt.cmt', 'tc_cup_history_id.cmt',
+      'tc_history_dt.cmt', 'tc_history_id.cmt', 'tc_league_history_dt.cmt',
+      'tc_league_history_id.cmt'
+    ];
+    expect(names).toHaveLength(69);
+
+    const directory: number[] = [];
+    const u32 = (value: number) => directory.push(
+      value & 255, (value >>> 8) & 255, (value >>> 16) & 255, (value >>> 24) & 255
+    );
+    const utf16 = (value: string) => {
+      u32(value.length);
+      for (const character of value) {
+        const code = character.charCodeAt(0);
+        directory.push(code & 255, (code >>> 8) & 255);
+      }
+      directory.push(0, 0);
+    };
+
+    u32(0);
+    u32(names.length);
+    names.forEach((name, index) => {
+      const dot = name.lastIndexOf('.');
+      utf16(name.slice(0, dot));
+      utf16(name.slice(dot));
+      u32(index * 16);
+      u32(8);
+      u32(16);
+    });
+
+    const compressed = deflateSync(Uint8Array.from(directory));
+    const marker = Uint8Array.from([2, 1, 102, 109, 102, 46, 4, 0, 0]);
+    const prefix = new Uint8Array(2048);
+    const bytes = new Uint8Array(prefix.length + marker.length + compressed.length);
+    bytes.set(prefix);
+    bytes.set(marker, prefix.length);
+    bytes.set(compressed, prefix.length + marker.length);
+
+    const index = await inspectArchiveIndex(new File([bytes], 'synthetic-69-member.fm'));
+    expect(index).not.toBeNull();
+    expect(index?.memberCount).toBe(69);
+    expect(index?.directoryOffset).toBe(2048);
+    expect(index?.members[0]).toEqual({
+      filename: 'game_info.dat', offset: 0, storedBytes: 8, reportedUncompressedBytes: 16
+    });
+    expect(index?.members[2]?.filename).toBe('game_db.dat');
+    expect(index?.members[68]?.filename).toBe('tc_league_history_id.cmt');
   });
 
   it('ignores malformed trailing FMF markers instead of failing inspection', async () => {
