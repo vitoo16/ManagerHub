@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest';
-import { deflateSync } from 'node:zlib';
 import { inspectArchiveIndex, parseArchiveDirectory } from './archive';
 
 function syntheticIndex() {
@@ -112,7 +111,9 @@ describe('bounded AFE/FM directory catalogue parser', () => {
       u32(16);
     });
 
-    const compressed = deflateSync(Uint8Array.from(directory));
+    const directoryBytes = Uint8Array.from(directory);
+    const compressedStream = new Blob([directoryBytes]).stream().pipeThrough(new CompressionStream('deflate'));
+    const compressed = new Uint8Array(await new Response(compressedStream).arrayBuffer());
     const marker = Uint8Array.from([2, 1, 102, 109, 102, 46, 4, 0, 0]);
     const prefix = new Uint8Array(2048);
     const bytes = new Uint8Array(prefix.length + marker.length + compressed.length);
