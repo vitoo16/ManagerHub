@@ -191,8 +191,35 @@ export function eligibleSlotCandidates(
   return choices.slice(0,Math.max(0,Math.min(limit,200)));
 }
 
+const unconstrainedSolutions = new WeakMap<readonly PlayerExport[], Map<FormationId, SquadSolution>>();
+
+/**
+ * Cache only unconstrained solutions by immutable imported-roster identity.
+ * The WeakMap lets discarded datasets be collected and avoids re-solving the
+ * exact same baseline across Player Lab and Squad Planner.
+ */
 export function optimizeSquad(
   players: readonly PlayerExport[], formation: FormationId, constraints: SquadConstraints = {}
+): SquadSolution {
+  const unconstrained = Object.keys(constraints.lockedSlots ?? {}).length === 0
+    && (constraints.excludedPlayerIds?.length ?? 0) === 0;
+  if (!unconstrained) return optimizeSquadUncached(players, formation, constraints);
+
+  let byFormation = unconstrainedSolutions.get(players);
+  const cached = byFormation?.get(formation);
+  if (cached) return cached;
+
+  if (!byFormation) {
+    byFormation = new Map<FormationId, SquadSolution>();
+    unconstrainedSolutions.set(players, byFormation);
+  }
+  const solution = optimizeSquadUncached(players, formation, constraints);
+  byFormation.set(formation, solution);
+  return solution;
+}
+
+function optimizeSquadUncached(
+  players: readonly PlayerExport[], formation: FormationId, constraints: SquadConstraints
 ): SquadSolution {
   const slots=FORMATIONS[formation];
   const excluded = new Set(constraints.excludedPlayerIds ?? []);
