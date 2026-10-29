@@ -1,6 +1,6 @@
 # ManagerHub performance architecture
 
-**Status as of 2026-10-29:** merged into `main` via [PR #7](https://github.com/vitoo16/ManagerHub/pull/7). GitHub Actions run [#125](https://github.com/vitoo16/ManagerHub/actions/runs/40857301253) passed TypeScript strict typecheck, unit tests, production build/bundle budget, and desktop/mobile Playwright. This verifies correctness and bundle guardrails, not a measured runtime improvement; no before/after performance percentage is claimed without a representative browser profile.
+**Status as of 2026-10-29:** baseline architecture merged via [PR #7](https://github.com/vitoo16/ManagerHub/pull/7), with the performance and save-error audit merged via [PR #8](https://github.com/vitoo16/ManagerHub/pull/8). GitHub Actions run [#136](https://github.com/vitoo16/ManagerHub/actions/runs/40868474872) passed TypeScript strict typecheck, unit tests, production build/bundle budget, and desktop/mobile Playwright (36 browser tests). This verifies correctness and bundle guardrails, not a measured runtime improvement; no before/after performance percentage is claimed without a representative browser profile.
 
 ## Principles
 
@@ -42,7 +42,7 @@ The web build emits Vite's manifest and runs `scripts/check-bundle-budget.mjs` a
 - Every emitted JavaScript chunk, including lazy and worker chunks: at most 400 KiB raw and 145 KiB gzip.
 - Vite's chunk warning limit is set to 400 KiB as an additional warning.
 
-The latest successful build reported an initial static JS+CSS closure of **419.8 KiB raw / 137.5 KiB gzip-sum**, below the 450/150 KiB budgets. This is a manifest-based size metric, not a network transfer or interaction-latency measurement.
+The latest successful build reported an initial static JS+CSS closure of **421.3 KiB raw / 137.9 KiB gzip-sum**, below the 450/150 KiB budgets. This is a manifest-based size metric, not a network transfer or interaction-latency measurement.
 
 The initial asset graph ignores a module's own dynamic-import targets if they also appear in its preload-oriented import list, while retaining a chunk reached through another module's static import path. This prevents shared static dependencies from being undercounted.
 
