@@ -327,6 +327,8 @@ export default function App() {
     setCommandOpen(false); setMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, []);
+  const openSquad = useCallback(() => navigate('squad'), [navigate]);
+  const openPlayers = useCallback(() => navigate('players'), [navigate]);
   const onInspect = async (file: File) => {
     setBusy(true); setError(null);
     try {
@@ -371,8 +373,8 @@ export default function App() {
       <main ref={viewScope} className="main-area" id="main-content" tabIndex={-1}>
         <div data-animate="workspace" key={view}>
           {view === 'overview' && <Overview imports={imports} go={navigate}/>}
-          {view === 'players' && <Suspense fallback={<div className="workspace-loading" role="status">{t('Loading…')}</div>}><PlayerWorkspace dataset={playerDataset} onDataset={onPlayerDatasetChange} onOpenSquad={()=>navigate('squad')}/></Suspense>}
-          {view === 'squad' && <Suspense fallback={<div className="workspace-loading" role="status">{t('Loading…')}</div>}><SquadWorkspace dataset={playerDataset} onImport={() => navigate('players')}
+          {view === 'players' && <Suspense fallback={<div className="workspace-loading" role="status">{t('Loading…')}</div>}><PlayerWorkspace dataset={playerDataset} onDataset={onPlayerDatasetChange} onOpenSquad={openSquad}/></Suspense>}
+          {view === 'squad' && <Suspense fallback={<div className="workspace-loading" role="status">{t('Loading…')}</div>}><SquadWorkspace dataset={playerDataset} onImport={openPlayers}
             plans={squadPlans} setPlans={setSquadPlans} active={activeSquadPlan} setActive={setActiveSquadPlan}/></Suspense>}
           {view === 'saves' && <SaveInspector imports={imports} selected={selected} onInspect={onInspect} onRemove={remove} busy={busy} error={error} select={setSelectedId}/>}
           {view === 'modules' && <Systems/>}
