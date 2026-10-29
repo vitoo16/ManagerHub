@@ -315,6 +315,22 @@ test('VI/EN language switch localizes onboarding, saves choice and restores Engl
   await expect(page.getByRole('heading',{name:'Player Lab'})).toBeVisible();
 });
 
+test('Player Lab lazily loads recruitment comparison and hands the same roster to Squad Planner', async ({ page }) => {
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'recruitment-roster.csv',
+    mimeType: 'text/csv',
+    buffer: Buffer.from(makeSquadExport())
+  });
+  await expect(page.getByRole('heading', { name: 'GK Player' })).toBeVisible();
+  await page.getByRole('tab', { name: 'Recruitment' }).click();
+  await expect(page.getByRole('heading', { name: 'Squad contribution preview' })).toBeVisible();
+  await expect(page.getByLabel('Formation to test')).toHaveValue('4-3-3');
+  await page.getByRole('button', { name: 'Open this roster in Squad Planner' }).click();
+  await expect(page.getByRole('heading', { name: 'Squad Planner' })).toBeVisible();
+  await expect(page.getByRole('list', { name: 'Assigned starting eleven' })).toContainText('GK Player');
+});
+
 test('Vietnamese player scouting labels are readable and CA stays unverified',async ({page})=>{
   await page.goto('/#/players');
   await page.getByRole('button',{name:'Switch language to Vietnamese'}).click();
