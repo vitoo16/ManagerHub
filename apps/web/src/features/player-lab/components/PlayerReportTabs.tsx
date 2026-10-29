@@ -5,20 +5,20 @@ export type PlayerReportTab = 'overview' | 'attributes' | 'roles' | 'recruitment
 type Props = { active: PlayerReportTab; onChange: (tab: PlayerReportTab) => void };
 
 const TABS: readonly PlayerReportTab[] = ['overview', 'attributes', 'roles', 'compare', 'recruitment'];
+const TAB_LABELS: Record<PlayerReportTab, string> = {
+  overview: 'Overview',
+  attributes: 'Attributes',
+  roles: 'Role fit',
+  compare: 'Compare',
+  recruitment: 'Recruitment'
+};
 
 function PlayerReportTabs({ active, onChange }: Props) {
   const { t } = useTranslation();
-  const labels: Record<PlayerReportTab, string> = {
-    overview: 'Overview',
-    attributes: 'Attributes',
-    roles: 'Role fit',
-    compare: 'Compare',
-    recruitment: 'Recruitment'
-  };
   return <div className="scout-tabs" role="tablist" aria-label={t("Player report")}>
     {TABS.map(tab => <button key={tab} role="tab" aria-selected={active === tab}
       onClick={() => onChange(tab)}
-      className={active === tab ? 'scout-tab scout-tab--active' : 'scout-tab'}>{t(labels[tab])}</button>)}
+      className={active === tab ? 'scout-tab scout-tab--active' : 'scout-tab'}>{t(TAB_LABELS[tab])}</button>)}
   </div>;
 }
 
