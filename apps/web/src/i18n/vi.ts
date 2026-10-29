@@ -58,6 +58,8 @@ export default {
   "Player / CA / PA": "Cầu thủ / CA / PA",
   "Not decoded": "Chưa đọc được",
   "Internal archive index": "Danh sách dữ liệu bên trong",
+  "Member header diagnostics": "Chẩn đoán header thành phần",
+  "Only the first 16 bytes of each bounded member are sampled. Signature matches are candidates, not confirmed codecs; no member contents are decoded.": "Chỉ đọc tối đa 16 byte đầu của mỗi thành phần trong giới hạn an toàn. Dấu hiệu định dạng chỉ là giả thuyết, chưa xác nhận bộ giải mã; nội dung thành phần chưa được giải mã.",
   "Experimental metadata discovery · Not decoded gameplay records": "Chỉ xem tên mục dữ liệu · Chưa đọc nội dung cầu thủ",
   "Important:": "Lưu ý:",
   "recognizing AFE or FMF headers does not establish compatibility, identify your Football Manager version or give access to player attributes. Those capabilities require validated version-specific adapters.": "Nhận diện được định dạng AFE/FMF chưa có nghĩa ManagerHub đã đọc được cầu thủ hoặc CA/PA. Bạn có thể nhập file HTML/CSV xuất từ game trong Player Lab.",
