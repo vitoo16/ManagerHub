@@ -10,12 +10,16 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
 
+function hasOnlyKeys(value: Record<string, unknown>, allowed: readonly string[]): boolean {
+  return Object.keys(value).every(key => allowed.includes(key));
+}
+
 function isSafeNonNegativeInteger(value: unknown): value is number {
   return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
 }
 
 function isArchiveMember(value: unknown, directoryOffset: number): value is ArchiveMember {
-  if (!isRecord(value)) return false;
+  if (!isRecord(value) || !hasOnlyKeys(value, ['filename', 'offset', 'storedBytes', 'reportedUncompressedBytes'])) return false;
   const { filename, offset, storedBytes, reportedUncompressedBytes } = value;
   return typeof filename === 'string' && filename.length >= 1 && filename.length <= 512 &&
     isSafeNonNegativeInteger(offset) && isSafeNonNegativeInteger(storedBytes) && storedBytes > 0 &&
@@ -24,7 +28,8 @@ function isArchiveMember(value: unknown, directoryOffset: number): value is Arch
 }
 
 function isArchiveIndex(value: unknown): value is ArchiveIndex {
-  if (!isRecord(value) || value.family !== 'fmf-index-candidate' || value.evidence !== 'experimental') return false;
+  if (!isRecord(value) || !hasOnlyKeys(value, ['family', 'evidence', 'memberCount', 'directoryOffset', 'members']) ||
+      value.family !== 'fmf-index-candidate' || value.evidence !== 'experimental') return false;
   const { memberCount, directoryOffset, members } = value;
   if (!isSafeNonNegativeInteger(directoryOffset) || !isSafeNonNegativeInteger(memberCount) ||
       memberCount < 1 || memberCount > MAX_ARCHIVE_MEMBERS || !Array.isArray(members) ||
@@ -34,7 +39,10 @@ function isArchiveIndex(value: unknown): value is ArchiveIndex {
 
 /** Validate IndexedDB data at the persistence boundary before trusting it in UI state. */
 export function isSaveIdentity(value: unknown): value is SaveIdentity {
-  if (!isRecord(value)) return false;
+  if (!isRecord(value) || !hasOnlyKeys(value, [
+    'id', 'name', 'importedAt', 'lastModified', 'size', 'sha256', 'signature', 'detectedFamily',
+    'edition', 'build', 'support', 'inspectionStatus', 'warnings', 'archiveIndex'
+  ])) return false;
   const {
     id, name, importedAt, lastModified, size, sha256, signature, detectedFamily,
     edition, build, support, inspectionStatus, warnings, archiveIndex
