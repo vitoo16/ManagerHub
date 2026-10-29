@@ -60,6 +60,7 @@ export default {
   "Internal archive index": "Danh sách dữ liệu bên trong",
   "Member header diagnostics": "Chẩn đoán header thành phần",
   "Only the first 16 bytes of each bounded member are sampled. Signature matches are candidates, not confirmed codecs; no member contents are decoded.": "Chỉ đọc tối đa 16 byte đầu của mỗi thành phần trong giới hạn an toàn. Dấu hiệu định dạng chỉ là giả thuyết, chưa xác nhận bộ giải mã; nội dung thành phần chưa được giải mã.",
+  "Only the first 16 bytes of each bounded member are sampled. Signatures are checked both at the start and after the first 8 bytes as an experimental offset; matches are candidates, not confirmed codecs. No member contents are decoded.": "Chỉ đọc tối đa 16 byte đầu của mỗi thành phần trong giới hạn an toàn. Dấu hiệu được kiểm tra ở đầu thành phần và sau 8 byte theo một offset thử nghiệm; kết quả chỉ là giả thuyết, chưa xác nhận codec. Nội dung thành phần không được giải mã.",
   "Experimental metadata discovery · Not decoded gameplay records": "Chỉ xem tên mục dữ liệu · Chưa đọc nội dung cầu thủ",
   "Important:": "Lưu ý:",
   "recognizing AFE or FMF headers does not establish compatibility, identify your Football Manager version or give access to player attributes. Those capabilities require validated version-specific adapters.": "Nhận diện được định dạng AFE/FMF chưa có nghĩa ManagerHub đã đọc được cầu thủ hoặc CA/PA. Bạn có thể nhập file HTML/CSV xuất từ game trong Player Lab.",

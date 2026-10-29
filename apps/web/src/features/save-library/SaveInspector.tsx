@@ -84,12 +84,14 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
             {selected.archiveIndex.memberCount > 8 && <button className="text-link archive-preview__expand" onClick={() => setShowAllMembers(v => !v)}>{showAllMembers ? t('Show fewer') : t('Show all') + ' ' + selected.archiveIndex.memberCount + ' ' + t('entries')} <Icon name="chevron" size={14}/></button>}
             {selected.archiveIndex.probes && selected.archiveIndex.probes.length > 0 && <details className="inspection-technical member-probe">
               <summary>{t('Member header diagnostics')} ({selected.archiveIndex.probes.length})</summary>
-              <p>{t('Only the first 16 bytes of each bounded member are sampled. Signature matches are candidates, not confirmed codecs; no member contents are decoded.')}</p>
+              <p>{t('Only the first 16 bytes of each bounded member are sampled. Signatures are checked both at the start and after the first 8 bytes as an experimental offset; matches are candidates, not confirmed codecs. No member contents are decoded.')}</p>
               <div className="archive-preview__list" role="list" aria-label={t('Member header diagnostics')}>
                 {selected.archiveIndex.probes.slice(0, showAllMembers ? undefined : 8).map(probe => <div className="archive-preview__row" role="listitem" key={probe.filename}>
                   <span className="archive-preview__filename" title={probe.filename}>{probe.filename}</span>
                   <span className="mono">{probe.prefixKind}</span>
                   <span className="mono">{probe.prefixHex}</span>
+                  <span className="mono">+8: {probe.afterFirstEightBytesKind}</span>
+                  <span className="mono">{probe.afterFirstEightBytesHex || '—'}</span>
                 </div>)}
               </div>
             </details>}

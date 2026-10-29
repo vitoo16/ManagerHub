@@ -138,6 +138,8 @@ export interface MemberEnvelopeProbe {
   readonly sampleBytes: number;
   readonly prefixHex: string;
   readonly prefixKind: MemberPrefixKind;
+  readonly afterFirstEightBytesHex: string;
+  readonly afterFirstEightBytesKind: MemberPrefixKind;
   readonly storedBytes: number;
   readonly reportedUncompressedBytes: number;
 }
@@ -167,19 +169,25 @@ export async function probeMemberEnvelopes(
       Math.min(absoluteOffset + 16, file.size, absoluteOffset + member.storedBytes)
     ).arrayBuffer());
     if (sample.length === 0) continue;
-    const first = sample[0] ?? 0;
-    const second = sample[1] ?? 0;
-    let prefixKind: MemberPrefixKind = 'unknown';
-    if (first === 0x1f && second === 0x8b) prefixKind = 'gzip';
-    else if (first === 0x50 && second === 0x4b && sample[2] === 0x03 && sample[3] === 0x04) prefixKind = 'zip';
-    else if ((first & 0x0f) === 8 && ((first << 8) + second) % 31 === 0) prefixKind = 'zlib_candidate';
-    else if (sample[0] === 0x7b || sample[0] === 0x5b) prefixKind = 'json_text';
+    const classifyPrefix = (bytes: Uint8Array): MemberPrefixKind => {
+      const first = bytes[0] ?? 0;
+      const second = bytes[1] ?? 0;
+      if (first === 0x1f && second === 0x8b) return 'gzip';
+      if (first === 0x50 && second === 0x4b && bytes[2] === 0x03 && bytes[3] === 0x04) return 'zip';
+      if ((first & 0x0f) === 8 && ((first << 8) + second) % 31 === 0) return 'zlib_candidate';
+      if (first === 0x7b || first === 0x5b) return 'json_text';
+      return 'unknown';
+    };
+    const afterFirstEightBytes = sample.slice(8);
+    const prefixKind = classifyPrefix(sample);
     probes.push({
       filename: member.filename,
       absoluteOffset,
       sampleBytes: sample.length,
       prefixHex: Array.from(sample, byte => byte.toString(16).padStart(2, '0')).join(' '),
       prefixKind,
+      afterFirstEightBytesHex: Array.from(afterFirstEightBytes, byte => byte.toString(16).padStart(2, '0')).join(' '),
+      afterFirstEightBytesKind: classifyPrefix(afterFirstEightBytes),
       storedBytes: member.storedBytes,
       reportedUncompressedBytes: member.reportedUncompressedBytes
     });
