@@ -1,21 +1,25 @@
-import { memo, useId, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
+import { memo, useEffect, useId, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatBytes, type SaveIdentity } from '@managerhub/domain';
 import { Button, Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
-import type { useSaveInspectionLibrary } from '../../useSaveInspectionLibrary';
+import { useSaveInspectionLibrary } from '../../useSaveInspectionLibrary';
 
-function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, select, saveLibrary }: {
+function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, select, onRestoreSaved }: {
   imports: readonly SaveIdentity[]; selected: SaveIdentity | null;
   onInspect: (file: File) => Promise<void>; onRemove: (id: string) => void;
   busy: boolean; error: string | null; select: (id: string) => void;
-  saveLibrary: ReturnType<typeof useSaveInspectionLibrary>;
+  onRestoreSaved: (records: readonly SaveIdentity[]) => void;
 }) {
   const { t } = useTranslation();
+  const saveLibrary = useSaveInspectionLibrary();
   const inputRef = useRef<HTMLInputElement>(null);
   const [showAllMembers, setShowAllMembers] = useState(false);
   const fileId = useId();
   const [drag, setDrag] = useState(false);
   const isSelectedSaved = selected ? saveLibrary.items.some(item => item.id === selected.id) : false;
+  useEffect(() => {
+    if (!saveLibrary.loading && saveLibrary.items.length > 0) onRestoreSaved(saveLibrary.items);
+  }, [saveLibrary.loading, saveLibrary.items, onRestoreSaved]);
   const openPicker = () => { if (!busy) inputRef.current?.click(); };
   const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.currentTarget.files?.[0];
