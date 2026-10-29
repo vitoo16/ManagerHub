@@ -306,7 +306,10 @@ test('large player lists keep a bounded DOM and scroll to loaded records', async
   await expect.poll(() => list.getByRole('listitem').count()).toBeLessThanOrEqual(16);
   await list.evaluate(element => { element.scrollTop = element.scrollHeight; });
   await expect(list.getByRole('button', {name:/Reserve 88/})).toBeVisible();
+  const scrollTopBeforeLoadingMore = await list.evaluate(element => element.scrollTop);
   await page.getByRole('button', {name:/Show next 100/}).click();
+  await expect.poll(() => list.evaluate(element => element.scrollTop))
+    .toBeGreaterThan(scrollTopBeforeLoadingMore - 100);
   await expect.poll(() => list.getByRole('listitem').count()).toBeLessThanOrEqual(22);
 });
 
