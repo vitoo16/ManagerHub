@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { readableImportError, readableImportWarning } from './i18n/player-import-copy';
-import { lazy, Suspense, useId, useMemo, useRef, useState, type ChangeEvent } from 'react';
+import { lazy, memo, Suspense, useId, useMemo, useRef, useState, type ChangeEvent } from 'react';
 import {
   parsePlayerExport, parsePlayerHtml, type PlayerDataset
 } from '@managerhub/domain';
@@ -17,7 +17,7 @@ type Props={
   onDataset:(dataset:PlayerDataset|null)=>void;
   onOpenSquad:()=>void;
 };
-export function PlayerWorkspace({dataset,onDataset,onOpenSquad}:Props){
+export const PlayerWorkspace = memo(function PlayerWorkspace({dataset,onDataset,onOpenSquad}:Props){
   const { t } = useTranslation();
   const inputRef=useRef<HTMLInputElement>(null);
   const [error,setError]=useState<string|null>(null);
