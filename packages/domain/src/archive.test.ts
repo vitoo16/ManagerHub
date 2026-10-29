@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { inspectArchiveIndex, parseArchiveDirectory } from './archive';
+import { inspectArchiveIndex, parseArchiveDirectory, probeMemberEnvelopes } from './archive';
 import { detectSaveFamily } from './save';
 
 function syntheticIndex() {
@@ -138,6 +138,33 @@ describe('bounded AFE/FM directory catalogue parser', () => {
     // no catalogue extent may reach into the trailing directory marker.
     expect(Math.max(...(index?.members ?? []).map(member => member.offset + member.storedBytes)))
       .toBeLessThanOrEqual((index?.directoryOffset ?? 18) - 18);
+  });
+
+
+  it('samples only bounded member prefixes without decoding payloads', async () => {
+    const directory = syntheticIndex();
+    const compressedStream = new Blob([directory]).stream().pipeThrough(new CompressionStream('deflate'));
+    const compressed = new Uint8Array(await new Response(compressedStream).arrayBuffer());
+    const marker = Uint8Array.from([2, 1, 102, 109, 102, 46, 4, 0, 0]);
+    const bytes = new Uint8Array(1024 + marker.length + compressed.length);
+    bytes.set([2, 1, 97, 102, 101, 46]);
+    bytes.set([0x78, 0x9c, 0x01, 0x02, 0x03, 0x04], 18);
+    bytes.set(marker, 1024);
+    bytes.set(compressed, 1024 + marker.length);
+    const file = new File([bytes], 'synthetic-envelope.fm');
+    const index = await inspectArchiveIndex(file);
+    expect(index).not.toBeNull();
+    const probes = await probeMemberEnvelopes(file, index!);
+    expect(probes).toHaveLength(1);
+    expect(probes[0]).toMatchObject({
+      filename: 'game_info.dat',
+      absoluteOffset: 18,
+      sampleBytes: 16,
+      prefixHex: '78 9c 01 02 03 04 00 00 00 00 00 00 00 00 00 00',
+      prefixKind: 'zlib_candidate'
+    });
+    expect(probes[0]).not.toHaveProperty('payload');
+    expect(probes[0]).not.toHaveProperty('decodedBytes');
   });
 
   it('ignores malformed trailing FMF markers instead of failing inspection', async () => {
