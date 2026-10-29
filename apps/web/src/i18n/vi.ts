@@ -543,7 +543,7 @@ export default {
   "Session only": "Chỉ trong phiên hiện tại",
   "Save inspection metadata on this browser": "Lưu thông tin kiểm tra save trên trình duyệt này",
   "Remove saved metadata": "Xóa thông tin save đã lưu",
-  "Only the inspection metadata shown here is saved in this browser. The original .fm file bytes are never stored or uploaded.": "Chỉ thông tin kiểm tra đang hiển thị được lưu trên trình duyệt này. Nội dung gốc của file .fm không được lưu hoặc tải lên máy chủ.",
+  "Only inspection metadata is saved in this browser. The original .fm file bytes are never stored or uploaded.": "Chỉ thông tin kiểm tra được lưu trên trình duyệt này. Nội dung gốc của file .fm không được lưu hoặc tải lên máy chủ.",
   "Dismiss saved metadata error": "Đóng thông báo lỗi dữ liệu save đã lưu",
   "This browser already holds 50 saved save inspections. Delete one first.": "Trình duyệt này đã lưu 50 bản ghi kiểm tra save. Hãy xóa một bản ghi trước.",
   "Saved save inspection metadata is incompatible with this version. Remove the incompatible local data before trying again.": "Thông tin save đã lưu không tương thích với phiên bản này. Hãy xóa dữ liệu cục bộ không tương thích rồi thử lại.",
