@@ -145,6 +145,7 @@ function PlayerCompare({primary,dataset}:{primary:PlayerExport;dataset:PlayerDat
 function PlayerDetails({player,dataset,onOpenSquad}:{player:PlayerExport;dataset:PlayerDataset;onOpenSquad:()=>void}){
   const { t } = useTranslation();
   const [tab,setTab]=useState<'overview'|'attributes'|'roles'|'recruitment'|'compare'>('overview');
+  const [recruitmentVisited,setRecruitmentVisited]=useState(false);
   const insights=useMemo(()=>getAttributeInsights(player),[player]);
   const strength=useMemo(()=>attributeStrengthIndex(player),[player]);
   const roles=useMemo(()=>analyzeRoles(player),[player]);
@@ -171,7 +172,7 @@ function PlayerDetails({player,dataset,onOpenSquad}:{player:PlayerExport;dataset
       </div>
     </details>
     <div className="scout-tabs" role="tablist" aria-label={t("Player report")}>
-      {(['overview','attributes','roles','compare','recruitment'] as const).map(label=><button key={label} role="tab" aria-selected={tab===label} onClick={()=>setTab(label)} className={tab===label?'scout-tab scout-tab--active':'scout-tab'}>{t(label==='overview'?'Overview':label==='attributes'?'Attributes':label==='roles'?'Role fit':label==='compare'?'Compare':'Recruitment')}</button>)}
+      {(['overview','attributes','roles','compare','recruitment'] as const).map(label=><button key={label} role="tab" aria-selected={tab===label} onClick={()=>{setTab(label);if(label==='recruitment')setRecruitmentVisited(true);}} className={tab===label?'scout-tab scout-tab--active':'scout-tab'}>{t(label==='overview'?'Overview':label==='attributes'?'Attributes':label==='roles'?'Role fit':label==='compare'?'Compare':'Recruitment')}</button>)}
     </div>
     <div className="scout-tab-content" role="tabpanel">
       {tab==='overview'&&<>
@@ -190,9 +191,11 @@ function PlayerDetails({player,dataset,onOpenSquad}:{player:PlayerExport;dataset
       {tab==='attributes'&&<Surface className="scout-panel"><div className="scout-panel__title">{t("Imported player attributes")} <span>{Object.keys(player.attributes).length} {t('values')} · {t('Source:')} {dataset.fileName}</span></div><MemoRankedAttributes player={player}/></Surface>}
       {tab==='roles'&&<Surface className="scout-panel"><div className="scout-panel__title">{t("Tactical roles by observed attributes")}</div><RoleResults player={player}/></Surface>}
       {tab==='compare'&&<MemoPlayerCompare primary={player} dataset={dataset}/>}
-      {tab==='recruitment'&&<Suspense fallback={<p role="status" className="player-empty-chart">{t("Loading workspace…")}</p>}>
-        <RecruitmentPreviewPanel player={player} dataset={dataset} onOpenSquad={onOpenSquad}/>
-      </Suspense>}
+      {recruitmentVisited&&<div hidden={tab!=='recruitment'}>
+        <Suspense fallback={<p role="status" className="player-empty-chart">{t("Loading workspace…")}</p>}>
+          <RecruitmentPreviewPanel player={player} dataset={dataset} onOpenSquad={onOpenSquad}/>
+        </Suspense>
+      </div>}
     </div>
     <div className="evidence-strip"><Icon name="shield" size={15}/> {t("This report uses your exported attributes. CA and PA remain unknown until verified.")}</div>
   </section>;
