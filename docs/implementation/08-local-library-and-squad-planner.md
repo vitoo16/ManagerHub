@@ -12,9 +12,20 @@ The local browser app supports opt-in persistence of **normalized player exports
 4. Reload the page or reopen the browser; select a saved export from the local library and press **Open**.
 5. Press **Delete**, then **Confirm delete** to delete its locally stored data.
 
-Storage: IndexedDB `managerhub-local`, schema v1, separate `player-exports` and summary object stores, both changed in a single transaction. Maximum 20 saved exports; no `.fm` binaries, scripts or raw HTML are saved. This is per browser profile/origin and is **not encrypted or cross-device synchronized**. Browser storage deletion/private mode may erase it. Data corruption or unsupported schema fails with an actionable message, not an invented replacement.
+Storage: IndexedDB managerhub-local, schema v2, with separate player-exports, player-export summary and save-inspections object stores. Player-export content and its summary are updated in one transaction. Maximum 20 saved player exports and 50 saved save-inspection records. No .fm binaries, scripts or raw HTML are saved. Storage is per browser profile/origin and is **not encrypted or cross-device synchronized**. Browser storage deletion/private mode may erase it. Schema v2 adds the save metadata store without dropping the v1 player-library stores; malformed metadata is rejected instead of being trusted.
 
 Relevant code: `packages/domain/src/player-library.ts`, `packages/storage/src/index.ts`, `apps/web/src/usePlayerLibrary.ts`, `apps/web/src/PlayerWorkspace.tsx`.
+
+
+## Save inspection metadata library (schema v2)
+
+The Save Library can explicitly save a validated SaveIdentity after inspecting a local .fm file. Saved fields are the file name, import timestamp, last-modified timestamp, size, SHA-256 when available, header signature, detected container family, support status, warnings and the bounded experimental archive member index when recognized.
+
+- Saving is a user-initiated action; inspection alone does not persist the metadata.
+- Up to 50 records are retained in the save-inspections object store. Re-saving the same identity updates its metadata instead of creating a duplicate.
+- The schema upgrade creates the new store only when absent and preserves the existing player-export stores and records.
+- Metadata is validated when written and read, including size, hash, archive member count and offset bounds.
+- The .fm file bytes are never stored or uploaded. Metadata persistence does not make the format parser more capable: edition/build and player/CA/PA data remain unverified.
 
 ## Squad Planner — strict, evidence-aware 11-player draft
 
