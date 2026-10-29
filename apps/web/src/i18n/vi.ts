@@ -531,6 +531,7 @@ export default {
   "Analyzing export in the background…": "Đang phân tích tệp ở chế độ nền…",
   "Importing player data…": "Đang nhập dữ liệu cầu thủ…",
   "Background save inspection failed. Please try the file again.": "Không thể kiểm tra tệp save ở chế độ nền. Vui lòng thử lại.",
+  "Unable to inspect file.": "Không thể kiểm tra tệp.",
   "Unable to start background save inspection.": "Không thể khởi chạy tiến trình kiểm tra save ở chế độ nền.",
   "Background player import failed. Please try the export again.": "Không thể nhập danh sách cầu thủ ở chế độ nền. Vui lòng thử lại.",
   "Unable to start background player import.": "Không thể khởi chạy tiến trình nhập cầu thủ ở chế độ nền."
