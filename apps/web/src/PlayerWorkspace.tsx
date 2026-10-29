@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { readableImportError, readableImportWarning } from './i18n/player-import-copy';
-import { useCallback, useDeferredValue, useId, useMemo, useRef, useState, type ChangeEvent, type UIEvent } from 'react';
+import { memo, useCallback, useDeferredValue, useId, useMemo, useRef, useState, type ChangeEvent, type UIEvent } from 'react';
 import type { PlayerDataset } from '@managerhub/domain';
 import {Button,Icon,Status,Surface} from '@managerhub/ui';
 import { PlayerListItem } from './features/player-lab/components/PlayerListItem';
@@ -19,7 +19,7 @@ type Props={
   onDataset:(dataset:PlayerDataset|null)=>void;
   onOpenSquad:()=>void;
 };
-export function PlayerWorkspace({dataset,onDataset,onOpenSquad}:Props){
+function PlayerWorkspaceView({dataset,onDataset,onOpenSquad}:Props){
   const { t } = useTranslation();
   const inputRef=useRef<HTMLInputElement>(null);
   const [error,setError]=useState<string|null>(null);
@@ -147,3 +147,5 @@ export function PlayerWorkspace({dataset,onDataset,onOpenSquad}:Props){
     <div className="coverage-note"><Icon name="shield" size={16}/><p><strong>{t("Data integrity:")}</strong> {t("CA, PA and hidden personality are not recovered from a CSV unless independently verified. Role profiles are authored ManagerHub heuristics, not Sports Interactive ratings. Player identities in different imports are not assumed to match.")}</p></div>
   </div>;
 }
+
+export const PlayerWorkspace = memo(PlayerWorkspaceView);
