@@ -87,11 +87,17 @@ function RoleResults({roles}:{roles:readonly ScoredRole[]}){
 function PlayerCompare({primary,dataset}:{primary:PlayerExport;dataset:PlayerDataset}){
   const { t } = useTranslation();
   const [query,setQuery]=useState('');
+  const deferredQuery=useDeferredValue(query.trim().toLocaleLowerCase());
   const [candidateId,setCandidateId]=useState<string>(()=>dataset.players.find(p=>p.id!==primary.id)?.id??'');
-  const normalizedQuery=query.trim().toLocaleLowerCase();
-  const options=useMemo(()=>dataset.players.filter(p=>p.id!==primary.id&&
-    [p.name,p.club,p.position].some(v=>v?.toLocaleLowerCase().includes(normalizedQuery))).slice(0,30),[dataset.players,primary.id,normalizedQuery]);
-  const other=useMemo(()=>dataset.players.find(p=>p.id===candidateId)??null,[dataset.players,candidateId]);
+  const comparisonSearchIndex=useMemo(()=>dataset.players.map(player=>({
+    player,
+    searchText:[player.name,player.club,player.position].filter(Boolean).join(' ').toLocaleLowerCase()
+  })),[dataset.players]);
+  const options=useMemo(()=>comparisonSearchIndex
+    .filter(entry=>entry.player.id!==primary.id&&entry.searchText.includes(deferredQuery))
+    .slice(0,30).map(entry=>entry.player),[comparisonSearchIndex,primary.id,deferredQuery]);
+  const playersById=useMemo(()=>new Map(dataset.players.map(player=>[player.id,player])),[dataset.players]);
+  const other=playersById.get(candidateId)??null;
   const ownRoles=useMemo(()=>analyzeRoles(primary),[primary]);
   const otherRoles=useMemo(()=>other?analyzeRoles(other):[],[other]);
   const sorted=useMemo(()=>{
