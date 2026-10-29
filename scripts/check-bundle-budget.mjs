@@ -2,6 +2,7 @@ import { readdir, readFile } from 'node:fs/promises';
 import { gzipSync } from 'node:zlib';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { collectInitialManifestKeys } from './bundle-manifest.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.join(root, 'apps/web/dist');
@@ -23,21 +24,7 @@ const appEntry = entries.find(([key, item]) => item.isEntry && (key.endsWith('ma
   ?? entries.find(([key, item]) => key === 'index.html' || item.src === 'index.html');
 if (!appEntry) throw new Error('Bundle budget: the app entry was not found in the Vite build manifest.');
 
-const visited = new Set();
-// Some Vite/Rolldown manifest versions also surface dynamic-import targets in
-// preload-oriented import lists. Exclude those chunks from the initial closure;
-// they are measured separately by the per-chunk budget below.
-const dynamicTargets = new Set(entries.flatMap(([, item]) => item.dynamicImports ?? []));
-function visit(key) {
-  if (visited.has(key) || dynamicTargets.has(key)) return;
-  visited.add(key);
-  const item = manifest[key];
-  if (!item) throw new Error(`Bundle budget: manifest import "${key}" is missing.`);
-  for (const imported of item.imports ?? []) {
-    if (!dynamicTargets.has(imported)) visit(imported);
-  }
-}
-visit(appEntry[0]);
+const visited = collectInitialManifestKeys(manifest, appEntry[0]);
 
 const readAsset = async file => {
   const fullPath = path.join(dist, file);
