@@ -17,6 +17,7 @@ export interface ArchiveIndex {
   readonly directoryOffset: number;
   readonly members: readonly ArchiveMember[];
   readonly probes?: readonly MemberEnvelopeProbe[];
+  readonly gapObservations?: readonly import('./archive-gaps').UnindexedGapObservation[];
 }
 
 const SEARCH_TAIL_BYTES = 64 * 1024;
