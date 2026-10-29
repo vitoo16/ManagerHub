@@ -5,7 +5,7 @@ import { Icon, Surface } from '@managerhub/ui';
 
 function TacticalPitch({ solution }: { solution: SquadSolution }) {
   const { t } = useTranslation();
-  const positions=useMemo(()=>new Map<string,SlotAssignment>(solution.lineup.map(item=>[item.slot.id,item])),[solution.lineup]);
+  const positions=useMemo(()=>new Map(solution.lineup.map(item=>[item.slot.id,item] as const)),[solution.lineup]);
   const formation=solution.formation;
   return <Surface className="squad-pitch-card">
     <div className="squad-card-heading"><span>{t("Tactical selection")}</span><span>{t("Your draft lineup · Doesn't change your FM save")}</span></div>
