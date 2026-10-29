@@ -79,7 +79,8 @@ test('discovers a bounded synthetic trailing archive catalogue without extractin
   u32(0); u32(1); name('game_info'); name('.dat'); u32(0); u32(128); u32(256);
   const file = Buffer.concat([
     Buffer.from([2, 1, 97, 102, 101, 46]),
-    Buffer.alloc(128, 0),
+    // Keep the synthetic member extent within directoryOffset - 18, matching the observed layout.
+    Buffer.alloc(140, 0),
     Buffer.from([2, 1, 102, 109, 102, 46, 4, 0, 0]),
     deflateSync(Buffer.from(index))
   ]);
