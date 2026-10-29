@@ -177,9 +177,9 @@ describe('bounded AFE/FM directory catalogue parser', () => {
       memberCount: 3,
       directoryOffset: 1024,
       members: [
+        { filename: 'c.dat', offset: 24, storedBytes: 8, reportedUncompressedBytes: 11 },
         { filename: 'a.dat', offset: 0, storedBytes: 12, reportedUncompressedBytes: 15 },
-        { filename: 'b.dat', offset: 12, storedBytes: 8, reportedUncompressedBytes: 10 },
-        { filename: 'c.dat', offset: 24, storedBytes: 8, reportedUncompressedBytes: 11 }
+        { filename: 'b.dat', offset: 12, storedBytes: 8, reportedUncompressedBytes: 10 }
       ]
     };
     const first = { absoluteOffset: 18, sampleBytes: 8,
