@@ -1,4 +1,4 @@
-import { useCallback, useId, useMemo, useRef, useState, type ChangeEvent, memo } from 'react';
+import { memo, useCallback, useDeferredValue, useId, useMemo, useRef, useState, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { readableImportError } from './i18n/player-import-copy';
 import { parsePlayerExport, parsePlayerHtml, type PlayerDataset } from '@managerhub/domain';
@@ -56,13 +56,17 @@ function PlayerWorkspaceView({ dataset, onDataset, onOpenSquad }: Props) {
   }, [onDataset]);
 
   const normalizedSearch = search.trim().toLowerCase();
+  const deferredSearch = useDeferredValue(normalizedSearch);
   const visible = useMemo(
     () => dataset?.players.filter(player =>
-      [player.name, player.club, player.position].some(value => value?.toLowerCase().includes(normalizedSearch))
+      [player.name, player.club, player.position].some(value => value?.toLowerCase().includes(deferredSearch))
     ) ?? [],
-    [dataset?.players, normalizedSearch]
+    [dataset?.players, deferredSearch]
   );
-  const selected = dataset?.players.find(player => player.id === chosenId) ?? dataset?.players[0] ?? null;
+  const selected = useMemo(
+    () => dataset?.players.find(player => player.id === chosenId) ?? dataset?.players[0] ?? null,
+    [dataset?.players, chosenId]
+  );
   const savedCurrent = useMemo(
     () => dataset !== null && library.items.some(item =>
       item.importedAt === dataset.importedAt &&
@@ -150,6 +154,7 @@ function PlayerWorkspaceView({ dataset, onDataset, onOpenSquad }: Props) {
           selectedId={selected?.id ?? null}
           search={search}
           visibleLimit={visibleLimit}
+          isSearchPending={normalizedSearch !== deferredSearch}
           onSearchChange={onSearchChange}
           onChoosePlayer={onChoosePlayer}
           onShowMore={onShowMore}
