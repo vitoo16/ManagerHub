@@ -8,7 +8,8 @@ This document records the component/performance work for Player Lab and Squad Pl
 
 ### Player Lab
 
-- `PlayerWorkspace` owns import/session state, the selected player, filtering, and saved-library actions.
+- `PlayerWorkspace` owns session/selection state and composes the import, library, summary, list and report components.
+- `usePlayerImport` owns file validation, browser-side HTML/CSV/TSV parsing and readable import-error mapping.
 - `PlayerImportToolbar` owns file-selection and save/clear controls.
 - `SavedPlayerLibraryPanel` owns the local saved-export list and its error/empty states.
 - `PlayerDatasetSummary` owns export provenance and import warnings.
@@ -22,6 +23,7 @@ This document records the component/performance work for Player Lab and Squad Pl
 - `SquadWorkspace` owns the two plan configurations and coordinates calculations/actions.
 - `TacticalPitch`, `LineupResults`, `PinEditor`, `ScenarioComparison`, and `SquadIssue` have separate UI responsibilities under `features/squad-planner/components`.
 - Shared role-title presentation is centralized in `features/squad-planner/getRoleTitle.ts`.
+- `useSquadPlannerModel` owns optimizer calls, scenario state transitions and stable callbacks, keeping calculation orchestration out of workspace JSX.
 
 ## Applied performance techniques
 
