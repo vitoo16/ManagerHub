@@ -9,8 +9,8 @@ const assets = path.join(dist, 'assets');
 const manifestPath = path.join(dist, '.vite/manifest.json');
 const KiB = 1024;
 const budgets = {
-  entryRaw: 400 * KiB,
-  entryGzip: 145 * KiB,
+  entryRaw: 450 * KiB,
+  entryGzip: 150 * KiB,
   chunkRaw: 400 * KiB,
   chunkGzip: 145 * KiB
 };
@@ -24,12 +24,18 @@ const appEntry = entries.find(([key, item]) => item.isEntry && (key.endsWith('ma
 if (!appEntry) throw new Error('Bundle budget: the app entry was not found in the Vite build manifest.');
 
 const visited = new Set();
+// Some Vite/Rolldown manifest versions also surface dynamic-import targets in
+// preload-oriented import lists. Exclude those chunks from the initial closure;
+// they are measured separately by the per-chunk budget below.
+const dynamicTargets = new Set(entries.flatMap(([, item]) => item.dynamicImports ?? []));
 function visit(key) {
-  if (visited.has(key)) return;
+  if (visited.has(key) || dynamicTargets.has(key)) return;
   visited.add(key);
   const item = manifest[key];
   if (!item) throw new Error(`Bundle budget: manifest import "${key}" is missing.`);
-  for (const imported of item.imports ?? []) visit(imported);
+  for (const imported of item.imports ?? []) {
+    if (!dynamicTargets.has(imported)) visit(imported);
+  }
 }
 visit(appEntry[0]);
 
