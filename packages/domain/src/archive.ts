@@ -16,6 +16,7 @@ export interface ArchiveIndex {
   readonly memberCount: number;
   readonly directoryOffset: number;
   readonly members: readonly ArchiveMember[];
+  readonly probes?: readonly MemberEnvelopeProbe[];
 }
 
 const SEARCH_TAIL_BYTES = 64 * 1024;
