@@ -44,7 +44,10 @@ describe('save inspection onboarding copy', () => {
       'Saved save inspection metadata is incompatible with this version. Remove the incompatible local data before trying again.',
       'Unable to remove saved inspection metadata. Check browser storage permissions and try again.',
       'Unable to save inspection metadata locally. Check browser storage permissions and available disk space.',
-      'Could not access saved save metadata. Your original save remains untouched.'
+      'Could not access saved save metadata. Your original save remains untouched.',
+      'Clear incompatible saved metadata',
+      'Saved save inspection metadata is incompatible with this version. Clear the incompatible save metadata to continue; player exports will be preserved.',
+      'Unable to clear saved inspection metadata. Check browser storage permissions and try again.'
     ];
     for (const key of keys) expect(vi[key as keyof typeof vi]).toBeTruthy();
   });
