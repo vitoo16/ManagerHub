@@ -8,6 +8,7 @@ import {
 import { Icon, Status } from '@managerhub/ui';
 import { useReducedMotion, useWorkspaceTransition } from '@managerhub/motion';
 import { inspectSaveInWorker } from './inspect-save-in-worker';
+import { readableSaveInspectionError } from './i18n/save-inspection-copy';
 import './app.css';
 
 const Overview = lazy(() => import('./features/overview/Overview'));
@@ -162,7 +163,7 @@ export default function App() {
       setImports(previous => [result, ...previous.filter(item => item.id !== result.id)]);
       setSelectedId(result.id);
     } catch (exception) {
-      setError(exception instanceof Error ? exception.message : 'Unable to inspect file.');
+      setError(readableSaveInspectionError(exception));
     } finally { setBusy(false); }
   }, []);
   const remove = useCallback((id: string) => {
@@ -174,7 +175,7 @@ export default function App() {
 
   return <div className="app-frame">
     {menuOpen && <button className="mobile-backdrop" aria-label={t("Close navigation menu")} onClick={() => setMenuOpen(false)}/>}
-    <aside className={'sidebar mh-surface mh-surface--glass ' + (menuOpen ? 'sidebar--open' : '')} aria-label="Primary sidebar"><Rail current={view} onNavigate={navigate} onClose={() => setMenuOpen(false)}/></aside>
+    <aside className={'sidebar mh-surface mh-surface--glass ' + (menuOpen ? 'sidebar--open' : '')} aria-label={t("Primary sidebar")}><Rail current={view} onNavigate={navigate} onClose={() => setMenuOpen(false)}/></aside>
     <div className="app-column">
       <header className="topbar mh-surface mh-surface--glass">
         <div className="topbar-left"><button aria-label={t("Open navigation menu")} className="icon-action mobile-menu" onClick={() => setMenuOpen(true)}><Icon name="menu"/></button>
@@ -190,8 +191,8 @@ export default function App() {
               aria-pressed={i18n.resolvedLanguage !== 'vi'}
               onClick={() => void setAppLocale('en')}>EN</button>
           </div>
-          <button className="icon-action" aria-label={'Switch to ' + (theme === 'dark' ? 'light' : 'dark') + ' mode'} onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}><Icon name={theme === 'dark' ? 'sun' : 'moon'} size={18}/></button>
-          <button className="icon-action" aria-label={glass === 'on' ? 'Disable glass effects' : 'Enable glass effects'} title={glass === 'on' ? 'Disable glass' : 'Enable glass'} onClick={() => setGlass(s => s === 'on' ? 'off' : 'on')}><Icon name="settings" size={18}/></button>
+          <button className="icon-action" aria-label={t(theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode')} onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}><Icon name={theme === 'dark' ? 'sun' : 'moon'} size={18}/></button>
+          <button className="icon-action" aria-label={t(glass === 'on' ? 'Disable glass effects' : 'Enable glass effects')} title={t(glass === 'on' ? 'Disable glass' : 'Enable glass')} onClick={() => setGlass(s => s === 'on' ? 'off' : 'on')}><Icon name="settings" size={18}/></button>
           <div className="topbar-divider"/>
           <Status tone="positive">{t("Local first")}</Status>
         </div>
