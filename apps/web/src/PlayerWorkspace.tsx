@@ -1,13 +1,13 @@
 import { useTranslation } from 'react-i18next';
 import { readableImportError, readableImportWarning } from './i18n/player-import-copy';
-import {useId,useRef,useState,type ChangeEvent} from 'react';
+import {lazy,Suspense,useId,useMemo,useRef,useState,type ChangeEvent} from 'react';
 import {
   ATTRIBUTE_LABELS,attributeGroupSummary,attributeStrengthIndex,
   analyzeRoles,getAttributeInsights,parsePlayerExport,parsePlayerHtml,
   type PlayerDataset,type PlayerExport,type AttributeKey
 } from '@managerhub/domain';
 import {Button,Icon,SectionHeading,Status,Surface} from '@managerhub/ui';
-import { RecruitmentPreviewPanel } from './features/player-lab/components/RecruitmentPreviewPanel';
+const RecruitmentPreviewPanel = lazy(() => import('./features/player-lab/components/RecruitmentPreviewPanel').then(module => ({ default: module.RecruitmentPreviewPanel })));
 import { usePlayerLibrary } from './usePlayerLibrary';
 import './player-workspace.css';
 
@@ -132,9 +132,9 @@ function PlayerCompare({primary,dataset}:{primary:PlayerExport;dataset:PlayerDat
 function PlayerDetails({player,dataset,onOpenSquad}:{player:PlayerExport;dataset:PlayerDataset;onOpenSquad:()=>void}){
   const { t } = useTranslation();
   const [tab,setTab]=useState<'overview'|'attributes'|'roles'|'recruitment'|'compare'>('overview');
-  const insights=getAttributeInsights(player);
-  const strength=attributeStrengthIndex(player);
-  const roles=analyzeRoles(player);
+  const insights=useMemo(()=>getAttributeInsights(player),[player]);
+  const strength=useMemo(()=>attributeStrengthIndex(player),[player]);
+  const roles=useMemo(()=>analyzeRoles(player),[player]);
   const top=roles.find(x=>x.score!==null);
   return <section aria-label={t('Scouting report for')+' '+player.name}>
     <div className="scout-identity"><div className="scout-avatar" aria-hidden="true">{player.name.slice(0,1).toUpperCase()}</div>
@@ -177,7 +177,7 @@ function PlayerDetails({player,dataset,onOpenSquad}:{player:PlayerExport;dataset
       {tab==='attributes'&&<Surface className="scout-panel"><div className="scout-panel__title">{t("Imported player attributes")} <span>{Object.keys(player.attributes).length} {t('values')} · {t('Source:')} {dataset.fileName}</span></div><RankedAttributes player={player}/></Surface>}
       {tab==='roles'&&<Surface className="scout-panel"><div className="scout-panel__title">{t("Tactical roles by observed attributes")}</div><RoleResults player={player}/></Surface>}
       {tab==='compare'&&<PlayerCompare primary={player} dataset={dataset}/>}
-      {tab==='recruitment'&&<RecruitmentPreviewPanel player={player} dataset={dataset} onOpenSquad={onOpenSquad}/>}
+      {tab==='recruitment'&&<Suspense fallback={<div className="workspace-loading" role="status">{t('Loading workspace…')}</div>}><RecruitmentPreviewPanel player={player} dataset={dataset} onOpenSquad={onOpenSquad}/></Suspense>}
 
     </div>
     <div className="evidence-strip"><Icon name="shield" size={15}/> {t("This report uses your exported attributes. CA and PA remain unknown until verified.")}</div>
