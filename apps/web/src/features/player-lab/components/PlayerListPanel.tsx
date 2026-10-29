@@ -30,7 +30,7 @@ function PlayerListPanel({
   useEffect(() => {
     setScrollTop(0);
     if (scrollRef.current) scrollRef.current.scrollTop = 0;
-  }, [search]);
+  }, [search, visible]);
 
   const start = Math.max(0, Math.floor(scrollTop / ROW_HEIGHT) - OVERSCAN);
   const end = Math.min(shownLength, Math.ceil((scrollTop + VIEWPORT_HEIGHT) / ROW_HEIGHT) + OVERSCAN);
