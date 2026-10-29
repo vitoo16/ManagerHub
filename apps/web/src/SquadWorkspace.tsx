@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useMemo, useState, type Dispatch, type SetStateAction } from 'react';
+import { memo, useMemo, useState, type Dispatch, type SetStateAction } from 'react';
 import {
   FORMATIONS, ROLE_PROFILES, declaredPositions, eligibleSlotCandidates, optimizeSquad, compareSquadScenarios,
   type FormationId, type PlayerDataset, type SquadSolution, type SlotAssignment, type LineupSlot,
@@ -166,7 +166,7 @@ function ScenarioComparison({left,right}: {left:SquadSolution;right:SquadSolutio
   </Surface>;
 }
 
-export function SquadWorkspace({dataset,onImport,plans,setPlans,active,setActive}:{
+export const SquadWorkspace = memo(function SquadWorkspace({dataset,onImport,plans,setPlans,active,setActive}:{
   dataset: PlayerDataset | null;
   onImport: () => void;
   plans: SquadPlans;
