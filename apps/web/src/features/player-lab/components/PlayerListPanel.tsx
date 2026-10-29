@@ -25,7 +25,25 @@ function PlayerListPanel({
   const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [scrollTop, setScrollTop] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState(VIEWPORT_HEIGHT);
   const shownLength = Math.min(visible.length, visibleLimit);
+
+  useEffect(() => {
+    const element = scrollRef.current;
+    if (!element) return;
+    const measure = () => {
+      const next = element.clientHeight || VIEWPORT_HEIGHT;
+      setViewportHeight(current => current === next ? current : next);
+    };
+    measure();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', measure);
+      return () => window.removeEventListener('resize', measure);
+    }
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     setScrollTop(0);
@@ -33,7 +51,7 @@ function PlayerListPanel({
   }, [search, visible]);
 
   const start = Math.max(0, Math.floor(scrollTop / ROW_HEIGHT) - OVERSCAN);
-  const end = Math.min(shownLength, Math.ceil((scrollTop + VIEWPORT_HEIGHT) / ROW_HEIGHT) + OVERSCAN);
+  const end = Math.min(shownLength, Math.ceil((scrollTop + viewportHeight) / ROW_HEIGHT) + OVERSCAN);
   const windowed = visible.slice(start, end);
 
   return <Surface className="player-list-panel">
