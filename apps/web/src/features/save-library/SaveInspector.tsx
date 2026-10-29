@@ -2,17 +2,20 @@ import { memo, useId, useRef, useState, type ChangeEvent, type DragEvent } from 
 import { useTranslation } from 'react-i18next';
 import { formatBytes, type SaveIdentity } from '@managerhub/domain';
 import { Button, Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
+import type { useSaveInspectionLibrary } from '../../useSaveInspectionLibrary';
 
-function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, select }: {
+function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, select, saveLibrary }: {
   imports: readonly SaveIdentity[]; selected: SaveIdentity | null;
   onInspect: (file: File) => Promise<void>; onRemove: (id: string) => void;
   busy: boolean; error: string | null; select: (id: string) => void;
+  saveLibrary: ReturnType<typeof useSaveInspectionLibrary>;
 }) {
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   const [showAllMembers, setShowAllMembers] = useState(false);
   const fileId = useId();
   const [drag, setDrag] = useState(false);
+  const isSelectedSaved = selected ? saveLibrary.items.some(item => item.id === selected.id) : false;
   const openPicker = () => { if (!busy) inputRef.current?.click(); };
   const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.currentTarget.files?.[0];
@@ -35,7 +38,12 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
       <span className="file-drop__limit">{t("Browser inspection limit · 256 MB · No cloud upload")}</span>
     </Surface>
     {error && <div role="alert" className="inline-alert"><Icon name="warning" size={18}/><span>{t(error)}</span><button aria-label={t("Choose another file")} onClick={openPicker}>{t("Choose another file")}</button></div>}
-    <SectionHeading eyebrow={t("IMPORTED METADATA ONLY")} title={t('Inspected files')+' ('+imports.length+')'}><Status>{t("Local browser session")}</Status></SectionHeading>
+    {saveLibrary.error && <div role="alert" className="inline-alert"><Icon name="warning" size={18}/><span>{t(saveLibrary.error)}</span><button aria-label={t("Dismiss saved metadata error")} onClick={saveLibrary.clearError}><Icon name="close" size={15}/></button></div>}
+    <SectionHeading eyebrow={t("IMPORTED METADATA ONLY")} title={t('Inspected files')+' ('+imports.length+')'}>
+      <Status tone={saveLibrary.loading ? 'neutral' : isSelectedSaved ? 'positive' : 'neutral'}>
+        {t(saveLibrary.loading ? 'Loading saved inspection metadata…' : isSelectedSaved ? 'Saved metadata on this browser' : 'Session only')}
+      </Status>
+    </SectionHeading>
     {imports.length === 0
       ? <Surface className="empty-library"><Icon name="database" size={29}/><h3>{t("No files inspected yet")}</h3><p>{t("Once selected, file signatures and available inspection details will appear here. This is not a player database.")}</p></Surface>
       : <div className="library-grid">
@@ -67,6 +75,14 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
             </div>
             {selected.archiveIndex.memberCount > 8 && <button className="text-link archive-preview__expand" onClick={() => setShowAllMembers(v => !v)}>{showAllMembers ? t('Show fewer') : t('Show all') + ' ' + selected.archiveIndex.memberCount + ' ' + t('entries')} <Icon name="chevron" size={14}/></button>}
           </div>}
+          <div className="save-metadata-actions">
+            <Button variant={isSelectedSaved ? 'quiet' : 'primary'}
+              disabled={saveLibrary.loading || saveLibrary.activity !== null}
+              onClick={() => { void (isSelectedSaved ? saveLibrary.remove(selected.id) : saveLibrary.save(selected)); }}>
+              {t(isSelectedSaved ? 'Remove saved metadata' : 'Save inspection metadata on this browser')}
+            </Button>
+            <p>{t("Only the inspection metadata shown here is saved in this browser. The original .fm file bytes are never stored or uploaded.")}</p>
+          </div>
           <div className="inspector-note"><Icon name="warning" size={16}/>
             <div>
               <p>{t(selected.detectedFamily
