@@ -96,6 +96,14 @@ describe('versioned export-only squad assignment',()=>{
     expect(ranked.map(x=>x.playerId)).toContain('right-back');
     expect(ranked.map(x=>x.playerId)).not.toContain('low-data');
   });
+  it('reuses indexed player text and positions without changing candidate filtering',()=>{
+    const extended=[...roster,player('versatile-winger','AM (L), AM (R)')];
+    const left=eligibleSlotCandidates(extended,FORMATIONS['4-3-3'].find(s=>s.id==='lw')!,'versatile');
+    const right=eligibleSlotCandidates(extended,FORMATIONS['4-3-3'].find(s=>s.id==='rw')!,'versatile');
+    expect(left.map(candidate=>candidate.playerId)).toEqual(['versatile-winger']);
+    expect(right.map(candidate=>candidate.playerId)).toEqual(['versatile-winger']);
+  });
+
   it('reports impossible exclusions rather than generating a reduced lineup',()=>{
     const result=optimizeSquad(roster,'4-3-3',{excludedPlayerIds:['goalkeeper']});
     expect(result.complete).toBe(false);
