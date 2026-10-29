@@ -32,7 +32,7 @@ function Overview({ imports, go }: { imports: readonly SaveIdentity[]; go: (key:
         <div className="hero-art-caption">{t("PLAN  ·  ANALYZE  ·  EVOLVE")}</div>
       </div>
     </div>
-    <div className="headline-stats" aria-label="Workspace information">
+    <div className="headline-stats" aria-label={t("Workspace information")}>
       <Surface className="stat-card"><span className="stat-label">{t("Product scope")}</span><div className="stat-value">27<span>{t("modules")}</span></div><span className="stat-sub">{t("Six interconnected departments")}</span></Surface>
       <Surface className="stat-card"><span className="stat-label">{t("Local files inspected")}</span><div className="stat-value">{imports.length.toString().padStart(2, '0')}<span>{t("files")}</span></div><span className="stat-sub">{t("No save files uploaded to a server")}</span></Surface>
       <Surface className="stat-card"><span className="stat-label">{t("Current implementation")}</span><div className="stat-value stat-value--word">{t("Foundation")}</div><span className="stat-sub">{t("Player exports work now · Save reader is still being built")}</span></Surface>
