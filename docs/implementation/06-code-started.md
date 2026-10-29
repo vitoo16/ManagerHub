@@ -13,7 +13,7 @@
 
 ## Honest current limitations
 - File import is *signature inspection only*, not version-specific save parsing. No player records, Actual CA/PA, eCA calibration, tactics or game editing.
-- Web currently holds inspected file **metadata in the browser session**, not the file bytes in a backend database. Files are not uploaded.
+- Save Library can explicitly persist validated inspection metadata in IndexedDB schema v2 and restore it after reload. The separate save-inspections store contains metadata only; original .fm bytes are not saved or uploaded. This still does not decode player records, identify an exact edition/build or validate CA/PA.
 - Tauri native host and Rust parser are **not implemented yet**. Do not claim the native desktop app is available.
 - Production components do not synthesize FM player statistics, financial data or match events.
 - Dependency install/build/browser runs need a Node environment with npm registry access and a browser. A commit of tests is not evidence they passed; check CI run status.
@@ -36,7 +36,7 @@ npm run test:e2e
 The repo uses npm workspaces for now; `package-lock.json` should be generated and committed by a CI-capable developer after dependency resolution. Do not claim reproducible installs without that lock. No use of `npm ci` until present.
 
 ## Next engineering work
-Verify the initial UI with actual browser screenshots and tests, fix any CI failures, migrate common state/error primitives into shared packages when actual reuse emerges, then create safe versioned Rust save adapters and Tauri local persistence according to [seven-phase roadmap](01-full-delivery-plan.md).
+Verify the UI with browser screenshots and tests, validate the metadata-only IndexedDB migration, obtain permissioned and game-verified save fixtures, then build safe versioned Rust save adapters and Tauri local persistence according to [seven-phase roadmap](01-full-delivery-plan.md).
 
 **Related:** [execution charter](00-execution-charter.md), [agent skills](04-motion-skills-and-references.md), [full feature ledger](05-feature-acceptance-ledger.md).
 
