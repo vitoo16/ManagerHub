@@ -123,6 +123,8 @@
 .detail-grid {display:grid;grid-template-columns:138px minmax(0,1fr);gap:12px;margin:0}
 .detail-grid dt {font-size:11px;color:var(--text-faint)}
 .detail-grid dd {font-size:11px;margin:0;min-width:0;overflow-wrap:anywhere}
+.save-metadata-actions {display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:20px 0 2px;padding:14px;border:1px solid var(--line);background:var(--surface);border-radius:12px}
+.save-metadata-actions p {flex:1 1 220px;color:var(--text-faint);font-size:11px;line-height:1.65;margin:0}
 .mono {font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:10px!important}
 .digest {overflow-wrap:anywhere}
 .inspector-note {display:flex;gap:12px;padding:14px;border:1px solid color-mix(in srgb,var(--warning) 22%,var(--line));background:color-mix(in srgb,var(--warning) 6%,var(--surface));border-radius:12px;color:var(--warning);margin-top:22px;font-size:11px;line-height:1.7}
