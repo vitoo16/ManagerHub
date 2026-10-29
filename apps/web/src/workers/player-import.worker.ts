@@ -14,7 +14,7 @@ const workerScope = self as unknown as {
 
 workerScope.onmessage = event => {
   try {
-    const source = new TextDecoder('utf-8', { fatal: true }).decode(event.data.buffer);
+    const source = new TextDecoder('utf-8').decode(event.data.buffer);
     const dataset = parsePlayerExport(source, event.data.fileName);
     workerScope.postMessage({ ok: true, dataset });
   } catch (error) {
