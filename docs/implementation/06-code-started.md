@@ -41,7 +41,8 @@ Verify the UI with browser screenshots and tests, validate the metadata-only Ind
 **Related:** [execution charter](00-execution-charter.md), [agent skills](04-motion-skills-and-references.md), [full feature ledger](05-feature-acceptance-ledger.md).
 
 ## Updated: read-only internal archive index prototype
-- `packages/domain/src/archive.ts` implements strictly bounded deflate-based inspection of a candidate trailing FMF directory, with UTF-16LE filenames, offsets, sizes and explicit unverified flag.
-- Tested on a user-provided private file **without committing its bytes**: the observed AFE file includes a 69-entry directory with members such as `game_info.dat`, `game_db.dat` and `tactics_man.dat`.
-- `apps/web` lists member metadata only when the directory passes structural validation. This is NOT proof of player extraction or a safe writer.
-- Added parser malformed/extent tests and a synthetic browser E2E test. Check latest CI before claiming these tests passed.
+- `packages/domain/src/archive.ts` implements strictly bounded deflate-based inspection of a candidate trailing FMF index, with UTF-16LE member names, offsets, sizes and an explicit experimental evidence flag.
+- The user-provided real save has an **AFE outer signature** and a trailing marker matching the experimental FMF index pattern. The observed catalogue contains 69 entries, including `game_info.dat`, `game_db.dat` and `tactics_man.dat`. Its bytes remain private and are not committed.
+- Keep outer container detection (`afe`) distinct from the internal trailing index candidate (`fmf-index-candidate`); the latter does not imply the save is an FMF-family container.
+- `apps/web` lists member metadata only when the directory passes structural validation. This is NOT proof of member decompression, player extraction, edition/build identification, CA/PA decoding or a safe writer.
+- Synthetic tests cover the 69-member catalogue shape and an AFE outer signature coexisting with the trailing FMF index marker. CI run [#156](https://github.com/vitoo16/ManagerHub/actions/runs/40888143543) passed TypeScript strict checks, unit tests, production build and desktop/mobile Playwright.

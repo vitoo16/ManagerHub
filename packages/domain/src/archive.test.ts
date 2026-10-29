@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { inspectArchiveIndex, parseArchiveDirectory } from './archive';
+import { detectSaveFamily } from './save';
 
 function syntheticIndex() {
   const data: number[] = [];
@@ -116,11 +117,14 @@ describe('bounded AFE/FM directory catalogue parser', () => {
     const compressed = new Uint8Array(await new Response(compressedStream).arrayBuffer());
     const marker = Uint8Array.from([2, 1, 102, 109, 102, 46, 4, 0, 0]);
     const prefix = new Uint8Array(2048);
+    // The real observed save has an AFE outer signature and a trailing FMF index marker.
+    prefix.set([2, 1, 97, 102, 101, 46]);
     const bytes = new Uint8Array(prefix.length + marker.length + compressed.length);
     bytes.set(prefix);
     bytes.set(marker, prefix.length);
     bytes.set(compressed, prefix.length + marker.length);
 
+    expect(detectSaveFamily(bytes)).toBe('afe');
     const index = await inspectArchiveIndex(new File([bytes], 'synthetic-69-member.fm'));
     expect(index).not.toBeNull();
     expect(index?.memberCount).toBe(69);
