@@ -103,3 +103,7 @@ The domain now exposes `summarizeMemberConsistency()` to count contiguous, gappe
 ### Observed catalogue continuity (same single fixture)
 
 The 69 member extents yield **66 contiguous adjacent pairs, 2 positive gaps, and 0 overlaps** when sorted by declared offset. The gaps are 1,350,855 bytes between `game_db.dat` and `humans.dat`, and 178,694 bytes between `tactics_man.dat` and `edit_session_man.dat`. The bytes in these gaps have not been identified; they may be unindexed data or other container regions. Never assume that all members are contiguous or that all non-member bytes are padding. All 69 sampled member starts share the observed eight-byte prefix.
+
+### Follow-up: repeated delimiters inside unindexed gaps
+
+A further read-only byte scan of the two gaps found the exact eight-byte sequence `10 00 00 00 10 00 00 00` at **724 positions** in the 1,350,855-byte `game_db.dat` → `humans.dat` gap (including its first byte), and **1 position** in the 178,694-byte `tactics_man.dat` → `edit_session_man.dat` gap (at its first byte). These are exact pattern counts in this single save, not a validated count of records or a proven container structure. A repeated delimiter may identify internal sub-blocks, but the intervening bytes have not been decoded and their semantics remain unknown. The original data is not committed.
