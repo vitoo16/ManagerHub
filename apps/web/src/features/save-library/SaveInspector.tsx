@@ -42,7 +42,11 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
       <span className="file-drop__limit">{t("Browser inspection limit · 256 MB · No cloud upload")}</span>
     </Surface>
     {error && <div role="alert" className="inline-alert"><Icon name="warning" size={18}/><span>{t(error)}</span><button aria-label={t("Choose another file")} onClick={openPicker}>{t("Choose another file")}</button></div>}
-    {saveLibrary.error && <div role="alert" className="inline-alert"><Icon name="warning" size={18}/><span>{t(saveLibrary.error)}</span><button aria-label={t("Dismiss saved metadata error")} onClick={saveLibrary.clearError}><Icon name="close" size={15}/></button></div>}
+    {saveLibrary.error && <div role="alert" className="inline-alert"><Icon name="warning" size={18}/><span>{t(saveLibrary.error)}</span>
+      {saveLibrary.canClearIncompatible
+        ? <button disabled={saveLibrary.activity !== null} onClick={() => { void saveLibrary.clearIncompatible(); }}>{t("Clear incompatible saved metadata")}</button>
+        : <button aria-label={t("Dismiss saved metadata error")} onClick={saveLibrary.clearError}><Icon name="close" size={15}/></button>}
+    </div>}
     <SectionHeading eyebrow={t("IMPORTED METADATA ONLY")} title={t('Inspected files')+' ('+imports.length+')'}>
       <Status tone={saveLibrary.loading ? 'neutral' : isSelectedSaved ? 'positive' : 'neutral'}>
         {t(saveLibrary.loading ? 'Loading saved inspection metadata…' : isSelectedSaved ? 'Saved metadata on this browser' : 'Session only')}

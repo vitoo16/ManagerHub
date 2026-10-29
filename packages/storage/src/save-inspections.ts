@@ -54,3 +54,17 @@ export async function deleteSavedSaveInspectionMetadata(id: string): Promise<voi
     throw new Error('Unable to remove saved inspection metadata. Check browser storage permissions and try again.');
   } finally { db.close(); }
 }
+
+
+/** Clear only the incompatible inspection catalogue; player exports remain untouched. */
+export async function clearSavedSaveInspectionMetadata(): Promise<void> {
+  const db = await openDatabase();
+  try {
+    const tx = db.transaction(SAVE_INSPECTIONS, 'readwrite');
+    const completed = transactionCompleted(tx);
+    tx.objectStore(SAVE_INSPECTIONS).clear();
+    await completed;
+  } catch {
+    throw new Error('Unable to clear saved inspection metadata. Check browser storage permissions and try again.');
+  } finally { db.close(); }
+}
