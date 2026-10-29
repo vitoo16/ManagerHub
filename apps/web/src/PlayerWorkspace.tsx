@@ -59,7 +59,7 @@ function PlayerWorkspaceView({dataset,onDataset,onOpenSquad}:Props){
   const visible=useMemo(()=>playerSearchIndex
     .filter(entry=>!deferredSearch||entry.searchText.includes(deferredSearch))
     .map(entry=>entry.player),[playerSearchIndex,deferredSearch]);
-  const playerById=useMemo(()=>new Map(dataset?.players.map(player=>[player.id,player])??[]),[dataset?.players]);
+  const playerById=useMemo(()=>new Map(dataset?.players.map(player=>[player.id,player] as const)??[]),[dataset?.players]);
   const selected=(chosenId?playerById.get(chosenId):undefined)??dataset?.players[0]??null;
   const loadedPlayers=useMemo(()=>visible.slice(0,visibleLimit),[visible,visibleLimit]);
   const virtualStart=Math.max(0,Math.floor(listScrollTop/PLAYER_ROW_HEIGHT)-PLAYER_LIST_OVERSCAN);
