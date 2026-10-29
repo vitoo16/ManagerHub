@@ -1,13 +1,13 @@
 import { setAppLocale } from './i18n';
 import { useTranslation } from 'react-i18next';
-import { useCallback, useEffect, useId, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useId, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
 import {
   FEATURES, FEATURE_GROUPS, formatBytes, inspectSave, type SaveIdentity, type WorkspaceKey
 } from '@managerhub/domain';
 import { Button, Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
 import { useReducedMotion, useWorkspaceTransition } from '@managerhub/motion';
-import { PlayerWorkspace } from './PlayerWorkspace';
-import { SquadWorkspace } from './SquadWorkspace';
+const PlayerWorkspace = lazy(() => import('./PlayerWorkspace').then(module => ({ default: module.PlayerWorkspace })));
+const SquadWorkspace = lazy(() => import('./SquadWorkspace').then(module => ({ default: module.SquadWorkspace })));
 import { createDefaultSquadPlans, type SquadPlanKey, type SquadPlans, type PlayerDataset } from '@managerhub/domain';
 import './app.css';
 
@@ -41,6 +41,14 @@ function loadPreference<T extends string>(key: string, fallback: T, allowed: rea
 function routeFromHash(): WorkspaceKey {
   const hash = window.location.hash.slice(2);
   return NAV.some(n => n.key === hash) ? hash as WorkspaceKey : 'overview';
+}
+
+function WorkspaceLoading() {
+  const { t } = useTranslation();
+  return <div className="workspace-loading" role="status" aria-live="polite">
+    <span className="workspace-loading__spinner" aria-hidden="true"/>
+    <span>{t("Loading workspace…")}</span>
+  </div>;
 }
 
 function Logo({ compact = false }: { compact?: boolean }) {
@@ -327,6 +335,8 @@ export default function App() {
     setCommandOpen(false); setMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, []);
+  const openSquad = useCallback(() => navigate('squad'), [navigate]);
+  const openPlayers = useCallback(() => navigate('players'), [navigate]);
   const onInspect = async (file: File) => {
     setBusy(true); setError(null);
     try {
@@ -370,13 +380,15 @@ export default function App() {
       </header>
       <main ref={viewScope} className="main-area" id="main-content" tabIndex={-1}>
         <div data-animate="workspace" key={view}>
-          {view === 'overview' && <Overview imports={imports} go={navigate}/>}
-          {view === 'players' && <PlayerWorkspace dataset={playerDataset} onDataset={onPlayerDatasetChange} onOpenSquad={()=>navigate('squad')}/>}
-          {view === 'squad' && <SquadWorkspace dataset={playerDataset} onImport={() => navigate('players')}
-            plans={squadPlans} setPlans={setSquadPlans} active={activeSquadPlan} setActive={setActiveSquadPlan}/>}
-          {view === 'saves' && <SaveInspector imports={imports} selected={selected} onInspect={onInspect} onRemove={remove} busy={busy} error={error} select={setSelectedId}/>}
-          {view === 'modules' && <Systems/>}
-          {view === 'architecture' && <Architecture/>}
+          <Suspense fallback={<WorkspaceLoading/>}>
+            {view === 'overview' && <Overview imports={imports} go={navigate}/>}
+            {view === 'players' && <PlayerWorkspace dataset={playerDataset} onDataset={onPlayerDatasetChange} onOpenSquad={openSquad}/>}
+            {view === 'squad' && <SquadWorkspace dataset={playerDataset} onImport={openPlayers}
+              plans={squadPlans} setPlans={setSquadPlans} active={activeSquadPlan} setActive={setActiveSquadPlan}/>}
+            {view === 'saves' && <SaveInspector imports={imports} selected={selected} onInspect={onInspect} onRemove={remove} busy={busy} error={error} select={setSelectedId}/>}
+            {view === 'modules' && <Systems/>}
+            {view === 'architecture' && <Architecture/>}
+          </Suspense>
         </div>
         <footer className="app-footer"><span>{t("MANAGERHUB  /  DEVELOPMENT WORKSPACE")}</span><span>{t("Read-only browser inspection · No source save changes")}</span></footer>
       </main>
