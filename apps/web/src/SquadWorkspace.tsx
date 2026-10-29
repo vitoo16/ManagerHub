@@ -91,18 +91,23 @@ function PinEditor({slots,dataset,locks,excluded,onPin,onExclude,onClear}:PinEdi
   const [excludeSearch,setExcludeSearch]=useState('');
   const deferredPinSearch=useDeferredValue(pinSearch);
   const deferredExcludeSearch=useDeferredValue(excludeSearch);
-  const pinnedOptions=useMemo(()=>
-    new Map(slots.map(slot=>[slot.id,eligibleSlotCandidates(dataset.players,slot,deferredPinSearch,50)])),
-  [slots,dataset.players,deferredPinSearch]);
-  const exclusionSearchIndex=useMemo(()=>dataset.players.map(player=>({
+  const rosterSearchIndex=useMemo(()=>dataset.players.map(player=>({
     player,
     searchText:[player.name,player.position,player.club].filter(Boolean).join(' ').toLocaleLowerCase()
   })),[dataset.players]);
+  const pinMatches=useMemo(()=>{
+    const query=deferredPinSearch.trim().toLocaleLowerCase();
+    return rosterSearchIndex.filter(entry=>!query||entry.searchText.includes(query))
+      .map(entry=>entry.player);
+  },[rosterSearchIndex,deferredPinSearch]);
+  const pinnedOptions=useMemo(()=>
+    new Map(slots.map(slot=>[slot.id,eligibleSlotCandidates(pinMatches,slot,'',50)])),
+  [slots,pinMatches]);
   const searched=useMemo(()=>{
     const query=deferredExcludeSearch.trim().toLocaleLowerCase();
-    return exclusionSearchIndex.filter(entry=>!query||entry.searchText.includes(query))
+    return rosterSearchIndex.filter(entry=>!query||entry.searchText.includes(query))
       .slice(0,60).map(entry=>entry.player);
-  },[exclusionSearchIndex,deferredExcludeSearch]);
+  },[rosterSearchIndex,deferredExcludeSearch]);
   return <Surface className="squad-edit-card">
     <div className="squad-card-heading"><span>{t("Manager constraints")}</span>
       <Button variant="quiet" onClick={onClear}>{t("Clear all constraints")}</Button>
