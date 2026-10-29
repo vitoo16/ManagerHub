@@ -23,6 +23,8 @@ const SEARCH_TAIL_BYTES = 64 * 1024;
 const MAX_INDEX_COMPRESSED = 64 * 1024;
 const MAX_INDEX_DECOMPRESSED = 512 * 1024;
 const MAX_MEMBERS = 1024;
+// Prevent adversarial marker-heavy files from triggering unbounded inflate attempts.
+const MAX_INDEX_CANDIDATES = 32;
 const MAX_NAME_CHARS = 256;
 // In the one observed AFE save, member offsets are relative to byte 18;
 // the trailing directory begins after the final member extent. Keep this
@@ -107,12 +109,14 @@ export async function inspectArchiveIndex(file: File): Promise<ArchiveIndex | nu
   const tail = new Uint8Array(await file.slice(tailStart).arrayBuffer());
   // Only inspect the final self-contained candidate. This marker may occur
   // in payload data; all structure and bounds still require validation.
-  for (let i = tail.length - 11; i >= 0; i--) {
+  let candidatesTried = 0;
+  for (let i = tail.length - 11; i >= 0 && candidatesTried < MAX_INDEX_CANDIDATES; i--) {
     if (tail[i] !== 2 || tail[i + 1] !== 1 ||
         tail[i + 2] !== 102 || tail[i + 3] !== 109 ||
         tail[i + 4] !== 102 || tail[i + 5] !== 46 ||
         tail[i + 6] !== 4 || tail[i + 7] !== 0 || tail[i + 8] !== 0 ||
         tail[i + 9] !== 0x78) continue;
+    candidatesTried++;
     const position = tailStart + i;
     try {
       const payload = await inflateIndexBlob(file.slice(position + 9));
