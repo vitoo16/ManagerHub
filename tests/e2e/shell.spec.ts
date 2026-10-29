@@ -388,3 +388,57 @@ test('save inspection errors give actionable guidance in both languages', async 
   await expect(alert).toContainText('Hãy chọn tệp save Football Manager có đuôi .fm.');
   await expect(alert).not.toContainText('Select a Football Manager');
 });
+
+
+test('save inspection metadata is opt-in, survives reload, and never stores the .fm bytes', async ({ page }) => {
+  await page.goto('/#/saves');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'persistent-career.fm',
+    mimeType: 'application/octet-stream',
+    buffer: Buffer.from([2, 1, 97, 102, 101, 46])
+  });
+  await expect(page.getByRole('heading', { name: 'persistent-career.fm' })).toBeVisible();
+  await expect(page.getByText('Session only')).toBeVisible();
+  await page.getByRole('button', { name: 'Save inspection metadata on this browser' }).click();
+  await expect(page.getByRole('button', { name: 'Remove saved metadata' })).toBeVisible();
+  await expect(page.getByText('Saved metadata on this browser')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
+  await expect(page.getByRole('button', { name: 'Xóa thông tin save đã lưu' })).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole('heading', { name: 'persistent-career.fm' })).toBeVisible();
+  await expect(page.getByText('Đã lưu thông tin trên trình duyệt này')).toBeVisible();
+
+  const stored = await page.evaluate(async () => {
+    const open = indexedDB.open('managerhub-local', 2);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      open.onsuccess = () => resolve(open.result);
+      open.onerror = () => reject(open.error);
+    });
+    try {
+      const records = await new Promise<unknown[]>((resolve, reject) => {
+        const request = db.transaction('save-inspections', 'readonly')
+          .objectStore('save-inspections').getAll();
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      const keys = Object.keys(records[0] as Record<string, unknown>).sort();
+      return { count: records.length, keys, stores: Array.from(db.objectStoreNames) };
+    } finally {
+      db.close();
+    }
+  });
+  expect(stored.count).toBe(1);
+  expect(stored.keys).toEqual([
+    'archiveIndex', 'build', 'detectedFamily', 'edition', 'id', 'importedAt',
+    'inspectionStatus', 'lastModified', 'name', 'sha256', 'signature', 'size',
+    'support', 'warnings'
+  ]);
+  expect(stored.stores).toContain('player-exports');
+  expect(stored.stores).toContain('player-export-summaries');
+
+  await page.getByRole('button', { name: 'Xóa thông tin save đã lưu' }).click();
+  await expect(page.getByText('Chỉ trong phiên hiện tại')).toBeVisible();
+  await page.reload();
+  await expect(page.getByText('Chưa có file save nào')).toBeVisible();
+});
