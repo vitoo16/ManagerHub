@@ -2,7 +2,7 @@
 
 **Football Management Intelligence Platform** — một công cụ phân tích và hỗ trợ quyết định cho Football Manager, hướng tới đọc save, đánh giá cầu thủ, eCA, chiến thuật, Squad Planner, tuyển trạch, quản trị CLB và (chỉ khi xác minh được) chỉnh sửa CA/PA an toàn.
 
-**Project status (2026-10-27):** Implementation has started. React/Vite application shell, local .fm signature inspection, the 27-module directory, theme/motion primitives and automated tests are committed. Full game-save decoding and native editing are NOT implemented. No affiliation with Sports Interactive, SEGA, Football Manager or FMRTE.
+**Project status (2026-10-29):** The React/Vite app shell, read-only .fm signature/archive-index inspection, Player Lab import and local export library, Squad Planner scenarios, and automated desktop/mobile checks are implemented. Save-inspection metadata can now be explicitly saved in IndexedDB; full game-save decoding and native editing are NOT implemented. No affiliation with Sports Interactive, SEGA, Football Manager or FMRTE.
 
 ## Project documentation
 - [Docs Home](docs/README.md) — Business, System, Product and Engineering.
@@ -32,7 +32,7 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-The Save Library recognizes .fm container signatures, optional SHA-256, and an **experimental bounded listing of internal archive member names** when structurally available. **Player Lab** now imports user-exported **HTML/CSV/TSV/TXT**, analyzes actual visible 1–20 attributes and displays provisional role-fit scores and attribute charts in-browser. It does **not** decode game edition, players or CA/PA and does not upload save bytes. The Tauri desktop host and Rust parser have not been built. See [implementation evidence/limits](docs/implementation/06-code-started.md).
+The Save Library recognizes .fm container signatures, optional SHA-256 and an **experimental bounded listing of internal archive member names** when structurally available. You may explicitly save the resulting inspection metadata to this browser and restore it after reload; **the original .fm bytes are never persisted or uploaded**. **Player Lab** imports user-exported **HTML/CSV/TSV/TXT**, analyzes visible 1–20 attributes and displays provisional role-fit scores and charts. The app does **not** decode save players or CA/PA. The Tauri desktop host and Rust parser have not been built. See [implementation evidence/limits](docs/implementation/06-code-started.md).
 
 ## Next implementation milestone
 Validate with real FM print/export fixtures, continue versioned .fm reader/persistent snapshots, then train and calibrate eCA from independently verified same-version CA labels, and integrate Tactical Lab, Squad Planner and decision-aware scouting. Native save editing remains a separately gated phase.

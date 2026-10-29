@@ -2,44 +2,7 @@ import {
   MAX_SAVED_PLAYER_EXPORTS, isSavedPlayerExport, makeSavedPlayerExport, summarizeSavedExport,
   type PlayerDataset, type SavedPlayerExport, type SavedPlayerExportSummary
 } from '@managerhub/domain';
-
-const DATABASE_NAME = 'managerhub-local';
-const DATABASE_VERSION = 1;
-const EXPORTS = 'player-exports';
-const SUMMARIES = 'player-export-summaries';
-
-function openDatabase(): Promise<IDBDatabase> {
-  return new Promise((resolve, reject) => {
-    if (typeof indexedDB === 'undefined') {
-      reject(new Error('Local browser storage is unavailable. Your import is still usable in this tab.'));
-      return;
-    }
-    const request = indexedDB.open(DATABASE_NAME, DATABASE_VERSION);
-    request.onupgradeneeded = () => {
-      const db = request.result;
-      if (!db.objectStoreNames.contains(EXPORTS)) db.createObjectStore(EXPORTS, { keyPath: 'id' });
-      if (!db.objectStoreNames.contains(SUMMARIES)) db.createObjectStore(SUMMARIES, { keyPath: 'id' });
-    };
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(new Error('Could not open this browser’s local player library.'));
-    request.onblocked = () => reject(new Error('Local player library is open in an incompatible tab. Close other ManagerHub tabs and retry.'));
-  });
-}
-
-function readRequest<T>(request: IDBRequest<T>): Promise<T> {
-  return new Promise((resolve, reject) => {
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error ?? new Error('Local storage read failed.'));
-  });
-}
-
-function transactionCompleted(transaction: IDBTransaction): Promise<void> {
-  return new Promise((resolve, reject) => {
-    transaction.oncomplete = () => resolve();
-    transaction.onerror = () => reject(transaction.error ?? new Error('Local storage transaction failed.'));
-    transaction.onabort = () => reject(transaction.error ?? new Error('Local storage transaction aborted.'));
-  });
-}
+import { EXPORTS, SUMMARIES, openDatabase, readRequest, transactionCompleted } from './database';
 
 function isSummary(value: unknown): value is SavedPlayerExportSummary {
   if (!value || typeof value !== 'object') return false;

@@ -6,11 +6,11 @@
 
 | ID | Module | Integration phase | Dependency | End-to-end exit criterion | Initial status |
 |---|---|---:|---|---|---|
-| MH-01 | Save Manager/Reader | 2 | Parser, provenance | Import verified compatible save; explain unsupported and error; immutable original | **In progress:** bounded signature and experimental archive index, no player decode |
+| MH-01 | Save Manager/Reader | 2 | Parser, provenance | Import verified compatible save; explain unsupported and error; immutable original | **In progress:** bounded signature/archive index plus opt-in metadata-only IndexedDB persistence (schema v2); version-specific player decode remains unimplemented |
 | MH-02 | Player Database/Explorer | 2–3 | MH-01, domain | Search/filter/compare/export with native field evidence and modes | **In progress:** HTML/CSV/TSV player list and source-backed attribute display; no native save database decode |
 | MH-03 | Advanced Editor | 7 | Certified exact-build writer | CA/PA patch preview/backup/diff/reparse/game load/restore, unsupported disabled | Not implemented |
 | MH-04 | Player Development History | 3 | Identity, snapshots | Cross-season attribute trend with edit/version markers | Not implemented |
-| MH-05 | Data Integrity/Compatibility | 2 | Format test corpus | Coverage/corruption report + hashed original, no guessed fields | **In progress:** SHA-256, signatures, unknown status and bounded index metadata |
+| MH-05 | Data Integrity/Compatibility | 2 | Format test corpus | Coverage/corruption report + hashed original, no guessed fields | **In progress:** SHA-256, signatures, bounded archive index, metadata validation and explicit local persistence; exact-build verification corpus remains open |
 | MH-06 | Player Intelligence/eCA | 3 | MH-02, labels | Explainable eCA or attribute index, roles, strengths, charts and confidence | **In progress:** attributes radar, strength index and role heuristic; eCA not calibrated |
 | MH-07 | Tactical Lab | 4 | Roles, MH-06 | Two-phase board where edition supports; keyboard, saving scenarios | Not implemented |
 | MH-08 | AI Tactical Advisor | 4/6 | Rules, AI adapter | Grounded recommendations with impact/alternatives and safe unknowns | Not implemented |
@@ -32,7 +32,7 @@
 | MH-24 | AI Sporting Director/Staff | 6 | Domain + permissions | Four evidence-grounded perspectives and offline fallback; no writes | Not implemented |
 | MH-25 | What-if Simulator | 4–5 | Optimizer/finance | Buy/sell/retrain/shape changes recompute whole system | Not implemented |
 | MH-26 | Dashboard/Reports | 3–6 | All analytics | Complete data-source-aware overview, export, season review | Not implemented |
-| MH-27 | Integration/Plugins/Personalize | 1–7 | App shell/services | Format plugins, private storage, settings, role weights and integration review | **In progress:** opt-in browser IndexedDB export library; desktop/plugin architecture pending |
+| MH-27 | Integration/Plugins/Personalize | 1–7 | App shell/services | Format plugins, private storage, settings, role weights and integration review | **In progress:** opt-in IndexedDB player exports and save-inspection metadata (schema v2); desktop/plugin architecture pending |
 
 ## How to update
 Per module record:

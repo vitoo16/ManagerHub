@@ -156,6 +156,14 @@ export default function App() {
   }, []);
   const openSquad = useCallback(() => navigate('squad'), [navigate]);
   const openPlayers = useCallback(() => navigate('players'), [navigate]);
+  const onRestoreSaved = useCallback((records: readonly SaveIdentity[]) => {
+    setImports(current => {
+      const existingIds = new Set(current.map(item => item.id));
+      return [...records.filter(item => !existingIds.has(item.id)), ...current];
+    });
+    setSelectedId(current => current ?? records[0]?.id ?? null);
+  }, []);
+
   const onInspect = useCallback(async (file: File) => {
     setBusy(true); setError(null);
     try {
@@ -204,7 +212,7 @@ export default function App() {
             {view === 'players' && <PlayerWorkspace dataset={playerDataset} onDataset={onPlayerDatasetChange} onOpenSquad={openSquad}/>}
             {view === 'squad' && <SquadWorkspace dataset={playerDataset} onImport={openPlayers}
               plans={squadPlans} setPlans={setSquadPlans} active={activeSquadPlan} setActive={setActiveSquadPlan}/>}
-            {view === 'saves' && <SaveInspector imports={imports} selected={selected} onInspect={onInspect} onRemove={remove} busy={busy} error={error} select={setSelectedId}/>}
+            {view === 'saves' && <SaveInspector imports={imports} selected={selected} onInspect={onInspect} onRemove={remove} busy={busy} error={error} select={setSelectedId} onRestoreSaved={onRestoreSaved}/>}
             {view === 'modules' && <Systems/>}
             {view === 'architecture' && <Architecture/>}
           </Suspense>

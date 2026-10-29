@@ -388,3 +388,165 @@ test('save inspection errors give actionable guidance in both languages', async 
   await expect(alert).toContainText('Hãy chọn tệp save Football Manager có đuôi .fm.');
   await expect(alert).not.toContainText('Select a Football Manager');
 });
+
+
+test('save inspection metadata is opt-in, survives reload, and never stores the .fm bytes', async ({ page }) => {
+  await page.goto('/#/saves');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'persistent-career.fm',
+    mimeType: 'application/octet-stream',
+    buffer: Buffer.from([2, 1, 97, 102, 101, 46])
+  });
+  await expect(page.getByRole('heading', { name: 'persistent-career.fm' })).toBeVisible();
+  await expect(page.getByText('Session only')).toBeVisible();
+  await page.getByRole('button', { name: 'Save inspection metadata on this browser' }).click();
+  await expect(page.getByRole('button', { name: 'Remove saved metadata' })).toBeVisible();
+  await expect(page.getByText('Saved metadata on this browser')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
+  await expect(page.getByRole('button', { name: 'Xóa thông tin save đã lưu' })).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole('heading', { name: 'persistent-career.fm' })).toBeVisible();
+  await expect(page.getByText('Đã lưu thông tin trên trình duyệt này')).toBeVisible();
+
+  const stored = await page.evaluate(async () => {
+    const open = indexedDB.open('managerhub-local', 2);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      open.onsuccess = () => resolve(open.result);
+      open.onerror = () => reject(open.error);
+    });
+    try {
+      const records = await new Promise<unknown[]>((resolve, reject) => {
+        const request = db.transaction('save-inspections', 'readonly')
+          .objectStore('save-inspections').getAll();
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      const keys = Object.keys(records[0] as Record<string, unknown>).sort();
+      return { count: records.length, keys, stores: Array.from(db.objectStoreNames) };
+    } finally {
+      db.close();
+    }
+  });
+  expect(stored.count).toBe(1);
+  expect(stored.keys).toEqual([
+    'archiveIndex', 'build', 'detectedFamily', 'edition', 'id', 'importedAt',
+    'inspectionStatus', 'lastModified', 'name', 'sha256', 'signature', 'size',
+    'support', 'warnings'
+  ]);
+  expect(stored.stores).toContain('player-exports');
+  expect(stored.stores).toContain('player-export-summaries');
+
+  await page.getByRole('button', { name: 'Xóa thông tin save đã lưu' }).click();
+  await expect(page.getByText('Chỉ trong phiên hiện tại')).toBeVisible();
+  await page.reload();
+  await expect(page.getByText('Chưa có file save nào')).toBeVisible();
+});
+
+
+test('upgrades the v1 IndexedDB schema without dropping the existing player library', async ({ page }) => {
+  await page.addInitScript(() => {
+    const request = indexedDB.open('managerhub-local', 1);
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains('player-exports')) {
+        db.createObjectStore('player-exports', { keyPath: 'id' });
+      }
+      if (!db.objectStoreNames.contains('player-export-summaries')) {
+        const summaries = db.createObjectStore('player-export-summaries', { keyPath: 'id' });
+        summaries.add({
+          id: 'legacy-summary',
+          savedAt: '2026-10-28T12:00:00.000Z',
+          fileName: 'legacy-export.csv',
+          importedAt: '2026-10-28T11:59:00.000Z',
+          playerCount: 1,
+          attributeCount: 2
+        });
+      }
+    };
+    request.onsuccess = () => request.result.close();
+    request.onerror = () => { /* The app will report storage errors if the test setup cannot initialize. */ };
+  });
+
+  await page.goto('/#/saves');
+  await expect(page.getByRole('heading', { name: 'Save Library' })).toBeVisible();
+  await expect(page.getByText('No files inspected yet')).toBeVisible();
+
+  const migration = await page.evaluate(async () => {
+    const request = indexedDB.open('managerhub-local', 2);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    try {
+      const legacy = await new Promise<unknown>((resolve, reject) => {
+        const get = db.transaction('player-export-summaries', 'readonly')
+          .objectStore('player-export-summaries').get('legacy-summary');
+        get.onsuccess = () => resolve(get.result);
+        get.onerror = () => reject(get.error);
+      });
+      return { version: db.version, stores: Array.from(db.objectStoreNames), legacy };
+    } finally {
+      db.close();
+    }
+  });
+  expect(migration.version).toBe(2);
+  expect(migration.stores).toContain('player-exports');
+  expect(migration.stores).toContain('player-export-summaries');
+  expect(migration.stores).toContain('save-inspections');
+  expect(migration.legacy).toMatchObject({ id: 'legacy-summary', fileName: 'legacy-export.csv' });
+});
+
+
+test('save inspection metadata library enforces its 50-record limit', async ({ page }) => {
+  await page.goto('/#/saves');
+  await expect(page.getByRole('heading', { name: 'Save Library' })).toBeVisible();
+  // Wait for the lazy Save Library hook to finish opening/upgrading IndexedDB.
+  await expect(page.getByText('Session only')).toBeVisible();
+  await page.evaluate(async () => {
+    const request = indexedDB.open('managerhub-local', 2);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    try {
+      await new Promise<void>((resolve, reject) => {
+        const tx = db.transaction('save-inspections', 'readwrite');
+        const store = tx.objectStore('save-inspections');
+        for (let index = 0; index < 50; index++) {
+          store.put({
+            id: 'seed-' + index,
+            name: 'career-' + index + '.fm',
+            importedAt: new Date(1_790_000_000_000 + index).toISOString(),
+            lastModified: 1,
+            size: 6,
+            sha256: null,
+            signature: '02 01 61 66 65 2E',
+            detectedFamily: 'afe',
+            edition: null,
+            build: null,
+            support: 'signature_only',
+            inspectionStatus: 'inspected',
+            warnings: ['Player records have not been decoded.'],
+            archiveIndex: null
+          });
+        }
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
+      });
+    } finally {
+      db.close();
+    }
+  });
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'one-more-career.fm',
+    mimeType: 'application/octet-stream',
+    buffer: Buffer.from([2, 1, 97, 102, 101, 46])
+  });
+  await expect(page.getByRole('heading', { name: 'one-more-career.fm' })).toBeVisible();
+  await page.getByRole('button', { name: 'Save inspection metadata on this browser' }).click();
+  await expect(page.getByRole('alert')).toContainText(
+    'This browser already holds 50 saved save inspections. Delete one first.'
+  );
+});
