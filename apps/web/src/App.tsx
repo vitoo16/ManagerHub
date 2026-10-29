@@ -9,6 +9,7 @@ import { Icon, Status } from '@managerhub/ui';
 import { useReducedMotion, useWorkspaceTransition } from '@managerhub/motion';
 import { inspectSaveInWorker } from './inspect-save-in-worker';
 import { readableSaveInspectionError } from './i18n/save-inspection-copy';
+import { useSaveInspectionLibrary } from './useSaveInspectionLibrary';
 import './app.css';
 
 const Overview = lazy(() => import('./features/overview/Overview'));
@@ -102,9 +103,22 @@ export default function App() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const saveMetadataHydrated = useRef(false);
+  const saveLibrary = useSaveInspectionLibrary();
   const viewScope = useRef<HTMLElement>(null);
   const commandDialogRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
+
+  useEffect(() => {
+    if (saveLibrary.loading || saveMetadataHydrated.current) return;
+    saveMetadataHydrated.current = true;
+    if (saveLibrary.items.length === 0) return;
+    setImports(current => {
+      const existingIds = new Set(current.map(item => item.id));
+      return [...saveLibrary.items.filter(item => !existingIds.has(item.id)), ...current];
+    });
+    setSelectedId(current => current ?? saveLibrary.items[0]?.id ?? null);
+  }, [saveLibrary.loading, saveLibrary.items]);
 
   useWorkspaceTransition(viewScope, view, reduced);
   useEffect(() => {
@@ -204,7 +218,7 @@ export default function App() {
             {view === 'players' && <PlayerWorkspace dataset={playerDataset} onDataset={onPlayerDatasetChange} onOpenSquad={openSquad}/>}
             {view === 'squad' && <SquadWorkspace dataset={playerDataset} onImport={openPlayers}
               plans={squadPlans} setPlans={setSquadPlans} active={activeSquadPlan} setActive={setActiveSquadPlan}/>}
-            {view === 'saves' && <SaveInspector imports={imports} selected={selected} onInspect={onInspect} onRemove={remove} busy={busy} error={error} select={setSelectedId}/>}
+            {view === 'saves' && <SaveInspector imports={imports} selected={selected} onInspect={onInspect} onRemove={remove} busy={busy} error={error} select={setSelectedId} saveLibrary={saveLibrary}/>}
             {view === 'modules' && <Systems/>}
             {view === 'architecture' && <Architecture/>}
           </Suspense>
