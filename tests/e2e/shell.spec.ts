@@ -500,6 +500,9 @@ test('upgrades the v1 IndexedDB schema without dropping the existing player libr
 
 test('save inspection metadata library enforces its 50-record limit', async ({ page }) => {
   await page.goto('/#/saves');
+  await expect(page.getByRole('heading', { name: 'Save Library' })).toBeVisible();
+  // Wait for the lazy Save Library hook to finish opening/upgrading IndexedDB.
+  await expect(page.getByText('Session only')).toBeVisible();
   await page.evaluate(async () => {
     const request = indexedDB.open('managerhub-local', 2);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
