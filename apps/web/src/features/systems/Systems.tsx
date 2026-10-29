@@ -1,4 +1,4 @@
-import { memo, useMemo, useState } from 'react';
+import { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FEATURES, FEATURE_GROUPS } from '@managerhub/domain';
 import { Icon, Status, Surface } from '@managerhub/ui';
