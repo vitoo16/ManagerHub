@@ -51,6 +51,11 @@ console.log(`  TOTAL: ${(initialRaw / KiB).toFixed(1)} KiB raw, ${(initialGzip /
 const jsFiles = (await readdir(assets)).filter(file => file.endsWith('.js'));
 if (jsFiles.length === 0) throw new Error('Bundle budget: no JavaScript chunks were emitted.');
 const chunks = await Promise.all(jsFiles.map(file => readAsset(path.join('assets', file))));
+chunks.sort((left, right) => right.raw - left.raw);
+console.log('All JavaScript chunks (largest first):');
+for (const item of chunks) {
+  console.log(`  ${item.file}: ${(item.raw / KiB).toFixed(1)} KiB raw, ${(item.gzip / KiB).toFixed(1)} KiB gzip`);
+}
 const oversized = chunks.filter(item => item.raw > budgets.chunkRaw || item.gzip > budgets.chunkGzip);
 if (initialRaw > budgets.entryRaw || initialGzip > budgets.entryGzip || oversized.length > 0) {
   const problems = [];
