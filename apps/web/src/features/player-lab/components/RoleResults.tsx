@@ -1,11 +1,11 @@
-import { memo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ATTRIBUTE_LABELS, analyzeRoles, type PlayerExport } from '@managerhub/domain';
 import { Icon } from '@managerhub/ui';
 
-export const RoleResults = memo(function RoleResults({player}:{player:PlayerExport}){
+function RoleResults({player, roles: suppliedRoles}:{player:PlayerExport;roles?:ReturnType<typeof analyzeRoles>}){
   const { t } = useTranslation();
-  const roles=analyzeRoles(player);
+  const roles=useMemo(()=>suppliedRoles??analyzeRoles(player),[suppliedRoles,player]);
   const [expanded,setExpanded]=useState<string|null>(null);
   return <div className="role-results">
     <p className="module-disclaimer">{t("Role fit shows how well the visible attributes match a role. It isn't CA, star rating or a match prediction. We skip scoring when too many attributes are missing.")}</p>
@@ -23,4 +23,6 @@ export const RoleResults = memo(function RoleResults({player}:{player:PlayerExpo
       </div>}
     </div>)}
   </div>;
-});
+}
+
+export default memo(RoleResults);

@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ATTRIBUTE_LABELS, type AttributeKey, type PlayerExport } from '@managerhub/domain';
 
-export const RankedAttributes = memo(function RankedAttributes({player}: {player:PlayerExport}){
+function RankedAttributes({player}: {player:PlayerExport}){
   const { t } = useTranslation();
   const values=(Object.entries(player.attributes) as [AttributeKey,number][])
     .sort((a,b)=>b[1]-a[1]);
@@ -14,4 +14,6 @@ export const RankedAttributes = memo(function RankedAttributes({player}: {player
       <strong>{value}</strong>
     </div>)}
   </div>;
-});
+}
+
+export default memo(RankedAttributes);

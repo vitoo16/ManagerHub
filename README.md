@@ -58,3 +58,6 @@ In `/#/squad`, pin an eligible player to an exact position, exclude players or c
 
 ## Languages and player-facing help
 ManagerHub supports **Vietnamese / English (VI/EN)** with immediate language switching from the top bar and stored preference across reloads. Player Lab includes a plain-language guide distinguishing CA, PA, RCA and ManagerHub's role-fit scoring. See [i18n and content guidelines](docs/engineering/i18n-guidelines.md) and [FM Scout CA/PA research](docs/domain/ca-pa-rca-research.md).
+
+
+The Player Lab **Recruitment** tab compares the best-fit starting XI with and without a selected player from the same imported roster. It is a squad-sensitivity preview, not a transfer recommendation or match prediction. See [the contribution-preview design](docs/implementation/08-local-library-and-squad-planner.md) and [performance architecture and bundle budgets](docs/implementation/09-performance-architecture.md).

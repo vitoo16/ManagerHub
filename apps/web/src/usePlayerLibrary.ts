@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { PlayerDataset, SavedPlayerExportSummary } from '@managerhub/domain';
 import {
   deleteSavedPlayerExport, getSavedPlayerExport,
@@ -31,8 +31,9 @@ export function usePlayerLibrary() {
     return () => { active = false; };
   }, []);
 
-  const save = async (dataset: PlayerDataset): Promise<boolean> => {
-    setActivity('saving'); setError(null);
+  const save = useCallback(async (dataset: PlayerDataset): Promise<boolean> => {
+    setActivity('saving');
+    setError(null);
     try {
       await savePlayerExport(dataset);
       await reload();
@@ -40,21 +41,27 @@ export function usePlayerLibrary() {
     } catch (cause) {
       setError(message(cause));
       return false;
-    } finally { setActivity(null); }
-  };
+    } finally {
+      setActivity(null);
+    }
+  }, [reload]);
 
-  const open = async (id: string): Promise<PlayerDataset | null> => {
-    setActivity('opening'); setError(null);
+  const open = useCallback(async (id: string): Promise<PlayerDataset | null> => {
+    setActivity('opening');
+    setError(null);
     try {
       return (await getSavedPlayerExport(id)).dataset;
     } catch (cause) {
       setError(message(cause));
       return null;
-    } finally { setActivity(null); }
-  };
+    } finally {
+      setActivity(null);
+    }
+  }, []);
 
-  const remove = async (id: string): Promise<boolean> => {
-    setActivity('deleting'); setError(null);
+  const remove = useCallback(async (id: string): Promise<boolean> => {
+    setActivity('deleting');
+    setError(null);
     try {
       await deleteSavedPlayerExport(id);
       await reload();
@@ -62,10 +69,16 @@ export function usePlayerLibrary() {
     } catch (cause) {
       setError(message(cause));
       return false;
-    } finally { setActivity(null); }
-  };
+    } finally {
+      setActivity(null);
+    }
+  }, [reload]);
 
-  return { items, loading, activity, error, clearError: () => setError(null), save, open, remove };
+  const clearError = useCallback(() => setError(null), []);
+
+  return useMemo(() => ({
+    items, loading, activity, error, clearError, save, open, remove
+  }), [items, loading, activity, error, clearError, save, open, remove]);
 }
 
 function message(cause: unknown): string {

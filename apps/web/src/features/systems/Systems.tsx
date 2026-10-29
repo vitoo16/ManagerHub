@@ -1,4 +1,4 @@
-import { memo, useMemo, useState } from 'react';
+import { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FEATURES, FEATURE_GROUPS } from '@managerhub/domain';
 import { Icon, Status, Surface } from '@managerhub/ui';
@@ -7,11 +7,9 @@ function Systems() {
   const { t } = useTranslation();
   const [group, setGroup] = useState('All departments');
   const [query, setQuery] = useState('');
-  const normalizedQuery = query.trim().toLocaleLowerCase();
-  const visible = useMemo(() => FEATURES.filter(feature =>
+  const visible = FEATURES.filter(feature =>
     (group === 'All departments' || feature.group === group) &&
-    [feature.title, feature.id, feature.group].some(value => value.toLocaleLowerCase().includes(normalizedQuery))),
-  [group, normalizedQuery]);
+    [feature.title, feature.id, feature.group].some(value => value.toLowerCase().includes(query.toLowerCase())));
   return <div className="view-flow">
     <div className="page-title"><div className="mh-eyebrow">{t("THE FULL PRODUCT / 27 MODULES")}</div><h1>{t("Football Systems")}</h1><p>{t("Explore the features we're building. Some tools are ready to try, while others are still on the way.")}</p></div>
     <div className="module-toolbar"><label className="search-box"><Icon name="search" size={17}/><span className="visually-hidden">{t("Search modules")}</span><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search modules or ID…"/></label>

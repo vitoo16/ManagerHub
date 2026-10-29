@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { attributeGroupSummary, type PlayerExport } from '@managerhub/domain';
 
-export const AttributeRadar = memo(function AttributeRadar({player}: {player:PlayerExport}){
+function AttributeRadar({player}: {player:PlayerExport}){
   const { t } = useTranslation();
   const groups=attributeGroupSummary(player).filter(x=>x.name!=='Goalkeeping'||x.observed>0);
   const usable=groups.filter(x=>x.score!==null);
@@ -27,4 +27,6 @@ export const AttributeRadar = memo(function AttributeRadar({player}: {player:Pla
       {groups.map(g=><div key={g.name} role="listitem"><span>{t(g.name)}</span><strong>{g.score?.toFixed(1)??'—'}<small> / 20</small></strong></div>)}
     </div>
   </div>;
-});
+}
+
+export default memo(AttributeRadar);

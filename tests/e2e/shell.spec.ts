@@ -175,10 +175,13 @@ test('large exported squads render a bounded, accessible player list', async ({ 
   await page.locator('input[type=file]').setInputFiles({
     name: 'large-squad.csv', mimeType: 'text/csv', buffer: Buffer.from(rows.join('\n'))
   });
+  await expect(page.getByText('115 player records')).toBeVisible();
   const list = page.getByRole('list', { name: 'Imported players' });
-  await expect(list.getByRole('listitem')).toHaveCount(100);
+  await expect.poll(() => list.getByRole('listitem').count()).toBeLessThanOrEqual(16);
+  await list.evaluate(element => { element.scrollTop = element.scrollHeight; });
+  await expect(list.getByRole('button', { name: /Player 99/ })).toBeVisible();
   await page.getByRole('button', { name: /Show next 100/ }).click();
-  await expect(list.getByRole('listitem')).toHaveCount(115);
+  await expect.poll(() => list.getByRole('listitem').count()).toBeLessThanOrEqual(16);
   await page.getByPlaceholder('Search player, team, position…').fill('Player 115');
   await expect(list.getByRole('listitem')).toHaveCount(1);
   await expect(page.getByText('1 shown')).toBeVisible();
@@ -289,6 +292,23 @@ test('Plan B remains intact across workspace navigation and resets for a differe
   await expect(page.getByRole('combobox',{name:'Lock RB'})).toHaveValue('');
 });
 
+
+test('large player lists keep a bounded DOM and scroll to loaded records', async ({page}) => {
+  const reserves = Array.from({length:500}, (_, index) => [`Reserve ${index}`, 'M (C)'] as const);
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name:'large-roster.csv',
+    mimeType:'text/csv',
+    buffer:Buffer.from(makeSquadExport(reserves))
+  });
+  await expect(page.getByText('511 player records')).toBeVisible();
+  const list = page.getByRole('list', {name:'Imported players'});
+  await expect.poll(() => list.getByRole('listitem').count()).toBeLessThanOrEqual(16);
+  await list.evaluate(element => { element.scrollTop = element.scrollHeight; });
+  await expect(list.getByRole('button', {name:/Reserve 88/})).toBeVisible();
+  await page.getByRole('button', {name:/Show next 100/}).click();
+  await expect.poll(() => list.getByRole('listitem').count()).toBeLessThanOrEqual(22);
+});
 
 test('VI/EN language switch localizes onboarding, saves choice and restores English', async ({page})=>{
   await page.goto('/#/overview');

@@ -67,11 +67,11 @@ Additional integration evidence: [opt-in local storage + role-fit lineup planner
 
 | Area | Status | Evidence / acceptance |
 |---|---|---|
-| Workspace code splitting | Implemented; CI pending | Overview, Save Library, Player Lab, Squad Planner, Systems and Data & Trust use lazy imports with a translated loading fallback. |
-| Feature component boundaries | Implemented; CI pending | Player report/recruitment and Squad Planner presentation/editor components live in feature-scoped files. |
-| Bounded large-roster rendering | Implemented; CI pending | Player Lab uses a fixed-height virtual window and incremental loading; Playwright includes a 511-player regression case. |
-| Main-thread workload | Implemented; CI pending | CSV/TSV parsing and save inspection run in Web Workers. HTML import stays on the main thread because the current hardened parser relies on DOMParser. |
-| Derived work and solver reuse | Implemented; CI pending | Deferred search, normalized search indexes, memoized result components, per-plan optimizer memoization, repeated role-score reuse and WeakMap caching of unconstrained baselines. |
-| Bundle regression guard | Implemented; CI pending | Production build emits a Vite manifest and checks initial static asset and per-JS-chunk size budgets. |
+| Workspace code splitting | Implemented; CI passed (run #124) | Overview, Save Library, Player Lab, Squad Planner, Systems and Data & Trust use lazy imports with a translated loading fallback. |
+| Feature component boundaries | Implemented; CI passed (run #124) | Player report/recruitment and Squad Planner presentation/editor components live in feature-scoped files. |
+| Bounded large-roster rendering | Implemented; CI passed (run #124) | Player Lab uses a fixed-height virtual window and incremental loading; Playwright includes a 511-player regression case. |
+| Main-thread workload | Implemented; CI passed (run #124) | CSV/TSV parsing and save inspection run in Web Workers. HTML import stays on the main thread because the current hardened parser relies on DOMParser. |
+| Derived work and solver reuse | Implemented; CI passed (run #124) | Deferred search, normalized search indexes, memoized result components, per-plan optimizer memoization, repeated role-score reuse and WeakMap caching of unconstrained baselines. |
+| Bundle regression guard | Implemented; CI passed (run #124) | Production build emits a Vite manifest and checks initial static asset and per-JS-chunk size budgets. |
 | Measured runtime improvement | **Needs verification** | Do not claim a percentage improvement until CI passes and representative browser profiles are recorded. |
 
