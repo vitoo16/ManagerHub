@@ -37,7 +37,12 @@ export function parseArchiveDirectory(bytes: Uint8Array, boundary: number): read
   function readText(): string | null {
     const size = readU32();
     if (size === null || size < 1 || size > MAX_NAME_CHARS || cursor + size * 2 + 2 > bytes.byteLength) return null;
-    const text = new TextDecoder('utf-16le', { fatal: true }).decode(bytes.subarray(cursor, cursor + size * 2));
+    let text: string;
+    try {
+      text = new TextDecoder('utf-16le', { fatal: true }).decode(bytes.subarray(cursor, cursor + size * 2));
+    } catch {
+      return null;
+    }
     cursor += size * 2;
     if (view.getUint16(cursor, true) !== 0) return null;
     cursor += 2;
