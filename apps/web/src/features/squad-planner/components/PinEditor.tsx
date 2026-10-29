@@ -23,9 +23,13 @@ function PinEditor({slots,dataset,locks,excluded,onPin,onExclude,onClear}:PinEdi
   const pinnedOptions=useMemo(()=>{
     return new Map(slots.map(slot=>[slot.id,eligibleSlotCandidates(dataset.players,slot,deferredPinSearch,50)]));
   },[slots,dataset.players,deferredPinSearch]);
-  const searched=useMemo(()=>dataset.players.filter(player=>!normalizedExcludeSearch || [player.name,player.position,player.club]
-    .some(value=>value?.toLocaleLowerCase().includes(normalizedExcludeSearch))).slice(0,60),
-    [dataset.players,normalizedExcludeSearch]);
+  const exclusionSearchIndex=useMemo(()=>dataset.players.map(player=>({
+    player,
+    normalizedText:[player.name,player.position,player.club].map(value=>value?.toLocaleLowerCase()??'').join(' ')
+  })),[dataset.players]);
+  const searched=useMemo(()=>exclusionSearchIndex
+    .filter(entry=>!normalizedExcludeSearch||entry.normalizedText.includes(normalizedExcludeSearch))
+    .slice(0,60).map(entry=>entry.player),[exclusionSearchIndex,normalizedExcludeSearch]);
   const excludedSet=useMemo(()=>new Set(excluded),[excluded]);
   return <Surface className="squad-edit-card">
     <div className="squad-card-heading"><span>{t("Manager constraints")}</span>
