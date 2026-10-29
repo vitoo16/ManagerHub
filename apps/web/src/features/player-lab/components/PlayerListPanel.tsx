@@ -25,16 +25,34 @@ function PlayerListPanel({
   const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [scrollTop, setScrollTop] = useState(0);
-  const shown = visible.slice(0, visibleLimit);
+  const [viewportHeight, setViewportHeight] = useState(VIEWPORT_HEIGHT);
+  const shownLength = Math.min(visible.length, visibleLimit);
+
+  useEffect(() => {
+    const element = scrollRef.current;
+    if (!element) return;
+    const measure = () => {
+      const next = element.clientHeight || VIEWPORT_HEIGHT;
+      setViewportHeight(current => current === next ? current : next);
+    };
+    measure();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', measure);
+      return () => window.removeEventListener('resize', measure);
+    }
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     setScrollTop(0);
     if (scrollRef.current) scrollRef.current.scrollTop = 0;
-  }, [search, visibleLimit]);
+  }, [search, visible]);
 
   const start = Math.max(0, Math.floor(scrollTop / ROW_HEIGHT) - OVERSCAN);
-  const end = Math.min(shown.length, Math.ceil((scrollTop + VIEWPORT_HEIGHT) / ROW_HEIGHT) + OVERSCAN);
-  const windowed = shown.slice(start, end);
+  const end = Math.min(shownLength, Math.ceil((scrollTop + viewportHeight) / ROW_HEIGHT) + OVERSCAN);
+  const windowed = visible.slice(start, end);
 
   return <Surface className="player-list-panel">
     <div className="player-list-panel__heading"><span>{t("Players")}</span><span>{visible.length} {t('shown')}</span></div>
@@ -45,9 +63,9 @@ function PlayerListPanel({
     </label>
     <div ref={scrollRef} className="player-list-scroll" role="list" aria-label={t("Imported players")} aria-busy={isSearchPending}
       onScroll={event => setScrollTop(event.currentTarget.scrollTop)}>
-      <div className="player-list-window" style={{ height: shown.length * ROW_HEIGHT }}>
+      <div className="player-list-window" style={{ height: shownLength * ROW_HEIGHT }}>
         {windowed.map((player, index) => <div className="player-list-window__item" key={player.id} role="listitem"
-          aria-posinset={start + index + 1} aria-setsize={shown.length}
+          aria-posinset={start + index + 1} aria-setsize={shownLength}
           style={{ top: (start + index) * ROW_HEIGHT, height: ROW_HEIGHT }}>
           <button className={'player-list-entry ' + (selectedId === player.id ? 'player-list-entry--active' : '')}
             aria-current={selectedId === player.id ? 'true' : undefined}

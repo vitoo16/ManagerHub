@@ -388,6 +388,11 @@ export default {
   "Switch to dark mode": "Bật chế độ tối",
   "Disable glass effects": "Tắt hiệu ứng kính",
   "Enable glass effects": "Bật hiệu ứng kính",
+  "Primary sidebar": "Thanh điều hướng chính",
+  "Workspace information": "Thông tin không gian làm việc",
+  "Remove {{fileName}} from inspected list": "Xóa {{fileName}} khỏi danh sách tệp đã kiểm tra",
+  "Disable glass": "Tắt hiệu ứng kính",
+  "Enable glass": "Bật hiệu ứng kính",
   "Inspected save files": "Danh sách save đã kiểm tra",
   "Internal save archive members": "Các mục trong file save",
   "unknown position": "vị trí chưa xác định",
@@ -533,6 +538,9 @@ export default {
   "Background save inspection failed. Please try the file again.": "Không thể kiểm tra tệp save ở chế độ nền. Vui lòng thử lại.",
   "Unable to inspect file.": "Không thể kiểm tra tệp.",
   "Unable to start background save inspection.": "Không thể khởi chạy tiến trình kiểm tra save ở chế độ nền.",
+  "Choose a Football Manager .fm save file.": "Hãy chọn tệp save Football Manager có đuôi .fm.",
+  "This file is empty or larger than 256 MB. Choose a valid .fm save file up to 256 MB and try again.": "Tệp đang trống hoặc lớn hơn 256 MB. Hãy chọn tệp save .fm hợp lệ không quá 256 MB rồi thử lại.",
+  "We couldn't inspect this save file. Check that it is a valid .fm file and try again.": "Không thể kiểm tra tệp save này. Hãy kiểm tra tệp .fm hợp lệ rồi thử lại.",
   "Background player import failed. Please try the export again.": "Không thể nhập danh sách cầu thủ ở chế độ nền. Vui lòng thử lại.",
   "Unable to start background player import.": "Không thể khởi chạy tiến trình nhập cầu thủ ở chế độ nền."
 } as const;

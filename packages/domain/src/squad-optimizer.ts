@@ -70,6 +70,28 @@ export interface SlotCandidate {
   readonly coverage: number;
 }
 
+/** Immutable roster search data reused across the eleven slot candidate lists. */
+interface CandidateSearchEntry {
+  readonly player: PlayerExport;
+  readonly normalizedFields: readonly string[];
+  readonly positions: ReadonlySet<LineupPosition>;
+}
+
+const candidateSearchIndexes = new WeakMap<readonly PlayerExport[], readonly CandidateSearchEntry[]>();
+
+function getCandidateSearchIndex(players: readonly PlayerExport[]): readonly CandidateSearchEntry[] {
+  const cached = candidateSearchIndexes.get(players);
+  if (cached) return cached;
+  const index = players.map(player => ({
+    player,
+    normalizedFields: [player.name, player.club, player.position]
+      .map(value => value?.toLocaleLowerCase() ?? ''),
+    positions: declaredPositions(player.position)
+  }));
+  candidateSearchIndexes.set(players, index);
+  return index;
+}
+
 export interface SquadSolution {
   readonly formation: FormationId;
   readonly complete: boolean;
@@ -175,13 +197,15 @@ export function eligibleSlotCandidates(
   const term=query.trim().toLocaleLowerCase();
   const choices: SlotCandidate[]=[];
   const seen=new Set<string>();
-  for(const player of players){
+  // Text normalization and declared-position parsing are stable for an
+  // immutable imported roster. Reuse the index across slot dropdowns and keystrokes.
+  for(const entry of getCandidateSearchIndex(players)){
+    const {player,normalizedFields,positions}=entry;
     if(seen.has(player.id))continue;
     seen.add(player.id);
-    // Filter text before positional parsing and role scoring so short searches
-    // only pay the expensive scoring cost for actual matches.
-    if(term && ![player.name,player.club,player.position].some(value=>value?.toLocaleLowerCase().includes(term)))continue;
-    if(!declaredPositions(player.position).has(slot.position))continue;
+    // Filter text before role scoring so short searches only score actual matches.
+    if(term && !normalizedFields.some(value=>value.includes(term)))continue;
+    if(!positions.has(slot.position))continue;
     const scored=scoreRole(player,role);
     if(scored.score!==null)choices.push({
       playerId:player.id,name:player.name,score:scored.score,coverage:scored.coverage

@@ -9,7 +9,7 @@
 3. **Keep rendered work bounded.** Player Lab virtualizes the loaded portion of the roster with a fixed-height row window and overscan. It loads another 100 records only when requested; the number of DOM nodes stays bounded as the loaded list grows. Squad exclusion and pin options remain capped.
 4. **Do not repeat expensive calculations without a reason.** Player analysis is memoized by immutable player identity. Recruitment's optimizer runs only after its tab is first opened and remains mounted when the user switches tabs. Plan A and Plan B are optimized independently so editing one plan does not re-run the other.
 5. **Cache by a trustworthy lifetime.** Unconstrained XI solutions are cached in a `WeakMap` keyed by the imported players-array identity and formation. This allows Player Lab and Squad Planner to reuse the same baseline while letting discarded datasets be garbage-collected. Do not mutate imported arrays in place.
-6. **Filter before scoring.** Each active search surface builds a normalized index once per imported roster; deferred query values keep input updates responsive. Candidate text filtering happens before positional parsing and role scoring. The optimizer reuses role scores when a formation repeats the same role in multiple slots.
+6. **Filter before scoring.** Each active search surface builds a normalized index once per imported roster; deferred query values keep input updates responsive. Candidate text filtering happens before positional parsing and role scoring. The optimizer reuses role scores when a formation repeats the same role in multiple slots. Squad Planner's slot-candidate dropdowns cache normalized text and declared positions by immutable roster identity, so the eleven selectors reuse one search index across queries.
 
 ## Implemented controls
 
@@ -29,7 +29,7 @@
 
 ### Large data and background work
 
-- Player list: fixed 56px rows, 5-row overscan, bounded window, and incremental loading by 100 records.
+- Player list: fixed 56px rows, 5-row overscan, bounded window, and incremental loading by 100 records. The virtual window uses the measured scroll-container height (including the smaller mobile viewport), slices only the rows in view, and preserves scroll position when loading another 100 records. Search or roster changes reset the scroll position.
 - CSV/TSV import: transfer the input `ArrayBuffer` to a Web Worker and parse there. HTML remains on the main thread for the safety reason above.
 - Save inspection: run SHA-256 and bounded archive-index inspection in a Web Worker, keeping the UI responsive while the browser reads larger files.
 - Existing parser limits (12 MB player exports / 20,000 rows and bounded save inspection) remain in force.
@@ -43,6 +43,8 @@ The web build emits Vite's manifest and runs `scripts/check-bundle-budget.mjs` a
 - Vite's chunk warning limit is set to 400 KiB as an additional warning.
 
 The latest successful build reported an initial static JS+CSS closure of **419.8 KiB raw / 137.5 KiB gzip-sum**, below the 450/150 KiB budgets. This is a manifest-based size metric, not a network transfer or interaction-latency measurement.
+
+The initial asset graph ignores a module's own dynamic-import targets if they also appear in its preload-oriented import list, while retaining a chunk reached through another module's static import path. This prevents shared static dependencies from being undercounted.
 
 The gzip-sum budget is intentionally conservative and is not the same as a real transfer measurement; actual transfer size also depends on server compression, cache state and request headers. The budgets are regression alarms, not a substitute for a browser performance profile.
 

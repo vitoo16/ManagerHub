@@ -181,7 +181,9 @@ test('large exported squads render a bounded, accessible player list', async ({ 
   await list.evaluate(element => { element.scrollTop = element.scrollHeight; });
   await expect(list.getByRole('button', { name: /Player 99/ })).toBeVisible();
   await page.getByRole('button', { name: /Show next 100/ }).click();
-  await expect.poll(() => list.getByRole('listitem').count()).toBeLessThanOrEqual(16);
+  const viewportWidth = page.viewportSize()?.width ?? 1280;
+  await expect.poll(() => list.getByRole('listitem').count())
+    .toBeLessThanOrEqual(viewportWidth <= 760 ? 16 : 22);
   await page.getByPlaceholder('Search player, team, position…').fill('Player 115');
   await expect(list.getByRole('listitem')).toHaveCount(1);
   await expect(page.getByText('1 shown')).toBeVisible();
@@ -306,7 +308,10 @@ test('large player lists keep a bounded DOM and scroll to loaded records', async
   await expect.poll(() => list.getByRole('listitem').count()).toBeLessThanOrEqual(16);
   await list.evaluate(element => { element.scrollTop = element.scrollHeight; });
   await expect(list.getByRole('button', {name:/Reserve 88/})).toBeVisible();
+  const scrollTopBeforeLoadingMore = await list.evaluate(element => element.scrollTop);
   await page.getByRole('button', {name:/Show next 100/}).click();
+  await expect.poll(() => list.evaluate(element => element.scrollTop))
+    .toBeGreaterThan(scrollTopBeforeLoadingMore - 100);
   await expect.poll(() => list.getByRole('listitem').count()).toBeLessThanOrEqual(22);
 });
 
@@ -365,4 +370,21 @@ test('Vietnamese player scouting labels are readable and CA stays unverified',as
   await page.getByRole('tab',{name:'Chỉ số'}).click();
   await expect(page.getByText('Chuyền bóng').first()).toBeVisible();
   await expect(page.getByText('Tầm nhìn').first()).toBeVisible();
+});
+
+
+test('save inspection errors give actionable guidance in both languages', async ({ page }) => {
+  await page.goto('/#/saves');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'notes.txt',
+    mimeType: 'text/plain',
+    buffer: Buffer.from('not a Football Manager save')
+  });
+
+  const alert = page.getByRole('alert');
+  await expect(alert).toContainText('Choose a Football Manager .fm save file.');
+  await expect(alert).not.toContainText('Select a Football Manager .fm save file.');
+  await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
+  await expect(alert).toContainText('Hãy chọn tệp save Football Manager có đuôi .fm.');
+  await expect(alert).not.toContainText('Select a Football Manager');
 });
