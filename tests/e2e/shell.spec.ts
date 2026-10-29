@@ -496,3 +496,54 @@ test('upgrades the v1 IndexedDB schema without dropping the existing player libr
   expect(migration.stores).toContain('save-inspections');
   expect(migration.legacy).toMatchObject({ id: 'legacy-summary', fileName: 'legacy-export.csv' });
 });
+
+
+test('save inspection metadata library enforces its 50-record limit', async ({ page }) => {
+  await page.goto('/#/saves');
+  await page.evaluate(async () => {
+    const request = indexedDB.open('managerhub-local', 2);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    try {
+      await new Promise<void>((resolve, reject) => {
+        const tx = db.transaction('save-inspections', 'readwrite');
+        const store = tx.objectStore('save-inspections');
+        for (let index = 0; index < 50; index++) {
+          store.put({
+            id: 'seed-' + index,
+            name: 'career-' + index + '.fm',
+            importedAt: new Date(1_790_000_000_000 + index).toISOString(),
+            lastModified: 1,
+            size: 6,
+            sha256: null,
+            signature: '02 01 61 66 65 2E',
+            detectedFamily: 'afe',
+            edition: null,
+            build: null,
+            support: 'signature_only',
+            inspectionStatus: 'inspected',
+            warnings: ['Player records have not been decoded.'],
+            archiveIndex: null
+          });
+        }
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
+      });
+    } finally {
+      db.close();
+    }
+  });
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'one-more-career.fm',
+    mimeType: 'application/octet-stream',
+    buffer: Buffer.from([2, 1, 97, 102, 101, 46])
+  });
+  await expect(page.getByRole('heading', { name: 'one-more-career.fm' })).toBeVisible();
+  await page.getByRole('button', { name: 'Save inspection metadata on this browser' }).click();
+  await expect(page.getByRole('alert')).toContainText(
+    'This browser already holds 50 saved save inspections. Delete one first.'
+  );
+});
