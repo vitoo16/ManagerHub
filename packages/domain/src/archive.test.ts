@@ -148,7 +148,7 @@ describe('bounded AFE/FM directory catalogue parser', () => {
     const marker = Uint8Array.from([2, 1, 102, 109, 102, 46, 4, 0, 0]);
     const bytes = new Uint8Array(1024 + marker.length + compressed.length);
     bytes.set([2, 1, 97, 102, 101, 46]);
-    bytes.set([0x78, 0x9c, 0x01, 0x02, 0x03, 0x04], 18);
+    bytes.set([0x10, 0, 0, 0, 0x10, 0, 0, 0, 0x78, 0x9c, 1, 2, 3, 4, 0, 0], 18);
     bytes.set(marker, 1024);
     bytes.set(compressed, 1024 + marker.length);
     const file = new File([bytes], 'synthetic-envelope.fm');
@@ -160,8 +160,10 @@ describe('bounded AFE/FM directory catalogue parser', () => {
       filename: 'game_info.dat',
       absoluteOffset: 18,
       sampleBytes: 16,
-      prefixHex: '78 9c 01 02 03 04 00 00 00 00 00 00 00 00 00 00',
-      prefixKind: 'zlib_candidate'
+      prefixHex: '10 00 00 00 10 00 00 00 78 9c 01 02 03 04 00 00',
+      prefixKind: 'unknown',
+      afterFirstEightBytesHex: '78 9c 01 02 03 04 00 00',
+      afterFirstEightBytesKind: 'zlib_candidate'
     });
     expect(probes[0]).not.toHaveProperty('payload');
     expect(probes[0]).not.toHaveProperty('decodedBytes');
