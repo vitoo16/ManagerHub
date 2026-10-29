@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useMemo, useState, type Dispatch, type SetStateAction } from 'react';
+import { memo, useCallback, useDeferredValue, useMemo, useState, type Dispatch, type SetStateAction } from 'react';
 import {
   FORMATIONS, ROLE_PROFILES, declaredPositions, eligibleSlotCandidates, optimizeSquad, compareSquadScenarios,
   type FormationId, type PlayerDataset, type SquadSolution, type SlotAssignment, type LineupSlot,
@@ -89,14 +89,20 @@ function PinEditor({slots,dataset,locks,excluded,onPin,onExclude,onClear}:PinEdi
   const { t } = useTranslation();
   const [pinSearch,setPinSearch]=useState('');
   const [excludeSearch,setExcludeSearch]=useState('');
-  const pinnedOptions=useMemo(()=>{
-    return new Map(slots.map(slot=>[slot.id,eligibleSlotCandidates(dataset.players,slot,pinSearch,50)]));
-  },[slots,dataset,pinSearch]);
+  const deferredPinSearch=useDeferredValue(pinSearch);
+  const deferredExcludeSearch=useDeferredValue(excludeSearch);
+  const pinnedOptions=useMemo(()=>
+    new Map(slots.map(slot=>[slot.id,eligibleSlotCandidates(dataset.players,slot,deferredPinSearch,50)])),
+  [slots,dataset.players,deferredPinSearch]);
+  const exclusionSearchIndex=useMemo(()=>dataset.players.map(player=>({
+    player,
+    searchText:[player.name,player.position,player.club].filter(Boolean).join(' ').toLocaleLowerCase()
+  })),[dataset.players]);
   const searched=useMemo(()=>{
-    const query=excludeSearch.trim().toLocaleLowerCase();
-    return dataset.players.filter(p=>!query || [p.name,p.position,p.club]
-      .some(value=>value?.toLocaleLowerCase().includes(query))).slice(0,60);
-  },[dataset,excludeSearch]);
+    const query=deferredExcludeSearch.trim().toLocaleLowerCase();
+    return exclusionSearchIndex.filter(entry=>!query||entry.searchText.includes(query))
+      .slice(0,60).map(entry=>entry.player);
+  },[exclusionSearchIndex,deferredExcludeSearch]);
   return <Surface className="squad-edit-card">
     <div className="squad-card-heading"><span>{t("Manager constraints")}</span>
       <Button variant="quiet" onClick={onClear}>{t("Clear all constraints")}</Button>
@@ -166,6 +172,11 @@ function ScenarioComparison({left,right}: {left:SquadSolution;right:SquadSolutio
   </Surface>;
 }
 
+const MemoTacticalPitch = memo(TacticalPitch);
+const MemoLineupResults = memo(LineupResults);
+const MemoPinEditor = memo(PinEditor);
+const MemoScenarioComparison = memo(ScenarioComparison);
+
 export function SquadWorkspace({dataset,onImport,plans,setPlans,active,setActive}:{
   dataset: PlayerDataset | null;
   onImport: () => void;
@@ -176,37 +187,38 @@ export function SquadWorkspace({dataset,onImport,plans,setPlans,active,setActive
 }){
   const { t } = useTranslation();
   const plan=plans[active];
-  const solutions=useMemo(()=>dataset?{
-    A:optimizeSquad(dataset.players,plans.A.formation,plans.A),
-    B:optimizeSquad(dataset.players,plans.B.formation,plans.B)
-  }:null,[dataset,plans]);
-  const solution=solutions?.[active]??null;
-  const unknownPositions=useMemo(()=>dataset?dataset.players
-    .filter(player=>declaredPositions(player.position).size===0).length:0,[dataset]);
-  const update=(change:(current:SquadPlanConfig)=>SquadPlanConfig)=>{
+  const players=dataset?.players;
+  // Each scenario is independent: editing Plan A must not rerun Plan B's optimizer.
+  const solutionA=useMemo(()=>players?optimizeSquad(players,plans.A.formation,plans.A):null,[players,plans.A]);
+  const solutionB=useMemo(()=>players?optimizeSquad(players,plans.B.formation,plans.B):null,[players,plans.B]);
+  const solutions=useMemo(()=>solutionA&&solutionB?{A:solutionA,B:solutionB}:null,[solutionA,solutionB]);
+  const solution=active==='A'?solutionA:solutionB;
+  const unknownPositions=useMemo(()=>players
+    ?players.filter(player=>declaredPositions(player.position).size===0).length:0,[players]);
+  const update=useCallback((change:(current:SquadPlanConfig)=>SquadPlanConfig)=>{
     setPlans(previous=>({...previous,[active]:change(previous[active])}));
-  };
-  const changeFormation=(next:FormationId)=>update(current=>{
+  },[setPlans,active]);
+  const changeFormation=useCallback((next:FormationId)=>update(current=>{
     const valid=new Set(FORMATIONS[next].map(slot=>slot.id));
     const kept=Object.fromEntries(Object.entries(current.lockedSlots).filter(([slot])=>valid.has(slot)));
     return {...current,formation:next,lockedSlots:kept};
-  });
-  const onPin=(slotId:string,playerId:string|null)=>update(current=>{
+  }),[update]);
+  const onPin=useCallback((slotId:string,playerId:string|null)=>update(current=>{
     const lockedSlots={...current.lockedSlots};
     if(playerId)lockedSlots[slotId]=playerId;
     else delete lockedSlots[slotId];
     return {...current,lockedSlots};
-  });
-  const onExclude=(playerId:string,excluded:boolean)=>update(current=>({
+  }),[update]);
+  const onExclude=useCallback((playerId:string,excluded:boolean)=>update(current=>({
     ...current,excludedPlayerIds:excluded
       ? [...new Set([...current.excludedPlayerIds,playerId])]
       : current.excludedPlayerIds.filter(id=>id!==playerId)
-  }));
-  const reset=()=>update(current=>({...current,lockedSlots:{},excludedPlayerIds:[]}));
-  const copyAtoB=()=>setPlans(prev=>({...prev,B:{
+  })),[update]);
+  const reset=useCallback(()=>update(current=>({...current,lockedSlots:{},excludedPlayerIds:[]})),[update]);
+  const copyAtoB=useCallback(()=>setPlans(prev=>({...prev,B:{
     formation:prev.A.formation,lockedSlots:{...prev.A.lockedSlots},
     excludedPlayerIds:[...prev.A.excludedPlayerIds]
-  }}));
+  }})),[setPlans]);
 
   return <div className="view-flow">
     <div className="page-title">
@@ -252,12 +264,12 @@ export function SquadWorkspace({dataset,onImport,plans,setPlans,active,setActive
         </Surface>
       </div>
       {solution && <div className="squad-workspace-grid">
-        <TacticalPitch solution={solution}/>
-        <LineupResults solution={solution}/>
+        <MemoTacticalPitch solution={solution}/>
+        <MemoLineupResults solution={solution}/>
       </div>}
-      {solutions&&<ScenarioComparison left={solutions.A} right={solutions.B}/>}
+      {solutions&&<MemoScenarioComparison left={solutions.A} right={solutions.B}/>}
       <SectionHeading eyebrow={t("WHAT-IF PLANNING")} title={t('Adjust Plan')+' '+active}/>
-      <PinEditor key={active+plan.formation} slots={FORMATIONS[plan.formation]} dataset={dataset}
+      <MemoPinEditor key={active+plan.formation} slots={FORMATIONS[plan.formation]} dataset={dataset}
         locks={plan.lockedSlots} excluded={plan.excludedPlayerIds}
         onPin={onPin} onExclude={onExclude} onClear={reset}/>
       <SectionHeading eyebrow={t("DATA SUFFICIENCY")} title={t("Position coverage and blockers")}/>
