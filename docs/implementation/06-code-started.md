@@ -67,3 +67,29 @@ The real save was inspected locally and read-only. Only aggregate measurements a
 4. Only after member decoding is validated, investigate typed records and cross-check player identifiers/attributes against in-game exports. Never label a field CA/PA without source evidence.
 
 These observations are from one file and are not a compatibility guarantee for other Football Manager versions/builds.
+
+
+## Updated: format-family gate and member entropy observations
+
+### Do not reuse modern FMF readers blindly
+
+Public reverse-engineering notes for modern saves describe a different outer layout: the [Gilet FM26 save format notes](https://github.com/fifteen15-labs/gilet/blob/main/docs/SAVE_FORMAT.md) report the signature `02 01 "fmf."`, a 26-byte header and consecutive Zstandard frames. The inspected private fixture starts `02 01 "afe."` and has a trailing zlib-compressed directory. This is evidence that the current fixture must not be fed into an FM26 parser based on those notes without a separately validated compatibility path. It does not by itself identify the exact Football Manager edition or build.
+
+The [FM SaveLens 24 format notes](https://github.com/MSalman5230/FM-SaveLens-24/blob/master/docs/FORMAT.md) also document a specific FM24 header and compression gate. Treat each public implementation as a format-specific reference, not a universal FM save specification.
+
+### Bounded statistical observations
+
+A read-only local probe sampled up to 4 KiB after the observed eight-byte member prefix. Shannon byte entropy for sample windows was approximately:
+- `game_info.dat`: 7.93 bits/byte
+- `game_db.dat`: 7.95 bits/byte
+- `news.dat`: 7.95 bits/byte
+- `save_game_summary.dat`: 6.58 bits/byte
+
+These values are consistent with byte distributions that look noise-like in the sampled windows, but entropy alone cannot distinguish compression, encryption, or a custom transform. The samples did not produce valid zlib streams at the tested offsets. No codec or encryption conclusion is made.
+
+### Updated research order
+
+1. Keep the AFE fixture behind its own explicit experimental format gate.
+2. Use small members to test header hypotheses and candidate codecs, recording both successful and failed tests reproducibly.
+3. Cross-check with a second save from a known edition/build before treating the eight-byte prefix or 18-byte base as a general rule.
+4. Only then investigate typed player records and validate any CA/PA fields against a known in-game reference or independent export.
