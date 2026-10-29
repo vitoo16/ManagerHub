@@ -134,6 +134,10 @@ describe('bounded AFE/FM directory catalogue parser', () => {
     });
     expect(index?.members[2]?.filename).toBe('game_db.dat');
     expect(index?.members[68]?.filename).toBe('tc_league_history_id.cmt');
+    // The observed AFE layout has an 18-byte prefix before member payloads;
+    // no catalogue extent may reach into the trailing directory marker.
+    expect(Math.max(...(index?.members ?? []).map(member => member.offset + member.storedBytes)))
+      .toBeLessThanOrEqual((index?.directoryOffset ?? 18) - 18);
   });
 
   it('ignores malformed trailing FMF markers instead of failing inspection', async () => {
