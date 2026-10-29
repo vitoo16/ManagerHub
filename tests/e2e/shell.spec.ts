@@ -111,7 +111,8 @@ test('imports real observed attributes into Player Lab without fake CA/PA', asyn
   await expect(page.getByText('Head-to-head analysis')).toBeVisible();
   await expect(page.getByRole('table',{name:'Role fit comparisons'})).toBeVisible();
   await page.getByRole('tab',{name:'Recruitment'}).click();
-  await expect(page.getByText('Do not recommend a transfer yet')).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Squad contribution preview'})).toBeVisible();
+  await expect(page.getByLabel('Formation to test')).toHaveValue('4-3-3');
   await page.getByRole('button',{name:/Test Defender/}).click();
   await expect(page.getByRole('heading',{name:'Test Defender'})).toBeVisible();
 });
@@ -136,8 +137,8 @@ test('supports native FM-style print to HTML table without external scripts', as
   await page.locator('input[type=file]').setInputFiles({name:'fm-print.html',mimeType:'text/html',buffer:Buffer.from(html)});
   await expect(page.getByRole('heading',{name:'Test Native HTML'})).toBeVisible();
   await page.getByRole('tab',{name:'Attributes'}).click();
-  await expect(page.getByText('Passing', { exact: true })).toBeVisible();
-  await expect(page.getByText('Vision', { exact: true })).toBeVisible();
+  await expect(page.getByText('Passing', { exact: true }).first()).toBeVisible();
+  await expect(page.getByText('Vision', { exact: true }).first()).toBeVisible();
   await expect(page.getByText('Visible attributes only · Not CA')).toBeVisible();
 });
 
@@ -342,6 +343,6 @@ test('Vietnamese player scouting labels are readable and CA stays unverified',as
   await expect(page.getByText('CA thật', { exact: true })).toBeVisible();
   await expect(page.getByText('Chưa xác minh').first()).toBeVisible();
   await page.getByRole('tab',{name:'Chỉ số'}).click();
-  await expect(page.getByText('Chuyền bóng')).toBeVisible();
-  await expect(page.getByText('Tầm nhìn')).toBeVisible();
+  await expect(page.getByText('Chuyền bóng').first()).toBeVisible();
+  await expect(page.getByText('Tầm nhìn').first()).toBeVisible();
 });
