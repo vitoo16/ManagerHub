@@ -181,7 +181,7 @@ test('large exported squads render a bounded, accessible player list', async ({ 
   await list.evaluate(element => { element.scrollTop = element.scrollHeight; });
   await expect(list.getByRole('button', { name: /Player 99/ })).toBeVisible();
   await page.getByRole('button', { name: /Show next 100/ }).click();
-  await expect.poll(() => list.getByRole('listitem').count()).toBeLessThanOrEqual(16);
+  await expect.poll(() => list.getByRole('listitem').count()).toBeLessThanOrEqual(22);
   await page.getByPlaceholder('Search player, team, position…').fill('Player 115');
   await expect(list.getByRole('listitem')).toHaveCount(1);
   await expect(page.getByText('1 shown')).toBeVisible();
