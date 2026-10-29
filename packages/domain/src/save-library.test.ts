@@ -68,6 +68,19 @@ describe('save inspection metadata validation', () => {
     }))).toBe(false);
   });
 
+  it('rejects unrecognized fields so raw file bytes cannot hide in metadata records', () => {
+    expect(isSaveIdentity({ ...save(), fileBytes: new Uint8Array([1, 2, 3]) })).toBe(false);
+    expect(isSaveIdentity(save({
+      archiveIndex: {
+        family: 'fmf-index-candidate',
+        evidence: 'experimental',
+        memberCount: 1,
+        directoryOffset: 256,
+        members: [{ filename: 'game_info.dat', offset: 0, storedBytes: 128, reportedUncompressedBytes: 256, payload: 'hidden' } as never]
+      }
+    }))).toBe(false);
+  });
+
   it('keeps the local inspection catalogue bounded', () => {
     expect(MAX_SAVED_SAVE_INSPECTIONS).toBe(50);
   });
