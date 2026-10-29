@@ -8,13 +8,14 @@ type Props = {
   selectedId: string | null;
   search: string;
   visibleLimit: number;
+  isSearchPending: boolean;
   onSearchChange: (value: string) => void;
   onChoosePlayer: (id: string) => void;
   onShowMore: () => void;
 };
 
 function PlayerListPanel({
-  visible, selectedId, search, visibleLimit,
+  visible, selectedId, search, visibleLimit, isSearchPending,
   onSearchChange, onChoosePlayer, onShowMore
 }: Props) {
   const { t } = useTranslation();
@@ -26,7 +27,7 @@ function PlayerListPanel({
       <span className="visually-hidden">{t("Search imported players")}</span>
       <input placeholder={t("Search player, team, position…")} value={search} onChange={event => onSearchChange(event.target.value)}/>
     </label>
-    <div className="player-list-scroll" role="list" aria-label={t("Imported players")}>
+    <div className="player-list-scroll" role="list" aria-label={t("Imported players")} aria-busy={isSearchPending}>
       {shown.map(player => <div key={player.id} role="listitem">
         <button className={'player-list-entry ' + (selectedId === player.id ? 'player-list-entry--active' : '')}
           aria-current={selectedId === player.id ? 'true' : undefined}
