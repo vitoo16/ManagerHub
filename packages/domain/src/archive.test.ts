@@ -167,6 +167,15 @@ describe('bounded AFE/FM directory catalogue parser', () => {
     expect(probes[0]).not.toHaveProperty('decodedBytes');
   });
 
+
+  it('safely ignores marker-heavy tails with many invalid candidates', async () => {
+    const candidate = Uint8Array.from([2, 1, 102, 109, 102, 46, 4, 0, 0, 0x78]);
+    const bytes = new Uint8Array(candidate.length * 40);
+    for (let i = 0; i < 40; i++) bytes.set(candidate, i * candidate.length);
+    const file = new File([bytes], 'marker-heavy.fm');
+    await expect(inspectArchiveIndex(file)).resolves.toBeNull();
+  });
+
   it('ignores malformed trailing FMF markers instead of failing inspection', async () => {
     const bytes = Uint8Array.from([1, 2, 3, 2, 1, 102, 109, 102, 46, 4, 0, 0, 120, 0, 1, 2, 3]);
     const file = new File([bytes], 'malformed-career.fm');
