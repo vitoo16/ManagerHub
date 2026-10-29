@@ -1,6 +1,6 @@
 # ManagerHub performance architecture
 
-**Status as of 2026-10-29:** integrated on `work/integrate-performance-architecture-20261029`. GitHub Actions run [#124](https://github.com/vitoo16/ManagerHub/actions/runs/40856972386) passed TypeScript strict typecheck, unit tests, production build/bundle budget, and desktop/mobile Playwright. This verifies correctness and bundle guardrails, not a measured runtime improvement; no before/after performance percentage is claimed without a representative browser profile.
+**Status as of 2026-10-29:** merged into `main` via [PR #7](https://github.com/vitoo16/ManagerHub/pull/7). GitHub Actions run [#125](https://github.com/vitoo16/ManagerHub/actions/runs/40857301253) passed TypeScript strict typecheck, unit tests, production build/bundle budget, and desktop/mobile Playwright. This verifies correctness and bundle guardrails, not a measured runtime improvement; no before/after performance percentage is claimed without a representative browser profile.
 
 ## Principles
 
@@ -46,14 +46,14 @@ The latest successful build reported an initial static JS+CSS closure of **419.8
 
 The gzip-sum budget is intentionally conservative and is not the same as a real transfer measurement; actual transfer size also depends on server compression, cache state and request headers. The budgets are regression alarms, not a substitute for a browser performance profile.
 
-## Verification required before merge
+## Verification gates for future changes
 
 - Strict TypeScript typecheck.
 - Full Vitest suite, including the unconstrained-solution cache correctness test.
 - Production build and bundle budget check.
 - Playwright desktop/mobile suite, including save inspection, CSV import, lazy Recruitment handoff and the large-roster bounded-DOM test.
 - Review generated chunk sizes and inspect browser console errors.
-- Profile cold navigation, CSV import and Squad Planner recalculation on a representative low-powered device before claiming a measured improvement.
+- For a measured runtime improvement, profile cold navigation, CSV import and Squad Planner recalculation on a representative low-powered device. Record the device/browser, roster size, cold vs. warm runs, median and p95 timings, main-thread long tasks, memory observations and trace/profile evidence. This measurement remains outstanding; do not infer a percentage improvement from bundle size or CI pass status.
 
 ## Deliberate non-goals
 
