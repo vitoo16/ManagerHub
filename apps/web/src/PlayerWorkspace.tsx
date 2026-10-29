@@ -1,16 +1,21 @@
 import { useTranslation } from 'react-i18next';
 import { readableImportError, readableImportWarning } from './i18n/player-import-copy';
-import {useId,useMemo,useRef,useState,type ChangeEvent} from 'react';
+import { lazy, memo, Suspense, useCallback, useDeferredValue, useId, useMemo, useRef, useState, type ChangeEvent, type UIEvent } from 'react';
 import {
   ATTRIBUTE_LABELS,attributeGroupSummary,attributeStrengthIndex,
-  analyzeRoles,assessSquadContribution,FORMATIONS,ROLE_PROFILES,getAttributeInsights,parsePlayerExport,parsePlayerHtml,
-  type FormationId,type PlayerDataset,type PlayerExport,type AttributeKey
+  analyzeRoles,getAttributeInsights,parsePlayerExport,parsePlayerHtml,
+  type PlayerDataset,type PlayerExport,type AttributeKey
 } from '@managerhub/domain';
 import {Button,Icon,SectionHeading,Status,Surface} from '@managerhub/ui';
+import { PlayerListItem } from './features/player-lab/components/PlayerListItem';
 import { usePlayerLibrary } from './usePlayerLibrary';
 import './player-workspace.css';
 
 const MAX_EXPORT_BYTES=12*1024*1024;
+const PLAYER_ROW_HEIGHT = 56;
+const PLAYER_LIST_OVERSCAN = 5;
+const PLAYER_LIST_VIEWPORT_HEIGHT = 550;
+const RecruitmentPreviewPanel = lazy(() => import('./features/player-lab/components/RecruitmentPreviewPanel'));
 
 type Props={
   dataset:PlayerDataset|null;
@@ -19,7 +24,7 @@ type Props={
 };
 function AttributeRadar({player}: {player:PlayerExport}){
   const { t } = useTranslation();
-  const groups=attributeGroupSummary(player).filter(x=>x.name!=='Goalkeeping'||x.observed>0);
+  const groups=useMemo(()=>attributeGroupSummary(player).filter(x=>x.name!=='Goalkeeping'||x.observed>0),[player]);
   const usable=groups.filter(x=>x.score!==null);
   if(usable.length<3)return <div className="player-empty-chart">{t("At least three attribute groups are needed for a meaningful profile radar.")}</div>;
   const center=125,radius=92;
@@ -46,8 +51,8 @@ function AttributeRadar({player}: {player:PlayerExport}){
 
 function RankedAttributes({player}: {player:PlayerExport}){
   const { t } = useTranslation();
-  const values=(Object.entries(player.attributes) as [AttributeKey,number][])
-    .sort((a,b)=>b[1]-a[1]);
+  const values=useMemo(()=>(Object.entries(player.attributes) as [AttributeKey,number][])
+    .sort((a,b)=>b[1]-a[1]),[player.attributes]);
   if(!values.length)return <div className="player-empty-chart">{t("No recognized, exact 1–20 attributes were included in the export.")}</div>;
   return <div className="player-attributes" role="list" aria-label={t("Player attributes ordered strongest to weakest")}>
     {values.map(([key,value])=><div className="player-attribute" role="listitem" key={key}>
@@ -83,14 +88,17 @@ function PlayerCompare({primary,dataset}:{primary:PlayerExport;dataset:PlayerDat
   const { t } = useTranslation();
   const [query,setQuery]=useState('');
   const [candidateId,setCandidateId]=useState<string>(()=>dataset.players.find(p=>p.id!==primary.id)?.id??'');
+  const normalizedQuery=query.trim().toLocaleLowerCase();
   const options=useMemo(()=>dataset.players.filter(p=>p.id!==primary.id&&
-    [p.name,p.club,p.position].some(v=>v?.toLowerCase().includes(query.toLowerCase()))).slice(0,30),[dataset,primary.id,query]);
-  const other=dataset.players.find(p=>p.id===candidateId)??null;
-  const ownRoles=analyzeRoles(primary);
-  const otherRoles=other?analyzeRoles(other):[];
-  const seen=(Object.keys(primary.attributes) as AttributeKey[]).filter(k=>other?.attributes[k]!==undefined);
-  const sorted=[...seen].sort((a,b)=>Math.abs((primary.attributes[b]??0)-(other?.attributes[b]??0))-
-    Math.abs((primary.attributes[a]??0)-(other?.attributes[a]??0))).slice(0,12);
+    [p.name,p.club,p.position].some(v=>v?.toLocaleLowerCase().includes(normalizedQuery))).slice(0,30),[dataset.players,primary.id,normalizedQuery]);
+  const other=useMemo(()=>dataset.players.find(p=>p.id===candidateId)??null,[dataset.players,candidateId]);
+  const ownRoles=useMemo(()=>analyzeRoles(primary),[primary]);
+  const otherRoles=useMemo(()=>other?analyzeRoles(other):[],[other]);
+  const sorted=useMemo(()=>{
+    const seen=(Object.keys(primary.attributes) as AttributeKey[]).filter(k=>other?.attributes[k]!==undefined);
+    return seen.sort((a,b)=>Math.abs((primary.attributes[b]??0)-(other?.attributes[b]??0))-
+      Math.abs((primary.attributes[a]??0)-(other?.attributes[a]??0))).slice(0,12);
+  },[primary.attributes,other]);
   return <Surface className="scout-panel">
     <div className="scout-panel__title">{t("Head-to-head analysis")} <span>{t("Same import · Native attributes only")}</span></div>
     <p className="module-disclaimer">{t("Compare observed attributes and product-authored role-fit estimates. Game CA/PA, transfer value, actual positional familiarity and scouting certainty are not part of this comparison.")}</p>
@@ -131,15 +139,10 @@ function PlayerCompare({primary,dataset}:{primary:PlayerExport;dataset:PlayerDat
 function PlayerDetails({player,dataset,onOpenSquad}:{player:PlayerExport;dataset:PlayerDataset;onOpenSquad:()=>void}){
   const { t } = useTranslation();
   const [tab,setTab]=useState<'overview'|'attributes'|'roles'|'recruitment'|'compare'>('overview');
-  const insights=getAttributeInsights(player);
-  const strength=attributeStrengthIndex(player);
-  const roles=analyzeRoles(player);
+  const insights=useMemo(()=>getAttributeInsights(player),[player]);
+  const strength=useMemo(()=>attributeStrengthIndex(player),[player]);
+  const roles=useMemo(()=>analyzeRoles(player),[player]);
   const top=roles.find(x=>x.score!==null);
-  const [impactFormation,setImpactFormation]=useState<FormationId>('4-3-3');
-  const squadImpact=useMemo(()=>assessSquadContribution(dataset.players,player.id,impactFormation),[dataset,player.id,impactFormation]);
-  const coverageGaps=squadImpact.baseline?.diagnostics.filter(item=>item.scoredCandidates===0||item.scoredCandidates<item.eligibleCandidates)??[];
-  const replacementGaps=squadImpact.withoutPlayer?.diagnostics.filter(item=>item.scoredCandidates===0||item.scoredCandidates<item.eligibleCandidates)??[];
-  const assignedRole=ROLE_PROFILES.find(role=>role.id===squadImpact.assignment?.slot.roleId);
   return <section aria-label={t('Scouting report for')+' '+player.name}>
     <div className="scout-identity"><div className="scout-avatar" aria-hidden="true">{player.name.slice(0,1).toUpperCase()}</div>
       <div className="scout-identity__copy"><span className="mh-eyebrow">{t("PLAYER INTELLIGENCE / EXPORT VIEW")}</span><h2>{player.name}</h2><p>{[player.club,player.position,player.age!==null?player.age+' '+t('years'):null,player.nationality].filter(Boolean).join(' · ')||t('Only identity data available')}</p></div>
@@ -167,7 +170,7 @@ function PlayerDetails({player,dataset,onOpenSquad}:{player:PlayerExport;dataset
     <div className="scout-tab-content" role="tabpanel">
       {tab==='overview'&&<>
         <div className="scout-grid">
-          <Surface className="scout-panel"><div className="scout-panel__title">{t("Attribute profile")} <span>{t("Native 1–20 mean")}</span></div><AttributeRadar player={player}/></Surface>
+          <Surface className="scout-panel"><div className="scout-panel__title">{t("Attribute profile")} <span>{t("Native 1–20 mean")}</span></div><MemoAttributeRadar player={player}/></Surface>
           <Surface className="scout-panel"><div className="scout-panel__title">{t("Strengths & development areas")}</div>
             {insights.strongest.length?<div className="insight-columns">
               <div><h3>{t("Highest observed attributes")}</h3>{insights.strongest.map(a=><div className="insight-line" key={a.key}><span>{t(a.label)}</span><strong>{a.value}</strong></div>)}</div>
@@ -176,65 +179,34 @@ function PlayerDetails({player,dataset,onOpenSquad}:{player:PlayerExport;dataset
             <div className="scout-note">{t("These are observed numerical extremes, not professional scouting verdicts. Role-specific demands and sample completeness matter.")}</div>
           </Surface>
         </div>
-        <Surface className="scout-panel role-overview"><div className="scout-panel__title">{t("Role suitability ranking")} <span>{t("Heuristic · Explanation available under Role fit")}</span></div><RoleResults player={player}/></Surface>
+        <Surface className="scout-panel role-overview"><div className="scout-panel__title">{t("Role suitability ranking")} <span>{t("Heuristic · Explanation available under Role fit")}</span></div><MemoRoleResults player={player}/></Surface>
       </>}
-      {tab==='attributes'&&<Surface className="scout-panel"><div className="scout-panel__title">{t("Imported player attributes")} <span>{Object.keys(player.attributes).length} {t('values')} · {t('Source:')} {dataset.fileName}</span></div><RankedAttributes player={player}/></Surface>}
+      {tab==='attributes'&&<Surface className="scout-panel"><div className="scout-panel__title">{t("Imported player attributes")} <span>{Object.keys(player.attributes).length} {t('values')} · {t('Source:')} {dataset.fileName}</span></div><MemoRankedAttributes player={player}/></Surface>}
       {tab==='roles'&&<Surface className="scout-panel"><div className="scout-panel__title">{t("Tactical roles by observed attributes")}</div><RoleResults player={player}/></Surface>}
-      {tab==='compare'&&<PlayerCompare primary={player} dataset={dataset}/>}
-      {tab==='recruitment'&&<Surface className="scout-panel"><div className="scout-panel__title">{t("Recruitment assessment")}</div>
-        <div className="scouting-verdict">
-          <h3>{t("Squad contribution preview")}</h3>
-          <p>{t("Test whether this player helps complete the best-fit starting eleven using the same imported list as Squad Planner. This is a role-fit scenario, not a transfer recommendation or match prediction.")}</p>
-          <label className="squad-editor-filter" htmlFor="recruitment-formation">{t("Formation to test")}
-            <select id="recruitment-formation" value={impactFormation} onChange={event=>setImpactFormation(event.target.value as FormationId)}>
-              {Object.keys(FORMATIONS).map(formation=><option key={formation} value={formation}>{formation}</option>)}
-            </select>
-          </label>
-          {squadImpact.status==='player-not-found'&&<Status tone="warning">{t("This player is not part of the active export. Reopen the intended player list and try again.")}</Status>}
-          {squadImpact.status==='insufficient-data'&&<>
-            <Status tone="warning">{t("A complete starting eleven cannot be built from this list yet.")}</Status>
-            <p>{t("The optimizer needs eleven distinct players with declared positions and enough exact role attributes. Unknown or masked values are not filled in.")}</p>
-            {coverageGaps.length>0&&<div className="squad-coverage-list" role="list" aria-label={t("Position data coverage")}>
-              {coverageGaps.map(item=><div role="listitem" key={item.slot.id}><strong>{item.slot.label}</strong><span>{t("{{scored}} of {{eligible}} eligible players",{scored:item.scoredCandidates,eligible:item.eligibleCandidates})}</span></div>)}
-            </div>}
-          </>}
-          {squadImpact.status==='not-selected'&&<>
-            <Status tone="neutral">{t("Not selected in the best-fit XI")}</Status>
-            <p>{t("The optimizer did not select this player for the highest-scoring complete eleven in this formation. This is not a judgement of overall quality; it reflects only declared positions and observed attributes.")}</p>
-          </>}
-          {squadImpact.status==='required-for-complete-xi'&&squadImpact.assignment&&<>
-            <Status tone="info">{t("Needed to complete the starting eleven")}</Status>
-            <p>{t("Without this player, the current export cannot fill all eleven positions under the selected formation and data rules.")}</p>
-            {replacementGaps.length>0&&<div className="squad-coverage-list" role="list" aria-label={t("Position data coverage")}>
-              {replacementGaps.map(item=><div role="listitem" key={item.slot.id}><strong>{item.slot.label}</strong><span>{t("{{scored}} of {{eligible}} eligible players",{scored:item.scoredCandidates,eligible:item.eligibleCandidates})}</span></div>)}
-            </div>}
-            <p><strong>{t("Selected position:")}</strong> {squadImpact.assignment.slot.label} · {assignedRole?t(assignedRole.title):squadImpact.assignment.slot.roleId} · {t("Role fit")} {squadImpact.assignment.roleScore}/100</p>
-          </>}
-          {squadImpact.status==='comparison-ready'&&squadImpact.assignment&&squadImpact.baseline&&squadImpact.withoutPlayer&&<>
-            <Status tone="positive">{t("Included in the best-fit XI")}</Status>
-            <p><strong>{t("Selected position:")}</strong> {squadImpact.assignment.slot.label} · {assignedRole?t(assignedRole.title):squadImpact.assignment.slot.roleId} · {t("Role fit")} {squadImpact.assignment.roleScore}/100</p>
-            <div className="scout-metrics">
-              <div><span>{t("With this player")}</span><strong>{squadImpact.baseline.averageRoleScore}</strong><small>{t("Average role fit / 100")}</small></div>
-              <div><span>{t("Without this player")}</span><strong>{squadImpact.withoutPlayer.averageRoleScore}</strong><small>{t("Best replacement XI")}</small></div>
-              <div><span>{t("Role-fit difference")}</span><strong>{squadImpact.roleFitDelta!==null&&squadImpact.roleFitDelta>0?'+':''}{squadImpact.roleFitDelta}</strong><small>{t("Points across the full XI")}</small></div>
-              <div><span>{t("Changed positions")}</span><strong>{squadImpact.changedSlots}</strong><small>{t("When this player is excluded")}</small></div>
-            </div>
-            <p>{t("The difference compares the best complete XI with and without this player. It reflects this export and this formation only; it is not expected match performance or transfer value.")}</p>
-          </>}
-          <p>{t("A transfer verdict still needs the club's verified squad need, fee, wages, contract terms, registration and availability. Those details are not established by this player export, so ManagerHub will not label a transfer Buy or Pass yet.")}</p>
-          <Button variant="primary" onClick={onOpenSquad}>{t("Open this roster in Squad Planner")} <Icon name="arrow" size={15}/></Button>
-        </div></Surface>}
+      {tab==='compare'&&<MemoPlayerCompare primary={player} dataset={dataset}/>}
+      {tab==='recruitment'&&<Suspense fallback={<p role="status" className="player-empty-chart">{t("Loading workspace…")}</p>}>
+        <RecruitmentPreviewPanel player={player} dataset={dataset} onOpenSquad={onOpenSquad}/>
+      </Suspense>}
     </div>
     <div className="evidence-strip"><Icon name="shield" size={15}/> {t("This report uses your exported attributes. CA and PA remain unknown until verified.")}</div>
   </section>;
 }
+const MemoAttributeRadar = memo(AttributeRadar);
+const MemoRankedAttributes = memo(RankedAttributes);
+const MemoRoleResults = memo(RoleResults);
+const MemoPlayerCompare = memo(PlayerCompare);
+const MemoPlayerDetails = memo(PlayerDetails);
+
 export function PlayerWorkspace({dataset,onDataset,onOpenSquad}:Props){
   const { t } = useTranslation();
   const inputRef=useRef<HTMLInputElement>(null);
   const [error,setError]=useState<string|null>(null);
   const [search,setSearch]=useState('');
+  const deferredSearch=useDeferredValue(search.trim().toLocaleLowerCase());
   const [chosenId,setChosenId]=useState<string|null>(null);
   const [visibleLimit,setVisibleLimit]=useState(100);
+  const [listScrollTop,setListScrollTop]=useState(0);
+  const listViewportRef=useRef<HTMLDivElement>(null);
   const [pendingDelete,setPendingDelete]=useState<string|null>(null);
   const library=usePlayerLibrary();
   const fileInputId=useId();
@@ -252,10 +224,30 @@ export function PlayerWorkspace({dataset,onDataset,onOpenSquad}:Props){
       setChosenId(parsed.players[0]?.id??null);
       setSearch('');
       setVisibleLimit(100);
+      setListScrollTop(0);
     }catch(ex){setError(readableImportError(ex));}
   };
-  const visible=useMemo(()=>dataset?.players.filter(p=>[p.name,p.club,p.position].some(v=>v?.toLowerCase().includes(search.toLowerCase())))??[],[dataset,search]);
-  const selected=dataset?.players.find(p=>p.id===chosenId)??dataset?.players[0]??null;
+  const playerSearchIndex=useMemo(()=>dataset?.players.map(player=>({
+    player,
+    searchText:[player.name,player.club,player.position].filter(Boolean).join(' ').toLocaleLowerCase()
+  }))??[],[dataset?.players]);
+  const visible=useMemo(()=>playerSearchIndex
+    .filter(entry=>!deferredSearch||entry.searchText.includes(deferredSearch))
+    .map(entry=>entry.player),[playerSearchIndex,deferredSearch]);
+  const playerById=useMemo(()=>new Map(dataset?.players.map(player=>[player.id,player])??[]),[dataset?.players]);
+  const selected=(chosenId?playerById.get(chosenId):undefined)??dataset?.players[0]??null;
+  const loadedPlayers=useMemo(()=>visible.slice(0,visibleLimit),[visible,visibleLimit]);
+  const virtualStart=Math.max(0,Math.floor(listScrollTop/PLAYER_ROW_HEIGHT)-PLAYER_LIST_OVERSCAN);
+  const virtualEnd=Math.min(loadedPlayers.length,Math.ceil((listScrollTop+PLAYER_LIST_VIEWPORT_HEIGHT)/PLAYER_ROW_HEIGHT)+PLAYER_LIST_OVERSCAN);
+  const windowedPlayers=loadedPlayers.slice(virtualStart,virtualEnd);
+  const selectPlayer=useCallback((playerId:string)=>setChosenId(playerId),[]);
+  const onListScroll=useCallback((event:UIEvent<HTMLDivElement>)=>setListScrollTop(event.currentTarget.scrollTop),[]);
+  const onSearchChange=useCallback((value:string)=>{
+    setSearch(value);
+    setVisibleLimit(100);
+    setListScrollTop(0);
+    if(listViewportRef.current)listViewportRef.current.scrollTop=0;
+  },[]);
   const savedCurrent=dataset!==null&&library.items.some(item=>item.importedAt===dataset.importedAt &&
     item.fileName===dataset.fileName&&item.playerCount===dataset.players.length);
   const openSaved=async (id:string)=>{
@@ -263,7 +255,7 @@ export function PlayerWorkspace({dataset,onDataset,onOpenSquad}:Props){
     if(!restored)return;
     onDataset(restored);
     setChosenId(restored.players[0]?.id??null);
-    setSearch('');setVisibleLimit(100);setPendingDelete(null);setError(null);
+    setSearch('');setVisibleLimit(100);setListScrollTop(0);setPendingDelete(null);setError(null);
   };
   const deleteSaved=async (id:string)=>{
     if(pendingDelete!==id){setPendingDelete(id);return;}
@@ -310,16 +302,21 @@ export function PlayerWorkspace({dataset,onDataset,onOpenSquad}:Props){
       {dataset.warnings.length>0&&<div className="dataset-warnings" role="status">{dataset.warnings.map((warning,i)=><p key={i}><Icon name="warning" size={14}/>{t(readableImportWarning(warning))}</p>)}</div>}
       <div className="player-lab-layout">
         <Surface className="player-list-panel"><div className="player-list-panel__heading"><span>{t("Players")}</span><span>{visible.length} {t('shown')}</span></div>
-          <label className="search-box player-search"><Icon name="search" size={16}/><span className="visually-hidden">{t("Search imported players")}</span><input placeholder={t("Search player, team, position…")} value={search} onChange={e=>{setSearch(e.target.value);setVisibleLimit(100);}}/></label>
-          <div className="player-list-scroll" role="list" aria-label={t("Imported players")}>{visible.slice(0,visibleLimit).map(p=><div key={p.id} role="listitem"><button className={'player-list-entry '+(selected?.id===p.id?'player-list-entry--active':'')} onClick={()=>setChosenId(p.id)}>
-            <span className="player-list-avatar" aria-hidden="true">{p.name.slice(0,1)}</span><span className="player-list-entry__copy"><strong>{p.name}</strong><small>{p.position??t('Unknown position')} · {p.club??t('Unknown club')}</small></span><Icon name="chevron" size={13}/>
-          </button></div>)}</div>
+          <label className="search-box player-search"><Icon name="search" size={16}/><span className="visually-hidden">{t("Search imported players")}</span><input placeholder={t("Search player, team, position…")} value={search} onChange={e=>onSearchChange(e.target.value)}/></label>
+          <div ref={listViewportRef} className="player-list-scroll" role="list" aria-label={t("Imported players")} onScroll={onListScroll}>
+            <div className="player-list-window" style={{height:loadedPlayers.length*PLAYER_ROW_HEIGHT}}>
+              {windowedPlayers.map((player,index)=><div className="player-list-window__item" key={player.id} role="listitem"
+                style={{top:(virtualStart+index)*PLAYER_ROW_HEIGHT,height:PLAYER_ROW_HEIGHT}}>
+                <PlayerListItem player={player} active={selected?.id===player.id} onSelect={selectPlayer}/>
+              </div>)}
+            </div>
+          </div>
           {!visible.length&&<div className="player-search-empty">{t("No players match this search.")}</div>}
-          {visible.length>visibleLimit&&<Button className="player-list-more" onClick={()=>setVisibleLimit(n=>n+100)}>
+          {visible.length>visibleLimit&&<Button className="player-list-more" onClick={()=>setVisibleLimit(n=>Math.min(visible.length,n+100))}>
             {t('Show next 100')} · {visible.length-visibleLimit} {t('remaining')}
           </Button>}
         </Surface>
-        <div className="player-detail-column">{selected?<PlayerDetails key={selected.id} player={selected} dataset={dataset} onOpenSquad={onOpenSquad}/>:<Surface className="empty-library">{t("Choose a player from the imported list.")}</Surface>}</div>
+        <div className="player-detail-column">{selected?<MemoPlayerDetails key={selected.id} player={selected} dataset={dataset} onOpenSquad={onOpenSquad}/>:<Surface className="empty-library">{t("Choose a player from the imported list.")}</Surface>}</div>
       </div>
     </>}
     <div className="coverage-note"><Icon name="shield" size={16}/><p><strong>{t("Data integrity:")}</strong> {t("CA, PA and hidden personality are not recovered from a CSV unless independently verified. Role profiles are authored ManagerHub heuristics, not Sports Interactive ratings. Player identities in different imports are not assumed to match.")}</p></div>
