@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { SaveIdentity } from '@managerhub/domain';
 import {
   deleteSavedSaveInspectionMetadata, listSavedSaveInspections, saveSaveInspectionMetadata
-} from '@managerhub/storage';
+} from '@managerhub/storage/save-inspections';
 
 type Activity = 'saving' | 'deleting' | null;
 
