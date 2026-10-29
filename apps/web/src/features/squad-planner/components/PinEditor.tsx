@@ -1,4 +1,4 @@
-import { memo, useMemo, useState } from 'react';
+import { memo, useDeferredValue, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { eligibleSlotCandidates, type PlayerDataset, type LineupSlot } from '@managerhub/domain';
 import { Button, Surface } from '@managerhub/ui';
@@ -17,14 +17,15 @@ function PinEditor({slots,dataset,locks,excluded,onPin,onExclude,onClear}:PinEdi
   const { t } = useTranslation();
   const [pinSearch,setPinSearch]=useState('');
   const [excludeSearch,setExcludeSearch]=useState('');
+  const deferredPinSearch=useDeferredValue(pinSearch);
+  const deferredExcludeSearch=useDeferredValue(excludeSearch);
+  const normalizedExcludeSearch=deferredExcludeSearch.trim().toLocaleLowerCase();
   const pinnedOptions=useMemo(()=>{
-    return new Map(slots.map(slot=>[slot.id,eligibleSlotCandidates(dataset.players,slot,pinSearch,50)]));
-  },[slots,dataset.players,pinSearch]);
-  const searched=useMemo(()=>{
-    const query=excludeSearch.trim().toLocaleLowerCase();
-    return dataset.players.filter(p=>!query || [p.name,p.position,p.club]
-      .some(value=>value?.toLocaleLowerCase().includes(query))).slice(0,60);
-  },[dataset,excludeSearch]);
+    return new Map(slots.map(slot=>[slot.id,eligibleSlotCandidates(dataset.players,slot,deferredPinSearch,50)]));
+  },[slots,dataset.players,deferredPinSearch]);
+  const searched=useMemo(()=>dataset.players.filter(player=>!normalizedExcludeSearch || [player.name,player.position,player.club]
+    .some(value=>value?.toLocaleLowerCase().includes(normalizedExcludeSearch))).slice(0,60),
+    [dataset.players,normalizedExcludeSearch]);
   const excludedSet=useMemo(()=>new Set(excluded),[excluded]);
   return <Surface className="squad-edit-card">
     <div className="squad-card-heading"><span>{t("Manager constraints")}</span>
@@ -61,7 +62,7 @@ function PinEditor({slots,dataset,locks,excluded,onPin,onExclude,onClear}:PinEdi
     </label>
     <div className="squad-exclusion-list" role="group" aria-label={t("Exclude players")}>
       {searched.map(player=><label key={player.id} className="squad-exclusion-player">
-        <input type="checkbox" checked={excluded.includes(player.id)}
+        <input type="checkbox" checked={excludedSet.has(player.id)}
           onChange={event=>onExclude(player.id,event.target.checked)}/>
         <span>{player.name}</span><small>{player.position??t('Position unknown')}</small>
       </label>)}
