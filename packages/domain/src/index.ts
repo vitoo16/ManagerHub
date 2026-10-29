@@ -1,5 +1,6 @@
 export * from './types';
 export * from './save';
+export * from './save-library';
 export * from './features';
 export * from './archive';
 export * from './player-import';
