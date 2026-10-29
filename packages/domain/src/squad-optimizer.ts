@@ -178,8 +178,10 @@ export function eligibleSlotCandidates(
   for(const player of players){
     if(seen.has(player.id))continue;
     seen.add(player.id);
-    if(!declaredPositions(player.position).has(slot.position) ||
-      (term && ![player.name,player.club,player.position].some(value=>value?.toLocaleLowerCase().includes(term))))continue;
+    // Filter text before positional parsing and role scoring so short searches
+    // only pay the expensive scoring cost for actual matches.
+    if(term && ![player.name,player.club,player.position].some(value=>value?.toLocaleLowerCase().includes(term)))continue;
+    if(!declaredPositions(player.position).has(slot.position))continue;
     const scored=scoreRole(player,role);
     if(scored.score!==null)choices.push({
       playerId:player.id,name:player.name,score:scored.score,coverage:scored.coverage
@@ -189,8 +191,35 @@ export function eligibleSlotCandidates(
   return choices.slice(0,Math.max(0,Math.min(limit,200)));
 }
 
+const unconstrainedSolutions = new WeakMap<readonly PlayerExport[], Map<FormationId, SquadSolution>>();
+
+/**
+ * Cache only unconstrained solutions by immutable imported-roster identity.
+ * The WeakMap lets discarded datasets be collected and avoids re-solving the
+ * exact same baseline across Player Lab and Squad Planner.
+ */
 export function optimizeSquad(
   players: readonly PlayerExport[], formation: FormationId, constraints: SquadConstraints = {}
+): SquadSolution {
+  const unconstrained = Object.keys(constraints.lockedSlots ?? {}).length === 0
+    && (constraints.excludedPlayerIds?.length ?? 0) === 0;
+  if (!unconstrained) return optimizeSquadUncached(players, formation, constraints);
+
+  let byFormation = unconstrainedSolutions.get(players);
+  const cached = byFormation?.get(formation);
+  if (cached) return cached;
+
+  if (!byFormation) {
+    byFormation = new Map<FormationId, SquadSolution>();
+    unconstrainedSolutions.set(players, byFormation);
+  }
+  const solution = optimizeSquadUncached(players, formation, constraints);
+  byFormation.set(formation, solution);
+  return solution;
+}
+
+function optimizeSquadUncached(
+  players: readonly PlayerExport[], formation: FormationId, constraints: SquadConstraints
 ): SquadSolution {
   const slots=FORMATIONS[formation];
   const excluded = new Set(constraints.excludedPlayerIds ?? []);
@@ -201,17 +230,31 @@ export function optimizeSquad(
     return true;
   }).sort((a,b)=>a.id.localeCompare(b.id));
   const roles=new Map(ROLE_PROFILES.map(r=>[r.id,r]));
-  const eligibilities=available.map(p=>declaredPositions(p.position));
-  const matrices: { score: number | null; coverage: number; eligible: boolean }[][] = slots.map(slot => {
+  const eligibilities=available.map(player=>declaredPositions(player.position));
+  // A formation can repeat the same role across multiple slots (for example
+  // both centre-backs or both wingers). Score each eligible player/role pair
+  // once, then reuse the immutable result for every slot with that role.
+  const scoresByRole=new Map<string,Array<ReturnType<typeof scoreRole>|undefined>>();
+  for(const slot of slots){
+    let scores=scoresByRole.get(slot.roleId);
+    if(!scores){
+      scores=new Array(available.length);
+      scoresByRole.set(slot.roleId,scores);
+    }
     const role=roles.get(slot.roleId);
     if(!role)throw new Error('Unknown role profile: '+slot.roleId);
-    return available.map((player,i)=>{
+    for(let i=0;i<available.length;i++){
+      if(eligibilities[i]!.has(slot.position)&&scores[i]===undefined)
+        scores[i]=scoreRole(available[i]!,role);
+    }
+  }
+  const matrices: { score: number | null; coverage: number; eligible: boolean }[][] = slots.map(slot =>
+    available.map((_,i)=>{
       const eligible=eligibilities[i]!.has(slot.position);
-      if(!eligible)return {score:null,coverage:0,eligible:false};
-      const result=scoreRole(player,role);
-      return {score:result.score,coverage:result.coverage,eligible};
-    });
-  });
+      const result=eligible?scoresByRole.get(slot.roleId)?.[i]:undefined;
+      return {score:result?.score??null,coverage:result?.coverage??0,eligible};
+    })
+  );
   const diagnostics=slots.map((slot,i)=>({
     slot, eligibleCandidates:matrices[i]!.filter(entry=>entry.eligible).length,
     scoredCandidates:matrices[i]!.filter(entry=>entry.score!==null).length
