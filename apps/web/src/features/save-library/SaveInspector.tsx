@@ -34,7 +34,7 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
       <Button variant="primary" disabled={busy} onClick={openPicker}><Icon name={busy ? 'monitor' : 'plus'} size={16}/>{t(busy ? 'Inspecting file…' : 'Choose .fm file')}</Button>
       <span className="file-drop__limit">{t("Browser inspection limit · 256 MB · No cloud upload")}</span>
     </Surface>
-    {error && <div role="alert" className="inline-alert"><Icon name="warning" size={18}/><span>{t(error)}</span><button aria-label="Dismiss error" onClick={openPicker}>{t("Choose another file")}</button></div>}
+    {error && <div role="alert" className="inline-alert"><Icon name="warning" size={18}/><span>{t(error)}</span><button aria-label={t("Choose another file")} onClick={openPicker}>{t("Choose another file")}</button></div>}
     <SectionHeading eyebrow={t("IMPORTED METADATA ONLY")} title={t('Inspected files')+' ('+imports.length+')'}><Status>{t("Local browser session")}</Status></SectionHeading>
     {imports.length === 0
       ? <Surface className="empty-library"><Icon name="database" size={29}/><h3>{t("No files inspected yet")}</h3><p>{t("Once selected, file signatures and available inspection details will appear here. This is not a player database.")}</p></Surface>
@@ -44,7 +44,7 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
             <button className={'save-select ' + (file.id === selected?.id ? 'save-select--active' : '')} onClick={() => select(file.id)}>
               <span className="save-select__icon"><Icon name="file"/></span><span className="save-select__copy"><strong title={file.name}>{file.name}</strong><small>{formatBytes(file.size)} · {file.detectedFamily?.toUpperCase() || t('Unknown')} · {t('File type')}</small></span>
             </button>
-            <button className="delete-save" aria-label={'Remove ' + file.name + ' from inspected list'} onClick={() => onRemove(file.id)}><Icon name="trash" size={16}/></button>
+            <button className="delete-save" aria-label={t('Remove {{fileName}} from inspected list', { fileName: file.name })} onClick={() => onRemove(file.id)}><Icon name="trash" size={16}/></button>
           </div>)}
         </Surface>
         {selected && <Surface className="save-detail">
