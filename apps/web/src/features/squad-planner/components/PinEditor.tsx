@@ -29,7 +29,9 @@ function PinEditor({slots,dataset,locks,excluded,onPin,onExclude,onClear}:PinEdi
       .map(entry=>entry.player);
   },[rosterSearchIndex,deferredPinSearch]);
   const pinnedOptions=useMemo(()=>
-    new Map(slots.map(slot=>[slot.id,eligibleSlotCandidates(pinMatches,slot,'',50)])),
+    new Map<string,ReturnType<typeof eligibleSlotCandidates>>(
+      slots.map(slot=>[slot.id,eligibleSlotCandidates(pinMatches,slot,'',50)] as const)
+    ),
   [slots,pinMatches]);
   const searched=useMemo(()=>{
     const query=deferredExcludeSearch.trim().toLocaleLowerCase();
