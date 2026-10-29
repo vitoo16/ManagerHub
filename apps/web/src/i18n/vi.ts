@@ -549,7 +549,7 @@ export default {
   "Saved save inspection metadata is incompatible with this version. Remove the incompatible local data before trying again.": "Thông tin save đã lưu không tương thích với phiên bản này. Hãy xóa dữ liệu cục bộ không tương thích rồi thử lại.",
   "Unable to remove saved inspection metadata. Check browser storage permissions and try again.": "Không thể xóa thông tin save đã lưu. Hãy kiểm tra quyền lưu trữ của trình duyệt rồi thử lại.",
   "Unable to save inspection metadata locally. Check browser storage permissions and available disk space.": "Không thể lưu thông tin kiểm tra save trên máy. Hãy kiểm tra quyền lưu trữ và dung lượng còn trống.",
-  "Could not access saved save metadata. Your original save remains untouched.": "Không thể truy cập thông tin save đã lưu. File save gốc vẫn được giữ nguyên."
+  "Could not access saved save metadata. Your original save remains untouched.": "Không thể truy cập thông tin save đã lưu. File save gốc vẫn được giữ nguyên.",
   "Choose a Football Manager .fm save file.": "Hãy chọn tệp save Football Manager có đuôi .fm.",
   "This file is empty or larger than 256 MB. Choose a valid .fm save file up to 256 MB and try again.": "Tệp đang trống hoặc lớn hơn 256 MB. Hãy chọn tệp save .fm hợp lệ không quá 256 MB rồi thử lại.",
   "We couldn't inspect this save file. Check that it is a valid .fm file and try again.": "Không thể kiểm tra tệp save này. Hãy kiểm tra tệp .fm hợp lệ rồi thử lại.",
