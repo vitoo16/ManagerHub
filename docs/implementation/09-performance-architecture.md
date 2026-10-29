@@ -1,6 +1,6 @@
 # ManagerHub performance architecture
 
-**Status as of 2026-10-29:** integrated on `work/integrate-performance-architecture-20261029`. GitHub Actions run [#119](https://github.com/vitoo16/ManagerHub/actions/runs/40856549612) passed TypeScript strict typecheck, unit tests, production build/bundle budget, and desktop/mobile Playwright. This verifies correctness and bundle guardrails, not a measured runtime improvement; no before/after performance percentage is claimed without a representative browser profile.
+**Status as of 2026-10-29:** integrated on `work/integrate-performance-architecture-20261029`. GitHub Actions run [#124](https://github.com/vitoo16/ManagerHub/actions/runs/40856972386) passed TypeScript strict typecheck, unit tests, production build/bundle budget, and desktop/mobile Playwright. This verifies correctness and bundle guardrails, not a measured runtime improvement; no before/after performance percentage is claimed without a representative browser profile.
 
 ## Principles
 
