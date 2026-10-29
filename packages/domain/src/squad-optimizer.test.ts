@@ -28,6 +28,11 @@ describe('versioned export-only squad assignment',()=>{
     expect(result.averageRoleScore).toBeGreaterThan(0);
     expect(result.model).toBe('role-fit-heuristic-v1');
   });
+  it('reuses an unconstrained baseline for the same immutable roster and formation',()=>{
+    const first=optimizeSquad(roster,'4-3-3');
+    const second=optimizeSquad(roster,'4-3-3',{lockedSlots:{},excludedPlayerIds:[]});
+    expect(second).toBe(first);
+  });
   it('fails closed when the only goalkeeping candidate disappears',()=>{
     const result=optimizeSquad(roster.slice(1),'4-3-3');
     expect(result.complete).toBe(false);
