@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { inspectArchiveIndex, parseArchiveDirectory, probeMemberEnvelopes } from './archive';
+import { inspectArchiveIndex, parseArchiveDirectory, probeMemberEnvelopes, summarizeMemberConsistency } from './archive';
 import { detectSaveFamily } from './save';
 
 function syntheticIndex() {
@@ -169,6 +169,33 @@ describe('bounded AFE/FM directory catalogue parser', () => {
     expect(probes[0]).not.toHaveProperty('decodedBytes');
   });
 
+
+  it('summarizes contiguous member layout and shared prefixes without decoding', () => {
+    const index = {
+      family: 'fmf-index-candidate' as const,
+      evidence: 'experimental' as const,
+      memberCount: 3,
+      directoryOffset: 1024,
+      members: [
+        { filename: 'a.dat', offset: 0, storedBytes: 12, reportedUncompressedBytes: 15 },
+        { filename: 'b.dat', offset: 12, storedBytes: 8, reportedUncompressedBytes: 10 },
+        { filename: 'c.dat', offset: 24, storedBytes: 8, reportedUncompressedBytes: 11 }
+      ]
+    };
+    const first = { absoluteOffset: 18, sampleBytes: 8,
+      prefixHex: '10 00 00 00 10 00 00 00', prefixKind: 'unknown' as const,
+      afterFirstEightBytesHex: '', afterFirstEightBytesKind: 'unknown' as const,
+      storedBytes: 12, reportedUncompressedBytes: 15 };
+    const probes = [
+      { ...first, filename: 'a.dat' }, { ...first, filename: 'b.dat' },
+      { ...first, filename: 'c.dat', prefixHex: '00 00 00 00 10 00 00 00' }
+    ];
+    expect(summarizeMemberConsistency(index, probes)).toEqual({
+      observedMembers: 3, contiguousPairs: 1, discontinuousPairs: 1,
+      overlappingPairs: 0, repeatedEightBytePrefixes: 2,
+      referenceEightBytePrefix: '10 00 00 00 10 00 00 00'
+    });
+  });
 
   it('safely ignores marker-heavy tails with many invalid candidates', async () => {
     const candidate = Uint8Array.from([2, 1, 102, 109, 102, 46, 4, 0, 0, 0x78]);
