@@ -99,3 +99,7 @@ These values are consistent with byte distributions that look noise-like in the 
 A 2019 [Reverse Engineering Stack Exchange investigation](https://reverseengineering.stackexchange.com/questions/20614/x64dbg-locating-where-data-is-initially-written) of Football Manager tactic FMF files reports both `02 01 61 66 65` and the repeated `10 00 00 00 10 00 00 00` section separator. These match byte patterns independently observed in the private ManagerHub AFE save, but the question concerns tactic files, not a proven save-game decoder. Its author hypothesized compression/encryption and observed non-identical content after repeated saves; no working codec or key was established there. Do not extrapolate format compatibility from the signature alone.
 
 The domain now exposes `summarizeMemberConsistency()` to count contiguous, gapped or overlapping member extents and repeated sampled eight-byte prefixes. This is a diagnostic aggregate, not an FM edition detector or verified codec.
+
+### Observed catalogue continuity (same single fixture)
+
+The 69 member extents yield **66 contiguous adjacent pairs, 2 positive gaps, and 0 overlaps** when sorted by declared offset. The gaps are 1,350,855 bytes between `game_db.dat` and `humans.dat`, and 178,694 bytes between `tactics_man.dat` and `edit_session_man.dat`. The bytes in these gaps have not been identified; they may be unindexed data or other container regions. Never assume that all members are contiguous or that all non-member bytes are padding. All 69 sampled member starts share the observed eight-byte prefix.
