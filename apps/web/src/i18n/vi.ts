@@ -526,5 +526,8 @@ export default {
   "The difference compares the best complete XI with and without this player. It reflects this export and this formation only; it is not expected match performance or transfer value.": "Chênh lệch so sánh đội hình đủ 11 người tốt nhất khi có và không có cầu thủ này. Kết quả chỉ áp dụng cho file đã nhập và sơ đồ đang chọn; đây không phải dự đoán hiệu suất trận đấu hay giá trị chuyển nhượng.",
   "A transfer verdict still needs the club's verified squad need, fee, wages, contract terms, registration and availability. Those details are not established by this player export, so ManagerHub will not label a transfer Buy or Pass yet.": "Để kết luận mua hay không, vẫn cần biết nhu cầu đã xác minh của đội bóng, phí chuyển nhượng, lương, điều khoản hợp đồng, điều kiện đăng ký và khả năng sẵn sàng thi đấu. File cầu thủ hiện tại chưa cung cấp đủ thông tin này, nên ManagerHub chưa đưa ra kết luận Mua hoặc Bỏ qua.",
   "Open this roster in Squad Planner": "Mở danh sách này trong Squad Planner",
-  "Loading workspace…": "Đang tải không gian làm việc…"
+  "Loading workspace…": "Đang tải không gian làm việc…",
+  "Export loaded in this session": "Đã nhập danh sách vào phiên hiện tại",
+  "Analyzing export in the background…": "Đang phân tích tệp ở chế độ nền…",
+  "Importing player data…": "Đang nhập dữ liệu cầu thủ…"
 } as const;
