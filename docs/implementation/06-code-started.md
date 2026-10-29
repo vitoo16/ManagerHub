@@ -36,12 +36,12 @@ npm run test:e2e
 The repo uses npm workspaces for now; `package-lock.json` should be generated and committed by a CI-capable developer after dependency resolution. Do not claim reproducible installs without that lock. No use of `npm ci` until present.
 
 ## Next engineering work
-Verify the UI with browser screenshots and tests, validate the metadata-only IndexedDB migration, obtain permissioned and game-verified save fixtures, then build safe versioned Rust save adapters and Tauri local persistence according to [seven-phase roadmap](01-full-delivery-plan.md).
+Verify the UI with browser screenshots and tests, identify the exact game build for the observed AFE fixture, explain the unexplained directory payload remainder, and obtain additional permissioned fixtures before building versioned Rust save adapters and Tauri local persistence according to [seven-phase roadmap](01-full-delivery-plan.md).
 
 **Related:** [execution charter](00-execution-charter.md), [agent skills](04-motion-skills-and-references.md), [full feature ledger](05-feature-acceptance-ledger.md).
 
 ## Updated: read-only internal archive index prototype
 - `packages/domain/src/archive.ts` implements strictly bounded deflate-based inspection of a candidate trailing FMF directory, with UTF-16LE filenames, offsets, sizes and explicit unverified flag.
-- Tested on a user-provided private file **without committing its bytes**: the observed AFE file includes a 69-entry directory with members such as `game_info.dat`, `game_db.dat` and `tactics_man.dat`.
+- Tested against a user-provided private file **without committing its bytes**: the observed AFE file includes a 69-entry directory. The decompressed candidate has 40,100 bytes beyond the records this parser understands; the exact game build and remainder are unresolved. See [save fixture evidence](10-save-fixture-evidence.md).
 - `apps/web` lists member metadata only when the directory passes structural validation. This is NOT proof of player extraction or a safe writer.
-- Added parser malformed/extent tests and a synthetic browser E2E test. Check latest CI before claiming these tests passed.
+- Added parser malformed/extent tests and a synthetic end-to-end test for the deflate marker and directory path, including a malformed compressed candidate. Check latest CI before claiming these tests passed.
