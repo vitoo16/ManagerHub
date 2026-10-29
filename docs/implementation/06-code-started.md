@@ -42,6 +42,6 @@ Verify the UI with browser screenshots and tests, validate the metadata-only Ind
 
 ## Updated: read-only internal archive index prototype
 - `packages/domain/src/archive.ts` implements strictly bounded deflate-based inspection of a candidate trailing FMF directory, with UTF-16LE filenames, offsets, sizes and explicit unverified flag.
-- Tested on a user-provided private file **without committing its bytes**: the observed AFE file includes a 69-entry directory with members such as `game_info.dat`, `game_db.dat` and `tactics_man.dat`.
-- `apps/web` lists member metadata only when the directory passes structural validation. This is NOT proof of player extraction or a safe writer.
-- Added parser malformed/extent tests and a synthetic browser E2E test. Check latest CI before claiming these tests passed.
+- Tested on a user-provided private file **without committing its bytes**: the observed AFE-family file is 29,319,864 bytes and includes a 69-entry candidate directory with members such as `game_info.dat`, `game_db.dat` and `tactics_man.dat`. Its decompressed trailer is 44,430 bytes; the current reader consumes the declared 69 entries and leaves 40,100 trailing bytes unclassified, so this remains experimental rather than a fully understood manifest.
+- `apps/web` lists member metadata only when the directory passes structural validation. This is NOT proof of player extraction, exact game-version detection or a safe writer.
+- Added bounded compressed-tail integration coverage using synthetic bytes and representative metadata derived from the private sample, malformed UTF-16/extent tests, and browser E2E tests. The original save bytes are not committed.
