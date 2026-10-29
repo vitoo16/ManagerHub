@@ -93,3 +93,9 @@ These values are consistent with byte distributions that look noise-like in the 
 2. Use small members to test header hypotheses and candidate codecs, recording both successful and failed tests reproducibly.
 3. Cross-check with a second save from a known edition/build before treating the eight-byte prefix or 18-byte base as a general rule.
 4. Only then investigate typed player records and validate any CA/PA fields against a known in-game reference or independent export.
+
+## Earlier independent AFE reverse-engineering note (2019)
+
+A 2019 [Reverse Engineering Stack Exchange investigation](https://reverseengineering.stackexchange.com/questions/20614/x64dbg-locating-where-data-is-initially-written) of Football Manager tactic FMF files reports both `02 01 61 66 65` and the repeated `10 00 00 00 10 00 00 00` section separator. These match byte patterns independently observed in the private ManagerHub AFE save, but the question concerns tactic files, not a proven save-game decoder. Its author hypothesized compression/encryption and observed non-identical content after repeated saves; no working codec or key was established there. Do not extrapolate format compatibility from the signature alone.
+
+The domain now exposes `summarizeMemberConsistency()` to count contiguous, gapped or overlapping member extents and repeated sampled eight-byte prefixes. This is a diagnostic aggregate, not an FM edition detector or verified codec.
