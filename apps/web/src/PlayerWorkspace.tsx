@@ -4,7 +4,7 @@ import { lazy, memo, Suspense, useCallback, useDeferredValue, useId, useMemo, us
 import {
   ATTRIBUTE_LABELS,attributeGroupSummary,attributeStrengthIndex,
   analyzeRoles,getAttributeInsights,
-  type PlayerDataset,type PlayerExport,type AttributeKey
+  type PlayerDataset,type PlayerExport,type AttributeKey,type ScoredRole
 } from '@managerhub/domain';
 import {Button,Icon,SectionHeading,Status,Surface} from '@managerhub/ui';
 import { PlayerListItem } from './features/player-lab/components/PlayerListItem';
@@ -63,9 +63,8 @@ function RankedAttributes({player}: {player:PlayerExport}){
     </div>)}
   </div>;
 }
-function RoleResults({player}:{player:PlayerExport}){
+function RoleResults({roles}:{roles:readonly ScoredRole[]}){
   const { t } = useTranslation();
-  const roles=analyzeRoles(player);
   const [expanded,setExpanded]=useState<string|null>(null);
   return <div className="role-results">
     <p className="module-disclaimer">{t("Role fit shows how well the visible attributes match a role. It isn't CA, star rating or a match prediction. We skip scoring when too many attributes are missing.")}</p>
@@ -180,7 +179,7 @@ function PlayerDetails({player,dataset,onOpenSquad}:{player:PlayerExport;dataset
             <div className="scout-note">{t("These are observed numerical extremes, not professional scouting verdicts. Role-specific demands and sample completeness matter.")}</div>
           </Surface>
         </div>
-        <Surface className="scout-panel role-overview"><div className="scout-panel__title">{t("Role suitability ranking")} <span>{t("Heuristic · Explanation available under Role fit")}</span></div><MemoRoleResults player={player}/></Surface>
+        <Surface className="scout-panel role-overview"><div className="scout-panel__title">{t("Role suitability ranking")} <span>{t("Heuristic · Explanation available under Role fit")}</span></div><MemoRoleResults roles={roles}/></Surface>
       </>}
       {tab==='attributes'&&<Surface className="scout-panel"><div className="scout-panel__title">{t("Imported player attributes")} <span>{Object.keys(player.attributes).length} {t('values')} · {t('Source:')} {dataset.fileName}</span></div><MemoRankedAttributes player={player}/></Surface>}
       {tab==='roles'&&<Surface className="scout-panel"><div className="scout-panel__title">{t("Tactical roles by observed attributes")}</div><RoleResults player={player}/></Surface>}
