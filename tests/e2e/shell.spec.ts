@@ -442,3 +442,57 @@ test('save inspection metadata is opt-in, survives reload, and never stores the 
   await page.reload();
   await expect(page.getByText('Chưa có file save nào')).toBeVisible();
 });
+
+
+test('upgrades the v1 IndexedDB schema without dropping the existing player library', async ({ page }) => {
+  await page.addInitScript(() => {
+    const request = indexedDB.open('managerhub-local', 1);
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains('player-exports')) {
+        db.createObjectStore('player-exports', { keyPath: 'id' });
+      }
+      if (!db.objectStoreNames.contains('player-export-summaries')) {
+        const summaries = db.createObjectStore('player-export-summaries', { keyPath: 'id' });
+        summaries.add({
+          id: 'legacy-summary',
+          savedAt: '2026-10-28T12:00:00.000Z',
+          fileName: 'legacy-export.csv',
+          importedAt: '2026-10-28T11:59:00.000Z',
+          playerCount: 1,
+          attributeCount: 2
+        });
+      }
+    };
+    request.onsuccess = () => request.result.close();
+    request.onerror = () => { /* The app will report storage errors if the test setup cannot initialize. */ };
+  });
+
+  await page.goto('/#/saves');
+  await expect(page.getByRole('heading', { name: 'Save Library' })).toBeVisible();
+  await expect(page.getByText('No files inspected yet')).toBeVisible();
+
+  const migration = await page.evaluate(async () => {
+    const request = indexedDB.open('managerhub-local', 2);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    try {
+      const legacy = await new Promise<unknown>((resolve, reject) => {
+        const get = db.transaction('player-export-summaries', 'readonly')
+          .objectStore('player-export-summaries').get('legacy-summary');
+        get.onsuccess = () => resolve(get.result);
+        get.onerror = () => reject(get.error);
+      });
+      return { version: db.version, stores: Array.from(db.objectStoreNames), legacy };
+    } finally {
+      db.close();
+    }
+  });
+  expect(migration.version).toBe(2);
+  expect(migration.stores).toContain('player-exports');
+  expect(migration.stores).toContain('player-export-summaries');
+  expect(migration.stores).toContain('save-inspections');
+  expect(migration.legacy).toMatchObject({ id: 'legacy-summary', fileName: 'legacy-export.csv' });
+});
