@@ -366,3 +366,20 @@ test('Vietnamese player scouting labels are readable and CA stays unverified',as
   await expect(page.getByText('Chuyền bóng').first()).toBeVisible();
   await expect(page.getByText('Tầm nhìn').first()).toBeVisible();
 });
+
+
+test('save inspection errors give actionable guidance in both languages', async ({ page }) => {
+  await page.goto('/#/saves');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'notes.txt',
+    mimeType: 'text/plain',
+    buffer: Buffer.from('not a Football Manager save')
+  });
+
+  const alert = page.getByRole('alert');
+  await expect(alert).toContainText('Choose a Football Manager .fm save file.');
+  await expect(alert).not.toContainText('Select a Football Manager .fm save file.');
+  await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
+  await expect(alert).toContainText('Hãy chọn tệp save Football Manager có đuôi .fm.');
+  await expect(alert).not.toContainText('Select a Football Manager');
+});
