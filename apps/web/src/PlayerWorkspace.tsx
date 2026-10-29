@@ -1,12 +1,13 @@
-import { memo, useCallback, useDeferredValue, useId, useMemo, useRef, useState, type ChangeEvent } from 'react';
+import { memo, useCallback, useDeferredValue, useMemo, useState, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { readableImportError } from './i18n/player-import-copy';
 import { parsePlayerExport, parsePlayerHtml, type PlayerDataset } from '@managerhub/domain';
-import { Button, Icon, Status } from '@managerhub/ui';
+import { Icon } from '@managerhub/ui';
 import { usePlayerLibrary } from './usePlayerLibrary';
 import PlayerDetails from './features/player-lab/components/PlayerDetails';
 import PlayerDatasetSummary from './features/player-lab/components/PlayerDatasetSummary';
 import PlayerImportIntro from './features/player-lab/components/PlayerImportIntro';
+import PlayerImportToolbar from './features/player-lab/components/PlayerImportToolbar';
 import PlayerListPanel from './features/player-lab/components/PlayerListPanel';
 import SavedPlayerLibraryPanel from './features/player-lab/components/SavedPlayerLibraryPanel';
 import './player-workspace.css';
@@ -21,14 +22,12 @@ type Props = {
 
 function PlayerWorkspaceView({ dataset, onDataset, onOpenSquad }: Props) {
   const { t } = useTranslation();
-  const inputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [chosenId, setChosenId] = useState<string | null>(null);
   const [visibleLimit, setVisibleLimit] = useState(100);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const library = usePlayerLibrary();
-  const fileInputId = useId();
 
   const onFile = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -107,6 +106,9 @@ function PlayerWorkspaceView({ dataset, onDataset, onOpenSquad }: Props) {
     setSearch('');
     setVisibleLimit(100);
   }, [onDataset]);
+  const onSaveDataset = useCallback(() => {
+    if (dataset) void library.save(dataset);
+  }, [dataset, library.save]);
 
   return <div className="view-flow">
     <div className="page-title">
@@ -115,23 +117,14 @@ function PlayerWorkspaceView({ dataset, onDataset, onOpenSquad }: Props) {
       <p>{t("Import a player list from Football Manager to discover each player's strengths, suitable roles and comparisons with teammates.")}</p>
     </div>
 
-    <div className="player-lab-header">
-      <div>
-        <input id={fileInputId} ref={inputRef} type="file"
-          accept=".csv,.tsv,.txt,.html,.htm,text/csv,text/tab-separated-values,text/html"
-          className="visually-hidden" onChange={onFile}/>
-        <Button variant="primary" onClick={() => inputRef.current?.click()}>
-          <Icon name="plus" size={16}/>{t(dataset ? 'Replace player export' : 'Import player CSV / HTML')}
-        </Button>
-        {dataset && <Button disabled={savedCurrent || library.activity !== null} onClick={() => void library.save(dataset)}>
-          <Icon name="download" size={16}/>{t(savedCurrent ? 'Saved to this browser' : library.activity === 'saving' ? 'Saving…' : 'Save on this browser')}
-        </Button>}
-        {dataset && <Button variant="quiet" onClick={onClearSession}>
-          <Icon name="trash" size={16}/> {t("Clear session")}
-        </Button>}
-      </div>
-      <Status tone="info">{t("No data uploaded")}</Status>
-    </div>
+    <PlayerImportToolbar
+      dataset={dataset}
+      savedCurrent={savedCurrent}
+      activity={library.activity}
+      onFile={onFile}
+      onSave={onSaveDataset}
+      onClear={onClearSession}
+    />
 
     {error && <div role="alert" className="inline-alert"><Icon name="warning" size={16}/>{t(error)}</div>}
 
