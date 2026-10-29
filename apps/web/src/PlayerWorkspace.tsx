@@ -56,11 +56,16 @@ function PlayerWorkspaceView({ dataset, onDataset, onOpenSquad }: Props) {
 
   const normalizedSearch = search.trim().toLowerCase();
   const deferredSearch = useDeferredValue(normalizedSearch);
+  const playerSearchIndex = useMemo(
+    () => dataset?.players.map(player => ({
+      player,
+      normalizedText: [player.name, player.club, player.position].map(value => value?.toLowerCase() ?? '').join(' ')
+    })) ?? [],
+    [dataset?.players]
+  );
   const visible = useMemo(
-    () => dataset?.players.filter(player =>
-      [player.name, player.club, player.position].some(value => value?.toLowerCase().includes(deferredSearch))
-    ) ?? [],
-    [dataset?.players, deferredSearch]
+    () => playerSearchIndex.filter(entry => entry.normalizedText.includes(deferredSearch)).map(entry => entry.player),
+    [playerSearchIndex, deferredSearch]
   );
   const selected = useMemo(
     () => dataset?.players.find(player => player.id === chosenId) ?? dataset?.players[0] ?? null,
