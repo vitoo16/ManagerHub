@@ -550,3 +550,86 @@ test('save inspection metadata library enforces its 50-record limit', async ({ p
     'This browser already holds 50 saved save inspections. Delete one first.'
   );
 });
+
+
+test('incompatible save metadata can be cleared without deleting the player library', async ({ page }) => {
+  await page.goto('/#/saves');
+  await expect(page.getByRole('heading', { name: 'Save Library' })).toBeVisible();
+  await expect(page.getByText('Session only')).toBeVisible();
+
+  await page.evaluate(async () => {
+    const request = indexedDB.open('managerhub-local', 2);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    try {
+      await new Promise<void>((resolve, reject) => {
+        const tx = db.transaction(['save-inspections', 'player-export-summaries'], 'readwrite');
+        tx.objectStore('save-inspections').put({
+          id: 'corrupt-record',
+          name: 'legacy-career.fm',
+          importedAt: '2026-10-29T12:00:00.000Z',
+          lastModified: 1,
+          size: 6,
+          sha256: null,
+          signature: '02 01 61 66 65 2E',
+          detectedFamily: 'afe',
+          edition: null,
+          build: null,
+          support: 'signature_only',
+          inspectionStatus: 'inspected',
+          warnings: ['Player records have not been decoded.'],
+          archiveIndex: null,
+          fileBytes: [1, 2, 3]
+        });
+        tx.objectStore('player-export-summaries').put({
+          id: 'preserved-player-summary',
+          savedAt: '2026-10-29T12:00:00.000Z',
+          fileName: 'preserved-export.csv',
+          importedAt: '2026-10-29T11:59:00.000Z',
+          playerCount: 1,
+          attributeCount: 2
+        });
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
+      });
+    } finally {
+      db.close();
+    }
+  });
+
+  await page.reload();
+  await expect(page.getByRole('alert')).toContainText(
+    'Saved save inspection metadata is incompatible with this version. Clear the incompatible save metadata to continue; player exports will be preserved.'
+  );
+  await page.getByRole('button', { name: 'Clear incompatible saved metadata' }).click();
+  await expect(page.getByRole('alert')).toHaveCount(0);
+  await expect(page.getByText('No files inspected yet')).toBeVisible();
+
+  const stores = await page.evaluate(async () => {
+    const request = indexedDB.open('managerhub-local', 2);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    try {
+      const count = (storeName: string) => new Promise<number>((resolve, reject) => {
+        const getCount = db.transaction(storeName, 'readonly').objectStore(storeName).count();
+        getCount.onsuccess = () => resolve(getCount.result);
+        getCount.onerror = () => reject(getCount.error);
+      });
+      return {
+        saveCount: await count('save-inspections'),
+        playerSummaryCount: await count('player-export-summaries'),
+        names: Array.from(db.objectStoreNames)
+      };
+    } finally {
+      db.close();
+    }
+  });
+  expect(stores.saveCount).toBe(0);
+  expect(stores.playerSummaryCount).toBe(1);
+  expect(stores.names).toContain('player-exports');
+});
