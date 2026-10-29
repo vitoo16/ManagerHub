@@ -1,7 +1,6 @@
-import { memo, useCallback, useDeferredValue, useMemo, useState, type ChangeEvent } from 'react';
+import { memo, useCallback, useDeferredValue, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { readableImportError } from './i18n/player-import-copy';
-import { parsePlayerExport, parsePlayerHtml, type PlayerDataset } from '@managerhub/domain';
+import type { PlayerDataset } from '@managerhub/domain';
 import { Icon } from '@managerhub/ui';
 import { usePlayerLibrary } from './usePlayerLibrary';
 import PlayerDetails from './features/player-lab/components/PlayerDetails';
@@ -10,9 +9,8 @@ import PlayerImportIntro from './features/player-lab/components/PlayerImportIntr
 import PlayerImportToolbar from './features/player-lab/components/PlayerImportToolbar';
 import PlayerListPanel from './features/player-lab/components/PlayerListPanel';
 import SavedPlayerLibraryPanel from './features/player-lab/components/SavedPlayerLibraryPanel';
+import { usePlayerImport } from './features/player-lab/hooks/usePlayerImport';
 import './player-workspace.css';
-
-const MAX_EXPORT_BYTES = 12 * 1024 * 1024;
 
 type Props = {
   dataset: PlayerDataset | null;
@@ -22,37 +20,20 @@ type Props = {
 
 function PlayerWorkspaceView({ dataset, onDataset, onOpenSquad }: Props) {
   const { t } = useTranslation();
-  const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [chosenId, setChosenId] = useState<string | null>(null);
   const [visibleLimit, setVisibleLimit] = useState(100);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const library = usePlayerLibrary();
 
-  const onFile = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    event.target.value = '';
-    if (!file) return;
-    setError(null);
-    try {
-      if (!/\\.(csv|tsv|txt|html|htm)$/i.test(file.name)) {
-        throw new Error('Choose an HTML, CSV, TSV or TXT export with player columns.');
-      }
-      if (!file.size || file.size > MAX_EXPORT_BYTES) {
-        throw new Error('Player export must be between 1 byte and 12 MB.');
-      }
-      const source = await file.text();
-      const parsed = /\\.(html|htm)$/i.test(file.name)
-        ? parsePlayerHtml(source, file.name)
-        : parsePlayerExport(source, file.name);
-      onDataset(parsed);
-      setChosenId(parsed.players[0]?.id ?? null);
-      setSearch('');
-      setVisibleLimit(100);
-    } catch (cause) {
-      setError(readableImportError(cause));
-    }
+  const onImportParsed = useCallback((parsed: PlayerDataset) => {
+    onDataset(parsed);
+    setChosenId(parsed.players[0]?.id ?? null);
+    setSearch('');
+    setVisibleLimit(100);
+    setPendingDelete(null);
   }, [onDataset]);
+  const { error, onFile, clearError } = usePlayerImport(onImportParsed);
 
   const normalizedSearch = search.trim().toLowerCase();
   const deferredSearch = useDeferredValue(normalizedSearch);
@@ -88,8 +69,8 @@ function PlayerWorkspaceView({ dataset, onDataset, onOpenSquad }: Props) {
     setSearch('');
     setVisibleLimit(100);
     setPendingDelete(null);
-    setError(null);
-  }, [library.open, onDataset]);
+    clearError();
+  }, [library.open, onDataset, clearError]);
 
   const onDeleteSaved = useCallback(async (id: string) => {
     if (pendingDelete !== id) {
