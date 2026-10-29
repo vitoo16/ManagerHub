@@ -229,3 +229,6 @@
 .language-switch button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
 .language-switch button:hover:not([aria-pressed="true"]){background:var(--surface-hover);color:var(--text)}
 @media(max-width:480px){.language-switch button{min-width:28px}.topbar{gap:6px}}
+
+
+.workspace-loading{min-height:14rem;display:grid;place-items:center;color:var(--text-muted);font-size:.95rem}
