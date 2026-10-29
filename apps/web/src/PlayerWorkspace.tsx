@@ -3,12 +3,13 @@ import { readableImportError, readableImportWarning } from './i18n/player-import
 import { lazy, memo, Suspense, useCallback, useDeferredValue, useId, useMemo, useRef, useState, type ChangeEvent, type UIEvent } from 'react';
 import {
   ATTRIBUTE_LABELS,attributeGroupSummary,attributeStrengthIndex,
-  analyzeRoles,getAttributeInsights,parsePlayerExport,parsePlayerHtml,
+  analyzeRoles,getAttributeInsights,
   type PlayerDataset,type PlayerExport,type AttributeKey
 } from '@managerhub/domain';
 import {Button,Icon,SectionHeading,Status,Surface} from '@managerhub/ui';
 import { PlayerListItem } from './features/player-lab/components/PlayerListItem';
 import { usePlayerLibrary } from './usePlayerLibrary';
+import { parsePlayerFile } from './parse-player-file';
 import './player-workspace.css';
 
 const MAX_EXPORT_BYTES=12*1024*1024;
@@ -201,6 +202,7 @@ export function PlayerWorkspace({dataset,onDataset,onOpenSquad}:Props){
   const { t } = useTranslation();
   const inputRef=useRef<HTMLInputElement>(null);
   const [error,setError]=useState<string|null>(null);
+  const [importing,setImporting]=useState(false);
   const [search,setSearch]=useState('');
   const deferredSearch=useDeferredValue(search.trim().toLocaleLowerCase());
   const [chosenId,setChosenId]=useState<string|null>(null);
@@ -215,17 +217,18 @@ export function PlayerWorkspace({dataset,onDataset,onOpenSquad}:Props){
     e.target.value='';
     if(!file)return;
     setError(null);
+    setImporting(true);
     try{
       if(!/\.(csv|tsv|txt|html|htm)$/i.test(file.name))throw new Error('Choose an HTML, CSV, TSV or TXT export with player columns.');
       if(!file.size||file.size>MAX_EXPORT_BYTES)throw new Error('Player export must be between 1 byte and 12 MB.');
-      const source=await file.text();
-      const parsed=/\.(html|htm)$/i.test(file.name)?parsePlayerHtml(source,file.name):parsePlayerExport(source,file.name);
+      const parsed=await parsePlayerFile(file);
       onDataset(parsed);
       setChosenId(parsed.players[0]?.id??null);
       setSearch('');
       setVisibleLimit(100);
       setListScrollTop(0);
     }catch(ex){setError(readableImportError(ex));}
+    finally{setImporting(false);}
   };
   const playerSearchIndex=useMemo(()=>dataset?.players.map(player=>({
     player,
@@ -261,17 +264,17 @@ export function PlayerWorkspace({dataset,onDataset,onOpenSquad}:Props){
     if(pendingDelete!==id){setPendingDelete(id);return;}
     if(await library.remove(id))setPendingDelete(null);
   };
-  return <div className="view-flow">
+  return <div className="view-flow" aria-busy={importing}>
     <div className="page-title"><span className="mh-eyebrow">{t("PLAYER INTELLIGENCE / PROVISIONAL EXPORTS")}</span><h1>{t("Player Lab")}</h1><p>{t("Import a player list from Football Manager to discover each player's strengths, suitable roles and comparisons with teammates.")}</p></div>
     <div className="player-lab-header">
       <div><input id={fileInputId} ref={inputRef} type="file" accept=".csv,.tsv,.txt,.html,.htm,text/csv,text/tab-separated-values,text/html" className="visually-hidden" onChange={onFile}/>
-        <Button variant="primary" onClick={()=>inputRef.current?.click()}><Icon name="plus" size={16}/>{t(dataset?'Replace player export' :'Import player CSV / HTML')}</Button>
+        <Button variant="primary" disabled={importing} onClick={()=>inputRef.current?.click()}><Icon name="plus" size={16}/>{t(importing?'Importing player data…':dataset?'Replace player export':'Import player CSV / HTML')}</Button>
         {dataset&&<Button disabled={savedCurrent||library.activity!==null} onClick={()=>void library.save(dataset)}>
           <Icon name="download" size={16}/>{t(savedCurrent?'Saved to this browser':library.activity==='saving'?'Saving…':'Save on this browser')}
         </Button>}
         {dataset&&<Button variant="quiet" onClick={()=>{onDataset(null);setChosenId(null);setSearch('');setVisibleLimit(100);}}><Icon name="trash" size={16}/> {t("Clear session")}</Button>}
       </div>
-      <Status tone="info">{t("No data uploaded")}</Status>
+      <Status tone={importing?"warning":"info"}>{t(importing?"Analyzing export in the background…":dataset?"Export loaded in this session":"No data uploaded")}</Status>
     </div>
     {error&&<div role="alert" className="inline-alert"><Icon name="warning" size={16}/>{t(error)}</div>}
     <Surface className="saved-player-library">
