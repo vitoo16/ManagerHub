@@ -229,3 +229,8 @@
 .language-switch button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
 .language-switch button:hover:not([aria-pressed="true"]){background:var(--surface-hover);color:var(--text)}
 @media(max-width:480px){.language-switch button{min-width:28px}.topbar{gap:6px}}
+
+.workspace-loading{display:grid;place-items:center;min-height:220px;padding:24px;color:var(--text-muted);font-size:14px}
+.workspace-loading::before{content:"";width:18px;height:18px;margin-bottom:10px;border:2px solid var(--line);border-top-color:var(--accent-strong);border-radius:50%;animation:mh-loading-spin .8s linear infinite}
+@keyframes mh-loading-spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.workspace-loading::before{animation:none}}
