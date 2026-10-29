@@ -1,6 +1,6 @@
 import { memo, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FORMATIONS, type SquadSolution, type SlotAssignment } from '@managerhub/domain';
+import { FORMATIONS, type SquadSolution } from '@managerhub/domain';
 import { Icon, Surface } from '@managerhub/ui';
 
 function TacticalPitch({ solution }: { solution: SquadSolution }) {
