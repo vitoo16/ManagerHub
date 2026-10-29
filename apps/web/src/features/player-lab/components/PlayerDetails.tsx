@@ -39,7 +39,8 @@ function PlayerDetails({player,dataset,onOpenSquad}:{player:PlayerExport;dataset
     <div className="scout-tabs" role="tablist" aria-label={t("Player report")}>
       {(['overview','attributes','roles','compare','recruitment'] as const).map(label=><button key={label} role="tab" aria-selected={tab===label} onClick={()=>setTab(label)} className={tab===label?'scout-tab scout-tab--active':'scout-tab'}>{t(label==='overview'?'Overview':label==='attributes'?'Attributes':label==='roles'?'Role fit':label==='compare'?'Compare':'Recruitment')}</button>)}
     </div>
-    <div className="scout-tab-content" role="tabpanel">\n      <Suspense fallback={<div className="player-empty-chart" role="status">{t("Loading…")}</div>}>
+    <div className="scout-tab-content" role="tabpanel">
+      <Suspense fallback={<div className="player-empty-chart" role="status">{t("Loading…")}</div>}>
       {tab==='overview'&&<>
         <div className="scout-grid">
           <Surface className="scout-panel"><div className="scout-panel__title">{t("Attribute profile")} <span>{t("Native 1–20 mean")}</span></div><AttributeRadar player={player}/></Surface>
@@ -54,7 +55,7 @@ function PlayerDetails({player,dataset,onOpenSquad}:{player:PlayerExport;dataset
         <Surface className="scout-panel role-overview"><div className="scout-panel__title">{t("Role suitability ranking")} <span>{t("Heuristic · Explanation available under Role fit")}</span></div><RoleResults player={player} roles={roles}/></Surface>
       </>}
       {tab==='attributes'&&<Surface className="scout-panel"><div className="scout-panel__title">{t("Imported player attributes")} <span>{Object.keys(player.attributes).length} {t('values')} · {t('Source:')} {dataset.fileName}</span></div><RankedAttributes player={player}/></Surface>}
-      {tab==='roles'&&<Surface className="scout-panel"><div className="scout-panel__title">{t("Tactical roles by observed attributes")}</div><RoleResults player={player}/></Surface>}
+      {tab==='roles'&&<Surface className="scout-panel"><div className="scout-panel__title">{t("Tactical roles by observed attributes")}</div><RoleResults player={player} roles={roles}/></Surface>}
       {tab==='compare'&&<PlayerCompare primary={player} dataset={dataset}/>}
       {tab==='recruitment'&&<RecruitmentPreviewPanel player={player} dataset={dataset} onOpenSquad={onOpenSquad}/>}
       </Suspense>
