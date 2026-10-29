@@ -82,6 +82,18 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
               </div>)}
             </div>
             {selected.archiveIndex.memberCount > 8 && <button className="text-link archive-preview__expand" onClick={() => setShowAllMembers(v => !v)}>{showAllMembers ? t('Show fewer') : t('Show all') + ' ' + selected.archiveIndex.memberCount + ' ' + t('entries')} <Icon name="chevron" size={14}/></button>}
+            {selected.archiveIndex.gapObservations && selected.archiveIndex.gapObservations.length > 0 && <details className="inspection-technical">
+              <summary>{t('Unindexed data gaps')} ({selected.archiveIndex.gapObservations.length})</summary>
+              <p>{t('Experimental counts of repeated byte patterns only. Gaps are not decoded player records.')}</p>
+              <div className="archive-preview__list" role="list" aria-label={t('Unindexed data gaps')}>
+                {selected.archiveIndex.gapObservations.map((gap, i) => <div className="archive-preview__row" role="listitem" key={gap.afterMember + gap.beforeMember + i}>
+                  <span className="archive-preview__filename">{gap.afterMember} → {gap.beforeMember}</span>
+                  <span>{formatBytes(gap.sizeBytes)}</span>
+                  <span>{gap.status === 'sampled' ? String(gap.markerMatches) : t('Not sampled')}</span>
+                  <span>{gap.mostCommonMarkerDistance === null ? '—' : String(gap.mostCommonMarkerDistance) + ' B'}</span>
+                </div>)}
+              </div>
+            </details>}
             {selected.archiveIndex.probes && selected.archiveIndex.probes.length > 0 && <details className="inspection-technical member-probe">
               <summary>{t('Member header diagnostics')} ({selected.archiveIndex.probes.length})</summary>
               <p>{t('Only the first 16 bytes of each bounded member are sampled. Signatures are checked both at the start and after the first 8 bytes as an experimental offset; matches are candidates, not confirmed codecs. No member contents are decoded.')}</p>
