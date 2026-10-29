@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useCallback, useMemo, type Dispatch, type SetStateAction } from 'react';
+import { memo, useCallback, useMemo, type Dispatch, type SetStateAction } from 'react';
 import {
   FORMATIONS, declaredPositions, optimizeSquad,
   type FormationId, type PlayerDataset, type SquadPlanConfig, type SquadPlanKey, type SquadPlans
@@ -11,7 +11,7 @@ import PinEditor from './features/squad-planner/components/PinEditor';
 import ScenarioComparison from './features/squad-planner/components/ScenarioComparison';
 import './squad-workspace.css';
 
-export function SquadWorkspace({dataset,onImport,plans,setPlans,active,setActive}:{
+function SquadWorkspaceView({dataset,onImport,plans,setPlans,active,setActive}:{
   dataset: PlayerDataset | null;
   onImport: () => void;
   plans: SquadPlans;
@@ -122,3 +122,5 @@ export function SquadWorkspace({dataset,onImport,plans,setPlans,active,setActive
     </>}
   </div>;
 }
+
+export const SquadWorkspace = memo(SquadWorkspaceView);
