@@ -235,6 +235,7 @@ export function PlayerWorkspace({dataset,onDataset,onOpenSquad}:Props){
       setSearch('');
       setVisibleLimit(100);
       setListScrollTop(0);
+      if(listViewportRef.current)listViewportRef.current.scrollTop=0;
     }catch(ex){setError(readableImportError(ex));}
     finally{setImporting(false);}
   };
@@ -266,7 +267,7 @@ export function PlayerWorkspace({dataset,onDataset,onOpenSquad}:Props){
     if(!restored)return;
     onDataset(restored);
     setChosenId(restored.players[0]?.id??null);
-    setSearch('');setVisibleLimit(100);setListScrollTop(0);setPendingDelete(null);setError(null);
+    setSearch('');setVisibleLimit(100);setListScrollTop(0);if(listViewportRef.current)listViewportRef.current.scrollTop=0;setPendingDelete(null);setError(null);
   };
   const deleteSaved=async (id:string)=>{
     if(pendingDelete!==id){setPendingDelete(id);return;}
@@ -280,7 +281,7 @@ export function PlayerWorkspace({dataset,onDataset,onOpenSquad}:Props){
         {dataset&&<Button disabled={savedCurrent||library.activity!==null} onClick={()=>void library.save(dataset)}>
           <Icon name="download" size={16}/>{t(savedCurrent?'Saved to this browser':library.activity==='saving'?'Saving…':'Save on this browser')}
         </Button>}
-        {dataset&&<Button variant="quiet" onClick={()=>{onDataset(null);setChosenId(null);setSearch('');setVisibleLimit(100);}}><Icon name="trash" size={16}/> {t("Clear session")}</Button>}
+        {dataset&&<Button variant="quiet" onClick={()=>{onDataset(null);setChosenId(null);setSearch('');setVisibleLimit(100);setListScrollTop(0);if(listViewportRef.current)listViewportRef.current.scrollTop=0;}}><Icon name="trash" size={16}/> {t("Clear session")}</Button>}
       </div>
       <Status tone={importing?"warning":"info"}>{t(importing?"Analyzing export in the background…":dataset?"Export loaded in this session":"No data uploaded")}</Status>
     </div>
@@ -316,7 +317,7 @@ export function PlayerWorkspace({dataset,onDataset,onOpenSquad}:Props){
           <label className="search-box player-search"><Icon name="search" size={16}/><span className="visually-hidden">{t("Search imported players")}</span><input placeholder={t("Search player, team, position…")} value={search} onChange={e=>onSearchChange(e.target.value)}/></label>
           <div ref={listViewportRef} className="player-list-scroll" role="list" aria-label={t("Imported players")} onScroll={onListScroll}>
             <div className="player-list-window" style={{height:loadedPlayers.length*PLAYER_ROW_HEIGHT}}>
-              {windowedPlayers.map((player,index)=><div className="player-list-window__item" key={player.id} role="listitem"
+              {windowedPlayers.map((player,index)=><div className="player-list-window__item" key={player.id} role="listitem" aria-posinset={virtualStart+index+1} aria-setsize={loadedPlayers.length}
                 style={{top:(virtualStart+index)*PLAYER_ROW_HEIGHT,height:PLAYER_ROW_HEIGHT}}>
                 <PlayerListItem player={player} active={selected?.id===player.id} onSelect={selectPlayer}/>
               </div>)}
