@@ -17,8 +17,9 @@ const budgets = {
 
 const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
 const entries = Object.entries(manifest);
-const entryKeys = entries.filter(([, item]) => item.isEntry).map(([key]) => key);
-if (entryKeys.length === 0) throw new Error('Bundle budget: no Vite entry was found in the build manifest.');
+const appEntry = entries.find(([key, item]) => key === 'index.html' || item.src === 'index.html')
+  ?? entries.find(([key, item]) => item.isEntry && (key.endsWith('main.tsx') || item.src?.endsWith('main.tsx')));
+if (!appEntry) throw new Error('Bundle budget: the app entry was not found in the Vite build manifest.');
 
 const visited = new Set();
 function visit(key) {
@@ -28,7 +29,7 @@ function visit(key) {
   if (!item) throw new Error(`Bundle budget: manifest import "${key}" is missing.`);
   for (const imported of item.imports ?? []) visit(imported);
 }
-for (const key of entryKeys) visit(key);
+visit(appEntry[0]);
 
 const readAsset = async file => {
   const fullPath = path.join(dist, file);
