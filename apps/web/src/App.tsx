@@ -2,19 +2,20 @@ import { setAppLocale } from './i18n';
 import { useTranslation } from 'react-i18next';
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import {
-  type SaveIdentity, type WorkspaceKey
+  createDefaultSquadPlans, type PlayerDataset, type SaveIdentity,
+  type SquadPlanKey, type SquadPlans, type WorkspaceKey
 } from '@managerhub/domain';
 import { Icon, Status } from '@managerhub/ui';
 import { useReducedMotion, useWorkspaceTransition } from '@managerhub/motion';
+import { inspectSaveInWorker } from './inspect-save-in-worker';
+import './app.css';
+
 const Overview = lazy(() => import('./features/overview/Overview'));
 const SaveInspector = lazy(() => import('./features/save-library/SaveInspector'));
 const Systems = lazy(() => import('./features/systems/Systems'));
 const Architecture = lazy(() => import('./features/architecture/Architecture'));
 const PlayerWorkspace = lazy(() => import('./PlayerWorkspace').then(module => ({ default: module.PlayerWorkspace })));
 const SquadWorkspace = lazy(() => import('./SquadWorkspace').then(module => ({ default: module.SquadWorkspace })));
-import { createDefaultSquadPlans, type SquadPlanKey, type SquadPlans, type PlayerDataset } from '@managerhub/domain';
-import { inspectSaveInWorker } from './inspect-save-in-worker';
-import './app.css';
 
 const NAV: { key: WorkspaceKey; title: string; detail: string; icon: 'grid' | 'database' | 'layers' | 'shield' | 'compass' }[] = [
   { key: 'overview', title: 'Overview', detail: 'Command center', icon: 'grid' },
