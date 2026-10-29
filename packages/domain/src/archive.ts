@@ -23,6 +23,10 @@ const MAX_INDEX_COMPRESSED = 64 * 1024;
 const MAX_INDEX_DECOMPRESSED = 512 * 1024;
 const MAX_MEMBERS = 1024;
 const MAX_NAME_CHARS = 256;
+// In the one observed AFE save, member offsets are relative to byte 18;
+// the trailing directory begins after the final member extent. Keep this
+// experimental layout assumption explicit until independently verified.
+const OBSERVED_MEMBER_DATA_BASE_BYTES = 18;
 
 export function parseArchiveDirectory(bytes: Uint8Array, boundary: number): readonly ArchiveMember[] | null {
   if (bytes.byteLength < 8) return null;
@@ -111,7 +115,9 @@ export async function inspectArchiveIndex(file: File): Promise<ArchiveIndex | nu
     const position = tailStart + i;
     try {
       const payload = await inflateIndexBlob(file.slice(position + 9));
-      const members = parseArchiveDirectory(payload, position);
+      const memberDataBoundary = position - OBSERVED_MEMBER_DATA_BASE_BYTES;
+      if (memberDataBoundary <= 0) continue;
+      const members = parseArchiveDirectory(payload, memberDataBoundary);
       if (members) return { family: 'fmf-index-candidate', evidence: 'experimental',
         memberCount: members.length, directoryOffset: position, members };
     } catch { /* Ignore malformed false positives and continue scanning. */ }
