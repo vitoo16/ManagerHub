@@ -2,13 +2,14 @@ import { setAppLocale } from './i18n';
 import { useTranslation } from 'react-i18next';
 import { lazy, Suspense, useCallback, useEffect, useId, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
 import {
-  FEATURES, FEATURE_GROUPS, formatBytes, inspectSave, type SaveIdentity, type WorkspaceKey
+  FEATURES, FEATURE_GROUPS, formatBytes, type SaveIdentity, type WorkspaceKey
 } from '@managerhub/domain';
 import { Button, Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
 import { useReducedMotion, useWorkspaceTransition } from '@managerhub/motion';
 const PlayerWorkspace = lazy(() => import('./PlayerWorkspace').then(module => ({ default: module.PlayerWorkspace })));
 const SquadWorkspace = lazy(() => import('./SquadWorkspace').then(module => ({ default: module.SquadWorkspace })));
 import { createDefaultSquadPlans, type SquadPlanKey, type SquadPlans, type PlayerDataset } from '@managerhub/domain';
+import { inspectSaveInWorker } from './inspect-save-in-worker';
 import './app.css';
 
 const NAV: { key: WorkspaceKey; title: string; detail: string; icon: 'grid' | 'database' | 'layers' | 'shield' | 'compass' }[] = [
@@ -340,7 +341,7 @@ export default function App() {
   const onInspect = async (file: File) => {
     setBusy(true); setError(null);
     try {
-      const result = await inspectSave(file);
+      const result = await inspectSaveInWorker(file);
       setImports(previous => [result, ...previous.filter(item => item.id !== result.id)]);
       setSelectedId(result.id);
     } catch (exception) {
