@@ -175,6 +175,7 @@ test('large exported squads render a bounded, accessible player list', async ({ 
   await page.locator('input[type=file]').setInputFiles({
     name: 'large-squad.csv', mimeType: 'text/csv', buffer: Buffer.from(rows.join('\n'))
   });
+  await expect(page.getByText('115 player records')).toBeVisible();
   const list = page.getByRole('list', { name: 'Imported players' });
   await expect.poll(() => list.getByRole('listitem').count()).toBeLessThanOrEqual(16);
   await list.evaluate(element => { element.scrollTop = element.scrollHeight; });
