@@ -1,4 +1,5 @@
 import { inspectArchiveIndex, probeMemberEnvelopes } from './archive';
+import { inspectUnindexedGaps } from './archive-gaps';
 import type { SaveIdentity } from './types';
 
 const MAX_INSPECTION_BYTES = 256 * 1024 * 1024;
@@ -52,7 +53,9 @@ export async function inspectSave(file: File): Promise<SaveIdentity> {
     : 'Unknown binary signature; no game data can be decoded.');
   const detectedArchiveIndex = family === 'afe' ? await inspectArchiveIndex(file) : null;
   const archiveIndex = detectedArchiveIndex
-    ? { ...detectedArchiveIndex, probes: await probeMemberEnvelopes(file, detectedArchiveIndex) }
+    ? { ...detectedArchiveIndex,
+        probes: await probeMemberEnvelopes(file, detectedArchiveIndex),
+        gapObservations: await inspectUnindexedGaps(file, detectedArchiveIndex) }
     : null;
   if (archiveIndex) warnings.push('Experimental archive directory catalogue recognized; member contents and game records are NOT decoded.');
   const id = sha256 ?? [file.name, file.size, file.lastModified].join(':');
