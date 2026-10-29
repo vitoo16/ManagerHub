@@ -46,3 +46,24 @@ Verify the UI with browser screenshots and tests, validate the metadata-only Ind
 - Keep outer container detection (`afe`) distinct from the internal trailing index candidate (`fmf-index-candidate`); the latter does not imply the save is an FMF-family container.
 - `apps/web` lists member metadata only when the directory passes structural validation. This is NOT proof of member decompression, player extraction, edition/build identification, CA/PA decoding or a safe writer.
 - Synthetic tests cover the 69-member catalogue shape and an AFE outer signature coexisting with the trailing FMF index marker. CI run [#156](https://github.com/vitoo16/ManagerHub/actions/runs/40888143543) passed TypeScript strict checks, unit tests, production build and desktop/mobile Playwright.
+
+
+## Updated: observed AFE member-envelope measurements (single private fixture)
+
+The real save was inspected locally and read-only. Only aggregate measurements are recorded here; the save bytes and member payloads are not committed.
+
+- File size: 29,319,864 bytes. Outer signature bytes: `02 01 61 66 65 2e` (`afe.` at byte offset 2).
+- Trailing directory marker begins at byte offset 29,310,371. Its zlib stream expands to 44,430 bytes and contains 69 entries.
+- The maximum declared member extent is 29,310,353 relative to the member-data region, leaving an 18-byte gap before the trailing directory marker in this observed file.
+- Member data appears to begin at absolute file offset 18: the first member's offset is 0 and its first eight bytes are `10 00 00 00 10 00 00 00`. The same eight-byte prefix pattern was observed at the start of the next inspected members. This is a byte observation only; its semantics are unknown.
+- Example catalogue measurements (stored bytes / directory-reported uncompressed bytes): `game_info.dat` 2,702 / 2,651; `save_game_summary.dat` 141 / 170; `game_db.dat` 22,282,254 / 88,272,180; `humans.dat` 352 / 1,261; `news.dat` 317,107 / 1,805,887.
+- Direct zlib attempts at the start of these member payloads did not yield valid streams in the tested offsets. This does not establish encryption: the member envelope, codec, transform and block layout remain unknown.
+
+### Next reader research gates
+
+1. Add a versioned, read-only member-envelope probe that reports bounded header bytes, declared sizes, candidate codec signatures and diagnostics without returning payload data to the UI by default.
+2. Test any candidate codec against several small members, requiring exact output-size agreement and deterministic round trips on synthetic fixtures before promoting a hypothesis.
+3. Obtain a second independently sourced, game-verified save for cross-checking offsets and envelope assumptions before generalizing the 18-byte base or eight-byte prefix.
+4. Only after member decoding is validated, investigate typed records and cross-check player identifiers/attributes against in-game exports. Never label a field CA/PA without source evidence.
+
+These observations are from one file and are not a compatibility guarantee for other Football Manager versions/builds.
