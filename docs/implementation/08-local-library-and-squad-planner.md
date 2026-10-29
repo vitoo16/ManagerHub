@@ -25,6 +25,7 @@ The Save Library can explicitly save a validated SaveIdentity after inspecting a
 - Up to 50 records are retained in the save-inspections object store. Re-saving the same identity updates its metadata instead of creating a duplicate.
 - The schema upgrade creates the new store only when absent and preserves the existing player-export stores and records.
 - Metadata is validated when written and read, including size, hash, archive member count and offset bounds.
+- If a future or damaged record is incompatible, the Save Library offers a targeted recovery action that clears only the save-inspection metadata store; saved player exports remain untouched.
 - The .fm file bytes are never stored or uploaded. Metadata persistence does not make the format parser more capable: edition/build and player/CA/PA data remain unverified.
 
 ## Squad Planner — strict, evidence-aware 11-player draft
