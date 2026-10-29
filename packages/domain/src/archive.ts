@@ -194,3 +194,48 @@ export async function probeMemberEnvelopes(
   }
   return probes;
 }
+
+/**
+ * Structural observations only. No implication of successful decompression,
+ * archive edition, or player-field compatibility.
+ */
+export interface ArchiveMemberConsistency {
+  readonly observedMembers: number;
+  readonly contiguousPairs: number;
+  readonly discontinuousPairs: number;
+  readonly overlappingPairs: number;
+  readonly repeatedEightBytePrefixes: number;
+  readonly referenceEightBytePrefix: string | null;
+}
+
+export function summarizeMemberConsistency(
+  index: ArchiveIndex,
+  probes: readonly MemberEnvelopeProbe[]
+): ArchiveMemberConsistency {
+  const ordered = [...index.members].sort((a, b) => a.offset - b.offset);
+  let contiguousPairs = 0;
+  let discontinuousPairs = 0;
+  let overlappingPairs = 0;
+  for (let i = 1; i < ordered.length; i++) {
+    const previous = ordered[i - 1];
+    const current = ordered[i];
+    if (!previous || !current) continue;
+    const previousEnd = previous.offset + previous.storedBytes;
+    if (previousEnd === current.offset) contiguousPairs++;
+    else if (previousEnd < current.offset) discontinuousPairs++;
+    else overlappingPairs++;
+  }
+  const referenceEightBytePrefix = probes.find(p => p.sampleBytes >= 8)?.prefixHex
+    .split(' ').slice(0, 8).join(' ') ?? null;
+  const repeatedEightBytePrefixes = referenceEightBytePrefix === null ? 0 :
+    probes.filter(p => p.sampleBytes >= 8 &&
+      p.prefixHex.split(' ').slice(0, 8).join(' ') === referenceEightBytePrefix).length;
+  return {
+    observedMembers: ordered.length,
+    contiguousPairs,
+    discontinuousPairs,
+    overlappingPairs,
+    repeatedEightBytePrefixes,
+    referenceEightBytePrefix
+  };
+}

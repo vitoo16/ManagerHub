@@ -93,3 +93,17 @@ These values are consistent with byte distributions that look noise-like in the 
 2. Use small members to test header hypotheses and candidate codecs, recording both successful and failed tests reproducibly.
 3. Cross-check with a second save from a known edition/build before treating the eight-byte prefix or 18-byte base as a general rule.
 4. Only then investigate typed player records and validate any CA/PA fields against a known in-game reference or independent export.
+
+## Earlier independent AFE reverse-engineering note (2019)
+
+A 2019 [Reverse Engineering Stack Exchange investigation](https://reverseengineering.stackexchange.com/questions/20614/x64dbg-locating-where-data-is-initially-written) of Football Manager tactic FMF files reports both `02 01 61 66 65` and the repeated `10 00 00 00 10 00 00 00` section separator. These match byte patterns independently observed in the private ManagerHub AFE save, but the question concerns tactic files, not a proven save-game decoder. Its author hypothesized compression/encryption and observed non-identical content after repeated saves; no working codec or key was established there. Do not extrapolate format compatibility from the signature alone.
+
+The domain now exposes `summarizeMemberConsistency()` to count contiguous, gapped or overlapping member extents and repeated sampled eight-byte prefixes. This is a diagnostic aggregate, not an FM edition detector or verified codec.
+
+### Observed catalogue continuity (same single fixture)
+
+The 69 member extents yield **66 contiguous adjacent pairs, 2 positive gaps, and 0 overlaps** when sorted by declared offset. The gaps are 1,350,855 bytes between `game_db.dat` and `humans.dat`, and 178,694 bytes between `tactics_man.dat` and `edit_session_man.dat`. The bytes in these gaps have not been identified; they may be unindexed data or other container regions. Never assume that all members are contiguous or that all non-member bytes are padding. All 69 sampled member starts share the observed eight-byte prefix.
+
+### Follow-up: repeated delimiters inside unindexed gaps
+
+A further read-only byte scan of the two gaps found the exact eight-byte sequence `10 00 00 00 10 00 00 00` at **724 positions** in the 1,350,855-byte `game_db.dat` → `humans.dat` gap (including its first byte), and **1 position** in the 178,694-byte `tactics_man.dat` → `edit_session_man.dat` gap (at its first byte). These are exact pattern counts in this single save, not a validated count of records or a proven container structure. A repeated delimiter may identify internal sub-blocks, but the intervening bytes have not been decoded and their semantics remain unknown. The original data is not committed.
