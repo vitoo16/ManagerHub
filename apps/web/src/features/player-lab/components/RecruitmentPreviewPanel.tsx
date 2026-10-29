@@ -6,12 +6,7 @@ import {
 } from '@managerhub/domain';
 import { Button, Icon, Status, Surface } from '@managerhub/ui';
 
-type Props = {
-  player: PlayerExport;
-  dataset: PlayerDataset;
-  onOpenSquad: () => void;
-};
-
+type Props = { player: PlayerExport; dataset: PlayerDataset; onOpenSquad: () => void };
 const FORMATION_OPTIONS = Object.keys(FORMATIONS) as FormationId[];
 
 function RecruitmentPreviewPanel({ player, dataset, onOpenSquad }: Props) {
@@ -82,7 +77,7 @@ function RecruitmentPreviewPanel({ player, dataset, onOpenSquad }: Props) {
 }
 
 type CoverageGap = { slot: { id: string; label: string }; scoredCandidates: number; eligibleCandidates: number };
-function CoverageDiagnostics({ gaps }: { gaps: readonly CoverageGap[] }) {
+const CoverageDiagnostics = memo(function CoverageDiagnostics({ gaps }: { gaps: readonly CoverageGap[] }) {
   const { t } = useTranslation();
   return <div className="squad-coverage-list" role="list" aria-label={t("Position data coverage")}>
     {gaps.map(item => <div role="listitem" key={item.slot.id}>
@@ -90,17 +85,17 @@ function CoverageDiagnostics({ gaps }: { gaps: readonly CoverageGap[] }) {
       <span>{t("{{scored}} of {{eligible}} eligible players", { scored: item.scoredCandidates, eligible: item.eligibleCandidates })}</span>
     </div>)}
   </div>;
-}
+});
 
-function SelectedPosition({ assignment, roleTitle }: {
+const SelectedPosition = memo(function SelectedPosition({ assignment, roleTitle }: {
   assignment: { slot: { label: string; roleId: string }; roleScore: number };
   roleTitle?: string;
 }) {
   const { t } = useTranslation();
   return <p><strong>{t("Selected position:")}</strong> {assignment.slot.label} · {roleTitle ? t(roleTitle) : assignment.slot.roleId} · {t("Role fit")} {assignment.roleScore}/100</p>;
-}
+});
 
-function ContributionMetrics({ withPlayer, withoutPlayer, delta, changedSlots }: {
+const ContributionMetrics = memo(function ContributionMetrics({ withPlayer, withoutPlayer, delta, changedSlots }: {
   withPlayer: number | null;
   withoutPlayer: number | null;
   delta: number | null;
@@ -113,6 +108,6 @@ function ContributionMetrics({ withPlayer, withoutPlayer, delta, changedSlots }:
     <div><span>{t("Role-fit difference")}</span><strong>{delta !== null && delta > 0 ? '+' : ''}{delta ?? '—'}</strong><small>{t("Points across the full XI")}</small></div>
     <div><span>{t("Changed positions")}</span><strong>{changedSlots ?? '—'}</strong><small>{t("When this player is excluded")}</small></div>
   </div>;
-}
+});
 
 export default memo(RecruitmentPreviewPanel);
