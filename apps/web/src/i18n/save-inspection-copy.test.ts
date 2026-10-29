@@ -38,7 +38,7 @@ describe('save inspection onboarding copy', () => {
       'Session only',
       'Save inspection metadata on this browser',
       'Remove saved metadata',
-      'Only the inspection metadata shown here is saved in this browser. The original .fm file bytes are never stored or uploaded.',
+      'Only inspection metadata is saved in this browser. The original .fm file bytes are never stored or uploaded.',
       'Dismiss saved metadata error',
       'This browser already holds 50 saved save inspections. Delete one first.',
       'Saved save inspection metadata is incompatible with this version. Remove the incompatible local data before trying again.',
