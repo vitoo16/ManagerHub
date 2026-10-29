@@ -33,7 +33,7 @@ function PlayerWorkspaceView({ dataset, onDataset, onOpenSquad }: Props) {
     setVisibleLimit(100);
     setPendingDelete(null);
   }, [onDataset]);
-  const { error, onFile, clearError } = usePlayerImport(onImportParsed);
+  const { error, importing, onFile, clearError } = usePlayerImport(onImportParsed);
 
   const normalizedSearch = search.trim().toLowerCase();
   const deferredSearch = useDeferredValue(normalizedSearch);
@@ -96,7 +96,7 @@ function PlayerWorkspaceView({ dataset, onDataset, onOpenSquad }: Props) {
     if (dataset) void library.save(dataset);
   }, [dataset, library.save]);
 
-  return <div className="view-flow">
+  return <div className="view-flow" aria-busy={importing}>
     <div className="page-title">
       <span className="mh-eyebrow">{t("PLAYER INTELLIGENCE / PROVISIONAL EXPORTS")}</span>
       <h1>{t("Player Lab")}</h1>
@@ -105,6 +105,7 @@ function PlayerWorkspaceView({ dataset, onDataset, onOpenSquad }: Props) {
 
     <PlayerImportToolbar
       dataset={dataset}
+      importing={importing}
       savedCurrent={savedCurrent}
       activity={library.activity}
       onFile={onFile}
