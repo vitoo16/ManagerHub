@@ -85,13 +85,17 @@ const CoverageDiagnostics = memo(function CoverageDiagnostics({ gaps }: { gaps: 
       <span>{t("{{scored}} of {{eligible}} eligible players", { scored: item.scoredCandidates, eligible: item.eligibleCandidates })}</span>
     </div>)}
   </div>;
-});const SelectedPosition = memo(function SelectedPosition({ assignment, roleTitle }: {
+});
+
+const SelectedPosition = memo(function SelectedPosition({ assignment, roleTitle }: {
   assignment: { slot: { label: string; roleId: string }; roleScore: number };
   roleTitle?: string;
 }) {
   const { t } = useTranslation();
   return <p><strong>{t("Selected position:")}</strong> {assignment.slot.label} · {roleTitle ? t(roleTitle) : assignment.slot.roleId} · {t("Role fit")} {assignment.roleScore}/100</p>;
-});const ContributionMetrics = memo(function ContributionMetrics({ withPlayer, withoutPlayer, delta, changedSlots }: {
+});
+
+const ContributionMetrics = memo(function ContributionMetrics({ withPlayer, withoutPlayer, delta, changedSlots }: {
   withPlayer: number | null;
   withoutPlayer: number | null;
   delta: number | null;
@@ -104,4 +108,6 @@ const CoverageDiagnostics = memo(function CoverageDiagnostics({ gaps }: { gaps: 
     <div><span>{t("Role-fit difference")}</span><strong>{delta !== null && delta > 0 ? '+' : ''}{delta ?? '—'}</strong><small>{t("Points across the full XI")}</small></div>
     <div><span>{t("Changed positions")}</span><strong>{changedSlots ?? '—'}</strong><small>{t("When this player is excluded")}</small></div>
   </div>;
-});export default memo(RecruitmentPreviewPanel);
+});
+
+export default memo(RecruitmentPreviewPanel);
