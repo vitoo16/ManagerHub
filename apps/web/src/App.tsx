@@ -1,13 +1,13 @@
 import { setAppLocale } from './i18n';
 import { useTranslation } from 'react-i18next';
-import { useCallback, useEffect, useId, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useId, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
 import {
   FEATURES, FEATURE_GROUPS, formatBytes, inspectSave, type SaveIdentity, type WorkspaceKey
 } from '@managerhub/domain';
 import { Button, Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
 import { useReducedMotion, useWorkspaceTransition } from '@managerhub/motion';
-import { PlayerWorkspace } from './PlayerWorkspace';
-import { SquadWorkspace } from './SquadWorkspace';
+const PlayerWorkspace = lazy(() => import('./PlayerWorkspace').then(module => ({ default: module.PlayerWorkspace })));
+const SquadWorkspace = lazy(() => import('./SquadWorkspace').then(module => ({ default: module.SquadWorkspace })));
 import { createDefaultSquadPlans, type SquadPlanKey, type SquadPlans, type PlayerDataset } from '@managerhub/domain';
 import './app.css';
 
@@ -371,9 +371,9 @@ export default function App() {
       <main ref={viewScope} className="main-area" id="main-content" tabIndex={-1}>
         <div data-animate="workspace" key={view}>
           {view === 'overview' && <Overview imports={imports} go={navigate}/>}
-          {view === 'players' && <PlayerWorkspace dataset={playerDataset} onDataset={onPlayerDatasetChange} onOpenSquad={()=>navigate('squad')}/>}
-          {view === 'squad' && <SquadWorkspace dataset={playerDataset} onImport={() => navigate('players')}
-            plans={squadPlans} setPlans={setSquadPlans} active={activeSquadPlan} setActive={setActiveSquadPlan}/>}
+          {view === 'players' && <Suspense fallback={<div className="workspace-loading" role="status">{t('Loading…')}</div>}><PlayerWorkspace dataset={playerDataset} onDataset={onPlayerDatasetChange} onOpenSquad={()=>navigate('squad')}/></Suspense>}
+          {view === 'squad' && <Suspense fallback={<div className="workspace-loading" role="status">{t('Loading…')}</div>}><SquadWorkspace dataset={playerDataset} onImport={() => navigate('players')}
+            plans={squadPlans} setPlans={setSquadPlans} active={activeSquadPlan} setActive={setActiveSquadPlan}/></Suspense>}
           {view === 'saves' && <SaveInspector imports={imports} selected={selected} onInspect={onInspect} onRemove={remove} busy={busy} error={error} select={setSelectedId}/>}
           {view === 'modules' && <Systems/>}
           {view === 'architecture' && <Architecture/>}
