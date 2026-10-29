@@ -1,6 +1,6 @@
 # ManagerHub performance architecture
 
-**Status as of 2026-10-29:** baseline architecture merged via [PR #7](https://github.com/vitoo16/ManagerHub/pull/7), performance/save-error audit via [PR #8](https://github.com/vitoo16/ManagerHub/pull/8), and opt-in save metadata persistence via [PR #9](https://github.com/vitoo16/ManagerHub/pull/9). GitHub Actions run [#145](https://github.com/vitoo16/ManagerHub/actions/runs/40876263067) passed TypeScript strict typecheck, unit tests, production build/bundle budget, and desktop/mobile Playwright (42 browser tests). This verifies correctness and bundle guardrails, not a measured runtime improvement; no before/after performance percentage is claimed without a representative browser profile.
+**Status as of 2026-10-29:** baseline architecture merged via [PR #7](https://github.com/vitoo16/ManagerHub/pull/7), performance/save-error audit via [PR #8](https://github.com/vitoo16/ManagerHub/pull/8), opt-in save metadata persistence via [PR #9](https://github.com/vitoo16/ManagerHub/pull/9), and targeted recovery for incompatible metadata via [PR #10](https://github.com/vitoo16/ManagerHub/pull/10). GitHub Actions run [#149](https://github.com/vitoo16/ManagerHub/actions/runs/40877309356) passed TypeScript strict typecheck, unit tests, production build/bundle budget, and desktop/mobile Playwright (44 browser tests). This verifies correctness and bundle guardrails, not a measured runtime improvement; no before/after performance percentage is claimed without a representative browser profile.
 
 ## Principles
 
@@ -31,7 +31,7 @@
 
 - Player list: fixed 56px rows, 5-row overscan, bounded window, and incremental loading by 100 records. The virtual window uses the measured scroll-container height (including the smaller mobile viewport), slices only the rows in view, and preserves scroll position when loading another 100 records. Search or roster changes reset the scroll position.
 - CSV/TSV import: transfer the input `ArrayBuffer` to a Web Worker and parse there. HTML remains on the main thread for the safety reason above.
-- Save inspection: run SHA-256 and bounded archive-index inspection in a Web Worker, keeping the UI responsive while the browser reads larger files. The lazy Save Library can explicitly persist validated inspection metadata in a dedicated IndexedDB v2 store (maximum 50 records); the original .fm bytes are never stored.
+- Save inspection: run SHA-256 and bounded archive-index inspection in a Web Worker, keeping the UI responsive while the browser reads larger files. The lazy Save Library can explicitly persist validated inspection metadata in a dedicated IndexedDB v2 store (maximum 50 records); the original .fm bytes are never stored. If a record is incompatible, a targeted recovery action clears only that store and preserves player exports.
 - Existing parser limits (12 MB player exports / 20,000 rows and bounded save inspection) remain in force.
 
 ### Build budget
@@ -42,7 +42,7 @@ The web build emits Vite's manifest and runs `scripts/check-bundle-budget.mjs` a
 - Every emitted JavaScript chunk, including lazy and worker chunks: at most 400 KiB raw and 145 KiB gzip.
 - Vite's chunk warning limit is set to 400 KiB as an additional warning.
 
-The latest successful build reported an initial static JS+CSS closure of **423.5 KiB raw / 138.4 KiB gzip-sum**, below the 450/150 KiB budgets. This is a manifest-based size metric, not a network transfer or interaction-latency measurement.
+The latest successful build reported an initial static JS+CSS closure of **423.9 KiB raw / 138.4 KiB gzip-sum**, below the 450/150 KiB budgets. This is a manifest-based size metric, not a network transfer or interaction-latency measurement.
 
 The initial asset graph ignores a module's own dynamic-import targets if they also appear in its preload-oriented import list, while retaining a chunk reached through another module's static import path. This prevents shared static dependencies from being undercounted.
 
