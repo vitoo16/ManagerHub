@@ -81,7 +81,7 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
               onClick={() => { void (isSelectedSaved ? saveLibrary.remove(selected.id) : saveLibrary.save(selected)); }}>
               {t(isSelectedSaved ? 'Remove saved metadata' : 'Save inspection metadata on this browser')}
             </Button>
-            <p>{t("Only the inspection metadata shown here is saved in this browser. The original .fm file bytes are never stored or uploaded.")}</p>
+            <p>{t("Only inspection metadata is saved in this browser. The original .fm file bytes are never stored or uploaded.")}</p>
           </div>
           <div className="inspector-note"><Icon name="warning" size={16}/>
             <div>
