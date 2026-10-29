@@ -1,7 +1,7 @@
 import { memo, useDeferredValue, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { eligibleSlotCandidates, type LineupSlot, type PlayerDataset } from '@managerhub/domain';
-import { Button, Icon, Surface } from '@managerhub/ui';
+import { Button, Surface } from '@managerhub/ui';
 import { getRoleTitle } from './role-title';
 
 interface PinEditorProps {
