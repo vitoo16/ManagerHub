@@ -24,6 +24,9 @@ export function decodeValidatedMemberPayload(stored, reportedDecodedBytes) {
   }
   const envelopeMatches = stored.byteLength >= OBSERVED_ENVELOPE.length &&
     Buffer.from(stored.subarray(0, 8)).equals(OBSERVED_ENVELOPE);
+  if (!envelopeMatches) {
+    return { status: 'invalid_envelope', envelopeMatches: false, candidates: [] };
+  }
   const candidates = [];
   for (const skip of SKIPS) {
     if (skip >= stored.byteLength) continue;
@@ -32,7 +35,9 @@ export function decodeValidatedMemberPayload(stored, reportedDecodedBytes) {
       try {
         const { buffer, engine } = decompress(input, {
           info: true,
-          maxOutputLength: MAX_DECODED_BYTES
+          // Abort as soon as decoded output exceeds its declared length;
+          // do not allocate up to the global 2 MiB cap for tiny members.
+          maxOutputLength: reportedDecodedBytes
         });
         if (engine.bytesWritten === input.byteLength &&
             buffer.byteLength === reportedDecodedBytes) {
@@ -68,5 +73,6 @@ export function summarizeValidatedMemberDecode(result) {
     return { status: result.status, envelopeMatches: result.envelopeMatches,
       candidates: result.candidates };
   }
-  return { status: 'unsupported_codec', envelopeMatches: result.envelopeMatches };
+  return { status: result.status === 'invalid_envelope' ? 'invalid_envelope' : 'unsupported_codec',
+    envelopeMatches: result.envelopeMatches };
 }
