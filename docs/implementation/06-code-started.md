@@ -133,3 +133,14 @@ The observed unindexed gap after `tactics_man.dat` is **still unindexed**. Do no
 | `regeneration_manager.dat` | 25,275,060 | 178,694 | 25,453,754 |
 
 Both the unindexed gap and `regeneration_manager.dat` begin with `10 00 00 00 10 00 00 00`, yet **only 670 of 178,694 byte positions are equal**. They are not duplicate byte ranges and this comparison does not show a shared codec. The local research CLI now compares same-size gaps with bounded indexed candidates and reports equality statistics only (no raw payload).
+
+### Format-family boundary: AFE vs modern FMF (2026-10-30)
+
+Do **not** apply an FM26 Zstandard save decoder to an observed AFE-family save just because both contain the bytes `fmf.`:
+
+- Private AFE fixture: begins `02 01 61 66 65 2e` (`afe.`); member payloads have observed envelope `10 00 00 00 10 00 00 00`; trailing `fmf.` directory decompresses with zlib and describes primary and nested archive members.
+- Public FM26 reverse-engineering notes describe **different** `02 01 66 6d 66 2e` (`fmf.`) container and back-to-back **Zstandard frames starting at offset 26**, with no comparable trailing directory; this is not evidence of AFE member codec. See [gilet format research](https://github.com/fifteen15-labs/gilet/blob/main/docs/SAVE_FORMAT.md) and the [fmsave reader](https://github.com/rhiever/fmsave) (FM26 support).
+- On the private AFE fixture, 793/793 indexed member extents were inspected at offsets 0, 8, 16, 24 and 32: **no** Zstandard frame (`28 b5 2f fd`), LZ4 frame (`04 22 4d 18`), gzip, xz, bzip2, or valid zlib CMF/FLG header at these exact sampled positions. This does **not** rule out an unframed stream, encrypted stream, alternate offset, or unsupported codec.
+- `scripts/afe-frame-signatures.mjs` repeats these bounded signature checks and labels all results **signature-only**, not decompression success. It returns counts, not raw save data.
+
+A correct AFE decoder still requires independently confirmed payload framing, full input consumption, expected output length, and semantic validation of at least one record before exposing player/CA/PA data.
