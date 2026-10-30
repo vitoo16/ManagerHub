@@ -31,6 +31,8 @@ test('accounts for one unindexed range with observed eight-byte envelope', async
     sampledBytes: 20,
     startsWithObservedEnvelope: true,
     observedEnvelopeOccurrencesInSample: 1,
+    fullGapEnvelopeScan: true,
+    observedEnvelopeOccurrencesInFullGap: 1,
     sampleEntropyBitsPerByte: report.gaps[0].sampleEntropyBitsPerByte,
     completeGapSample: true
   });
@@ -47,6 +49,36 @@ test('truncates large gap samples and never claims full-range entropy', async ()
   assert.equal(gap.sampledBytes, 65536);
   assert.equal(gap.completeGapSample, false);
   assert.equal(gap.startsWithObservedEnvelope, true);
+  assert.equal(gap.fullGapEnvelopeScan, true);
+  assert.equal(gap.observedEnvelopeOccurrencesInFullGap, 1);
+});
+
+test('full scan discovers a marker beyond the entropy sample without returning bytes', async () => {
+  const gapSize = 178694;
+  const bytes = Buffer.alloc(18 + gapSize + 8, 0xaa);
+  envelope.copy(bytes, 18);
+  envelope.copy(bytes, 18 + 125000);
+  const report = await auditUnindexedGaps(handleFrom(bytes),
+    [{ filename: 'later.dat', offset: gapSize, storedBytes: 8 }], bytes.length);
+  assert.equal(report.gapCount, 1);
+  const gap = report.gaps[0];
+  assert.equal(gap.sampledBytes, 65536);
+  assert.equal(gap.observedEnvelopeOccurrencesInSample, 1);
+  assert.equal(gap.fullGapEnvelopeScan, true);
+  assert.equal(gap.observedEnvelopeOccurrencesInFullGap, 2);
+  assert.equal(gap.completeGapSample, false);
+  assert.equal(JSON.stringify(report).includes('aaaaaaaa'), false);
+});
+
+test('large gaps do not claim exhaustive marker scans', async () => {
+  const gapSize = 256 * 1024 + 8;
+  const bytes = Buffer.alloc(18 + gapSize + 8, 0xaa);
+  envelope.copy(bytes, 18);
+  const report = await auditUnindexedGaps(handleFrom(bytes),
+    [{ filename: 'later.dat', offset: gapSize, storedBytes: 8 }], bytes.length);
+  assert.equal(report.gaps[0].fullGapEnvelopeScan, false);
+  assert.equal(report.gaps[0].observedEnvelopeOccurrencesInFullGap, null);
+  assert.equal(report.gaps[0].sampledBytes, 65536);
 });
 
 test('rejects overlaps and truncated file reads', async () => {
