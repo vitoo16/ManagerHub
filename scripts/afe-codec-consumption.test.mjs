@@ -47,3 +47,21 @@ test('rejects oversized inputs and output expectations', () => {
   assert.throws(() => probeCodecConsumption(Buffer.alloc(256 * 1024 + 1), 100), RangeError);
   assert.throws(() => probeCodecConsumption(Buffer.from([1]), 2 * 1024 * 1024 + 1), RangeError);
 });
+
+test('offset 32 raw DEFLATE consuming only a tiny prefix cannot claim codec compatibility', () => {
+  const raw = deflateRawSync(Buffer.from('six'));
+  const member = Buffer.concat([Buffer.alloc(32, 0x41), raw, Buffer.alloc(70, 0x6b)]);
+  const trial = probeCodecConsumption(member, 200).find(item =>
+    item.codec === 'deflate-raw' && item.skip === 32);
+  assert.equal(trial.result, 'trailing_input');
+  assert.equal(trial.consumedBytes, raw.length);
+  assert.equal(trial.inputBytes, member.length - 32);
+});
+
+test('offset 24 only becomes a candidate for an exact and size-matching stream', () => {
+  const raw = deflateRawSync(payload);
+  const wrapped = Buffer.concat([Buffer.alloc(24, 0x15), raw]);
+  const candidate = probeCodecConsumption(wrapped, payload.length).find(item =>
+    item.codec === 'deflate-raw' && item.skip === 24);
+  assert.equal(candidate.result, 'candidate_only');
+});
