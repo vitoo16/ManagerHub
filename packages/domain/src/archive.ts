@@ -26,6 +26,8 @@ const MAX_INDEX_COMPRESSED = 64 * 1024;
 const MAX_INDEX_DECOMPRESSED = 512 * 1024;
 const MAX_MEMBERS = 1024;
 const MAX_GROUPS = 16;
+// Limit random-access file reads when a nested catalogue exposes hundreds of members.
+export const MAX_MEMBER_PREFIX_PROBES = 32;
 // Prevent adversarial marker-heavy files from triggering unbounded inflate attempts.
 const MAX_INDEX_CANDIDATES = 32;
 const MAX_NAME_CHARS = 256;
@@ -209,7 +211,7 @@ export async function probeMemberEnvelopes(
   const memberDataBoundary = index.directoryOffset - OBSERVED_MEMBER_DATA_BASE_BYTES;
   if (memberDataBoundary <= 0 || index.directoryOffset > file.size) return [];
   const probes: MemberEnvelopeProbe[] = [];
-  for (const member of index.members) {
+  for (const member of index.members.slice(0, MAX_MEMBER_PREFIX_PROBES)) {
     if (!Number.isSafeInteger(member.offset) || !Number.isSafeInteger(member.storedBytes) ||
         member.offset < 0 || member.storedBytes < 1 ||
         member.offset > memberDataBoundary || member.storedBytes > memberDataBoundary - member.offset) {

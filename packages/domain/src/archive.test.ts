@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { inspectArchiveIndex, parseArchiveDirectory, parseArchiveDirectoryDetails, probeMemberEnvelopes, summarizeMemberConsistency } from './archive';
+import { inspectArchiveIndex, parseArchiveDirectory, parseArchiveDirectoryDetails, probeMemberEnvelopes, MAX_MEMBER_PREFIX_PROBES, summarizeMemberConsistency } from './archive';
 import { detectSaveFamily } from './save';
 
 function syntheticIndex() {
@@ -197,6 +197,25 @@ describe('bounded AFE/FM directory catalogue parser', () => {
       .toBeLessThanOrEqual((index?.directoryOffset ?? 18) - 18);
   });
 
+
+  it('caps member header sampling for large nested catalogues', async () => {
+    const members = Array.from({ length: 75 }, (_, i) => ({
+      filename: 'member_' + i + '.dat', offset: i * 20,
+      storedBytes: 20, reportedUncompressedBytes: 32
+    }));
+    const bytes = new Uint8Array(18 + 75 * 20 + 24);
+    const file = new File([bytes], 'many-members.fm');
+    const archive = {
+      family: 'fmf-index-candidate' as const, evidence: 'experimental' as const,
+      memberCount: members.length, directoryOffset: 18 + 75 * 20,
+      members
+    };
+    const results = await probeMemberEnvelopes(file, archive);
+    expect(MAX_MEMBER_PREFIX_PROBES).toBe(32);
+    expect(results).toHaveLength(MAX_MEMBER_PREFIX_PROBES);
+    expect(results[0]?.filename).toBe('member_0.dat');
+    expect(results.at(-1)?.filename).toBe('member_31.dat');
+  });
 
   it('samples only bounded member prefixes without decoding payloads', async () => {
     const directory = syntheticIndex();
