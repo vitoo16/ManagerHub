@@ -5,7 +5,7 @@ import { auditUnindexedGaps } from './afe-gap-audit.mjs';
 const envelope = Buffer.from([16, 0, 0, 0, 16, 0, 0, 0]);
 const handleFrom = data => ({
   async read(target, _offset, count, position) {
-    const bytesRead = data.copy(target, 0, position, position + count);
+    const bytesRead = position >= data.length ? 0 : data.copy(target, 0, position, Math.min(data.length, position + count));
     return { bytesRead };
   }
 });
