@@ -101,7 +101,8 @@ test('resolves genuine AFE header pointer relationship and verifies catalogue', 
   const header = Buffer.concat([
     Buffer.from([2, 1, 97, 102, 101, 46]), Buffer.alloc(12)
   ]);
-  header.writeUInt32LE(markerOffset - 9, 9);
+  header.writeUInt32LE(markerOffset - trailer.length, 9);
+  header.writeUInt32LE(trailer.length, 13);
   const file = Buffer.concat([header, member, trailer, deflateSync(makeDirectory(member))]);
   assert.equal(observedAfeDirectoryMarkerOffset(header, file.length), markerOffset);
   const dir = await mkdtemp(join(tmpdir(), 'afe-direct-pointer-'));
@@ -122,6 +123,18 @@ test('resolves genuine AFE header pointer relationship and verifies catalogue', 
     assert.equal(fallback.status, 'experimental_index');
     assert.equal(fallback.directoryLocator, 'tail_scan');
     assert.equal(fallback.directoryOffset, markerOffset);
+
+    // Even if pointer is numerically correct, a mismatched marker-length
+    // field must not select the header-directed path.
+    const wrongLength = Buffer.from(header);
+    wrongLength.writeUInt32LE(trailer.length - 1, 13);
+    await writeFile(path, Buffer.concat([
+      wrongLength, member, trailer, deflateSync(makeDirectory(member))
+    ]));
+    const fallbackLength = await inspectLocalArchive(path, { indexOnly: true });
+    assert.equal(fallbackLength.status, 'experimental_index');
+    assert.equal(fallbackLength.directoryLocator, 'tail_scan');
+    assert.equal(fallbackLength.directoryOffset, markerOffset);
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
@@ -132,6 +145,15 @@ test('rejects malformed header pointer candidates', () => {
   assert.equal(observedAfeDirectoryMarkerOffset(header, 100), null);
   header.writeUInt32LE(1000, 9);
   assert.equal(observedAfeDirectoryMarkerOffset(header, 100), null);
+  header.writeUInt32LE(9, 13);
+  assert.equal(observedAfeDirectoryMarkerOffset(header, 100), null);
+  header.writeUInt32LE(0, 9);
+  assert.equal(observedAfeDirectoryMarkerOffset(header, 100), null);
+  header.writeUInt32LE(50, 9);
+  header.writeUInt32LE(8, 13);
+  assert.equal(observedAfeDirectoryMarkerOffset(header, 100), null);
+  header.writeUInt32LE(9, 13);
+  assert.equal(observedAfeDirectoryMarkerOffset(header, 100), 59);
   assert.equal(observedAfeDirectoryMarkerOffset(Buffer.alloc(18), 100), null);
   assert.equal(observedAfeDirectoryMarkerOffset(header.subarray(0, 10), 100), null);
 });
