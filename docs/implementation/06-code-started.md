@@ -206,3 +206,15 @@ A closer byte-level inspection of the authentic 29,319,864-byte AFE save identif
 | 13 | 9 | Exactly equals the trailing FMF directory marker's 9-byte length |
 
 In this one independent sample, `29,310,362 + 9 = 29,310,371`, the exact marker offset, and bytes at that offset equal `02 01 66 6d 66 2e 04 00 00`. This lends more specific support to the earlier PR #54 locator than a hard-coded +9, but remains an **empirical hypothesis, not an established format specification**. The header-driven locator now requires the second field to equal the observed FMF marker length, computes `pointer + markerLength` and still validates the actual directory. A mismatched marker-length field causes the bounded tail-scan fallback. Synthetic tests cover matching and conflicting header values without requiring private save fixtures in the repository.
+
+### Complete AFE cross-save catalogue difference experiment (2026-10-31)
+
+For genuine controlled experiments, comparing only the first **32** same-sized members can miss differences in the other indexed entries (the private sample contains **793**). The research CLI now supports an **explicit opt-in**:
+
+```bash
+node scripts/afe-cross-save.mjs "same-state-A.fm" "same-state-B.fm" --all-members
+```
+
+The default 32-pair diagnostic with start/middle/end samples remains unchanged. With `--all-members`, it compares every shared-name, **same-stored-size** member in the validated AFE catalogue (at most **4096** entries), using full SHA-256 hashes computed in 64 KiB chunks for members up to **8 MiB**. It does not sample extra member bytes or emit digests; it reports only per-member equality status and aggregated changed/unchanged counts. Same-name members with unequal stored sizes are listed separately under `sizeChangedMembers`. Large members that exceed the per-member digest limit are counted as `unverifiedOversizedMembers`, **not** called equal. Full-file identity still exits early with `duplicate_input`. Input file-size limit remains 256 MiB.
+
+The status is **stored-byte-level equality evidence only**: a different member does not establish semantic game changes, a cipher, nonce, IV or checksum. For randomization evidence, two distinct files should be independently saved from the same game state, with no time advance or state changes between saves.
