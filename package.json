@@ -14,7 +14,7 @@
     "dev": "npm run dev -w @managerhub/web",
     "build": "npm run build -w @managerhub/web",
     "typecheck": "tsc --noEmit -p apps/web/tsconfig.json",
-    "test": "vitest run",
+    "test": "vitest run && node --test scripts/afe-codec-consumption.test.mjs",
     "test:watch": "vitest",
     "check": "npm run typecheck && npm run test && npm run build",
     "test:e2e": "playwright test"
