@@ -1,5 +1,6 @@
 const MAX_GAPS = 32;
 const MAX_SAMPLE_BYTES = 64 * 1024;
+const MAX_COMPLETE_MARKER_SCAN_BYTES = 256 * 1024;
 const ENVELOPE = Buffer.from([16, 0, 0, 0, 16, 0, 0, 0]);
 
 function entropy(bytes) {
@@ -40,6 +41,21 @@ export async function auditUnindexedGaps(handle, members, directoryOffset, base 
     for (let i = 0; i <= sample.length - ENVELOPE.length; i++) {
       if (sample.subarray(i, i + ENVELOPE.length).equals(ENVELOPE)) envelopeOccurrencesInSample++;
     }
+    // For reasonably small gaps, scan the entire range for the observed
+    // 8-byte envelope. This is independent from bounded entropy sampling.
+    // Large gaps remain explicitly partial; never extrapolate marker counts.
+    let envelopeOccurrencesInFullGap = null;
+    if (length <= MAX_COMPLETE_MARKER_SCAN_BYTES) {
+      const full = size === length ? sample : Buffer.alloc(length);
+      if (size !== length) {
+        const { bytesRead: fullBytesRead } = await handle.read(full, 0, length, base + start);
+        if (fullBytesRead !== length) throw new Error('Incomplete complete-gap marker read.');
+      }
+      envelopeOccurrencesInFullGap = 0;
+      for (let i = 0; i <= full.length - ENVELOPE.length; i++) {
+        if (full.subarray(i, i + ENVELOPE.length).equals(ENVELOPE)) envelopeOccurrencesInFullGap++;
+      }
+    }
     gaps.push({
       afterMember: previousName,
       beforeMember: beforeName,
@@ -48,6 +64,8 @@ export async function auditUnindexedGaps(handle, members, directoryOffset, base 
       sampledBytes: size,
       startsWithObservedEnvelope: sample.subarray(0, ENVELOPE.length).equals(ENVELOPE),
       observedEnvelopeOccurrencesInSample: envelopeOccurrencesInSample,
+      fullGapEnvelopeScan: envelopeOccurrencesInFullGap !== null,
+      observedEnvelopeOccurrencesInFullGap: envelopeOccurrencesInFullGap,
       sampleEntropyBitsPerByte: entropy(sample),
       completeGapSample: size === length
     });
