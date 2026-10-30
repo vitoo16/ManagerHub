@@ -184,3 +184,14 @@ The experimental member decoder now requires the **observed eight-byte AFE membe
 A new read-only `scripts/afe-raw-lz4.mjs` tests **unframed/raw LZ4 blocks**, which would not be found by the existing LZ4 *frame* signature census. It validates the observed 8-byte envelope and attempts offsets 8, 16, 24 and 32 with an exact output budget (maximum 2 MiB) and input budget (256 KiB). A pure JavaScript block decoder checks literal extents, match offset validity, overlapping back-references, complete input consumption and declared output length. The inspector reports only `size_consistent_candidate`, `ambiguous_candidates` or `unsupported_codec` and offsets; no decoded bytes enter its JSON output.
 
 On the local private sample, a separate Python `lz4.block` experiment checked **783 bounded indexed members** at these four offsets with the catalogue-reported decoded size. **Zero candidates** yielded the expected output length. This is negative evidence for *direct raw LZ4 at those offsets*, not a proof the save uses encryption or that an additional transform is absent. The JavaScript test suite includes synthetic literal-only, overlapping match, malformed offset and length cases. The private `.fm` save remains outside the repository.
+
+### Authentic AFE header-to-directory pointer relationship (2026-10-30)
+
+The private AFE sample (29,319,864 bytes) yielded a **new exact structural relationship**, checked directly against the real file:
+
+- LE u32 at absolute header offset **9** = **29,310,362**.
+- Trailing `02 01 fmf. 04 00 00` directory marker starts at absolute byte **29,310,371**.
+- The offset difference is **exactly +9**, and the compressed zlib directory begins another 9 bytes later.
+- The final indexed member ends at relative offset **29,310,353** (base 18), precisely where the directory marker begins.
+
+`observedAfeDirectoryMarkerOffset(header, fileSize)` now offers **candidate** marker location `readU32LE(header,9) + 9` with range checks. The local inspector first attempts a bounded header-directed read and requires the correct marker, complete zlib input consumption and a fully validated catalogue. If the candidate is absent, invalid or incompatible with a different AFE version, it falls back to its earlier bounded tail scan. Results distinguish `directoryLocator: 'header_pointer' | 'tail_scan'`. Both locator paths are regression-tested on synthetic AFE archives. This relationship is currently established for **one independent save** only (a second available file is byte-identical). It is not a blanket AFE-format specification and does not decode any member payload or CA/PA.
