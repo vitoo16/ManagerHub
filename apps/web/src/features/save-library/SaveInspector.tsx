@@ -76,6 +76,10 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
           </dl>
           {selected.archiveIndex && <div className="archive-preview">
             <div className="archive-preview__head"><div><strong>{t("Internal archive index")}</strong><small>{t("Experimental metadata discovery · Not decoded gameplay records")}</small></div><Status tone="warning">{selected.archiveIndex.memberCount} {t('entries')}</Status></div>
+            {selected.archiveIndex.nestedGroups && selected.archiveIndex.nestedGroups.length > 0 && <p>
+              {t('Additional indexed groups')}: {selected.archiveIndex.nestedGroups.map(group =>
+                group.name + ' (' + group.memberCount + ')').join(', ')}
+            </p>}
             <div className="archive-preview__list" role="list" aria-label={t("Internal save archive members")}>
               {selected.archiveIndex.members.slice(0, showAllMembers ? undefined : 8).map((entry, i) => <div className="archive-preview__row" role="listitem" key={entry.filename + i}>
                 <span className="archive-preview__filename" title={entry.filename}>{entry.filename}</span><span>{formatBytes(entry.storedBytes)}</span>
