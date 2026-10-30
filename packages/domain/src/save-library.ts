@@ -34,7 +34,15 @@ function isArchiveIndex(value: unknown): value is ArchiveIndex {
   if (!isSafeNonNegativeInteger(directoryOffset) || !isSafeNonNegativeInteger(memberCount) ||
       memberCount < 1 || memberCount > MAX_ARCHIVE_MEMBERS || !Array.isArray(members) ||
       members.length !== memberCount) return false;
-  return members.every(member => isArchiveMember(member, directoryOffset));
+  if (!members.every(member => isArchiveMember(member, directoryOffset))) return false;
+  const filenames = new Set<string>();
+  for (const member of members as ArchiveMember[]) {
+    if (filenames.has(member.filename)) return false;
+    filenames.add(member.filename);
+  }
+  const ordered = [...members as ArchiveMember[]].sort((a, b) => a.offset - b.offset);
+  return ordered.every((member, i) => i === 0 ||
+    (ordered[i - 1]!.offset + ordered[i - 1]!.storedBytes <= member.offset));
 }
 
 /** Validate IndexedDB data at the persistence boundary before trusting it in UI state. */

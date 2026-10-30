@@ -48,6 +48,25 @@ describe('save inspection metadata validation', () => {
     }))).toBe(false);
   });
 
+  it('rejects overlapping and duplicate archive entries at the storage boundary', () => {
+    const entry = (filename: string, offset: number) => ({
+      filename, offset, storedBytes: 20, reportedUncompressedBytes: 40
+    });
+    const archive = (members: ReturnType<typeof entry>[]) => ({
+      family: 'fmf-index-candidate' as const, evidence: 'experimental' as const,
+      memberCount: members.length, directoryOffset: 256, members
+    });
+    expect(isSaveIdentity(save({ archiveIndex: archive([
+      entry('a.dat', 0), entry('a.dat', 32)
+    ]) }))).toBe(false);
+    expect(isSaveIdentity(save({ archiveIndex: archive([
+      entry('a.dat', 0), entry('b.dat', 19)
+    ]) }))).toBe(false);
+    expect(isSaveIdentity(save({ archiveIndex: archive([
+      entry('b.dat', 20), entry('a.dat', 0)
+    ]) }))).toBe(true);
+  });
+
   it('rejects invalid family/status combinations and malformed hashes', () => {
     expect(isSaveIdentity(save({ detectedFamily: null, support: 'signature_only' }))).toBe(false);
     expect(isSaveIdentity(save({ sha256: 'not-a-hash' }))).toBe(false);

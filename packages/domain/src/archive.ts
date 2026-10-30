@@ -68,6 +68,19 @@ export function parseArchiveDirectory(bytes: Uint8Array, boundary: number): read
         offset > boundary || storedBytes > boundary - offset) return null;
     members.push({ filename: stem + ext, offset, storedBytes, reportedUncompressedBytes });
   }
+  // Reject malformed/ambiguous catalogues before any member offset is trusted.
+  // The observed AFE catalogue contains uniquely named, nonoverlapping extents.
+  const filenames = new Set<string>();
+  for (const member of members) {
+    if (filenames.has(member.filename)) return null;
+    filenames.add(member.filename);
+  }
+  const byOffset = [...members].sort((a, b) => a.offset - b.offset);
+  for (let i = 1; i < byOffset.length; i++) {
+    const previous = byOffset[i - 1];
+    const current = byOffset[i];
+    if (previous && current && previous.offset + previous.storedBytes > current.offset) return null;
+  }
   return members;
 }
 

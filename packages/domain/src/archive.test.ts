@@ -15,7 +15,36 @@ function syntheticIndex() {
   number(0); number(128); number(256);
   return Uint8Array.from(data);
 }
+function twoMemberIndex(secondName: string, secondOffset: number): Uint8Array {
+  const bytes: number[] = [];
+  const u32 = (n: number) => bytes.push(n & 255, (n >>> 8) & 255, (n >>> 16) & 255, (n >>> 24) & 255);
+  const name = (value: string) => {
+    u32(value.length);
+    for (const ch of value) bytes.push(ch.charCodeAt(0), 0);
+    bytes.push(0, 0);
+  };
+  u32(0);
+  u32(2);
+  for (const [stem, offset] of [['first', 0], [secondName, secondOffset]] as const) {
+    name(stem); name('.dat'); u32(offset); u32(20); u32(64);
+  }
+  return Uint8Array.from(bytes);
+}
+
 describe('bounded AFE/FM directory catalogue parser', () => {
+  it('rejects duplicate member filenames even when extents are distinct', () => {
+    const bytes = twoMemberIndex('first', 32);
+    expect(parseArchiveDirectory(bytes, 256)).toBeNull();
+  });
+  it('rejects overlapping extents even when the directory order is reversed', () => {
+    const bytes = twoMemberIndex('second', 15);
+    expect(parseArchiveDirectory(bytes, 256)).toBeNull();
+  });
+  it('accepts gaps and adjacent member extents when filenames are unique', () => {
+    expect(parseArchiveDirectory(twoMemberIndex('second', 20), 256)).toHaveLength(2);
+    expect(parseArchiveDirectory(twoMemberIndex('second', 27), 256)).toHaveLength(2);
+  });
+
   it('extracts only member metadata from valid index', () => {
     expect(parseArchiveDirectory(syntheticIndex(), 1000)).toEqual([
       {filename: 'game_info.dat', offset: 0, storedBytes: 128, reportedUncompressedBytes: 256}
