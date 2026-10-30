@@ -32,10 +32,15 @@ export function observedAfeDirectoryMarkerOffset(header, fileSize) {
   if (!(header instanceof Uint8Array) || header.length < BASE ||
       !Number.isSafeInteger(fileSize) || fileSize < BASE + MARKER.length + 2 ||
       !Buffer.from(header.subarray(0, AFE_HEADER.length)).equals(AFE_HEADER)) return null;
-  const pointer = Buffer.from(header).readUInt32LE(9);
-  const offset = pointer + 9;
-  if (pointer === 0 || offset <= BASE ||
-      offset > fileSize - MARKER.length - 2) return null;
+  const bytes = Buffer.from(header);
+  const pointer = bytes.readUInt32LE(9);
+  const markerLength = bytes.readUInt32LE(13);
+  // The authentic AFE fixture stores 9 as a separate header field. Require
+  // it to equal the observed marker length before trusting this locator.
+  // Unknown versions continue through the validated tail-scanning fallback.
+  if (markerLength !== MARKER.length || pointer === 0) return null;
+  const offset = pointer + markerLength;
+  if (offset <= BASE || offset > fileSize - MARKER.length - 2) return null;
   return offset;
 }
 
@@ -188,7 +193,7 @@ export async function inspectLocalArchive(filePath, { includeMemberIndex = false
     };
 
     // Observed AFE header u32 at absolute byte 9 satisfies:
-    // directory marker absolute offset = pointer + 9.
+    // directory marker absolute offset = pointer + markerLength (u32 at 13).
     // Validate it; never trust the pointer without parsing the catalogue.
     const directOffset = observedAfeDirectoryMarkerOffset(header, fileStat.size);
     if (directOffset !== null) {
