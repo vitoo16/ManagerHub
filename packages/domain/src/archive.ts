@@ -16,6 +16,7 @@ export interface ArchiveIndex {
   readonly memberCount: number;
   readonly directoryOffset: number;
   readonly members: readonly ArchiveMember[];
+  readonly nestedGroups?: readonly { readonly name: string; readonly memberCount: number }[];
   readonly probes?: readonly MemberEnvelopeProbe[];
   readonly gapObservations?: readonly import('./archive-gaps').UnindexedGapObservation[];
 }
@@ -24,6 +25,7 @@ const SEARCH_TAIL_BYTES = 64 * 1024;
 const MAX_INDEX_COMPRESSED = 64 * 1024;
 const MAX_INDEX_DECOMPRESSED = 512 * 1024;
 const MAX_MEMBERS = 1024;
+const MAX_GROUPS = 16;
 // Prevent adversarial marker-heavy files from triggering unbounded inflate attempts.
 const MAX_INDEX_CANDIDATES = 32;
 const MAX_NAME_CHARS = 256;
@@ -32,7 +34,10 @@ const MAX_NAME_CHARS = 256;
 // experimental layout assumption explicit until independently verified.
 const OBSERVED_MEMBER_DATA_BASE_BYTES = 18;
 
-export function parseArchiveDirectory(bytes: Uint8Array, boundary: number): readonly ArchiveMember[] | null {
+export function parseArchiveDirectoryDetails(bytes: Uint8Array, boundary: number): {
+  members: readonly ArchiveMember[];
+  nestedGroups: readonly { name: string; memberCount: number }[];
+} | null {
   if (bytes.byteLength < 8) return null;
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   let cursor = 0;
@@ -68,6 +73,35 @@ export function parseArchiveDirectory(bytes: Uint8Array, boundary: number): read
         offset > boundary || storedBytes > boundary - offset) return null;
     members.push({ filename: stem + ext, offset, storedBytes, reportedUncompressedBytes });
   }
+  // An optional group table follows the primary catalogue in the observed
+  // AFE fixture. Reject malformed trailing bytes rather than ignoring them.
+  const nestedGroups: { name: string; memberCount: number }[] = [];
+  if (cursor < bytes.byteLength) {
+    const groupCount = readU32();
+    if (groupCount === null || groupCount > MAX_GROUPS) return null;
+    for (let group = 0; group < groupCount; group++) {
+      const groupName = readText();
+      const childCount = readU32();
+      if (groupName === null || childCount === null || childCount < 1 ||
+          childCount > MAX_MEMBERS - members.length) return null;
+      nestedGroups.push({ name: groupName, memberCount: childCount });
+      for (let j = 0; j < childCount; j++) {
+        const stem = readText();
+        const ext = readText();
+        if (stem === null || ext === null) return null;
+        const offset = readU32();
+        const storedBytes = readU32();
+        const reportedUncompressedBytes = readU32();
+        if (offset === null || storedBytes === null || reportedUncompressedBytes === null ||
+            storedBytes < 1 || reportedUncompressedBytes < 1 ||
+            offset > boundary || storedBytes > boundary - offset) return null;
+        members.push({ filename: stem + ext, offset, storedBytes, reportedUncompressedBytes });
+      }
+    }
+    // One terminal LE-zero is observed; no other bytes are silently accepted.
+    if (cursor + 4 === bytes.byteLength && view.getUint32(cursor, true) === 0) cursor += 4;
+    if (cursor !== bytes.byteLength) return null;
+  }
   // Reject malformed/ambiguous catalogues before any member offset is trusted.
   // The observed AFE catalogue contains uniquely named, nonoverlapping extents.
   const filenames = new Set<string>();
@@ -81,7 +115,11 @@ export function parseArchiveDirectory(bytes: Uint8Array, boundary: number): read
     const current = byOffset[i];
     if (previous && current && previous.offset + previous.storedBytes > current.offset) return null;
   }
-  return members;
+  return { members, nestedGroups };
+}
+
+export function parseArchiveDirectory(bytes: Uint8Array, boundary: number): readonly ArchiveMember[] | null {
+  return parseArchiveDirectoryDetails(bytes, boundary)?.members ?? null;
 }
 
 async function inflateIndexBlob(blob: Blob): Promise<Uint8Array> {
@@ -136,9 +174,10 @@ export async function inspectArchiveIndex(file: File): Promise<ArchiveIndex | nu
       const payload = await inflateIndexBlob(file.slice(position + 9));
       const memberDataBoundary = position - OBSERVED_MEMBER_DATA_BASE_BYTES;
       if (memberDataBoundary <= 0) continue;
-      const members = parseArchiveDirectory(payload, memberDataBoundary);
-      if (members) return { family: 'fmf-index-candidate', evidence: 'experimental',
-        memberCount: members.length, directoryOffset: position, members };
+      const parsed = parseArchiveDirectoryDetails(payload, memberDataBoundary);
+      if (parsed) return { family: 'fmf-index-candidate', evidence: 'experimental',
+        memberCount: parsed.members.length, directoryOffset: position,
+        members: parsed.members, nestedGroups: parsed.nestedGroups };
     } catch { /* Ignore malformed false positives and continue scanning. */ }
   }
   return null;
