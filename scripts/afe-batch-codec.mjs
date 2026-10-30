@@ -114,7 +114,7 @@ export function selectCodecProbeMembers(members, limit = MAX_PROBES) {
     a.storedBytes - b.storedBytes || a.filename.localeCompare(b.filename)).slice(0, limit);
 }
 
-export async function inspectLocalArchive(filePath) {
+export async function inspectLocalArchive(filePath, { includeMemberIndex = false } = {}) {
   const fileStat = await stat(filePath);
   if (fileStat.size < BASE + MARKER.length + 2) return { status: 'not_recognized', members: [], trials: [] };
   const handle = await open(filePath, 'r');
@@ -212,6 +212,7 @@ export async function inspectLocalArchive(filePath) {
       memberCount: totalMembers, nestedGroups: groupCounts, nestedStructure: groupStructure,
       dominantCohortProfile: cohortProfile, envelopeCensus, framedCodecSignatures, gapAudit, gapComparisons,
       totalIndexedMembers: members.length,
+      ...(includeMemberIndex ? { memberIndex: members } : {}),
       parsedDirectoryBytes, unparsedDirectoryBytes,
       inspectedMembers: inspected, skippedOversized: skipped, trials };
   } finally {

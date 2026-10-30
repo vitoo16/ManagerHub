@@ -14,7 +14,7 @@
     "dev": "npm run dev -w @managerhub/web",
     "build": "npm run build -w @managerhub/web",
     "typecheck": "tsc --noEmit -p apps/web/tsconfig.json",
-    "test": "vitest run && node --test scripts/afe-codec-consumption.test.mjs scripts/afe-batch-codec.test.mjs scripts/afe-structure-summary.test.mjs scripts/afe-cohort-profile.test.mjs scripts/afe-envelope-census.test.mjs scripts/afe-gap-audit.test.mjs scripts/afe-gap-comparison.test.mjs scripts/afe-frame-signatures.test.mjs",
+    "test": "vitest run && node --test scripts/afe-codec-consumption.test.mjs scripts/afe-batch-codec.test.mjs scripts/afe-structure-summary.test.mjs scripts/afe-cohort-profile.test.mjs scripts/afe-envelope-census.test.mjs scripts/afe-gap-audit.test.mjs scripts/afe-gap-comparison.test.mjs scripts/afe-frame-signatures.test.mjs scripts/afe-cross-save.test.mjs",
     "test:watch": "vitest",
     "check": "npm run typecheck && npm run test && npm run build",
     "test:e2e": "playwright test"
