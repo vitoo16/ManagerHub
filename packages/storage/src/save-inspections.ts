@@ -1,4 +1,4 @@
-import { MAX_SAVED_SAVE_INSPECTIONS, isSaveIdentity } from '@managerhub/domain/save-library';
+import { MAX_SAVED_SAVE_INSPECTIONS, isSaveIdentity, toPersistedSaveIdentity } from '@managerhub/domain/save-library';
 import type { SaveIdentity } from '@managerhub/domain/types';
 import { SAVE_INSPECTIONS, openDatabase, readRequest, transactionCompleted } from './database';
 
@@ -17,7 +17,8 @@ export async function listSavedSaveInspections(): Promise<SaveIdentity[]> {
 
 /** Explicit user action; persists the validated inspection record, never the source file. */
 export async function saveSaveInspectionMetadata(identity: SaveIdentity): Promise<SaveIdentity> {
-  if (!isSaveIdentity(identity)) throw new Error('This inspection metadata is not valid for local storage.');
+  const persisted = toPersistedSaveIdentity(identity);
+  if (!isSaveIdentity(persisted)) throw new Error('This inspection metadata is not valid for local storage.');
   const db = await openDatabase();
   try {
     const tx = db.transaction(SAVE_INSPECTIONS, 'readwrite');
@@ -32,9 +33,9 @@ export async function saveSaveInspectionMetadata(identity: SaveIdentity): Promis
         throw new Error('This browser already holds 50 saved save inspections. Delete one first.');
       }
     }
-    store.put(identity);
+    store.put(persisted);
     await completed;
-    return identity;
+    return persisted;
   } catch (cause) {
     if (cause instanceof Error &&
         /already holds 50 saved save inspections|inspection metadata is not valid/.test(cause.message)) throw cause;
