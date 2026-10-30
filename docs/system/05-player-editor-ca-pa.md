@@ -17,3 +17,7 @@ Display Actual CA/PA only when verified and authorized by edition/build adapter.
 No automatic memory patching or bypass of game's checks; separate explicit integration research required before any live editing. Never promise bulk edits without test coverage on all affected native records.
 
 Acceptance: unsupported version disables editor; preview never mutates source; reject unexpected unrelated changes; rollback proven on fixture set; track audit log locally. See [save reader](04-save-reader-compatibility.md) and [quality](09-security-privacy-and-testing.md).
+
+## Research evidence — 2026-10-30
+
+[FMRTE13 write-path research](../research/fmrte/02-fmrte13-write-pipeline.md) identifies separate Int16 CA/PA setter paths ending at a managed `WriteProcessMemory` call site, plus signed-byte/conversion paths for Passing/Pace. This does not validate exact game offsets, safe ranges, normalization, transaction recovery or save persistence. [FMRTE26](../research/fmrte/02-fmrte26-write-pipeline.md) remains unresolved below delegate dispatch. No production editor or live-memory operation was added; all editing gates above remain required.

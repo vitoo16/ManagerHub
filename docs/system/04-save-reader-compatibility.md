@@ -22,3 +22,9 @@ Input safety: file-picker consent, maximum byte lengths, offset checks, bounded 
 Fixture corpus -> format detection -> catalog/container decoding -> entity extraction -> CA/PA cross-validation -> contracts/tactics/events coverage -> performance and abuse tests -> optional certified writer in a separate release.
 
 See [editor safeguards](05-player-editor-ca-pa.md), [system provenance](03-domain-schema-and-provenance.md).
+
+## FMRTE investigation — 2026-10-30
+
+[REA research and evidence ledger](../research/fmrte/README.md) independently examines local FMRTE13 13.3.3.62 and FMRTE26 26.3.2.42. FMRTE13 static CIL reaches process-memory read/write declarations through actual call sites; its alternate stream branch has no validated `.fm` mapping. FMRTE26's recovered UI path stops at unresolved delegate bindings. These are external-tool findings, not ManagerHub format support.
+
+No FM2013 executable/build, known-player record or disposable same-build save pair was validated. Live read/write and offline player parsing/writing remain unverified/unsupported independently. No CA/PA capability is enabled. Exact inventories, hashes, function coordinates, missing edges and executed tests are in the linked report.

@@ -58,6 +58,9 @@ A format-specific capability may be **Blocked by compatibility** even while othe
 **Skill routing:** [skills research](04-motion-skills-and-references.md), [master execution prompt](02-agent-prompts.md), [charter](00-execution-charter.md).
 
 ## Actual implementation proof
+
+2026-10-30: [FMRTE REA investigation](../research/fmrte/README.md) adds source-identified static read/write evidence, separate13/26 inventories and read-only metadata/CIL research tooling. MH-01/02/03/05 do **not** gain native player-data, Actual CA/PA or writer support: exact FM2013 build/record validation and game-save roundtrip remain open. The full27-module scope and statuses above remain unchanged.
+
 [Player Lab HTML/CSV/TSV import, attributes, roles and limitations](07-player-lab-and-export-import.md). Real import data remains local and user-supplied. Full CA/PA save decoding, role/position fit calibration and recruitment financial assessment remain open requirements.
 
 Additional integration evidence: [opt-in local storage + role-fit lineup planner](08-local-library-and-squad-planner.md).

@@ -1,0 +1,1488 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-30",
+  "timezone": "Asia/Bangkok",
+  "repositoryBaseline": "8f973b3c37c464f0331b58de45cfda2cbe530cc2",
+  "rea": {
+    "version": "6.7.0",
+    "provider": {
+      "id": "rea-dotnet-static",
+      "version": "1"
+    },
+    "nativeProvider": {
+      "bound": false,
+      "ghidra": "not_configured; Java absolute path unavailable",
+      "ida": "not_configured"
+    },
+    "successfulOperations": [
+      "binary_session",
+      "inspect_managed_artifact",
+      "inspect_managed_members",
+      "inspect_managed_native_boundaries",
+      "inspect_analysis_view",
+      "project_managed_application_graph",
+      "export_evidence_bundle"
+    ]
+  },
+  "inventories": [
+    "inventory-13.json",
+    "inventory-26.json"
+  ],
+  "bundles": [
+    {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fmrte13-root-rea-evidence.json",
+      "sha256": "50505e1a7a06709a3eef0d29a57c0cdb5230cdbbd0ca5d806dda1876c7096872",
+      "note": "Final root ledger: 52 canonical records, 31,063,383 bytes; includes primary FMRTE13 and root metadata observations for26."
+    },
+    {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fmrte26-rea-evidence.json",
+      "sha256": "1c8c3450e2b58cf6059f86363794c174aed7bf2940d2b9586fe6ed2414430b78",
+      "note": "Independent FMRTE26 agent ledger; canonical Evidence IDs not shared across MCP sessions."
+    }
+  ],
+  "evidenceAliases": {
+    "artifact": "ev_ff210acd23f7ebd712248eb739ce0861cf22f15adf4a7d3416b83c0945d6253d",
+    "boundary": "ev_f6833f0e33bc70ec47da48762a36ae2cdf5f9019b7c77653d1ea0c774ff75259",
+    "mem13": "ev_560192acf0b81b70f4263c895d74ad75e9da3809981eb283e6c2a4678c7ef4ef",
+    "player13": "ev_340c303fb209860b2edfef989acbd316b43a87e77ce976e9cc140b9bce1bb832",
+    "ca13": "ev_4c35ddf55fba55ed58f57ef3f0e9ee65aac8da5f0e66b258ae27229dc806586a",
+    "common13": "ev_d0607aba2a6662460bffc27f6f15f37c637e82c2901872eb3746bc20e63eacaa",
+    "discovery13": "ev_dff3bf9248a5ceb00baaf8e26b4ed3cf8ea6408523d5782cec2f2b4ee599f71a",
+    "loader13": "ev_45f9c6ba99e4642ef18454556e7278b63309b05a125e9d485ea294962b5b32ab",
+    "ui13": "ev_19d6493a09e757902f03760129ec67af7895156afb13a82920a23c0dba3abdd9",
+    "pages13": "ev_3158299bfb3444ec8d3dc061cfe303cbd5eb84eaf52a288a7611024088db2aa4",
+    "attrs13": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d"
+  },
+  "discoveries": [
+    {
+      "id": "RE13-SYMBOL-0x06000f61",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_340c303fb209860b2edfef989acbd316b43a87e77ce976e9cc140b9bce1bb832",
+      "reaLocator": "normalized_result.methods[token=0x06000f61]",
+      "symbol": "FMRTE_Framework.GameObjects.Person..ctor",
+      "methodToken": "0x06000f61",
+      "rva": 444700,
+      "fileOffset": 437020,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "i4"
+        ]
+      },
+      "normalizedIlSha256": "81279f06e68f6aae3d590e7741d08cb147285ba017800a8b04e57bc6a995ee79",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000f63",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_340c303fb209860b2edfef989acbd316b43a87e77ce976e9cc140b9bce1bb832",
+      "reaLocator": "normalized_result.methods[token=0x06000f63]",
+      "symbol": "FMRTE_Framework.GameObjects.Person.get_ID",
+      "methodToken": "0x06000f63",
+      "rva": 444968,
+      "fileOffset": 437288,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "e9b76e78dab382efcb011a38848242c5de2f7f3c45f3e7456fe54b0707546c41",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000fc9",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_340c303fb209860b2edfef989acbd316b43a87e77ce976e9cc140b9bce1bb832",
+      "reaLocator": "normalized_result.methods[token=0x06000fc9]",
+      "symbol": "FMRTE_Framework.GameObjects.Player..ctor",
+      "methodToken": "0x06000fc9",
+      "rva": 451580,
+      "fileOffset": 443900,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "i4"
+        ]
+      },
+      "normalizedIlSha256": "8af2228d557624121877f1586b6eb63eed64ed48145ce4e5491df2e1c4a69a06",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000fe4",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_340c303fb209860b2edfef989acbd316b43a87e77ce976e9cc140b9bce1bb832",
+      "reaLocator": "normalized_result.methods[token=0x06000fe4]",
+      "symbol": "FMRTE_Framework.GameObjects.Player.get_CA",
+      "methodToken": "0x06000fe4",
+      "rva": 453676,
+      "fileOffset": 445996,
+      "signature": {
+        "returnType": "i2",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "a9f8e452796185e19fb221e3b6a144dc44c4b424fd54a52d6020ed1f82004036",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000fe5",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_340c303fb209860b2edfef989acbd316b43a87e77ce976e9cc140b9bce1bb832",
+      "reaLocator": "normalized_result.methods[token=0x06000fe5]",
+      "symbol": "FMRTE_Framework.GameObjects.Player.set_CA",
+      "methodToken": "0x06000fe5",
+      "rva": 453712,
+      "fileOffset": 446032,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "i2"
+        ]
+      },
+      "normalizedIlSha256": "263f9c64fd4261c7f9a1262b2a3b55318a8f5cb9f803cd26add663e949e9339e",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000fe6",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_340c303fb209860b2edfef989acbd316b43a87e77ce976e9cc140b9bce1bb832",
+      "reaLocator": "normalized_result.methods[token=0x06000fe6]",
+      "symbol": "FMRTE_Framework.GameObjects.Player.get_PA",
+      "methodToken": "0x06000fe6",
+      "rva": 453756,
+      "fileOffset": 446076,
+      "signature": {
+        "returnType": "i2",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "2f52a0c7e34262db96ab47d54d4fb0edb6cdb8c0826e46b024cd8ad86a64a2cf",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000fe7",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_340c303fb209860b2edfef989acbd316b43a87e77ce976e9cc140b9bce1bb832",
+      "reaLocator": "normalized_result.methods[token=0x06000fe7]",
+      "symbol": "FMRTE_Framework.GameObjects.Player.set_PA",
+      "methodToken": "0x06000fe7",
+      "rva": 453792,
+      "fileOffset": 446112,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "i2"
+        ]
+      },
+      "normalizedIlSha256": "16ef601da759f4e57b20982b61e11d3c71e72bd5fe05abb53fdede05221ae5e5",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000544",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_4c35ddf55fba55ed58f57ef3f0e9ee65aac8da5f0e66b258ae27229dc806586a",
+      "reaLocator": "normalized_result.methods[token=0x06000544]",
+      "symbol": "#=qIo8ubKpzenDtBVTyf0Yf567$d8jydT5Tegl5FvXjZzB9fmAk2UABBUiJ0GxGg6nx..ctor",
+      "methodToken": "0x06000544",
+      "rva": 186788,
+      "fileOffset": 179108,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "class:1808"
+        ]
+      },
+      "normalizedIlSha256": "5c85f5aef72795e9263a23938bc44dfb8b06c62fb4c208a75c3a24d4c15b474a",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000545",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_4c35ddf55fba55ed58f57ef3f0e9ee65aac8da5f0e66b258ae27229dc806586a",
+      "reaLocator": "normalized_result.methods[token=0x06000545]",
+      "symbol": "#=qIo8ubKpzenDtBVTyf0Yf567$d8jydT5Tegl5FvXjZzB9fmAk2UABBUiJ0GxGg6nx.#=qzr8EcuKyKxpw$CEfKsg9mw==",
+      "methodToken": "0x06000545",
+      "rva": 186824,
+      "fileOffset": 179144,
+      "signature": {
+        "returnType": "i2",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "894caf4be5b8de0ff0b598ff1f2b9da6737c55339bcbff69519851aa9b165858",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000546",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_4c35ddf55fba55ed58f57ef3f0e9ee65aac8da5f0e66b258ae27229dc806586a",
+      "reaLocator": "normalized_result.methods[token=0x06000546]",
+      "symbol": "#=qIo8ubKpzenDtBVTyf0Yf567$d8jydT5Tegl5FvXjZzB9fmAk2UABBUiJ0GxGg6nx.#=qA9eSdG_e_46n40ouup_ETA==",
+      "methodToken": "0x06000546",
+      "rva": 187664,
+      "fileOffset": 179984,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "i2"
+        ]
+      },
+      "normalizedIlSha256": "94df5a15d99cceed16bdc0750819c22871793e4282d8673413f28f899bfa3485",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000547",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_4c35ddf55fba55ed58f57ef3f0e9ee65aac8da5f0e66b258ae27229dc806586a",
+      "reaLocator": "normalized_result.methods[token=0x06000547]",
+      "symbol": "#=qIo8ubKpzenDtBVTyf0Yf567$d8jydT5Tegl5FvXjZzB9fmAk2UABBUiJ0GxGg6nx.#=qo4_cxE4aqzoOGtD9q1fwug==",
+      "methodToken": "0x06000547",
+      "rva": 188496,
+      "fileOffset": 180816,
+      "signature": {
+        "returnType": "i2",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "dec270f75d7ddffcb052514b1fb7943c9c83eeaf45d9edba88042297d57b9a54",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000548",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_4c35ddf55fba55ed58f57ef3f0e9ee65aac8da5f0e66b258ae27229dc806586a",
+      "reaLocator": "normalized_result.methods[token=0x06000548]",
+      "symbol": "#=qIo8ubKpzenDtBVTyf0Yf567$d8jydT5Tegl5FvXjZzB9fmAk2UABBUiJ0GxGg6nx.#=qJ6u97o2iOsmNra97SFudmw==",
+      "methodToken": "0x06000548",
+      "rva": 189336,
+      "fileOffset": 181656,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "i2"
+        ]
+      },
+      "normalizedIlSha256": "8593f1f0185f316ed19ca2023a0d284f55c34c1bab103c2c138e86dbf9330591",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000425",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_d0607aba2a6662460bffc27f6f15f37c637e82c2901872eb3746bc20e63eacaa",
+      "reaLocator": "normalized_result.methods[token=0x06000425]",
+      "symbol": "#=qfXFl4hkZced4OeXNOOzfI5UCaurKfoYYq7jjB$fVi4YYISy5gWTumaPTvfndTxH9.#=qhHRvbb9YBMZZB$D3KGmn0F9brKK$klKxl4_Pa1Z8x4g=",
+      "methodToken": "0x06000425",
+      "rva": 158656,
+      "fileOffset": 150976,
+      "signature": {
+        "returnType": "u1[]",
+        "parameterTypes": [
+          "native-int",
+          "i4",
+          "u4",
+          "i4&"
+        ]
+      },
+      "normalizedIlSha256": "7609c02847344ae432617fbf67b18c0bb7926906486db949f93aa41b63f280a7",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000426",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_d0607aba2a6662460bffc27f6f15f37c637e82c2901872eb3746bc20e63eacaa",
+      "reaLocator": "normalized_result.methods[token=0x06000426]",
+      "symbol": "#=qfXFl4hkZced4OeXNOOzfI5UCaurKfoYYq7jjB$fVi4YYISy5gWTumaPTvfndTxH9.#=qiBRwjJtKrSDPEyDQml3m7dGVUnh26SVKsjefm0BWIfw=",
+      "methodToken": "0x06000426",
+      "rva": 158844,
+      "fileOffset": 151164,
+      "signature": {
+        "returnType": "u1[]",
+        "parameterTypes": [
+          "i4",
+          "u4"
+        ]
+      },
+      "normalizedIlSha256": "87c4772f819b6e731e98a34314dd6a7bba55d173f47893d8a1e659b213cd5bf6",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000427",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_d0607aba2a6662460bffc27f6f15f37c637e82c2901872eb3746bc20e63eacaa",
+      "reaLocator": "normalized_result.methods[token=0x06000427]",
+      "symbol": "#=qfXFl4hkZced4OeXNOOzfI5UCaurKfoYYq7jjB$fVi4YYISy5gWTumaPTvfndTxH9.#=qeznlRMvrL8zK_HgLih0J$$I64cMA03iCPosKvK_f0bw=",
+      "methodToken": "0x06000427",
+      "rva": 158916,
+      "fileOffset": 151236,
+      "signature": {
+        "returnType": "u1[]",
+        "parameterTypes": [
+          "i4",
+          "u4",
+          "i4&"
+        ]
+      },
+      "normalizedIlSha256": "f5402b51d97454fcfb934edc69b38d54fa7164484a679768062b502f8dcf3b66",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x0600042c",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_d0607aba2a6662460bffc27f6f15f37c637e82c2901872eb3746bc20e63eacaa",
+      "reaLocator": "normalized_result.methods[token=0x0600042c]",
+      "symbol": "#=qfXFl4hkZced4OeXNOOzfI5UCaurKfoYYq7jjB$fVi4YYISy5gWTumaPTvfndTxH9.#=qp0g9qsiQpvNmMMWHXD4d6A==",
+      "methodToken": "0x0600042c",
+      "rva": 159404,
+      "fileOffset": 151724,
+      "signature": {
+        "returnType": "i2",
+        "parameterTypes": [
+          "i4"
+        ]
+      },
+      "normalizedIlSha256": "f455fba6a2a4fc0582a9732e34bd23254bc5ef51c911418d004f412305de5cb1",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x0600042e",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_d0607aba2a6662460bffc27f6f15f37c637e82c2901872eb3746bc20e63eacaa",
+      "reaLocator": "normalized_result.methods[token=0x0600042e]",
+      "symbol": "#=qfXFl4hkZced4OeXNOOzfI5UCaurKfoYYq7jjB$fVi4YYISy5gWTumaPTvfndTxH9.#=q4Wd_LoyECg06aSoDhq7f7A==",
+      "methodToken": "0x0600042e",
+      "rva": 159492,
+      "fileOffset": 151812,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": [
+          "i4"
+        ]
+      },
+      "normalizedIlSha256": "b1a45ef4ad28025199b7d681a439328917ae1ae6d39471e7501fa68da29d7b4f",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x0600043a",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_d0607aba2a6662460bffc27f6f15f37c637e82c2901872eb3746bc20e63eacaa",
+      "reaLocator": "normalized_result.methods[token=0x0600043a]",
+      "symbol": "#=qfXFl4hkZced4OeXNOOzfI5UCaurKfoYYq7jjB$fVi4YYISy5gWTumaPTvfndTxH9.#=qxi9X5DSGSTKRfg_OOkb2bQ==",
+      "methodToken": "0x0600043a",
+      "rva": 160200,
+      "fileOffset": 152520,
+      "signature": {
+        "returnType": "i2",
+        "parameterTypes": [
+          "u1[]",
+          "i4"
+        ]
+      },
+      "normalizedIlSha256": "25cb276ad2ce81335b13bdd2532a5ce3e3c830891a9504204952d4ae67f8c247",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000441",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_d0607aba2a6662460bffc27f6f15f37c637e82c2901872eb3746bc20e63eacaa",
+      "reaLocator": "normalized_result.methods[token=0x06000441]",
+      "symbol": "#=qfXFl4hkZced4OeXNOOzfI5UCaurKfoYYq7jjB$fVi4YYISy5gWTumaPTvfndTxH9.#=qu8TI7DpxsDUm1IpZRvnUCQ==",
+      "methodToken": "0x06000441",
+      "rva": 160464,
+      "fileOffset": 152784,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "i4",
+          "i4"
+        ]
+      },
+      "normalizedIlSha256": "f586d6bbf13793204218a55abee60483271b94f0335b416d7e1a5ae41ddfbf8a",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000443",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_d0607aba2a6662460bffc27f6f15f37c637e82c2901872eb3746bc20e63eacaa",
+      "reaLocator": "normalized_result.methods[token=0x06000443]",
+      "symbol": "#=qfXFl4hkZced4OeXNOOzfI5UCaurKfoYYq7jjB$fVi4YYISy5gWTumaPTvfndTxH9.#=quYoK4NhOT3yEjw8d6n0s$w==",
+      "methodToken": "0x06000443",
+      "rva": 160540,
+      "fileOffset": 152860,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "i4",
+          "i4",
+          "bool"
+        ]
+      },
+      "normalizedIlSha256": "8f23a237b87a8494a909fca59b4918fef9fe78a456ef1ee441234dd4ad6a4df0",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000448",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_d0607aba2a6662460bffc27f6f15f37c637e82c2901872eb3746bc20e63eacaa",
+      "reaLocator": "normalized_result.methods[token=0x06000448]",
+      "symbol": "#=qfXFl4hkZced4OeXNOOzfI5UCaurKfoYYq7jjB$fVi4YYISy5gWTumaPTvfndTxH9.#=qtipTmj9CDyeiiP6PZHKusGVFqjQKswVrxTDSWFNpoEs=",
+      "methodToken": "0x06000448",
+      "rva": 160944,
+      "fileOffset": 153264,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": [
+          "i4",
+          "u1[]",
+          "u4"
+        ]
+      },
+      "normalizedIlSha256": "477fde2f789176b28f5e3b8dadfbf523d1a0610286ade5db1dbe55f7958b7e19",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x0600044b",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_d0607aba2a6662460bffc27f6f15f37c637e82c2901872eb3746bc20e63eacaa",
+      "reaLocator": "normalized_result.methods[token=0x0600044b]",
+      "symbol": "#=qfXFl4hkZced4OeXNOOzfI5UCaurKfoYYq7jjB$fVi4YYISy5gWTumaPTvfndTxH9.#=qZPoW2SUkOFPiOhyKfKQvXQ==",
+      "methodToken": "0x0600044b",
+      "rva": 161384,
+      "fileOffset": 153704,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "i1",
+          "i4"
+        ]
+      },
+      "normalizedIlSha256": "42e3f8899e12663b1394b113a8693bd4d23e4798d7a72ce230bf9020e184982f",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000566",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_dff3bf9248a5ceb00baaf8e26b4ed3cf8ea6408523d5782cec2f2b4ee599f71a",
+      "reaLocator": "normalized_result.methods[token=0x06000566]",
+      "symbol": "#=qJh8ypTSeAXq9m4j4La$Wez$UQcKTWwnTNPZJT_vv1mNMl2k$r3FQQb6ccAQxOHDb.#=qP3DsNe2pZI7oSAgDMNjvMg==",
+      "methodToken": "0x06000566",
+      "rva": 193140,
+      "fileOffset": 185460,
+      "signature": {
+        "returnType": "valuetype:212",
+        "parameterTypes": [
+          "string"
+        ]
+      },
+      "normalizedIlSha256": "9d23b06a72f30d877ea08d88fd859131989b0fbda9a3a7efb9e26eb77151f63f",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000567",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_dff3bf9248a5ceb00baaf8e26b4ed3cf8ea6408523d5782cec2f2b4ee599f71a",
+      "reaLocator": "normalized_result.methods[token=0x06000567]",
+      "symbol": "#=qJh8ypTSeAXq9m4j4La$Wez$UQcKTWwnTNPZJT_vv1mNMl2k$r3FQQb6ccAQxOHDb.#=qxpmVsWVVuM9marEPTQFfZFEGypHhgWgiBuedy8z9YNA=",
+      "methodToken": "0x06000567",
+      "rva": 193848,
+      "fileOffset": 186168,
+      "signature": {
+        "returnType": "valuetype:212",
+        "parameterTypes": [
+          "valuetype:696",
+          "string",
+          "class:616"
+        ]
+      },
+      "normalizedIlSha256": "64fa97c22d26c72c01cb1e80cee5c56ddf43ea5379336a8e7c6c97780a2cd031",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x060020a1",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_19d6493a09e757902f03760129ec67af7895156afb13a82920a23c0dba3abdd9",
+      "reaLocator": "normalized_result.methods[token=0x060020a1]",
+      "symbol": "l.dje_qCE2ZUZEKPFKL3FH27KMPKYXTUDX73THLY6GFUAZ3CQ4JW4HKGGJQ_ejd.#=qA9MrpdBwII10tvt2UpGl5bFJ8XLgF5qIFp9Kpr_CfBM=",
+      "methodToken": "0x060020a1",
+      "rva": 1114712,
+      "fileOffset": 1107032,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "object",
+          "class:2569"
+        ]
+      },
+      "normalizedIlSha256": "2c650e84f6ac9b43aed236ee106e688f3d6c91b6283f1b99173f47bf4704ba0a",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x060020ae",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_19d6493a09e757902f03760129ec67af7895156afb13a82920a23c0dba3abdd9",
+      "reaLocator": "normalized_result.methods[token=0x060020ae]",
+      "symbol": "l.dje_qCE2ZUZEKPFKL3FH27KMPKYXTUDX73THLY6GFUAZ3CQ4JW4HKGGJQ_ejd.#=q9v5pliT4L6htdfKUoZ_O$w==",
+      "methodToken": "0x060020ae",
+      "rva": 1118192,
+      "fileOffset": 1110512,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "86ed887f49ecc8c7d3a1b5189ed1fc779dc53c83d6dd7865d6f09a16d8e1c94a",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x0600156c",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_3158299bfb3444ec8d3dc061cfe303cbd5eb84eaf52a288a7611024088db2aa4",
+      "reaLocator": "normalized_result.methods[token=0x0600156c]",
+      "symbol": "FMRTE_GUI.Pages.basePage.save",
+      "methodToken": "0x0600156c",
+      "rva": 569052,
+      "fileOffset": 561372,
+      "signature": {
+        "returnType": "string",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "ac7c8a32945f67380569781973c98da9a2103bc84b6092fdb518591ea8af94c8",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06001895",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_3158299bfb3444ec8d3dc061cfe303cbd5eb84eaf52a288a7611024088db2aa4",
+      "reaLocator": "normalized_result.methods[token=0x06001895]",
+      "symbol": "FMRTE_GUI.Pages.player_information.startBinding",
+      "methodToken": "0x06001895",
+      "rva": 720456,
+      "fileOffset": 712776,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "49690e6a3b193c618ff0fa98cd9b41b2fc077ef553e1016a44eaeb75a13ebdf0",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06001896",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_3158299bfb3444ec8d3dc061cfe303cbd5eb84eaf52a288a7611024088db2aa4",
+      "reaLocator": "normalized_result.methods[token=0x06001896]",
+      "symbol": "FMRTE_GUI.Pages.player_information.SaveFields",
+      "methodToken": "0x06001896",
+      "rva": 726944,
+      "fileOffset": 719264,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "i4",
+          "class:2073"
+        ]
+      },
+      "normalizedIlSha256": "b12992439c1b221b7dccc304bb63c1f9d30c0bfbf9c2f4f7983f4f380e1eacbf",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06001897",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_3158299bfb3444ec8d3dc061cfe303cbd5eb84eaf52a288a7611024088db2aa4",
+      "reaLocator": "normalized_result.methods[token=0x06001897]",
+      "symbol": "FMRTE_GUI.Pages.player_information.save",
+      "methodToken": "0x06001897",
+      "rva": 727120,
+      "fileOffset": 719440,
+      "signature": {
+        "returnType": "string",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "ab3a791d5d40248b0406e62420a4839f9065c77c574f060d5f42d67100c17e5c",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000fc1",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x06000fc1]",
+      "symbol": "FMRTE_Framework.GameObjects.PhysicalAttributes.get_Pace",
+      "methodToken": "0x06000fc1",
+      "rva": 451180,
+      "fileOffset": 443500,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "4d085889e73108b88a3cc4bdd2fee3ea837a652c9a26cea2cba178888292f8a7",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000fc2",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x06000fc2]",
+      "symbol": "FMRTE_Framework.GameObjects.PhysicalAttributes.set_Pace",
+      "methodToken": "0x06000fc2",
+      "rva": 451228,
+      "fileOffset": 443548,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "i1"
+        ]
+      },
+      "normalizedIlSha256": "508b1ced08d88998974286f5fe8a676e31e1498a5e91a800222165c99e76a957",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x060012e6",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x060012e6]",
+      "symbol": "FMRTE_Framework.GameObjects.TechnicalAttributes.get_Passing",
+      "methodToken": "0x060012e6",
+      "rva": 520292,
+      "fileOffset": 512612,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "e2f79c804d9b117c21ac902c5b32ae5959f3cdc747758fb2d00e6ba002818c21",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x060012e7",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x060012e7]",
+      "symbol": "FMRTE_Framework.GameObjects.TechnicalAttributes.set_Passing",
+      "methodToken": "0x060012e7",
+      "rva": 520340,
+      "fileOffset": 512660,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "i1"
+        ]
+      },
+      "normalizedIlSha256": "52b9978e7d81f11d214947d78cefaff33c74e1b49966b2370c4f84451efea9c4",
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000986",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_560192acf0b81b70f4263c895d74ad75e9da3809981eb283e6c2a4678c7ef4ef",
+      "reaLocator": "normalized_result.methods[token=0x06000986]",
+      "symbol": "dje_qNSPAJTL4V7PPF5LV7X2BVPWJJMV4B8FWUQSRULMFVLWZSB9ZNZ8Q_ejd.#=qj8bctz$_b3RKphObkb5XJw==",
+      "methodToken": "0x06000986",
+      "rva": 0,
+      "fileOffset": null,
+      "signature": {
+        "returnType": "native-int",
+        "parameterTypes": [
+          "u4",
+          "i4",
+          "u4"
+        ]
+      },
+      "normalizedIlSha256": null,
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000987",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_560192acf0b81b70f4263c895d74ad75e9da3809981eb283e6c2a4678c7ef4ef",
+      "reaLocator": "normalized_result.methods[token=0x06000987]",
+      "symbol": "dje_qNSPAJTL4V7PPF5LV7X2BVPWJJMV4B8FWUQSRULMFVLWZSB9ZNZ8Q_ejd.#=qRCXAV8qRdPwID93VwbgAO7mFUEvVijnXkl0xwtm1gak=",
+      "methodToken": "0x06000987",
+      "rva": 0,
+      "fileOffset": null,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": [
+          "native-int",
+          "native-uint",
+          "u1[]",
+          "u4",
+          "native-int&"
+        ]
+      },
+      "normalizedIlSha256": null,
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000988",
+      "confidence": "CONFIRMED",
+      "scope": "Static metadata/CIL reference; runtime outcome unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_560192acf0b81b70f4263c895d74ad75e9da3809981eb283e6c2a4678c7ef4ef",
+      "reaLocator": "normalized_result.methods[token=0x06000988]",
+      "symbol": "dje_qNSPAJTL4V7PPF5LV7X2BVPWJJMV4B8FWUQSRULMFVLWZSB9ZNZ8Q_ejd.#=qh$uIqT$j5WSXyFDNy8yw3IfsEHQ9sUc06opXlZsQqPI=",
+      "methodToken": "0x06000988",
+      "rva": 0,
+      "fileOffset": null,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": [
+          "native-int",
+          "native-int",
+          "u1[]",
+          "u4",
+          "native-int&"
+        ]
+      },
+      "normalizedIlSha256": null,
+      "limitations": [
+        "No FM2013 executable/build or known-player ground truth validated.",
+        "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
+        "Static call presence does not establish branch execution or successful access."
+      ]
+    },
+    {
+      "id": "RE26-SYMBOL-0x06000739",
+      "confidence": "CONFIRMED",
+      "sourceVersion": "26.3.2.42",
+      "assemblyVersion": "26.3.2.0",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 26",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 26\\current\\FmrteAvalonia.dll",
+      "binarySha256": "c763b9614e98f13a16f1b49b4a14ad191fc585627919fbac165970938d425ecf",
+      "mvid": "ae81bf4d-f887-2214-dad5-9a575848146b",
+      "architecture": "AnyCPU",
+      "framework": ".NETCoreApp,Version=v9.0",
+      "reaEvidenceId": "ev_2341019003d68f8c2d501a5614afbea4b408fbe8c6e8ba6ee32408c4adf4b57c",
+      "reaLocator": "normalized_result.methods[token=0x06000739]",
+      "symbol": "FmrteAvalonia.Mvvm.ViewModels.MainWindowViewModel..ctor",
+      "methodToken": "0x06000739",
+      "rva": "0x1078d8",
+      "fileOffset": 1071832,
+      "normalizedIlSha256": "e584f3a5d2d20deaf6c5878a4ffa6e646ef2c3f0fd5f6d5176ee66da43d7ac14",
+      "limitations": [
+        "Static CIL only; runtime reachability and bound delegate targets not established.",
+        "No player field or native write mapping established."
+      ]
+    },
+    {
+      "id": "RE26-SYMBOL-0x0600075d",
+      "confidence": "CONFIRMED",
+      "sourceVersion": "26.3.2.42",
+      "assemblyVersion": "26.3.2.0",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 26",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 26\\current\\FmrteAvalonia.dll",
+      "binarySha256": "c763b9614e98f13a16f1b49b4a14ad191fc585627919fbac165970938d425ecf",
+      "mvid": "ae81bf4d-f887-2214-dad5-9a575848146b",
+      "architecture": "AnyCPU",
+      "framework": ".NETCoreApp,Version=v9.0",
+      "reaEvidenceId": "ev_2341019003d68f8c2d501a5614afbea4b408fbe8c6e8ba6ee32408c4adf4b57c",
+      "reaLocator": "normalized_result.methods[token=0x0600075d]",
+      "symbol": "FmrteAvalonia.Mvvm.ViewModels.MainWindowViewModel.LoadGameCommandHandler",
+      "methodToken": "0x0600075d",
+      "rva": "0x108b9c",
+      "fileOffset": 1076636,
+      "normalizedIlSha256": "76a5e761ef01eec315d0c185a2066c64b0e87d265ddf0e05a903753b6dd71396",
+      "limitations": [
+        "Static CIL only; runtime reachability and bound delegate targets not established.",
+        "No player field or native write mapping established."
+      ]
+    },
+    {
+      "id": "RE26-SYMBOL-0x0600075e",
+      "confidence": "CONFIRMED",
+      "sourceVersion": "26.3.2.42",
+      "assemblyVersion": "26.3.2.0",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 26",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 26\\current\\FmrteAvalonia.dll",
+      "binarySha256": "c763b9614e98f13a16f1b49b4a14ad191fc585627919fbac165970938d425ecf",
+      "mvid": "ae81bf4d-f887-2214-dad5-9a575848146b",
+      "architecture": "AnyCPU",
+      "framework": ".NETCoreApp,Version=v9.0",
+      "reaEvidenceId": "ev_2341019003d68f8c2d501a5614afbea4b408fbe8c6e8ba6ee32408c4adf4b57c",
+      "reaLocator": "normalized_result.methods[token=0x0600075e]",
+      "symbol": "FmrteAvalonia.Mvvm.ViewModels.MainWindowViewModel.SaveChangesCommandHandler",
+      "methodToken": "0x0600075e",
+      "rva": "0x108e60",
+      "fileOffset": 1077344,
+      "normalizedIlSha256": "b2898a0174c4cfa57fd7f39011b5f3b514ecad2b1d0909003b2aa0b68eaa0ad6",
+      "limitations": [
+        "Static CIL only; runtime reachability and bound delegate targets not established.",
+        "No player field or native write mapping established."
+      ]
+    },
+    {
+      "id": "RE26-SYMBOL-0x06000762",
+      "confidence": "CONFIRMED",
+      "sourceVersion": "26.3.2.42",
+      "assemblyVersion": "26.3.2.0",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 26",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 26\\current\\FmrteAvalonia.dll",
+      "binarySha256": "c763b9614e98f13a16f1b49b4a14ad191fc585627919fbac165970938d425ecf",
+      "mvid": "ae81bf4d-f887-2214-dad5-9a575848146b",
+      "architecture": "AnyCPU",
+      "framework": ".NETCoreApp,Version=v9.0",
+      "reaEvidenceId": "ev_2341019003d68f8c2d501a5614afbea4b408fbe8c6e8ba6ee32408c4adf4b57c",
+      "reaLocator": "normalized_result.methods[token=0x06000762]",
+      "symbol": "FmrteAvalonia.Mvvm.ViewModels.MainWindowViewModel.CreateGameLoader",
+      "methodToken": "0x06000762",
+      "rva": "0x109120",
+      "fileOffset": 1078048,
+      "normalizedIlSha256": "83532e8d8ae185eebfae1dd1fe0895a2bed1360c9e61f4483b3ddfacf292b58e",
+      "limitations": [
+        "Static CIL only; runtime reachability and bound delegate targets not established.",
+        "No player field or native write mapping established."
+      ]
+    },
+    {
+      "id": "RE26-SYMBOL-0x06000765",
+      "confidence": "CONFIRMED",
+      "sourceVersion": "26.3.2.42",
+      "assemblyVersion": "26.3.2.0",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 26",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 26\\current\\FmrteAvalonia.dll",
+      "binarySha256": "c763b9614e98f13a16f1b49b4a14ad191fc585627919fbac165970938d425ecf",
+      "mvid": "ae81bf4d-f887-2214-dad5-9a575848146b",
+      "architecture": "AnyCPU",
+      "framework": ".NETCoreApp,Version=v9.0",
+      "reaEvidenceId": "ev_2341019003d68f8c2d501a5614afbea4b408fbe8c6e8ba6ee32408c4adf4b57c",
+      "reaLocator": "normalized_result.methods[token=0x06000765]",
+      "symbol": "FmrteAvalonia.Mvvm.ViewModels.MainWindowViewModel.GameLoader_SaveGameChanged",
+      "methodToken": "0x06000765",
+      "rva": "0x1096b4",
+      "fileOffset": 1079476,
+      "normalizedIlSha256": "73880b0d9471dcdd767128466781f98815bab24f035c5140164e00bf84d4f6a7",
+      "limitations": [
+        "Static CIL only; runtime reachability and bound delegate targets not established.",
+        "No player field or native write mapping established."
+      ]
+    },
+    {
+      "id": "RE26-SYMBOL-0x06000796",
+      "confidence": "CONFIRMED",
+      "sourceVersion": "26.3.2.42",
+      "assemblyVersion": "26.3.2.0",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 26",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 26\\current\\FmrteAvalonia.dll",
+      "binarySha256": "c763b9614e98f13a16f1b49b4a14ad191fc585627919fbac165970938d425ecf",
+      "mvid": "ae81bf4d-f887-2214-dad5-9a575848146b",
+      "architecture": "AnyCPU",
+      "framework": ".NETCoreApp,Version=v9.0",
+      "reaEvidenceId": "ev_2341019003d68f8c2d501a5614afbea4b408fbe8c6e8ba6ee32408c4adf4b57c",
+      "reaLocator": "normalized_result.methods[token=0x06000796]",
+      "symbol": "FmrteAvalonia.Mvvm.ViewModels.MainWindowViewModel.<SaveChangesCommandHandler>b__201_0",
+      "methodToken": "0x06000796",
+      "rva": "0x10c344",
+      "fileOffset": 1090884,
+      "normalizedIlSha256": "87a234f3c7b16aef52f7c22b943cd4cd7e830d6662139f5b826652f21237cc31",
+      "limitations": [
+        "Static CIL only; runtime reachability and bound delegate targets not established.",
+        "No player field or native write mapping established."
+      ]
+    },
+    {
+      "id": "RE26-SYMBOL-0x060057e9",
+      "confidence": "CONFIRMED",
+      "sourceVersion": "26.3.2.42",
+      "assemblyVersion": "26.3.2.0",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 26",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 26\\current\\FmrteAvalonia.dll",
+      "binarySha256": "c763b9614e98f13a16f1b49b4a14ad191fc585627919fbac165970938d425ecf",
+      "mvid": "ae81bf4d-f887-2214-dad5-9a575848146b",
+      "architecture": "AnyCPU",
+      "framework": ".NETCoreApp,Version=v9.0",
+      "reaEvidenceId": "ev_2341019003d68f8c2d501a5614afbea4b408fbe8c6e8ba6ee32408c4adf4b57c",
+      "reaLocator": "normalized_result.methods[token=0x060057e9]",
+      "symbol": "enh.sz",
+      "methodToken": "0x060057e9",
+      "rva": "0x20bce4",
+      "fileOffset": 2137828,
+      "normalizedIlSha256": "aa15d67d870ce53b0edcefc310e1ae31e6c1a9cb4abb5d291deb1f8b36ba6890",
+      "limitations": [
+        "Static CIL only; runtime reachability and bound delegate targets not established.",
+        "No player field or native write mapping established."
+      ]
+    },
+    {
+      "id": "RE26-SYMBOL-0x06005809",
+      "confidence": "CONFIRMED",
+      "sourceVersion": "26.3.2.42",
+      "assemblyVersion": "26.3.2.0",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 26",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 26\\current\\FmrteAvalonia.dll",
+      "binarySha256": "c763b9614e98f13a16f1b49b4a14ad191fc585627919fbac165970938d425ecf",
+      "mvid": "ae81bf4d-f887-2214-dad5-9a575848146b",
+      "architecture": "AnyCPU",
+      "framework": ".NETCoreApp,Version=v9.0",
+      "reaEvidenceId": "ev_2341019003d68f8c2d501a5614afbea4b408fbe8c6e8ba6ee32408c4adf4b57c",
+      "reaLocator": "normalized_result.methods[token=0x06005809]",
+      "symbol": "enp.sz",
+      "methodToken": "0x06005809",
+      "rva": "0x20be00",
+      "fileOffset": 2138112,
+      "normalizedIlSha256": "06b69803bd8f1e43867352fc02e225c707a56427581dcd5bacb2798670b0caf5",
+      "limitations": [
+        "Static CIL only; runtime reachability and bound delegate targets not established.",
+        "No player field or native write mapping established."
+      ]
+    },
+    {
+      "id": "RE26-SYMBOL-0x06005811",
+      "confidence": "CONFIRMED",
+      "sourceVersion": "26.3.2.42",
+      "assemblyVersion": "26.3.2.0",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 26",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 26\\current\\FmrteAvalonia.dll",
+      "binarySha256": "c763b9614e98f13a16f1b49b4a14ad191fc585627919fbac165970938d425ecf",
+      "mvid": "ae81bf4d-f887-2214-dad5-9a575848146b",
+      "architecture": "AnyCPU",
+      "framework": ".NETCoreApp,Version=v9.0",
+      "reaEvidenceId": "ev_2341019003d68f8c2d501a5614afbea4b408fbe8c6e8ba6ee32408c4adf4b57c",
+      "reaLocator": "normalized_result.methods[token=0x06005811]",
+      "symbol": "enr.sz",
+      "methodToken": "0x06005811",
+      "rva": "0x20be47",
+      "fileOffset": 2138183,
+      "normalizedIlSha256": "5b5d43424cdb310a7f006d8007007331a07f114ee625551ecd8ef1d75b2a6bbd",
+      "limitations": [
+        "Static CIL only; runtime reachability and bound delegate targets not established.",
+        "No player field or native write mapping established."
+      ]
+    },
+    {
+      "id": "RE26-SYMBOL-0x06005829",
+      "confidence": "CONFIRMED",
+      "sourceVersion": "26.3.2.42",
+      "assemblyVersion": "26.3.2.0",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 26",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 26\\current\\FmrteAvalonia.dll",
+      "binarySha256": "c763b9614e98f13a16f1b49b4a14ad191fc585627919fbac165970938d425ecf",
+      "mvid": "ae81bf4d-f887-2214-dad5-9a575848146b",
+      "architecture": "AnyCPU",
+      "framework": ".NETCoreApp,Version=v9.0",
+      "reaEvidenceId": "ev_2341019003d68f8c2d501a5614afbea4b408fbe8c6e8ba6ee32408c4adf4b57c",
+      "reaLocator": "normalized_result.methods[token=0x06005829]",
+      "symbol": "enx.sz",
+      "methodToken": "0x06005829",
+      "rva": "0x20bf18",
+      "fileOffset": 2138392,
+      "normalizedIlSha256": "f800d530222552a386bfe5c4f01bb8d183ac54ad7bec2bbc80acff68daa3b337",
+      "limitations": [
+        "Static CIL only; runtime reachability and bound delegate targets not established.",
+        "No player field or native write mapping established."
+      ]
+    }
+  ],
+  "unknowns": [
+    {
+      "id": "U13-ENTITY",
+      "question": "End-to-end catalog construction and native identity/layout on exact local FM2013 build",
+      "status": "UNKNOWN"
+    },
+    {
+      "id": "U13-CA-PA",
+      "question": "Actual known-player CA/PA values, layout selection, repeat consistency",
+      "status": "UNKNOWN"
+    },
+    {
+      "id": "U13-UI",
+      "question": "Exact toolbar/binding-source-to-CA/PA property dispatch",
+      "status": "UNKNOWN"
+    },
+    {
+      "id": "U13-STREAM",
+      "question": "Stream origin/format and relationship to .fm",
+      "status": "UNKNOWN"
+    },
+    {
+      "id": "U26-DISPATCH",
+      "question": "Bound delegates/framework implementation and native operations",
+      "status": "UNKNOWN"
+    },
+    {
+      "id": "U-PERSISTENCE",
+      "question": "Controlled game-save/reload and rollback",
+      "status": "UNKNOWN"
+    },
+    {
+      "id": "U-OFFLINE",
+      "question": "Independently decoded offline .fm records and roundtrip writer",
+      "status": "UNKNOWN"
+    }
+  ],
+  "productCapabilities": {
+    "fm2013LiveRead": "unverified",
+    "fm2013LiveWrite": "unsupported",
+    "fm2013OfflinePlayerRead": "unsupported",
+    "fm2013OfflineWrite": "unsupported",
+    "actualCaPaVerified": false
+  },
+  "constraints": [
+    "No proprietary binaries, decompiled source, private saves, memory dumps or license data in repository.",
+    "Read-only static target inspection; no installation or game-state mutation."
+  ]
+}
