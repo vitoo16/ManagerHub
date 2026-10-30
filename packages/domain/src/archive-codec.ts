@@ -9,13 +9,15 @@ const MAX_MEMBER_STORED_BYTES = 256 * 1024;
 const MAX_DECODED_BYTES = 2 * 1024 * 1024;
 const MAX_MEMBERS_TO_CHECK = 4;
 const START_OFFSETS = [0, 8, 16] as const;
-const CODECS = ['deflate', 'gzip'] as const;
+const CODECS = ['deflate', 'deflate-raw', 'gzip'] as const;
+type CandidateCodec = typeof CODECS[number];
+type DecodeOutcome = { status: 'decoded'; outputBytes: number } | { status: 'invalid_stream' | 'output_limit_exceeded'; outputBytes: null };
 
 export interface MemberCodecTrial {
   readonly filename: string;
-  readonly codec: 'deflate' | 'gzip';
+  readonly codec: CandidateCodec;
   readonly skippedBytes: number;
-  readonly result: 'size_match' | 'size_mismatch' | 'invalid_stream';
+  readonly result: 'size_match' | 'size_mismatch' | 'invalid_stream' | 'output_limit_exceeded';
   readonly outputBytes: number | null;
 }
 
@@ -26,24 +28,39 @@ export interface MemberCodecValidation {
 }
 
 /** Consume only bounded byte counts. A malformed or overlarge stream never returns payload bytes. */
-async function decodeLengthOnly(bytes: Uint8Array, codec: 'deflate' | 'gzip'): Promise<number | null> {
-  if (typeof DecompressionStream === 'undefined') return null;
-  const stream = new Blob([new Uint8Array(bytes)]).stream().pipeThrough(new DecompressionStream(codec));
-  const reader = stream.getReader();
+async function decodeLengthOnly(bytes: Uint8Array, codec: CandidateCodec): Promise<DecodeOutcome> {
+  // Browsers lacking raw DEFLATE support reject the constructor. Such trials
+  // remain inconclusive rather than being treated as real AFE codec failures.
+  let reader: ReadableStreamDefaultReader<Uint8Array>;
+  try {
+    reader = new Blob([new Uint8Array(bytes)]).stream()
+      .pipeThrough(new DecompressionStream(codec)).getReader();
+  } catch {
+    return { status: 'invalid_stream', outputBytes: null };
+  }
   let outputBytes = 0;
+  let outcome: DecodeOutcome = { status: 'invalid_stream', outputBytes: null };
   try {
     while (true) {
       const item = await reader.read();
-      if (item.done) return outputBytes;
+      if (item.done) {
+        outcome = { status: 'decoded', outputBytes };
+        break;
+      }
       outputBytes += item.value.byteLength;
-      if (outputBytes > MAX_DECODED_BYTES) return null;
+      if (outputBytes > MAX_DECODED_BYTES) {
+        outcome = { status: 'output_limit_exceeded', outputBytes: null };
+        break;
+      }
     }
   } catch {
-    return null;
+    outcome = { status: 'invalid_stream', outputBytes: null };
   } finally {
+    // Cancel any still-running inflation before releasing the stream lock.
     await reader.cancel().catch(() => undefined);
     reader.releaseLock();
   }
+  return outcome;
 }
 
 function memberFits(member: ArchiveMember, boundary: number): boolean {
@@ -54,7 +71,7 @@ function memberFits(member: ArchiveMember, boundary: number): boolean {
 }
 
 /**
- * Tests small members only: 4 members x 3 offsets x 2 codecs, each input <= 256 KiB,
+ * Tests small members only: 4 members x 3 offsets x 3 codecs, each input <= 256 KiB,
  * each output <= 2 MiB. Exact size agreement is a hypothesis, never field verification.
  */
 export async function validateMemberCodecCandidates(
@@ -83,12 +100,13 @@ export async function validateMemberCodecCandidates(
       if (skippedBytes >= bytes.length) continue;
       const candidate = bytes.subarray(skippedBytes);
       for (const codec of CODECS) {
-        const outputBytes = await decodeLengthOnly(candidate, codec);
+        const outcome = await decodeLengthOnly(candidate, codec);
         trials.push({
           filename: member.filename, codec, skippedBytes,
-          result: outputBytes === null ? 'invalid_stream' :
-            outputBytes === member.reportedUncompressedBytes ? 'size_match' : 'size_mismatch',
-          outputBytes
+          result: outcome.status === 'decoded'
+            ? outcome.outputBytes === member.reportedUncompressedBytes ? 'size_match' : 'size_mismatch'
+            : outcome.status,
+          outputBytes: outcome.outputBytes
         });
       }
     }
