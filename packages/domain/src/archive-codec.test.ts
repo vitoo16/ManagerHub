@@ -35,6 +35,35 @@ describe('bounded member codec hypothesis trials', () => {
     expect(JSON.stringify(result)).not.toContain('payload');
   });
 
+  it('validates a raw DEFLATE stream after an experimental eight-byte prefix', async () => {
+    const plain = Uint8Array.from({ length: 140 }, (_, i) => i % 17);
+    const compressed = new Uint8Array(await new Response(
+      new Blob([plain]).stream().pipeThrough(new CompressionStream('deflate-raw'))
+    ).arrayBuffer());
+    const wrapped = new Uint8Array(compressed.length + 8);
+    wrapped.set([16, 0, 0, 0, 16, 0, 0, 0]);
+    wrapped.set(compressed, 8);
+    const { file, index } = await fixture(wrapped, plain.length);
+    const result = await validateMemberCodecCandidates(file, index);
+    expect(result.trials).toContainEqual({
+      filename: 'example.dat', codec: 'deflate-raw', skippedBytes: 8,
+      result: 'size_match', outputBytes: plain.length
+    });
+  });
+
+  it('treats output beyond two MiB as a limit, not an invalid stream', async () => {
+    const huge = new Uint8Array(2 * 1024 * 1024 + 1);
+    const compressed = new Uint8Array(await new Response(
+      new Blob([huge]).stream().pipeThrough(new CompressionStream('deflate'))
+    ).arrayBuffer());
+    const { file, index } = await fixture(compressed, 100);
+    const result = await validateMemberCodecCandidates(file, index);
+    expect(result.trials).toContainEqual({
+      filename: 'example.dat', codec: 'deflate', skippedBytes: 0,
+      result: 'output_limit_exceeded', outputBytes: null
+    });
+  });
+
   it('labels valid but wrong-sized decompression as a mismatch', async () => {
     const plain = Uint8Array.from({ length: 30 }, (_, i) => i);
     const compressed = new Uint8Array(await new Response(
