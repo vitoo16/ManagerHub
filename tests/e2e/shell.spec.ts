@@ -90,6 +90,12 @@ test('discovers a bounded synthetic trailing archive catalogue without extractin
   await expect(page.getByRole('list', { name: 'Internal save archive members' }).getByText('game_info.dat')).toBeVisible();
   await page.getByText('Technical details').click();
   await expect(page.getByText(/member contents and game records are NOT decoded/i)).toBeVisible();
+  // Only vetted catalogue metadata persists; sampled header bytes remain ephemeral.
+  await page.getByRole('button', { name: 'Save inspection metadata on this browser' }).click();
+  await expect(page.getByRole('button', { name: 'Remove saved metadata' })).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole('list', { name: 'Internal save archive members' }).getByText('game_info.dat')).toBeVisible();
+  await expect(page.getByText('Member header diagnostics')).toHaveCount(0);
 });
 
 

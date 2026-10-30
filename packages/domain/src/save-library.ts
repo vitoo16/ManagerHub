@@ -66,3 +66,39 @@ export function isSaveIdentity(value: unknown): value is SaveIdentity {
   if (detectedFamily !== null && support !== 'signature_only') return false;
   return true;
 }
+
+/**
+ * Drop ephemeral binary-derived diagnostics before persisting an inspection.
+ * In particular, member-prefix hex samples must never enter IndexedDB.
+ * Only the validated directory catalogue and ordinary identity fields survive.
+ */
+export function toPersistedSaveIdentity(identity: SaveIdentity): SaveIdentity {
+  const archiveIndex: ArchiveIndex | null = identity.archiveIndex === null ? null : {
+    family: identity.archiveIndex.family,
+    evidence: identity.archiveIndex.evidence,
+    memberCount: identity.archiveIndex.memberCount,
+    directoryOffset: identity.archiveIndex.directoryOffset,
+    members: identity.archiveIndex.members.map(member => ({
+      filename: member.filename,
+      offset: member.offset,
+      storedBytes: member.storedBytes,
+      reportedUncompressedBytes: member.reportedUncompressedBytes
+    }))
+  };
+  return {
+    id: identity.id,
+    name: identity.name,
+    importedAt: identity.importedAt,
+    lastModified: identity.lastModified,
+    size: identity.size,
+    sha256: identity.sha256,
+    signature: identity.signature,
+    detectedFamily: identity.detectedFamily,
+    edition: identity.edition,
+    build: identity.build,
+    support: identity.support,
+    inspectionStatus: identity.inspectionStatus,
+    warnings: [...identity.warnings],
+    archiveIndex
+  };
+}
