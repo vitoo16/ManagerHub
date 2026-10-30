@@ -7,6 +7,7 @@ import { censusMemberEnvelopes } from './afe-envelope-census.mjs';
 import { auditUnindexedGaps } from './afe-gap-audit.mjs';
 import { compareGapToEqualSizeMembers } from './afe-gap-comparison.mjs';
 import { censusFramedCodecSignatures } from './afe-frame-signatures.mjs';
+import { decodeValidatedMemberPayload, summarizeValidatedMemberDecode } from './afe-validated-decode.mjs';
 
 // AFE offsets relative to 18 bytes and FMF-directory trailer are observations
 // from one save family, not a confirmed format specification.
@@ -210,6 +211,7 @@ export async function inspectLocalArchive(filePath, { includeMemberIndex = false
       };
     }
     const trials = [];
+    const validatedDecodes = [];
     const eligibleMembers = selectCodecProbeMembers(members);
     const skipped = members.length - eligibleMembers.length;
     let inspected = 0;
@@ -218,6 +220,12 @@ export async function inspectLocalArchive(filePath, { includeMemberIndex = false
       const { bytesRead: read } = await handle.read(input, 0, input.length, BASE + member.offset);
       if (read !== input.length) throw Error('Incomplete member read');
       inspected++;
+      validatedDecodes.push({
+        filename: member.filename,
+        ...summarizeValidatedMemberDecode(decodeValidatedMemberPayload(
+          input, member.reportedUncompressedBytes
+        ))
+      });
       for (const trial of probeCodecConsumption(input, member.reportedUncompressedBytes)) {
         trials.push({ filename: member.filename, ...trial });
       }
@@ -228,7 +236,7 @@ export async function inspectLocalArchive(filePath, { includeMemberIndex = false
       totalIndexedMembers: members.length,
       ...(includeMemberIndex ? { memberIndex: members } : {}),
       parsedDirectoryBytes, unparsedDirectoryBytes,
-      inspectedMembers: inspected, skippedOversized: skipped, trials };
+      inspectedMembers: inspected, skippedOversized: skipped, trials, validatedDecodes };
   } finally {
     await handle.close();
   }
