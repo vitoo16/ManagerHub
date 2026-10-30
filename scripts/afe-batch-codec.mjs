@@ -8,6 +8,8 @@ const BASE = 18;
 const TAIL = 64 * 1024;
 const MAX_DIRECTORY = 512 * 1024;
 const MAX_MEMBERS = 1024;
+const MAX_GROUPS = 16;
+const MAX_TOTAL_MEMBERS = 4096;
 const MAX_TEXT_UNITS = 256;
 const MAX_PROBES = 16;
 const MAX_MEMBER_BYTES = 256 * 1024;
@@ -45,9 +47,39 @@ export function parseObservedDirectoryDetails(data, boundary) {
       names.add(filename);
       members.push({ filename, offset, storedBytes, reportedUncompressedBytes });
     }
-    const sorted = [...members].sort((a, b) => a.offset - b.offset);
-    if (sorted.some((member, i) => i > 0 && sorted[i - 1].offset + sorted[i - 1].storedBytes > member.offset)) return null;
-    return { members, parsedBytes: cursor, trailingBytes: data.length - cursor };
+    // Optional nested archive tables. The fixture has one 'rgman' group
+    // containing 724 additional member extents, not opaque arbitrary bytes.
+    const groups = [];
+    if (cursor + 4 <= data.length) {
+      const groupCount = u32();
+      if (groupCount > MAX_GROUPS) return null;
+      for (let groupIndex = 0; groupIndex < groupCount; groupIndex++) {
+        const groupName = name();
+        const childCount = u32();
+        if (childCount < 1 || childCount > MAX_TOTAL_MEMBERS ||
+            members.length + childCount > MAX_TOTAL_MEMBERS) return null;
+        const children = [];
+        for (let i = 0; i < childCount; i++) {
+          const filename = name() + name();
+          const offset = u32(), storedBytes = u32(), reportedUncompressedBytes = u32();
+          if (names.has(filename) || storedBytes < 1 || reportedUncompressedBytes < 1 ||
+              offset > boundary || storedBytes > boundary - offset) return null;
+          names.add(filename);
+          children.push({ filename, offset, storedBytes, reportedUncompressedBytes });
+        }
+        groups.push({ groupName, members: children });
+      }
+    }
+    const allMembers = [...members, ...groups.flatMap(group => group.members)];
+    const sorted = [...allMembers].sort((a, b) => a.offset - b.offset);
+    if (sorted.some((member, i) => i > 0 &&
+      sorted[i - 1].offset + sorted[i - 1].storedBytes > member.offset)) return null;
+    // The observed directory ends with one LE u32 zero. No opaque remainder
+    // should be mistaken for a second catalogue.
+    const unparsed = data.subarray(cursor);
+    if (unparsed.length !== 0 && !(unparsed.length === 4 && unparsed.readUInt32LE(0) === 0)) return null;
+    return { members, groups, allMembers, parsedBytes: cursor,
+      trailingBytes: unparsed.length };
   } catch {
     return null;
   }
@@ -75,6 +107,8 @@ export async function inspectLocalArchive(filePath) {
     let directoryOffset = 0;
     let parsedDirectoryBytes = 0;
     let unparsedDirectoryBytes = 0;
+    let groupCounts = [];
+    let totalMembers = 0;
     // Last candidate first; cap inflation attempts on marker-heavy input.
     let attempted = 0;
     for (let cursor = tail.lastIndexOf(MARKER); cursor >= 0 && attempted < 32;
@@ -92,7 +126,9 @@ export async function inspectLocalArchive(filePath) {
         if (engine.bytesWritten !== compressed.length) continue;
         const parsed = parseObservedDirectoryDetails(directory, offset - BASE);
         if (parsed) {
-          members = parsed.members;
+          members = parsed.allMembers;
+          groupCounts = parsed.groups.map(group => ({ name: group.groupName, count: group.members.length }));
+          totalMembers = parsed.members.length;
           parsedDirectoryBytes = parsed.parsedBytes;
           unparsedDirectoryBytes = parsed.trailingBytes;
           directoryOffset = offset;
@@ -118,7 +154,9 @@ export async function inspectLocalArchive(filePath) {
         trials.push({ filename: member.filename, ...trial });
       }
     }
-    return { status: 'experimental_index', directoryOffset, memberCount: members.length,
+    return { status: 'experimental_index', directoryOffset,
+      memberCount: totalMembers, nestedGroups: groupCounts,
+      totalIndexedMembers: members.length,
       parsedDirectoryBytes, unparsedDirectoryBytes,
       inspectedMembers: inspected, skippedOversized: skipped, trials };
   } finally {
