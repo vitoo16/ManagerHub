@@ -144,3 +144,11 @@ Do **not** apply an FM26 Zstandard save decoder to an observed AFE-family save j
 - `scripts/afe-frame-signatures.mjs` repeats these bounded signature checks and labels all results **signature-only**, not decompression success. It returns counts, not raw save data.
 
 A correct AFE decoder still requires independently confirmed payload framing, full input consumption, expected output length, and semantic validation of at least one record before exposing player/CA/PA data.
+
+### Independent AFE envelope report and cross-save validation (2026-10-30)
+
+A February 2019 reverse-engineering question independently reported exactly the `02 01 61 66 65 2e` AFE header and `10 00 00 00 10 00 00 00` section delimiter in an FM tactics `.fmf` file, as seen in this project's AFE save sample. Its author reported that re-saving the *same tactic* changed the payload bytes. This is a **third-party observation** for a related AFE-family file, *not proof* of which encryption/compression mechanism the save uses: [Reverse Engineering Stack Exchange — x64dbg: locating where data is initially written](https://reverseengineering.stackexchange.com/questions/20614/x64dbg-locating-where-data-is-initially-written).
+
+The two local private sample paths `Untitled Game (v03).fm` and `Untitled Game (v03)_2.fm` were confirmed byte-identical (same SHA-256 and size). They **cannot** establish a re-save randomization property. No digest or private bytes are committed to the repository.
+
+`node scripts/afe-cross-save.mjs <first-local.fm> <second-local.fm>` is a new read-only bounded research utility. It rejects identical inputs before any payload inspection; otherwise validates each AFE index, compares at most 32 same-named member pairs using at most 64 bytes per member, and returns equality counts without payload bytes or hashes. Two distinct saves may contain different actual *game data*, so byte differences alone still cannot distinguish compression from encryption or randomization. The strongest future controlled experiment is to save the **same unchanged in-game state twice** to different files and then run this tool.
