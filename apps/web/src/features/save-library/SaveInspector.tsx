@@ -20,6 +20,7 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
   const visibleMemberPage = Math.min(memberPage, totalMemberPages - 1);
   const [drag, setDrag] = useState(false);
   const isSelectedSaved = selected ? saveLibrary.items.some(item => item.id === selected.id) : false;
+  useEffect(() => { setMemberPage(0); }, [selected?.id]);
   useEffect(() => {
     if (!saveLibrary.loading && saveLibrary.items.length > 0) onRestoreSaved(saveLibrary.items);
   }, [saveLibrary.loading, saveLibrary.items, onRestoreSaved]);
