@@ -7,6 +7,7 @@ Date: 2026-10-30. Each substantive table cell carries its confidence. **CONFIRME
 | Installed root/version | CONFIRMED C:\BraCa Soft\FMRTE 13; file/assembly13.3.3.62 | CONFIRMED C:\BraCa Soft\FMRTE 26; managed files26.3.2.42, assemblies26.3.2.0 |
 | Main binaries | CONFIRMED FMRTE.exe; miniFMRTE.exe | CONFIRMED current\FMRTE.dll and FmrteAvalonia.dll; launcher/apphost inventoried separately |
 | Architecture | CONFIRMED main x86-required CIL, .NET4 Client, WPF | CONFIRMED startup x64 CIL + AnyCPU Avalonia CIL, .NET9 |
+| Local game executable | CONFIRMED static metadata/hash of [native fm.exe](10-local-fm2013-executable.md), ProductVersion13.3.3f359652; runtime compatibility UNKNOWN | UNKNOWN exact local FM2026 executable/build in this investigation |
 | Process discovery | CONFIRMED CIL resolver0x06000567 calls GetProcessesByName/GetProcesses/OpenProcess; actual process UNKNOWN | UNKNOWN behind delegate binding; handler names do not establish process calls |
 | Version checks | CONFIRMED resolver reads ProductVersion and builds GameProcess descriptors; exact compatibility algorithm UNKNOWN | UNKNOWN framework implementation; dependencies26.3.2.0 CONFIRMED |
 | Load command | CONFIRMED WPF method0x060020a1 -> e7 -> e5 ->567; exact toolbar binding INFERRED | CONFIRMED named LoadGameCommandHandler0x0600075d -> enh/enp runtime delegate boundary |

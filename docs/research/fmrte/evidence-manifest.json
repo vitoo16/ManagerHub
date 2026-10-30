@@ -21,12 +21,14 @@
       "inspect_managed_native_boundaries",
       "inspect_analysis_view",
       "project_managed_application_graph",
-      "export_evidence_bundle"
+      "export_evidence_bundle",
+      "inspect_pe_resources"
     ]
   },
   "inventories": [
     "inventory-13.json",
-    "inventory-26.json"
+    "inventory-26.json",
+    "inventory-fm2013.json"
   ],
   "bundles": [
     {
@@ -38,6 +40,11 @@
       "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fmrte26-rea-evidence.json",
       "sha256": "1c8c3450e2b58cf6059f86363794c174aed7bf2940d2b9586fe6ed2414430b78",
       "note": "Independent FMRTE26 agent ledger; canonical Evidence IDs not shared across MCP sessions."
+    },
+    {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm2013-followup-rea-evidence.json",
+      "sha256": "d3eeb8dd25633f228abfd14609a3fe49099c8d02e4c605a12694b79f1f915ac5",
+      "note": "Follow-up after user supplied FM2013 installation path; 55 records, 31,104,103 bytes. Preserves original root records plus new FM2013 resource/artifact observations."
     }
   ],
   "evidenceAliases": {
@@ -51,7 +58,9 @@
     "loader13": "ev_45f9c6ba99e4642ef18454556e7278b63309b05a125e9d485ea294962b5b32ab",
     "ui13": "ev_19d6493a09e757902f03760129ec67af7895156afb13a82920a23c0dba3abdd9",
     "pages13": "ev_3158299bfb3444ec8d3dc061cfe303cbd5eb84eaf52a288a7611024088db2aa4",
-    "attrs13": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d"
+    "attrs13": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+    "fm2013Artifact": "ev_9d2e991593b8ab1e7851b2e08a1c309b7f33f4bea06f716cff011c3d170905d4",
+    "fm2013Resources": "ev_b4cec8b739d0f53c2e747d9a0c1da19e50f16b6e5150849405ce34118dd6977d"
   },
   "discoveries": [
     {
@@ -80,7 +89,7 @@
       },
       "normalizedIlSha256": "81279f06e68f6aae3d590e7741d08cb147285ba017800a8b04e57bc6a995ee79",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -109,7 +118,7 @@
       },
       "normalizedIlSha256": "e9b76e78dab382efcb011a38848242c5de2f7f3c45f3e7456fe54b0707546c41",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -140,7 +149,7 @@
       },
       "normalizedIlSha256": "8af2228d557624121877f1586b6eb63eed64ed48145ce4e5491df2e1c4a69a06",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -169,7 +178,7 @@
       },
       "normalizedIlSha256": "a9f8e452796185e19fb221e3b6a144dc44c4b424fd54a52d6020ed1f82004036",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -200,7 +209,7 @@
       },
       "normalizedIlSha256": "263f9c64fd4261c7f9a1262b2a3b55318a8f5cb9f803cd26add663e949e9339e",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -229,7 +238,7 @@
       },
       "normalizedIlSha256": "2f52a0c7e34262db96ab47d54d4fb0edb6cdb8c0826e46b024cd8ad86a64a2cf",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -260,7 +269,7 @@
       },
       "normalizedIlSha256": "16ef601da759f4e57b20982b61e11d3c71e72bd5fe05abb53fdede05221ae5e5",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -291,7 +300,7 @@
       },
       "normalizedIlSha256": "5c85f5aef72795e9263a23938bc44dfb8b06c62fb4c208a75c3a24d4c15b474a",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -320,7 +329,7 @@
       },
       "normalizedIlSha256": "894caf4be5b8de0ff0b598ff1f2b9da6737c55339bcbff69519851aa9b165858",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -351,7 +360,7 @@
       },
       "normalizedIlSha256": "94df5a15d99cceed16bdc0750819c22871793e4282d8673413f28f899bfa3485",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -380,7 +389,7 @@
       },
       "normalizedIlSha256": "dec270f75d7ddffcb052514b1fb7943c9c83eeaf45d9edba88042297d57b9a54",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -411,7 +420,7 @@
       },
       "normalizedIlSha256": "8593f1f0185f316ed19ca2023a0d284f55c34c1bab103c2c138e86dbf9330591",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -445,7 +454,7 @@
       },
       "normalizedIlSha256": "7609c02847344ae432617fbf67b18c0bb7926906486db949f93aa41b63f280a7",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -477,7 +486,7 @@
       },
       "normalizedIlSha256": "87c4772f819b6e731e98a34314dd6a7bba55d173f47893d8a1e659b213cd5bf6",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -510,7 +519,7 @@
       },
       "normalizedIlSha256": "f5402b51d97454fcfb934edc69b38d54fa7164484a679768062b502f8dcf3b66",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -541,7 +550,7 @@
       },
       "normalizedIlSha256": "f455fba6a2a4fc0582a9732e34bd23254bc5ef51c911418d004f412305de5cb1",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -572,7 +581,7 @@
       },
       "normalizedIlSha256": "b1a45ef4ad28025199b7d681a439328917ae1ae6d39471e7501fa68da29d7b4f",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -604,7 +613,7 @@
       },
       "normalizedIlSha256": "25cb276ad2ce81335b13bdd2532a5ce3e3c830891a9504204952d4ae67f8c247",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -636,7 +645,7 @@
       },
       "normalizedIlSha256": "f586d6bbf13793204218a55abee60483271b94f0335b416d7e1a5ae41ddfbf8a",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -669,7 +678,7 @@
       },
       "normalizedIlSha256": "8f23a237b87a8494a909fca59b4918fef9fe78a456ef1ee441234dd4ad6a4df0",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -702,7 +711,7 @@
       },
       "normalizedIlSha256": "477fde2f789176b28f5e3b8dadfbf523d1a0610286ade5db1dbe55f7958b7e19",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -734,7 +743,7 @@
       },
       "normalizedIlSha256": "42e3f8899e12663b1394b113a8693bd4d23e4798d7a72ce230bf9020e184982f",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -765,7 +774,7 @@
       },
       "normalizedIlSha256": "9d23b06a72f30d877ea08d88fd859131989b0fbda9a3a7efb9e26eb77151f63f",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -798,7 +807,7 @@
       },
       "normalizedIlSha256": "64fa97c22d26c72c01cb1e80cee5c56ddf43ea5379336a8e7c6c97780a2cd031",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -830,7 +839,7 @@
       },
       "normalizedIlSha256": "2c650e84f6ac9b43aed236ee106e688f3d6c91b6283f1b99173f47bf4704ba0a",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -859,7 +868,7 @@
       },
       "normalizedIlSha256": "86ed887f49ecc8c7d3a1b5189ed1fc779dc53c83d6dd7865d6f09a16d8e1c94a",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -888,7 +897,7 @@
       },
       "normalizedIlSha256": "ac7c8a32945f67380569781973c98da9a2103bc84b6092fdb518591ea8af94c8",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -917,7 +926,7 @@
       },
       "normalizedIlSha256": "49690e6a3b193c618ff0fa98cd9b41b2fc077ef553e1016a44eaeb75a13ebdf0",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -949,7 +958,7 @@
       },
       "normalizedIlSha256": "b12992439c1b221b7dccc304bb63c1f9d30c0bfbf9c2f4f7983f4f380e1eacbf",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -978,7 +987,7 @@
       },
       "normalizedIlSha256": "ab3a791d5d40248b0406e62420a4839f9065c77c574f060d5f42d67100c17e5c",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -1007,7 +1016,7 @@
       },
       "normalizedIlSha256": "4d085889e73108b88a3cc4bdd2fee3ea837a652c9a26cea2cba178888292f8a7",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -1038,7 +1047,7 @@
       },
       "normalizedIlSha256": "508b1ced08d88998974286f5fe8a676e31e1498a5e91a800222165c99e76a957",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -1067,7 +1076,7 @@
       },
       "normalizedIlSha256": "e2f79c804d9b117c21ac902c5b32ae5959f3cdc747758fb2d00e6ba002818c21",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -1098,7 +1107,7 @@
       },
       "normalizedIlSha256": "52b9978e7d81f11d214947d78cefaff33c74e1b49966b2370c4f84451efea9c4",
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -1131,7 +1140,7 @@
       },
       "normalizedIlSha256": null,
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -1166,7 +1175,7 @@
       },
       "normalizedIlSha256": null,
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -1201,7 +1210,7 @@
       },
       "normalizedIlSha256": null,
       "limitations": [
-        "No FM2013 executable/build or known-player ground truth validated.",
+        "Executable metadata/hash identified; runtime build/player validation remains unverified.",
         "Tokens and RVAs locate FMRTE code, not Football Manager field offsets.",
         "Static call presence does not establish branch execution or successful access."
       ]
@@ -1484,5 +1493,130 @@
   "constraints": [
     "No proprietary binaries, decompiled source, private saves, memory dumps or license data in repository.",
     "Read-only static target inspection; no installation or game-state mutation."
-  ]
+  ],
+  "artifactObservations": [
+    {
+      "confidence": "CONFIRMED",
+      "sourceVersion": "13.3.3f359652 (embedded ProductVersion)",
+      "resolvedInstallationPath": "C:\\Program Files (x86)\\Football Manager 2013",
+      "binaryPath": "C:\\Program Files (x86)\\Football Manager 2013\\fm.exe",
+      "binarySha256": "df45cde67cb7361867e7afc9808dacab8bf53bd972f48145f6f881ff55d08871",
+      "architecture": "x86",
+      "limitations": [
+        "Static identity only; vendor authenticity and runtime compatibility not verified.",
+        "No player read, CA/PA extraction, write or persistence validated."
+      ],
+      "id": "FM13-PE-IDENTITY",
+      "kind": "pe-classification",
+      "reaEvidenceId": "ev_9d2e991593b8ab1e7851b2e08a1c309b7f33f4bea06f716cff011c3d170905d4",
+      "reaLocator": "normalized_result.pe; normalized_result.classification",
+      "observed": {
+        "bytes": 40848024,
+        "format": "pe32",
+        "machine": 332,
+        "sectionCount": 14,
+        "cliDirectory": null,
+        "managed": false
+      }
+    },
+    {
+      "confidence": "CONFIRMED",
+      "sourceVersion": "13.3.3f359652 (embedded ProductVersion)",
+      "resolvedInstallationPath": "C:\\Program Files (x86)\\Football Manager 2013",
+      "binaryPath": "C:\\Program Files (x86)\\Football Manager 2013\\fm.exe",
+      "binarySha256": "df45cde67cb7361867e7afc9808dacab8bf53bd972f48145f6f881ff55d08871",
+      "architecture": "x86",
+      "limitations": [
+        "Static identity only; vendor authenticity and runtime compatibility not verified.",
+        "No player read, CA/PA extraction, write or persistence validated."
+      ],
+      "id": "FM13-VERSION-RESOURCE",
+      "kind": "version-resource",
+      "reaEvidenceId": "ev_b4cec8b739d0f53c2e747d9a0c1da19e50f16b6e5150849405ce34118dd6977d",
+      "reaLocator": "normalized_result.resources[index=42].payload",
+      "observed": {
+        "resourceIndex": 42,
+        "fileOffset": 39124032,
+        "bytes": 1448,
+        "payloadSha256": "20edb78a58734a0bce0af979180229ef46e2e160c0f8404c41db61f3a73a6b8f"
+      },
+      "supplementaryMetadata": {
+        "decoder": "Windows FileVersionInfo; not decoded by REA",
+        "fileVersion": "13.3.3",
+        "productVersion": "13.3.3f359652",
+        "literalFirstFileOffset": 39124340,
+        "literalOccurrences": 4,
+        "literalEncoding": "UTF-16LE"
+      }
+    }
+  ],
+  "followupStatus": {
+    "localExecutableIdentified": true,
+    "metadataBuild": "13.3.3f359652",
+    "disposableSaveIdentified": true,
+    "knownPlayerGroundTruth": false,
+    "gameExecuted": false,
+    "nativeProviderAvailable": false
+  },
+  "localFixtures": [
+    {
+      "id": "FM13-LOCAL-01",
+      "privacy": "Private bytes and full SHA-256 kept outside Git",
+      "localMetadataPath": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm2013-user-save-probe.json",
+      "bytes": 19724442,
+      "containerPrefixHex": "02016166652e",
+      "detectedFamily": "afe",
+      "producingBuildDecoded": false,
+      "sourceUnchanged": true,
+      "inspection": {
+        "status": "experimental_index",
+        "primaryMembers": 69,
+        "nestedMembers": 705,
+        "totalMembers": 774,
+        "directoryOffset": 19715374,
+        "directoryDecodedBytes": 43290,
+        "primaryMemberPayloadProbes": 16,
+        "validatedMemberPayloadDecodes": 0
+      },
+      "limitations": [
+        "Known-player ID/CA/PA not extracted.",
+        "Tutorial comparison is not a controlled same-career/one-field pair.",
+        "No user save or process mutation."
+      ]
+    }
+  ],
+  "saveSampleStudy": {
+    "date": "2026-10-30",
+    "tool": "Existing ManagerHub bounded Node archive/codec/comparison helpers; not a REA .fm parser",
+    "report": "11-fm2013-save-samples.md",
+    "tutorialMetadataPath": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm2013-tutorial-probes.json",
+    "tutorialMetadataSha256": "a4ff56fed7867473021d3ee7ee26f370d15bdcc866570fbfa6848febccf5fef6",
+    "tutorialFileCount": 63,
+    "probedTutorials": [
+      {
+        "id": "FM13-TUTORIAL-BASE",
+        "relativePath": "data\\tutorial\\basics.fm",
+        "bytes": 19494130,
+        "sha256": "0e56596ac2a9caa0bae5441bfcdc7cde3b5e15792b9696d65524f36d54565aca",
+        "totalIndexedMembers": 773,
+        "validatedPayloadDecodes": 0
+      },
+      {
+        "id": "FM13-TUTORIAL-1333",
+        "relativePath": "data\\updates\\update-1333\\tutorial\\scouting.fm",
+        "bytes": 19735514,
+        "sha256": "db4f818f9daa9318e3178097b16a72d403942b6e73343005af4071b63cafc6c3",
+        "totalIndexedMembers": 772,
+        "validatedPayloadDecodes": 0
+      }
+    ],
+    "comparison": {
+      "sharedNamedMembers": 752,
+      "sameStoredSizeCandidates": 26,
+      "comparedMembers": 26,
+      "completeStoredMemberHashMatches": 0,
+      "controlledOneFieldPair": false
+    },
+    "playerFieldsVerified": false
+  }
 }

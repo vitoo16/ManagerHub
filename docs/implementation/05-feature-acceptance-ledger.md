@@ -61,6 +61,8 @@ A format-specific capability may be **Blocked by compatibility** even while othe
 
 2026-10-30: [FMRTE REA investigation](../research/fmrte/README.md) adds source-identified static read/write evidence, separate13/26 inventories and read-only metadata/CIL research tooling. MH-01/02/03/05 do **not** gain native player-data, Actual CA/PA or writer support: exact FM2013 build/record validation and game-save roundtrip remain open. The full27-module scope and statuses above remain unchanged.
 
+User-path follow-up identifies [local FM2013 executable metadata/hash](../research/fmrte/10-local-fm2013-executable.md) as `13.3.3f359652`. [Real save samples](../research/fmrte/11-fm2013-save-samples.md) now verify experimental AFE index recognition, but not member/player decoding. Runtime detection, known-player read validation and roundtrip remain open; no native capability status is promoted.
+
 [Player Lab HTML/CSV/TSV import, attributes, roles and limitations](07-player-lab-and-export-import.md). Real import data remains local and user-supplied. Full CA/PA save decoding, role/position fit calibration and recruitment financial assessment remain open requirements.
 
 Additional integration evidence: [opt-in local storage + role-fit lineup planner](08-local-library-and-squad-planner.md).

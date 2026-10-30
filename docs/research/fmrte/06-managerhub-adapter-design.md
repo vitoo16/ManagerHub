@@ -60,7 +60,7 @@ The native snapshot needs the game edition/build, executable hash, adapter versi
 
 | Next work | Classification now | Exit evidence before enabling |
 |---|---|---|
-| FM2013 source/build detection | UNKNOWN | Exact executable identity and controlled successful/failed detection tests. |
+| FM2013 source/build detection | CONFIRMED executable metadata/hash only; runtime detection UNKNOWN | [Local executable identity](10-local-fm2013-executable.md) is now recorded; controlled successful/failed process/build detection tests remain needed. |
 | Read-only player identity | UNKNOWN | Known native ID, name and club cross-checked on disposable same-build data; repeat reads and process-exit behavior. |
 | CA/PA and attribute normalization | UNKNOWN | Verified per-field mapping, scales, known values, missing-field behavior and repeatability. No fabricated memory fixtures can establish game support. |
 | Shared UI integration | INFERRED design | Canonical snapshot plus provenance-preserving projection; Realism/Editor modes and VI/EN missing/unsupported states tested. |

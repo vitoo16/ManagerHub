@@ -2,6 +2,8 @@
 
 **REA MCP worked. Static FM2013-oriented read/write paths were recovered in FMRTE13; no ManagerHub player reader, CA/PA extractor or editor was validated.** FMRTE26 was inspected independently and remains unresolved below delegate dispatch. No proprietary target was executed, and no installation/game/save was changed.
 
+**User-path follow-up:** [local `fm.exe`](10-local-fm2013-executable.md) is now identified as PE32/x86, ProductVersion `13.3.3f359652`, SHA-256 `df45cde67cb7361867e7afc9808dacab8bf53bd972f48145f6f881ff55d08871`. [The new user save and two tutorials](11-fm2013-save-samples.md) have recognized experimental AFE indexes (774/773/772 members); selected member payloads remain undecoded. Executable/save location blockers are resolved. Known-player validation and a native analysis provider remain missing; reader/editor capability is unchanged.
+
 | Question | Result / confidence | Evidence and remaining limit |
 |---|---|---|
 | Q1 Process or .fm? | 13: CONFIRMED memory call sites plus UNKNOWN stream format. 26: CONFIRMED vendor description of live Load Game; local implementation UNKNOWN below delegates. | [13 load](01-fmrte13-load-pipeline.md), [26 load](01-fmrte26-load-pipeline.md), [official current Load Game](https://docs.fmrte.com/getting-started/load-game/). No offline .fm parser demonstrated. |

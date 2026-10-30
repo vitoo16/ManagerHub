@@ -46,4 +46,12 @@ For REA, select exact type names, request inspect_managed_members(detail:summary
 
 ## Unexecuted real-data experiments
 
-All are UNKNOWN / NOT RUN: FM2013 Load Game; known player/CA/PA/attribute consistency; one-field edit; FM save/reload persistence; restoration after write; offline .fm header/diff/decode/roundtrip. Exact FM2013 executable/build, disposable career and trusted same-player observations were not available in the checked locations. No user's main save was touched. [Next actions](08-next-actions.md) list the evidence needed.
+Still UNKNOWN / NOT RUN: FM2013 Load Game; known player/CA/PA/attribute consistency; one-field edit; FM save/reload persistence; restoration after write; offline player decode/roundtrip. The initial pass lacked the executable; [the follow-up](10-local-fm2013-executable.md) identifies its metadata/hash and [a subsequent sample study](11-fm2013-save-samples.md) runs real header/index/codec/structural-comparison probes. Known-player observations remain unavailable. No source save was modified. [Next actions](08-next-actions.md) list the evidence needed.
+
+## Executable-path follow-up
+
+REA `inspect_pe_resources` and `inspect_managed_artifact(detail:summary)` on the supplied `fm.exe` passed: resource-tree inventory and PE32/x86/no-CLI classification respectively. `binary_session` confirmed responsive MCP6.7.0 and still-unavailable native providers. The existing PowerShell PE inventory tool independently agreed on size/hash/I386/no metadata. A read-only RT_VERSION literal check matched its REA payload digest. None of these tools executed the target or validated FM player data. The fresh evidence bundle and executable inventory are linked in the manifest; no application code changed, so prior application test results are historical and were not rerun for this metadata/documentation update.
+
+## Real-save follow-up checks
+
+`inspectLocalArchive` passed its bounded experimental directory checks on the selected private snapshot and two shipped tutorials (774/773/772 members). All 16 selected member payload trials per file remained unsupported. `compareLocalAfeSaves` compared snapshot/tutorial metadata: 752 shared names, 26 equal-size candidates compared, all 26 complete stored-member hashes differ. Source hashes before/after agree. Private raw outputs remain outside Git; source-module hashes, bounds, exact counts and limitations are in the sample report/local metadata. No .fm player-read success is inferred. The final audit covers 47 method discoveries, 2 executable observations, 65 unique REA records, 3 bundle hashes and 424 unchanged inventoried executable/configuration files, separately from save snapshot hash checks.

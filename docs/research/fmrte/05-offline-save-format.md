@@ -10,11 +10,18 @@ Investigation date: 2026-10-30 (Asia/Bangkok). **Result: UNKNOWN format mapping;
 | Earlier `afe.` sample | CONFIRMED as a historical documentation entry, not revalidated bytes | `docs/references.md` records a 29,319,864-byte sample with prefix `02 01 61 66 65 2e`. The sample was not available here for a new hash, header inspection or comparison. Its edition/build remain UNKNOWN. |
 | Normal game-location discovery | CONFIRMED, bounded negative result | The checked default Steam location exposed manifests `228980` and `3551340`; checked Sports Interactive document folders exposed Football Manager 2017 and Football Manager 26. No FM2013 installation/save was identified by those checks. No unrelated private directories were scanned. |
 | Additional normal-location check | CONFIRMED, bounded negative result | Steam's library metadata also points to `D:\SteamLibrary`; that library's manifests and the explicit Football Manager 2013 directory candidate did not identify FM2013. Standard Windows uninstall keys did not identify FM2013. These checks do not establish absence elsewhere. |
-| Same-player before/after snapshots | UNKNOWN | No authorized FM2013 pair with exact build and trusted field values was available. No new binary diff was performed. |
+| User-supplied installation/save follow-up | CONFIRMED static identities and bounded container study | [The supplied directory](10-local-fm2013-executable.md) contains native `fm.exe` metadata `13.3.3f359652`; corrected JSON inventory finds 63 shipped tutorial `.fm` files. After the user confirmed a save now exists, `Untitled Game.fm` was found in the default games folder. [Three selected samples](11-fm2013-save-samples.md) have recognized experimental AFE directories, but member payloads/player fields remain undecoded. |
+| Same-player before/after snapshots | UNKNOWN | No controlled same-career pair with exact build and trusted field values was available. The later independent user/tutorial byte comparison is structural only and cannot identify a changed player field. |
 | ManagerHub file inspection | CONFIRMED in source | `packages/domain/src/save.ts` detects `afe.` or `fmf.` at bytes 2–5, inspects bounded archive metadata for `afe.`, and returns `edition:null`, `build:null`. It explicitly reports that player records and CA/PA have not been decoded. |
 | Codec/cross-save tests | CONFIRMED in source | The repository has synthetic archive/codec tests. For example, `scripts/afe-cross-save.test.mjs` explicitly constructs synthetic bytes. Such tests validate helper behavior, not Football Manager compatibility. |
 
 No real save hashes, player lists, private save contents or memory dumps are included in this report.
+
+## New real-sample container evidence
+
+**CONFIRMED:** the user save is 19,724,442 bytes with prefix `02 01 61 66 65 2e`. An unchanged private analysis copy yields an experimental directory of 69 primary plus 705 `rgman` members (774 total). Two selected shipped tutorials yield 773 and 772 members. The directory zlib streams satisfy the existing helper's bounded/full-consumption checks. All 16 selected small-member payload trials in each file remain `unsupported_codec`; no player, actual CA/PA or producing game build was decoded.
+
+A structural comparison of user snapshot versus scouting tutorial finds 752 shared names, 26 equal-size members, all 26 with differing complete stored-member hashes. These are different careers/states, not a controlled one-field pair. This does not map fields or prove encryption. Full private source hashes and byte metadata remain outside Git; [the sample report](11-fm2013-save-samples.md) records tools, limits, counts, source stability and the corrected installation-file inventory.
 
 ## What the FMRTE evidence establishes
 

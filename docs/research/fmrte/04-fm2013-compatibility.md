@@ -8,21 +8,22 @@
 
 **CONFIRMED as vendor documentation, not a local test:** [official FMRTE13 release page](https://www.fmrte.com/files/file/13-fmrte-13/) lists 13.3.3.62 for FM13.3.3, including 13.3.3.359652 Retail and 13.3.3.359720 Russian among supported reference builds. It describes Classic-mode editing restrictions. These are FMRTE's advertised capabilities, not ManagerHub-supported builds. Retrieved 2026-10-30; vendor text/version metadata do not authenticate the installed executable.
 
-**CONFIRMED bounded discovery:** no running fm process observed; no FM2013 entry found in standard uninstall keys; normal Steam library metadata points to C:\Program Files (x86)\Steam and D:\SteamLibrary. Neither library contained a Football Manager 2013 directory or identified its manifest. Checked Sports Interactive Documents roots list FM2017/FM26, not FM2013. Workspace has no .fm. This does not prove absence elsewhere. No broad private-directory scan was performed.
+**CONFIRMED local executable, follow-up:** the user supplied `C:\Program Files (x86)\Football Manager 2013`. Its `fm.exe` is PE32/x86 with no CLI directory, metadata ProductVersion `13.3.3f359652`, FileVersion `13.3.3`, 40,848,024 bytes, SHA-256 `df45cde67cb7361867e7afc9808dacab8bf53bd972f48145f6f881ff55d08871`. See [exact REA evidence and limitations](10-local-fm2013-executable.md). Matching the vendor-listed build number establishes a candidate, not tested compatibility or authenticity.
+
+**CONFIRMED updated discovery:** the earlier Steam/registry checks did not identify this installation. Corrected JSON inventory finds 63 shipped tutorial `.fm` files; following the user's later message, one fresh save appears in the default games folder. [Three selected files](11-fm2013-save-samples.md) have recognized experimental AFE directories, but no player/CA/PA decoding. No fm/FMRTE process was observed in the latest check. Known-player ground truth and runtime validation remain missing. No broad private-directory scan was performed.
 
 ## Verification matrix
 
 | Edition / exact executable build | Reference source | Process detection | Player / CA/PA / attributes | Writeback | Persistence |
 |---|---|---|---|---|---|
-| FM2013 local build UNKNOWN (no executable supplied/found in checked locations) | FMRTE13 13.3.3.62, above hash | UNKNOWN / not runtime tested | UNKNOWN / no trusted same-build records | UNSUPPORTED in ManagerHub | UNKNOWN / not tested |
-| FM2013 13.3.3.359652 Retail (vendor-listed candidate) | Official release documentation only | UNKNOWN for ManagerHub | UNKNOWN | UNSUPPORTED | UNKNOWN |
+| FM2013 local metadata `13.3.3f359652`, executable SHA-256 `df45cde67cb7361867e7afc9808dacab8bf53bd972f48145f6f881ff55d08871` | FMRTE13 13.3.3.62, above hash; same numeric build as vendor-listed Retail candidate | UNKNOWN / not runtime tested | UNKNOWN / no trusted same-build records | UNSUPPORTED in ManagerHub | UNKNOWN / not tested |
 | FM2013 13.3.3.359720 Russian (vendor-listed candidate) | Official release documentation only | UNKNOWN for ManagerHub | UNKNOWN | UNSUPPORTED | UNKNOWN |
 | FM2026 local build not investigated | FMRTE26 26.3.2.42, hashes in inventory | UNKNOWN | UNKNOWN | UNSUPPORTED | UNKNOWN |
 
-No row is labeled supported. Known FMRTE version is not known Football Manager build. Metadata token/RVA coordinates in the reports are coordinates inside FMRTE, never offsets to put into a live adapter.
+No row is labeled supported. The local Football Manager build is identified from executable metadata; support still requires runtime/field validation. Metadata token/RVA coordinates in the FMRTE reports locate FMRTE code, never offsets to put into a live adapter.
 
 ## FM2013 validation dependency
 
-An exact legitimate fm.exe version/hash, authorized disposable career and known-player ground truth are needed first. Verify one ID/name/club; repeat reads; independently compare CA, PA and one transformed normal attribute; verify wrong-build/access-denied/process-exit cases. Only a verified read path permits a separately authorized write experiment. Offline file parsing requires actual FM2013 save bytes and independent record extraction; it is a separate gate.
+The executable metadata/hash and a private test-save snapshot are now recorded; vendor authenticity and native/player compatibility have not been independently established. Known-player ground truth and an actual record decoder/read session are needed next. Verify one ID/name/club; repeat reads; independently compare CA, PA and one transformed normal attribute; verify wrong-build/access-denied/process-exit cases. Only a verified read path permits a separately authorized write experiment. Offline sample bytes are available, but independent record extraction and a controlled same-career pair remain separate gates.
 
 **UNSUPPORTED:** guessed offsets, FM26 layout transplantation, testing synthetic memory and calling it FM2013 support, or weakening actual-CA provenance. **UNKNOWN:** game-engine CA balancing and reload behavior.
