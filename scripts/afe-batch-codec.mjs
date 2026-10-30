@@ -4,6 +4,7 @@ import { probeCodecConsumption } from './afe-codec-consumption.mjs';
 import { summarizeNestedStructure } from './afe-structure-summary.mjs';
 import { summarizeByteCohort } from './afe-cohort-profile.mjs';
 import { censusMemberEnvelopes } from './afe-envelope-census.mjs';
+import { auditUnindexedGaps } from './afe-gap-audit.mjs';
 
 // AFE offsets relative to 18 bytes and FMF-directory trailer are observations
 // from one save family, not a confirmed format specification.
@@ -153,6 +154,7 @@ export async function inspectLocalArchive(filePath) {
     }
     if (!members) return { status: 'not_recognized', members: [], trials: [] };
     const envelopeCensus = await censusMemberEnvelopes(handle, members, parsedGroups, BASE);
+    const gapAudit = await auditUnindexedGaps(handle, members, directoryOffset, BASE);
     let cohortProfile = null;
     if (selectedCohort.length >= 2) {
       const samples = [];
@@ -186,7 +188,7 @@ export async function inspectLocalArchive(filePath) {
     }
     return { status: 'experimental_index', directoryOffset,
       memberCount: totalMembers, nestedGroups: groupCounts, nestedStructure: groupStructure,
-      dominantCohortProfile: cohortProfile, envelopeCensus,
+      dominantCohortProfile: cohortProfile, envelopeCensus, gapAudit,
       totalIndexedMembers: members.length,
       parsedDirectoryBytes, unparsedDirectoryBytes,
       inspectedMembers: inspected, skippedOversized: skipped, trials };
