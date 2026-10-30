@@ -53,6 +53,44 @@ export function compareMemberSamples(a, b) {
  * occur across saves. Even distinct files do not establish randomness,
  * encryption, player identity, or matching in-game semantic content.
  */
+/**
+ * Select comparable member pairs deterministically. Prefer identical stored
+ * lengths and meaningful small metadata names; track omitted coverage so a
+ * 32-pair sample cannot be mistaken for the full archive.
+ */
+export function selectComparableMembers(left, right, limit = MAX_COMPARE_MEMBERS) {
+  if (!Array.isArray(left) || !Array.isArray(right) ||
+      !Number.isSafeInteger(limit) || limit < 1 || limit > MAX_COMPARE_MEMBERS) {
+    throw new RangeError('Invalid bounded cross-save selection.');
+  }
+  const names = new Set();
+  for (const member of right) {
+    if (!member || typeof member.filename !== 'string' || names.has(member.filename))
+      throw new RangeError('Duplicate or invalid member names in second save.');
+    names.add(member.filename);
+  }
+  const available = new Map(right.map(member => [member.filename, member]));
+  const shared = left.filter(member => available.has(member.filename));
+  const priority = new Map([['game_info.dat', 0], ['save_game_summary.dat', 1]]);
+  const comparable = shared.filter(member => member.storedBytes === available.get(member.filename).storedBytes);
+  const differingStoredSizes = shared.length - comparable.length;
+  const paired = comparable.sort((x, y) =>
+    (priority.get(x.filename) ?? 2) - (priority.get(y.filename) ?? 2) ||
+    x.storedBytes - y.storedBytes || x.filename.localeCompare(y.filename)).slice(0, limit);
+  return {
+    available, paired,
+    coverage: {
+      sharedNamedMembers: shared.length,
+      differingStoredSizes,
+      sameStoredSizeCandidates: comparable.length,
+      selectedMembers: paired.length,
+      omittedSameSizeCandidates: comparable.length - paired.length,
+      leftOnlyMembers: left.length - shared.length,
+      rightOnlyMembers: right.length - shared.length
+    }
+  };
+}
+
 export async function compareLocalAfeSaves(pathA, pathB) {
   const [fingerprintA, fingerprintB] = await Promise.all([
     fingerprint(pathA), fingerprint(pathB)
@@ -70,10 +108,8 @@ export async function compareLocalAfeSaves(pathA, pathB) {
     return { status: 'unsupported_or_invalid_container', identicalFiles: false,
       comparedMembers: 0, comparisons: [] };
   }
-  const available = new Map(b.memberIndex.map(member => [member.filename, member]));
-  const paired = a.memberIndex.filter(member => available.has(member.filename))
-    .sort((left, right) => left.storedBytes - right.storedBytes ||
-      left.filename.localeCompare(right.filename)).slice(0, MAX_COMPARE_MEMBERS);
+  const selection = selectComparableMembers(a.memberIndex, b.memberIndex);
+  const { available, paired, coverage } = selection;
   const [handleA, handleB] = await Promise.all([open(pathA, 'r'), open(pathB, 'r')]);
   try {
     // Sample separated regions: a shared header does not imply an equal body.
@@ -153,7 +189,7 @@ export async function compareLocalAfeSaves(pathA, pathB) {
       identicalFiles: false,
       indexedMembersA: a.totalIndexedMembers,
       indexedMembersB: b.totalIndexedMembers,
-      sharedNamedMembers: a.memberIndex.filter(member => available.has(member.filename)).length,
+      ...coverage,
       comparedMembers: comparisons.length,
       comparisons
     };

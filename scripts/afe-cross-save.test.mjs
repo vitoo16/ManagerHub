@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtemp, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { compareMemberSamples, compareLocalAfeSaves } from './afe-cross-save.mjs';
+import { compareMemberSamples, compareLocalAfeSaves, selectComparableMembers } from './afe-cross-save.mjs';
 import { deflateSync } from 'node:zlib';
 
 test('bounded comparison distinguishes shared envelope from different payloads', () => {
@@ -153,4 +153,48 @@ test('full-member hash detects changes missed by all sampled windows', async () 
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
+});
+
+test('does not compare mismatched stored lengths and reports complete selection coverage', () => {
+  const left = [
+    { filename: 'a.dat', storedBytes: 15 },
+    { filename: 'game_info.dat', storedBytes: 420 },
+    { filename: 'save_game_summary.dat', storedBytes: 120 },
+    { filename: 'unchanged.dat', storedBytes: 28 },
+    { filename: 'left-only.dat', storedBytes: 40 }
+  ];
+  const right = [
+    { filename: 'a.dat', storedBytes: 16 },
+    { filename: 'game_info.dat', storedBytes: 420 },
+    { filename: 'save_game_summary.dat', storedBytes: 120 },
+    { filename: 'unchanged.dat', storedBytes: 28 },
+    { filename: 'right-only.dat', storedBytes: 40 }
+  ];
+  const result = selectComparableMembers(left, right, 2);
+  assert.deepEqual(result.paired.map(member => member.filename),
+    ['game_info.dat', 'save_game_summary.dat']);
+  assert.deepEqual(result.coverage, {
+    sharedNamedMembers: 4,
+    differingStoredSizes: 1,
+    sameStoredSizeCandidates: 3,
+    selectedMembers: 2,
+    omittedSameSizeCandidates: 1,
+    leftOnlyMembers: 1,
+    rightOnlyMembers: 1
+  });
+  assert.throws(() => selectComparableMembers(left, [right[0], right[0]]), RangeError);
+  assert.throws(() => selectComparableMembers(left, right, 33), RangeError);
+});
+
+test('prioritizes supported metadata names even when other entries are smaller', () => {
+  const left = Array.from({ length: 50 }, (_, i) => ({
+    filename: 'comp_' + i + '.dat', storedBytes: 16
+  }));
+  left.push({ filename: 'game_info.dat', storedBytes: 2500 });
+  left.push({ filename: 'save_game_summary.dat', storedBytes: 140 });
+  const result = selectComparableMembers(left, left);
+  assert.equal(result.paired.length, 32);
+  assert.deepEqual(result.paired.slice(0, 2).map(member => member.filename),
+    ['game_info.dat', 'save_game_summary.dat']);
+  assert.equal(result.coverage.omittedSameSizeCandidates, 20);
 });
