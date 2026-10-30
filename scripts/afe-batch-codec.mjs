@@ -1,6 +1,7 @@
 import { open, stat } from 'node:fs/promises';
 import { inflateSync } from 'node:zlib';
 import { probeCodecConsumption } from './afe-codec-consumption.mjs';
+import { summarizeNestedStructure } from './afe-structure-summary.mjs';
 
 // AFE offsets relative to 18 bytes and FMF-directory trailer are observations
 // from one save family, not a confirmed format specification.
@@ -108,6 +109,7 @@ export async function inspectLocalArchive(filePath) {
     let parsedDirectoryBytes = 0;
     let unparsedDirectoryBytes = 0;
     let groupCounts = [];
+    let groupStructure = [];
     let totalMembers = 0;
     // Last candidate first; cap inflation attempts on marker-heavy input.
     let attempted = 0;
@@ -128,6 +130,7 @@ export async function inspectLocalArchive(filePath) {
         if (parsed) {
           members = parsed.allMembers;
           groupCounts = parsed.groups.map(group => ({ name: group.groupName, count: group.members.length }));
+          groupStructure = summarizeNestedStructure(parsed);
           totalMembers = parsed.members.length;
           parsedDirectoryBytes = parsed.parsedBytes;
           unparsedDirectoryBytes = parsed.trailingBytes;
@@ -155,7 +158,7 @@ export async function inspectLocalArchive(filePath) {
       }
     }
     return { status: 'experimental_index', directoryOffset,
-      memberCount: totalMembers, nestedGroups: groupCounts,
+      memberCount: totalMembers, nestedGroups: groupCounts, nestedStructure: groupStructure,
       totalIndexedMembers: members.length,
       parsedDirectoryBytes, unparsedDirectoryBytes,
       inspectedMembers: inspected, skippedOversized: skipped, trials };
