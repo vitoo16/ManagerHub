@@ -6,6 +6,7 @@ import { summarizeByteCohort } from './afe-cohort-profile.mjs';
 import { censusMemberEnvelopes } from './afe-envelope-census.mjs';
 import { auditUnindexedGaps } from './afe-gap-audit.mjs';
 import { compareGapToEqualSizeMembers } from './afe-gap-comparison.mjs';
+import { censusFramedCodecSignatures } from './afe-frame-signatures.mjs';
 
 // AFE offsets relative to 18 bytes and FMF-directory trailer are observations
 // from one save family, not a confirmed format specification.
@@ -174,6 +175,7 @@ export async function inspectLocalArchive(filePath) {
     }
     if (!members) return { status: 'not_recognized', members: [], trials: [] };
     const envelopeCensus = await censusMemberEnvelopes(handle, members, parsedGroups, BASE);
+    const framedCodecSignatures = await censusFramedCodecSignatures(handle, members, BASE);
     const gapAudit = await auditUnindexedGaps(handle, members, directoryOffset, BASE);
     const gapComparisons = [];
     for (const gap of gapAudit.gaps) {
@@ -208,7 +210,7 @@ export async function inspectLocalArchive(filePath) {
     }
     return { status: 'experimental_index', directoryOffset,
       memberCount: totalMembers, nestedGroups: groupCounts, nestedStructure: groupStructure,
-      dominantCohortProfile: cohortProfile, envelopeCensus, gapAudit, gapComparisons,
+      dominantCohortProfile: cohortProfile, envelopeCensus, framedCodecSignatures, gapAudit, gapComparisons,
       totalIndexedMembers: members.length,
       parsedDirectoryBytes, unparsedDirectoryBytes,
       inspectedMembers: inspected, skippedOversized: skipped, trials };
