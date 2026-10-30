@@ -183,7 +183,7 @@ test('does not compare mismatched stored lengths and reports complete selection 
     rightOnlyMembers: 1
   });
   assert.throws(() => selectComparableMembers(left, [right[0], right[0]]), RangeError);
-  assert.throws(() => selectComparableMembers(left, right, 33), RangeError);
+  assert.throws(() => selectComparableMembers(left, right, 4097), RangeError);
 });
 
 test('prioritizes supported metadata names even when other entries are smaller', () => {
@@ -197,4 +197,72 @@ test('prioritizes supported metadata names even when other entries are smaller',
   assert.deepEqual(result.paired.slice(0, 2).map(member => member.filename),
     ['game_info.dat', 'save_game_summary.dat']);
   assert.equal(result.coverage.omittedSameSizeCandidates, 20);
+});
+
+test('opt-in full catalogue mode detects changes beyond default 32 pairs without exposing hashes', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'afe-full-catalogue-'));
+  const first = join(dir, 'save-one.fm');
+  const second = join(dir, 'save-two.fm');
+  const make = variant => {
+    const parts = [];
+    const directory = [];
+    const u32 = (array, value) => {
+      const buffer = Buffer.alloc(4);
+      buffer.writeUInt32LE(value);
+      array.push(buffer);
+    };
+    const name = value => {
+      u32(directory, value.length);
+      directory.push(Buffer.from(value, 'utf16le'), Buffer.alloc(2));
+    };
+    u32(directory, 0);
+    u32(directory, 40);
+    let offset = 0;
+    for (let i = 0; i < 40; i++) {
+      const filename = 'part_' + String(i).padStart(3, '0');
+      const member = Buffer.concat([
+        Buffer.from([16, 0, 0, 0, 16, 0, 0, 0]),
+        Buffer.alloc(12 + (variant && i === 38 ? 1 : 0),
+          variant && i === 39 ? 0x55 : 0x66)
+      ]);
+      parts.push(member);
+      name(filename); name('.dat');
+      u32(directory, offset);
+      u32(directory, member.length);
+      u32(directory, 48);
+      offset += member.length;
+    }
+    return Buffer.concat([
+      Buffer.from([2, 1, 97, 102, 101, 46]), Buffer.alloc(12),
+      ...parts,
+      Buffer.from([2, 1, 102, 109, 102, 46, 4, 0, 0]),
+      deflateSync(Buffer.concat(directory))
+    ]);
+  };
+  try {
+    await writeFile(first, make(false));
+    await writeFile(second, make(true));
+    const short = await compareLocalAfeSaves(first, second);
+    assert.equal(short.comparedMembers, 32);
+    assert.equal(short.comparisons.every(item => item.completeMemberHashMatch), true);
+    const all = await compareLocalAfeSaves(first, second, { allMembers: true });
+    assert.equal(all.status, 'different_files');
+    assert.equal(all.comparisonMode, 'full_catalogue');
+    assert.equal(all.sharedNamedMembers, 40);
+    assert.equal(all.differingStoredSizes, 1);
+    assert.equal(all.comparedMembers, 39);
+    assert.equal(all.hashedMembers, 39);
+    assert.equal(all.changedMembers, 1);
+    assert.equal(all.unchangedMembers, 38);
+    assert.equal(all.unverifiedOversizedMembers, 0);
+    assert.deepEqual(all.sizeChangedMembers, ['part_038.dat']);
+    assert.equal(all.comparisons.find(member => member.filename === 'part_039.dat')
+      .completeMemberHashMatch, false);
+    assert.equal(all.comparisons.some(member => Object.hasOwn(member, 'sampledRegions')), false);
+    assert.equal(JSON.stringify(all).includes('digest'), false);
+    assert.equal(JSON.stringify(all).includes('sha256:'), false);
+    assert.throws(() => compareLocalAfeSaves(first, second, { allMembers: 'yes' }), TypeError);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
 });
