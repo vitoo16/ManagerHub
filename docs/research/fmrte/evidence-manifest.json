@@ -22,7 +22,10 @@
       "inspect_analysis_view",
       "project_managed_application_graph",
       "export_evidence_bundle",
-      "inspect_pe_resources"
+      "inspect_pe_resources",
+      "list_frida_processes",
+      "load_frida_script",
+      "close_frida_session"
     ]
   },
   "inventories": [
@@ -55,6 +58,11 @@
       "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-rooney-final-rea-evidence.json",
       "sha256": "8caaeb5fb96498afd6a5c8d86f27abc9d536b191fba2978ee6a326f5090dca09",
       "note": "Private runtime and static record evidence: 57 canonical records, 33,868,358 bytes. Contains player-session data; raw bundle stays outside Git."
+    },
+    {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-catalog-final-rea-evidence.json",
+      "sha256": "bd3fd15a11d0809353a2fd00e55a56d7a47379d5bac598eecb759004553f9f4c",
+      "note": "Private bounded-discovery evidence; 68 canonical records, 46758054 bytes. Full emitted career records stay outside Git."
     }
   ],
   "evidenceAliases": {
@@ -81,7 +89,11 @@
     "catalogOrchestrator13": "ev_bb47ef5af519919ba7155084e4d1bc121ff9df7cb076b9c42f863b1fb6f58f3c",
     "livePersonStatic13": "ev_bb55229d298fc99886e89b806add3f2250c9b09a651cce61fc66ece3b389545c",
     "liveAttributesStatic13": "ev_5d9b78da4dc500a81fa0db487fc5ce31ca9328bb6309e25b2656bae2e6659db2",
-    "liveRecordProbe13": "ev_30b077e5b36f465e99330a01408a4e0641205b61571143e3b92f662cc867f1bc"
+    "liveRecordProbe13": "ev_30b077e5b36f465e99330a01408a4e0641205b61571143e3b92f662cc867f1bc",
+    "catalogProfilePreparation13": "ev_ee3b373fb1514a3e7c7e761fc13f69770d0c5e2d5de5a08e8aca853408337c57",
+    "catalogGenericDiscovery13": "ev_dcdc817da7d2a760dfbc94ed93d764b721274d5d620d8c9a6759262231d9c7cf",
+    "livePlayerScan13": "ev_31bca470589810638fb66355c428390ee4352c25ffafd481e907785cab38b8fe",
+    "livePlayerScanSecondAnchor13": "ev_a068e86c61857321138fbe668a808db1578c36c5416a7a522bcdb999d5eb4d38"
   },
   "discoveries": [
     {
@@ -3083,6 +3095,319 @@
       },
       "sourceIlSha256": "01c7f803bc464682783ad269492115febb362f0b316bfcf4c4ff0f6dedf762c6",
       "normalizedIlSha256": "a1e6de942c4b67ea5270fae0fa830c65f589a4ef8c4e0a309ce99b1198e9f14d"
+    },
+    {
+      "id": "RE13-CATALOG-SCAN-0x0600050d",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed static CIL; exact selected FMRTE profile and branch execution unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_ee3b373fb1514a3e7c7e761fc13f69770d0c5e2d5de5a08e8aca853408337c57",
+      "reaLocator": "normalized_result.methods[token=0x0600050d]",
+      "symbol": "#=qhYVcrIne1sSLNKEe9OGNBABbeomBLPBXxkjHfQO3JKOvMXA26AAIH0B_G3AElqxC::#=qkIbYUhGcjg5NxbXCV8LD0davFpf1dMVKy0NhMeyATtw=",
+      "methodToken": "0x0600050d",
+      "rva": 180072,
+      "fileOffset": 172392,
+      "signature": {
+        "returnType": "bool",
+        "parameterTypes": [
+          "class:2080",
+          "valuetype:696"
+        ]
+      },
+      "normalizedIlSha256": "bd0f0b722eb1c00cf1682f510420a0b726d8e961ba401feddc77561406f90aca",
+      "limitations": [
+        "Build-local coordinates bound to the selected binary SHA-256 and MVID.",
+        "Static discovery branch does not prove which profile FMRTE selects.",
+        "Original live scanner uses an independently observed same-session marker, not a certified global root."
+      ],
+      "sourceIlSha256": "a50290e6569bdf157b2a3388630c8fff89c28251a9e76613aec3cc6a38ed6803"
+    },
+    {
+      "id": "RE13-CATALOG-SCAN-0x06000519",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed static CIL; exact selected FMRTE profile and branch execution unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_ee3b373fb1514a3e7c7e761fc13f69770d0c5e2d5de5a08e8aca853408337c57",
+      "reaLocator": "normalized_result.methods[token=0x06000519]",
+      "symbol": "#=q$Zr_92HqV6GbOlqvd8pn5aU16$IL4VAeDOOEaC3mMEs=::#=qLwyDHAvUXzNsGmyf6YR50A==",
+      "methodToken": "0x06000519",
+      "rva": 182056,
+      "fileOffset": 174376,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "class:184"
+        ]
+      },
+      "normalizedIlSha256": "da4233af88c6c196c65fd44f38d0f628c0f588217fba6a8a3e076cd9200aa072",
+      "limitations": [
+        "Build-local coordinates bound to the selected binary SHA-256 and MVID.",
+        "Static discovery branch does not prove which profile FMRTE selects.",
+        "Original live scanner uses an independently observed same-session marker, not a certified global root."
+      ],
+      "sourceIlSha256": "ffd67522603c30af5fddc9b0ba9771f40677e8361f67d281b224d1662d6043ef"
+    },
+    {
+      "id": "RE13-CATALOG-SCAN-0x0600051c",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed static CIL; exact selected FMRTE profile and branch execution unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_ee3b373fb1514a3e7c7e761fc13f69770d0c5e2d5de5a08e8aca853408337c57",
+      "reaLocator": "normalized_result.methods[token=0x0600051c]",
+      "symbol": "#=q$Zr_92HqV6GbOlqvd8pn5aU16$IL4VAeDOOEaC3mMEs=::#=q5Zv8qEutnd3h4ymQPz9XqOKCMJSINLwmqQtOwpYv0vg=",
+      "methodToken": "0x0600051c",
+      "rva": 183280,
+      "fileOffset": 175600,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "bde193424f77381f9ac3f5ad513dd81f1e6d212772dcad330da5e59ca63c3a40",
+      "limitations": [
+        "Build-local coordinates bound to the selected binary SHA-256 and MVID.",
+        "Static discovery branch does not prove which profile FMRTE selects.",
+        "Original live scanner uses an independently observed same-session marker, not a certified global root."
+      ],
+      "sourceIlSha256": "4d78a7f09e5eaa2d8a613e58d126c7c8ead987de3344b2d75d8899a42c765b4f"
+    },
+    {
+      "id": "RE13-CATALOG-SCAN-0x060008cb",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed static CIL; exact selected FMRTE profile and branch execution unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_ee3b373fb1514a3e7c7e761fc13f69770d0c5e2d5de5a08e8aca853408337c57",
+      "reaLocator": "normalized_result.methods[token=0x060008cb]",
+      "symbol": "#=qwzqQmrCYpl3ylG0EIO_jCCKqMQyH0rwmWkVfoGeO8f$_PO37rq_zPhHEtaROMzFjYK12Q8eAzOrllT1yWTqNPg==::#=qGU7HPz7zwmYjZGl7AdkpgAJJbgGAAIF6uGZmxOnaFVI=",
+      "methodToken": "0x060008cb",
+      "rva": 296256,
+      "fileOffset": 288576,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "da997b62c653079cc18ca83da94169787c50e0a5058c9c7adb68f8717c5a02df",
+      "limitations": [
+        "Build-local coordinates bound to the selected binary SHA-256 and MVID.",
+        "Static discovery branch does not prove which profile FMRTE selects.",
+        "Original live scanner uses an independently observed same-session marker, not a certified global root."
+      ],
+      "sourceIlSha256": "fc09296542655cc55c8406199c2f98f0683ee083cf8c8f90bcd39f41d68baa59"
+    },
+    {
+      "id": "RE13-CATALOG-SCAN-0x060008cc",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed static CIL; exact selected FMRTE profile and branch execution unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_ee3b373fb1514a3e7c7e761fc13f69770d0c5e2d5de5a08e8aca853408337c57",
+      "reaLocator": "normalized_result.methods[token=0x060008cc]",
+      "symbol": "#=qwzqQmrCYpl3ylG0EIO_jCCKqMQyH0rwmWkVfoGeO8f$_PO37rq_zPhHEtaROMzFjYK12Q8eAzOrllT1yWTqNPg==::#=qIqAGI2igvnflGGRg1ZIWVfnHuR$hVRC1B_AaxviJSTo=",
+      "methodToken": "0x060008cc",
+      "rva": 296332,
+      "fileOffset": 288652,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "42b1ebb80cadb09b022afffc7dd2954458df1f41fc40574567624cce5cec3f5b",
+      "limitations": [
+        "Build-local coordinates bound to the selected binary SHA-256 and MVID.",
+        "Static discovery branch does not prove which profile FMRTE selects.",
+        "Original live scanner uses an independently observed same-session marker, not a certified global root."
+      ],
+      "sourceIlSha256": "1888cf3d531819a2c12d34d1487212a4995cc3184ee488831647e2cd59583050"
+    },
+    {
+      "id": "RE13-CATALOG-SCAN-0x060008cd",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed static CIL; exact selected FMRTE profile and branch execution unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_ee3b373fb1514a3e7c7e761fc13f69770d0c5e2d5de5a08e8aca853408337c57",
+      "reaLocator": "normalized_result.methods[token=0x060008cd]",
+      "symbol": "#=qwzqQmrCYpl3ylG0EIO_jCCKqMQyH0rwmWkVfoGeO8f$_PO37rq_zPhHEtaROMzFjYK12Q8eAzOrllT1yWTqNPg==::#=qUjMlZheQX$kiwkekhwphsnESv1la2ZmDrFeKcQyMwKc=",
+      "methodToken": "0x060008cd",
+      "rva": 296408,
+      "fileOffset": 288728,
+      "signature": {
+        "returnType": "i8",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "daf35051d5d2c6940adadc8e2751dab945bb9af37fa7afe1a0716b02414d9c23",
+      "limitations": [
+        "Build-local coordinates bound to the selected binary SHA-256 and MVID.",
+        "Static discovery branch does not prove which profile FMRTE selects.",
+        "Original live scanner uses an independently observed same-session marker, not a certified global root."
+      ],
+      "sourceIlSha256": "70159efafb921f20794c02216f669ce674b39d7b226a3428e4622c49947e7552"
+    },
+    {
+      "id": "RE13-CATALOG-SCAN-0x060008cf",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed static CIL; exact selected FMRTE profile and branch execution unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_ee3b373fb1514a3e7c7e761fc13f69770d0c5e2d5de5a08e8aca853408337c57",
+      "reaLocator": "normalized_result.methods[token=0x060008cf]",
+      "symbol": "#=qwzqQmrCYpl3ylG0EIO_jCCKqMQyH0rwmWkVfoGeO8f$_PO37rq_zPhHEtaROMzFjYK12Q8eAzOrllT1yWTqNPg==::#=qy76GaF2nhO1O1n4fXP98BphOP79gIrw_v0o4Y5XXrw0=",
+      "methodToken": "0x060008cf",
+      "rva": 296544,
+      "fileOffset": 288864,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "d5bbca7bcac64c635e235508fbeaf696ebe901a06a1426dbe46f33e380d03a76",
+      "limitations": [
+        "Build-local coordinates bound to the selected binary SHA-256 and MVID.",
+        "Static discovery branch does not prove which profile FMRTE selects.",
+        "Original live scanner uses an independently observed same-session marker, not a certified global root."
+      ],
+      "sourceIlSha256": "6096ae741ac4088bc565d4f9bde6fbcaaf19ac8cf6ef45966cbae33ae001f5df"
+    },
+    {
+      "id": "RE13-CATALOG-SCAN-0x06000014",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed static CIL; exact selected FMRTE profile and branch execution unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_dcdc817da7d2a760dfbc94ed93d764b721274d5d620d8c9a6759262231d9c7cf",
+      "reaLocator": "normalized_result.methods[token=0x06000014]",
+      "symbol": "#=q45Cfvd9NBDTN3M98qsai0$8lbOBcTMtx85gfc$5scTU=::#=qyQAjcHU90CsPeqlLmiIjl_fPL65TjjxcBb8vAZZhi0dvpjjk8GIzP8Fd4o5nLl4z",
+      "methodToken": "0x06000014",
+      "rva": 10152,
+      "fileOffset": 2472,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "class:184",
+          "class:1140"
+        ]
+      },
+      "normalizedIlSha256": "66cd0ae1faa03e36d36138c14bc56ee252e17a0ed377552e8515ef61eae3f305",
+      "limitations": [
+        "Build-local coordinates bound to the selected binary SHA-256 and MVID.",
+        "Static discovery branch does not prove which profile FMRTE selects.",
+        "Original live scanner uses an independently observed same-session marker, not a certified global root."
+      ],
+      "sourceIlSha256": "02211e97eeb28aca3c443a111a1449f59c4b1c54a11d61222ee2f191df6905f0"
+    },
+    {
+      "id": "RE13-CATALOG-SCAN-0x06000015",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed static CIL; exact selected FMRTE profile and branch execution unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_dcdc817da7d2a760dfbc94ed93d764b721274d5d620d8c9a6759262231d9c7cf",
+      "reaLocator": "normalized_result.methods[token=0x06000015]",
+      "symbol": "#=q45Cfvd9NBDTN3M98qsai0$8lbOBcTMtx85gfc$5scTU=::#=qJRQLCZJfTxLpX7gnA3ZjUPOke$So0xVpFCTlU2S6aGE=",
+      "methodToken": "0x06000015",
+      "rva": 11628,
+      "fileOffset": 3948,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "class:184",
+          "class:1140"
+        ]
+      },
+      "normalizedIlSha256": "3f9e68b98ada4bd315a83c90aebeca47af98f742468e01eba35de2bc757ef7a2",
+      "limitations": [
+        "Build-local coordinates bound to the selected binary SHA-256 and MVID.",
+        "Static discovery branch does not prove which profile FMRTE selects.",
+        "Original live scanner uses an independently observed same-session marker, not a certified global root."
+      ],
+      "sourceIlSha256": "bb25cf234b7b675d75f82d55114b6e3e200b1f4828f2d5d6f1b1116c74ee51f9"
+    },
+    {
+      "id": "RE13-CATALOG-SCAN-0x06000141",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed static CIL; exact selected FMRTE profile and branch execution unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_dcdc817da7d2a760dfbc94ed93d764b721274d5d620d8c9a6759262231d9c7cf",
+      "reaLocator": "normalized_result.methods[token=0x06000141]",
+      "symbol": "#=q9eaBUygG09K3TAyNJPq3eFmIyox1DdRoDA8OYH6xP13LwvLH_d$eaDzjupDUU_Q5DKYHbZiOn_I_bAWPFE4Gpw==::#=qE7NrICn2jh_$jzO9aoxDg$2$7K3eYsJJWM9N68AONeI=",
+      "methodToken": "0x06000141",
+      "rva": 42780,
+      "fileOffset": 35100,
+      "signature": {
+        "returnType": "class:193<i4,class:249<i4>>",
+        "parameterTypes": [
+          "i4"
+        ]
+      },
+      "normalizedIlSha256": "9aca42a4e3064401145034c71a4f2390c45abe5bea9c31e77b9b04a1e913968e",
+      "limitations": [
+        "Build-local coordinates bound to the selected binary SHA-256 and MVID.",
+        "Static discovery branch does not prove which profile FMRTE selects.",
+        "Original live scanner uses an independently observed same-session marker, not a certified global root."
+      ],
+      "sourceIlSha256": "5c99a164675c0113b792e6356467a75c65f36559d27832719fba7ad0a66667a6"
     }
   ],
   "unknowns": [
@@ -3198,7 +3523,9 @@
     "nativeProviderAvailable": false,
     "userStartedGame": true,
     "userNamedRecordObserved": true,
-    "knownPlayerVisibleFieldsConfirmed": true
+    "knownPlayerVisibleFieldsConfirmed": true,
+    "knownPlayerVisibleFieldRecordCount": 2,
+    "boundedCandidateScanPerformed": true
   },
   "localFixtures": [
     {
@@ -3282,7 +3609,8 @@
       "id",
       "passing",
       "pace"
-    ]
+    ],
+    "visibleFieldValidatedRecordCount": 2
   },
   "liveReadExperiments": [
     {
@@ -3331,6 +3659,93 @@
         "hiddenAbilityGroundTruthVerified": false
       },
       "ordinaryAttributeGroundTruthVerified": true
+    }
+  ],
+  "catalogReadExperiments": [
+    {
+      "date": "2026-10-30",
+      "status": "bounded candidate discovery repeated; six user-text field comparisons across two records",
+      "report": "17-fm2013-bounded-player-discovery.md",
+      "module": "scripts/fm2013-readonly-record-probe.mjs",
+      "builder": "buildFm2013ReadOnlyPlayerScan",
+      "tests": "scripts/fm2013-readonly-record-probe.test.mjs",
+      "candidateRecordCount": 4036,
+      "scanCount": 2,
+      "sameProcess": true,
+      "differentAnchors": true,
+      "identitiesAddressesAttributesIdentical": true,
+      "sessionDetached": true,
+      "writePerformed": false,
+      "batchHiddenAbilityWordsRead": false,
+      "actualAbilityVerified": false,
+      "independentGroundTruthVerified": false,
+      "wholeDatabaseCompletenessVerified": false,
+      "exactBuildProfileCertified": false,
+      "runtimeImageBytesAuthenticated": false,
+      "scope": "anonymous-writable-mappings-one-anchor-derived-person-marker",
+      "limits": {
+        "maxBytes": 1073741824,
+        "maxDurationMs": 20000,
+        "maxMatches": 20000,
+        "maxRecords": 10000
+      },
+      "observations": [
+        {
+          "reaEvidenceId": "ev_31bca470589810638fb66355c428390ee4352c25ffafd481e907785cab38b8fe",
+          "scriptPath": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-catalog-bounded-scan.frida.js",
+          "scriptSha256": "5efd6850981523567d581bdbb5967ecbbc0a8f1671b05c464c9aea2731fec5c7",
+          "candidateRecords": 4036,
+          "anchorFound": true,
+          "coverage": {
+            "bytesScanned": 835703273,
+            "duplicates": 0,
+            "elapsedMs": 1588,
+            "faultCount": 0,
+            "faults": [],
+            "matches": 4036,
+            "rejected": 0,
+            "selectedMappingsExhausted": true,
+            "stopReason": null
+          }
+        },
+        {
+          "reaEvidenceId": "ev_a068e86c61857321138fbe668a808db1578c36c5416a7a522bcdb999d5eb4d38",
+          "scriptPath": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-catalog-second-anchor-scan.frida.js",
+          "scriptSha256": "e46bf0ae0aadc88444ba9e959fb0338472c600a37600bb481d32e1e5072cf8b4",
+          "candidateRecords": 4036,
+          "anchorFound": true,
+          "coverage": {
+            "bytesScanned": 835727852,
+            "duplicates": 0,
+            "elapsedMs": 1575,
+            "faultCount": 0,
+            "faults": [],
+            "matches": 4036,
+            "rejected": 0,
+            "selectedMappingsExhausted": true,
+            "stopReason": null
+          }
+        }
+      ],
+      "displayedFieldConfirmation": {
+        "source": "User-reported in-game values in the Codex chat",
+        "recordCount": 2,
+        "fields": [
+          "id",
+          "passing",
+          "pace"
+        ],
+        "matchedComparisons": 6,
+        "screenshotCaptured": false,
+        "blindedComparison": false,
+        "receiptPath": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-two-record-visible-confirmation.json",
+        "receiptSha256": "8b5195784bef7abc0a1543bfbc47d349e341562adfaaee6a9c19279ec21a4b50",
+        "hiddenAbilityGroundTruthVerified": false
+      },
+      "verificationPath": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-catalog-verification.json",
+      "verificationSha256": "d37624c0112f47229696972ed96ec27a36701d1cffb8c873b1a466c429fc159f",
+      "verificationScriptPath": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\finalize-fm13-catalog.cjs",
+      "verificationScriptSha256": "38b2059ad190d9f029f5e194c412eb2073a0e521c39c2ab95c817ad2da79173b"
     }
   ]
 }

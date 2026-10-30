@@ -1,5 +1,7 @@
 # FMRTE13 pointer catalogs and Player construction
 
+**Later evidence:** [bounded player discovery](17-fm2013-bounded-player-discovery.md) traces the profile-dependent generic scan/group branch and repeatedly reads4,036 candidates through original research code. It supersedes this report's initial lack of runtime marker/identity observations. A fixed native global table and exact selected profile remain unresolved.
+
 **CONFIRMED static pointer traversal and object construction; UNKNOWN applicability to the local running game.** Source: FMRTE.exe13.3.3.62, x86/.NET4, SHA-256 `c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae`, MVID `3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6`. Main canonical evidence: `ev_7843e6956676f768833e4bb366ccf270166870709e4f9d79d0ff8398b232fa8c`. Exact type names/tokens/RVAs/body hashes are bound in [the manifest](evidence-manifest.json).
 
 ## Catalog loader

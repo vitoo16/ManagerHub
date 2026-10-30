@@ -1,4 +1,4 @@
-# FM2013 compatibility — no tested build yet
+# FM2013 compatibility — tested research subset only
 
 **Target:** FM2013. FMRTE13 is the primary reference. FMRTE26 evidence does not grant compatibility.
 
@@ -10,13 +10,13 @@
 
 **CONFIRMED local executable, follow-up:** the user supplied `C:\Program Files (x86)\Football Manager 2013`. Its `fm.exe` is PE32/x86 with no CLI directory, metadata ProductVersion `13.3.3f359652`, FileVersion `13.3.3`, 40,848,024 bytes, SHA-256 `df45cde67cb7361867e7afc9808dacab8bf53bd972f48145f6f881ff55d08871`. See [exact REA evidence and limitations](10-local-fm2013-executable.md). Matching the vendor-listed build number establishes a candidate, not tested compatibility or authenticity.
 
-**CONFIRMED updated discovery:** the earlier Steam/registry checks did not identify this installation. Corrected JSON inventory finds 63 shipped tutorial `.fm` files; following the user's later message, one fresh save appears in the default games folder. [Three selected files](11-fm2013-save-samples.md) have recognized experimental AFE directories, but no player/CA/PA decoding. No fm/FMRTE process was observed in the latest check. Known-player ground truth and runtime validation remain missing. No broad private-directory scan was performed.
+**CONFIRMED updated discovery:** the earlier Steam/registry checks did not identify this installation. Corrected JSON inventory finds63 shipped tutorial `.fm` files and one user save in the default games folder. [Three selected files](11-fm2013-save-samples.md) have recognized experimental AFE directories, but no offline player/CA/PA decoding. Later REA/Frida attached to the user-opened game and established a limited live comparison on two records. No broad private-directory scan was performed.
 
 ## Verification matrix
 
 | Edition / exact executable build | Reference source | Process detection | Player / CA/PA / attributes | Writeback | Persistence |
 |---|---|---|---|---|---|
-| FM2013 local metadata `13.3.3f359652`, executable SHA-256 `df45cde67cb7361867e7afc9808dacab8bf53bd972f48145f6f881ff55d08871` | FMRTE13 13.3.3.62, above hash; same numeric build as vendor-listed Retail candidate | REA/Frida attached to user-opened process | One record repeatedly read; ID, Passing and Pace match user-reported screen values; CA/PA unverified | UNSUPPORTED in ManagerHub | UNKNOWN / not tested |
+| FM2013 local metadata `13.3.3f359652`, executable SHA-256 `df45cde67cb7361867e7afc9808dacab8bf53bd972f48145f6f881ff55d08871` | FMRTE13 13.3.3.62, above hash; same numeric build as vendor-listed Retail candidate | REA/Frida attached to user-opened process | ID/Passing/Pace match user text on two records; two repeated4,036-candidate scans; CA/PA and database completeness unverified | UNSUPPORTED in ManagerHub | UNKNOWN / not tested |
 | FM2013 13.3.3.359720 Russian (vendor-listed candidate) | Official release documentation only | UNKNOWN for ManagerHub | UNKNOWN | UNSUPPORTED | UNKNOWN |
 | FM2026 local build not investigated | FMRTE26 26.3.2.42, hashes in inventory | UNKNOWN | UNKNOWN | UNSUPPORTED | UNKNOWN |
 
@@ -26,6 +26,6 @@ The [later live experiment](16-fm2013-live-readonly-record.md) supersedes earlie
 
 ## FM2013 validation dependency
 
-The executable metadata/hash and a private test-save snapshot are recorded. A live read session and user-confirmed ID/Passing/Pace subset are now established on one named record. Hidden CA/PA, club, exact profile validation, second-record/restart behavior and real wrong-build/access-denied/process-exit cases remain open. The existing synthetic failure tests do not substitute for these runtime checks. Writer gates remain unsatisfied. Offline sample bytes are available, but independent record extraction and a controlled same-career pair remain separate gates.
+The executable metadata/hash and a private test-save snapshot are recorded. [Bounded live discovery](17-fm2013-bounded-player-discovery.md) establishes a user-confirmed ID/Passing/Pace subset on two named records and repeated candidate enumeration. Hidden CA/PA, club, exact profile validation, restart behavior and real wrong-build/access-denied/process-exit cases remain open. Synthetic failure tests do not substitute for these runtime checks. Writer gates remain unsatisfied. Offline record extraction and a controlled same-career pair remain separate gates.
 
 **UNSUPPORTED:** guessed offsets, FM26 layout transplantation, testing synthetic memory and calling it FM2013 support, or weakening actual-CA provenance. **UNKNOWN:** game-engine CA balancing and reload behavior.
