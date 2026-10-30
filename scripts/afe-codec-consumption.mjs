@@ -5,7 +5,8 @@ import { pathToFileURL } from 'node:url';
 const MAX_INPUT = 256 * 1024;
 const MAX_OUTPUT = 2 * 1024 * 1024;
 const CODECS = Object.freeze({ deflate: inflateSync, 'deflate-raw': inflateRawSync, gzip: gunzipSync });
-const SKIP = [0, 8, 16];
+// Include possible nested envelopes while demanding complete input consumption.
+const SKIP = [0, 8, 16, 24, 32];
 
 /**
  * Local-only research: unlike browser DecompressionStream, Node zlib's

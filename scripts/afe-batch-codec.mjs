@@ -94,6 +94,25 @@ export function parseObservedDirectory(data, boundary) {
   return parseObservedDirectoryDetails(data, boundary)?.members ?? null;
 }
 
+/**
+ * Inspect known small metadata candidates first, then the smallest eligible
+ * members from both tables. Never imply filename = decoded game record.
+ */
+export function selectCodecProbeMembers(members, limit = MAX_PROBES) {
+  if (!Array.isArray(members) || !Number.isInteger(limit) || limit < 1 || limit > MAX_PROBES)
+    throw new RangeError('Invalid probe selection budget.');
+  const eligible = members.filter(member =>
+    Number.isSafeInteger(member.storedBytes) && member.storedBytes > 0 &&
+    member.storedBytes <= MAX_MEMBER_BYTES &&
+    Number.isSafeInteger(member.reportedUncompressedBytes) &&
+    member.reportedUncompressedBytes > 0 &&
+    member.reportedUncompressedBytes <= 2 * 1024 * 1024);
+  const priority = new Map([['game_info.dat', 0], ['save_game_summary.dat', 1]]);
+  return [...eligible].sort((a, b) =>
+    (priority.get(a.filename) ?? 2) - (priority.get(b.filename) ?? 2) ||
+    a.storedBytes - b.storedBytes || a.filename.localeCompare(b.filename)).slice(0, limit);
+}
+
 export async function inspectLocalArchive(filePath) {
   const fileStat = await stat(filePath);
   if (fileStat.size < BASE + MARKER.length + 2) return { status: 'not_recognized', members: [], trials: [] };
@@ -175,14 +194,10 @@ export async function inspectLocalArchive(filePath) {
       };
     }
     const trials = [];
-    let skipped = 0;
+    const eligibleMembers = selectCodecProbeMembers(members);
+    const skipped = members.length - eligibleMembers.length;
     let inspected = 0;
-    for (const member of members) {
-      if (inspected >= MAX_PROBES) break;
-      if (member.storedBytes > MAX_MEMBER_BYTES || member.reportedUncompressedBytes > 2 * 1024 * 1024) {
-        skipped++;
-        continue;
-      }
+    for (const member of eligibleMembers) {
       const input = Buffer.alloc(member.storedBytes);
       const { bytesRead: read } = await handle.read(input, 0, input.length, BASE + member.offset);
       if (read !== input.length) throw Error('Incomplete member read');
