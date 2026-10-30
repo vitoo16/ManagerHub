@@ -14,7 +14,7 @@ const MAX_MEMBER_BYTES = 256 * 1024;
 const MARKER = Buffer.from([2, 1, 102, 109, 102, 46, 4, 0, 0]);
 const AFE_HEADER = Buffer.from([2, 1, 97, 102, 101, 46]);
 
-export function parseObservedDirectory(data, boundary) {
+export function parseObservedDirectoryDetails(data, boundary) {
   if (!Buffer.isBuffer(data) || data.length < 8 || !Number.isSafeInteger(boundary) || boundary < 1) return null;
   let cursor = 0;
   const u32 = () => {
@@ -47,10 +47,14 @@ export function parseObservedDirectory(data, boundary) {
     }
     const sorted = [...members].sort((a, b) => a.offset - b.offset);
     if (sorted.some((member, i) => i > 0 && sorted[i - 1].offset + sorted[i - 1].storedBytes > member.offset)) return null;
-    return members;
+    return { members, parsedBytes: cursor, trailingBytes: data.length - cursor };
   } catch {
     return null;
   }
+}
+
+export function parseObservedDirectory(data, boundary) {
+  return parseObservedDirectoryDetails(data, boundary)?.members ?? null;
 }
 
 export async function inspectLocalArchive(filePath) {
@@ -69,6 +73,8 @@ export async function inspectLocalArchive(filePath) {
     if (bytesRead !== tail.length) throw Error('Incomplete directory tail read');
     let members = null;
     let directoryOffset = 0;
+    let parsedDirectoryBytes = 0;
+    let unparsedDirectoryBytes = 0;
     // Last candidate first; cap inflation attempts on marker-heavy input.
     let attempted = 0;
     for (let cursor = tail.lastIndexOf(MARKER); cursor >= 0 && attempted < 32;
@@ -84,8 +90,14 @@ export async function inspectLocalArchive(filePath) {
           info: true, maxOutputLength: MAX_DIRECTORY
         });
         if (engine.bytesWritten !== compressed.length) continue;
-        members = parseObservedDirectory(directory, offset - BASE);
-        if (members) { directoryOffset = offset; break; }
+        const parsed = parseObservedDirectoryDetails(directory, offset - BASE);
+        if (parsed) {
+          members = parsed.members;
+          parsedDirectoryBytes = parsed.parsedBytes;
+          unparsedDirectoryBytes = parsed.trailingBytes;
+          directoryOffset = offset;
+          break;
+        }
       } catch { /* Not a bounded, valid candidate. */ }
     }
     if (!members) return { status: 'not_recognized', members: [], trials: [] };
@@ -107,6 +119,7 @@ export async function inspectLocalArchive(filePath) {
       }
     }
     return { status: 'experimental_index', directoryOffset, memberCount: members.length,
+      parsedDirectoryBytes, unparsedDirectoryBytes,
       inspectedMembers: inspected, skippedOversized: skipped, trials };
   } finally {
     await handle.close();

@@ -4,7 +4,7 @@ import { mkdtemp, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { deflateSync } from 'node:zlib';
-import { inspectLocalArchive, parseObservedDirectory } from './afe-batch-codec.mjs';
+import { inspectLocalArchive, parseObservedDirectory, parseObservedDirectoryDetails } from './afe-batch-codec.mjs';
 
 const prefix = Buffer.from([16, 0, 0, 0, 16, 0, 0, 0]);
 const trailer = Buffer.from([2, 1, 102, 109, 102, 46, 4, 0, 0]);
@@ -34,6 +34,8 @@ test('bounded batch discovers one synthetic catalogue and reports metadata only'
     const result = await inspectLocalArchive(path);
     assert.equal(result.status, 'experimental_index');
     assert.equal(result.memberCount, 1);
+    assert.equal(result.unparsedDirectoryBytes, 0);
+    assert.ok(result.parsedDirectoryBytes > 0);
     assert.equal(result.inspectedMembers, 1);
     assert.equal(result.directoryOffset, 18 + member.length);
     assert.ok(result.trials.some(t => t.codec === 'deflate' && t.skip === 8 &&
@@ -42,6 +44,17 @@ test('bounded batch discovers one synthetic catalogue and reports metadata only'
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
+});
+
+test('accounts for opaque trailing directory bytes without treating them as player records', () => {
+  const member = Buffer.alloc(48);
+  const index = makeDirectory(member);
+  const withOpaqueTail = Buffer.concat([index, Buffer.from([5, 4, 3, 2, 1, 0])]);
+  const parsed = parseObservedDirectoryDetails(withOpaqueTail, 48);
+  assert.equal(parsed?.members.length, 1);
+  assert.equal(parsed?.parsedBytes, index.length);
+  assert.equal(parsed?.trailingBytes, 6);
+  assert.equal(JSON.stringify(parsed).includes('opaqueTail'), false);
 });
 
 test('rejects duplicate or overlapping members in synthetic index', () => {
