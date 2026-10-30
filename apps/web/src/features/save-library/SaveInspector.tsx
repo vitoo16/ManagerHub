@@ -13,8 +13,11 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
   const { t } = useTranslation();
   const saveLibrary = useSaveInspectionLibrary();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [showAllMembers, setShowAllMembers] = useState(false);
+  const [memberPage, setMemberPage] = useState(0);
+  const memberPageSize = 50;
   const fileId = useId();
+  const totalMemberPages = Math.max(1, Math.ceil((selected?.archiveIndex?.memberCount ?? 0) / memberPageSize));
+  const visibleMemberPage = Math.min(memberPage, totalMemberPages - 1);
   const [drag, setDrag] = useState(false);
   const isSelectedSaved = selected ? saveLibrary.items.some(item => item.id === selected.id) : false;
   useEffect(() => {
@@ -81,11 +84,17 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
                 group.name + ' (' + group.memberCount + ')').join(', ')}
             </p>}
             <div className="archive-preview__list" role="list" aria-label={t("Internal save archive members")}>
-              {selected.archiveIndex.members.slice(0, showAllMembers ? undefined : 8).map((entry, i) => <div className="archive-preview__row" role="listitem" key={entry.filename + i}>
+              {selected.archiveIndex.members.slice(visibleMemberPage * memberPageSize, (visibleMemberPage + 1) * memberPageSize).map((entry, i) => <div className="archive-preview__row" role="listitem" key={entry.filename + i}>
                 <span className="archive-preview__filename" title={entry.filename}>{entry.filename}</span><span>{formatBytes(entry.storedBytes)}</span>
               </div>)}
             </div>
-            {selected.archiveIndex.memberCount > 8 && <button className="text-link archive-preview__expand" onClick={() => setShowAllMembers(v => !v)}>{showAllMembers ? t('Show fewer') : t('Show all') + ' ' + selected.archiveIndex.memberCount + ' ' + t('entries')} <Icon name="chevron" size={14}/></button>}
+            {selected.archiveIndex.memberCount > memberPageSize && <div className="archive-preview__expand">
+              <button className="text-link" disabled={visibleMemberPage === 0}
+                onClick={() => setMemberPage(page => Math.max(0, page - 1))}>{t('Previous page')}</button>
+              <span>{t('Page {{current}} of {{total}}', { current: visibleMemberPage + 1, total: totalMemberPages })}</span>
+              <button className="text-link" disabled={visibleMemberPage >= totalMemberPages - 1}
+                onClick={() => setMemberPage(page => Math.min(totalMemberPages - 1, page + 1))}>{t('Next page')}</button>
+            </div>}
             {selected.archiveIndex.gapObservations && selected.archiveIndex.gapObservations.length > 0 && <details className="inspection-technical">
               <summary>{t('Unindexed data gaps')} ({selected.archiveIndex.gapObservations.length})</summary>
               <p>{t('Experimental counts of repeated byte patterns only. Gaps are not decoded player records.')}</p>
@@ -102,7 +111,7 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
               <summary>{t('Member header diagnostics')} ({selected.archiveIndex.probes.length})</summary>
               <p>{t('Only the first 16 bytes of each bounded member are sampled. Signatures are checked both at the start and after the first 8 bytes as an experimental offset; matches are candidates, not confirmed codecs. No member contents are decoded.')}</p>
               <div className="archive-preview__list" role="list" aria-label={t('Member header diagnostics')}>
-                {selected.archiveIndex.probes.slice(0, showAllMembers ? undefined : 8).map(probe => <div className="archive-preview__row" role="listitem" key={probe.filename}>
+                {selected.archiveIndex.probes.slice(0, 32).map(probe => <div className="archive-preview__row" role="listitem" key={probe.filename}>
                   <span className="archive-preview__filename" title={probe.filename}>{probe.filename}</span>
                   <span className="mono">{probe.prefixKind}</span>
                   <span className="mono">{probe.prefixHex}</span>
