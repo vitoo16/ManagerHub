@@ -3197,7 +3197,8 @@
     "gameExecuted": true,
     "nativeProviderAvailable": false,
     "userStartedGame": true,
-    "userNamedRecordObserved": true
+    "userNamedRecordObserved": true,
+    "knownPlayerVisibleFieldsConfirmed": true
   },
   "localFixtures": [
     {
@@ -3276,12 +3277,17 @@
     "exactBuildProfileResolved": false,
     "realPlayerValidated": false,
     "liveReadPerformed": true,
-    "writePerformed": false
+    "writePerformed": false,
+    "validatedFieldSubset": [
+      "id",
+      "passing",
+      "pace"
+    ]
   },
   "liveReadExperiments": [
     {
       "date": "2026-10-30",
-      "status": "single user-named record observed; independent field ground truth pending",
+      "status": "single user-named record repeatedly read; ID, Passing and Pace match user-reported in-game values; hidden abilities unverified",
       "referenceEdition": "FM2013",
       "fileMetadataBuild": "13.3.3f359652",
       "binaryPath": "C:\\Program Files (x86)\\Football Manager 2013\\fm.exe",
@@ -3299,14 +3305,32 @@
       "writePerformed": false,
       "processSpawnedByAgent": false,
       "sessionDetached": true,
-      "screenshotComparison": "unavailable: minimized then no screenshot targets; user text comparison requested",
+      "screenshotComparison": "unavailable; ID, Passing and Pace subsequently confirmed by user text",
       "probeModule": "scripts/fm2013-readonly-record-probe.mjs",
       "probeTests": "scripts/fm2013-readonly-record-probe.test.mjs",
       "finalScriptPath": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-rooney-readonly-record-final.frida.js",
       "finalScriptSha256": "fcc01f364e2eafcada1d20a66283290373584b755834cec0273bb5da13539e81",
       "reaEvidenceId": "ev_30b077e5b36f465e99330a01408a4e0641205b61571143e3b92f662cc867f1bc",
       "privateIndexPath": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-rooney-live-research-index.json",
-      "privateIndexSha256": "f15c5a57b5af240f7e52aaae4387b0595e602033726ddab670f662cd04809b0c"
+      "privateIndexSha256": "f15c5a57b5af240f7e52aaae4387b0595e602033726ddab670f662cd04809b0c",
+      "displayedFieldConfirmation": {
+        "source": "user-reported in-game values in this Codex chat",
+        "date": "2026-10-30",
+        "matchedFields": [
+          "id",
+          "passing",
+          "pace"
+        ],
+        "matchedCount": 3,
+        "recordCount": 1,
+        "screenshotCaptured": false,
+        "blindedComparison": false,
+        "receiptPath": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-rooney-user-visible-confirmation.json",
+        "receiptSha256": "766d1c71c64f0fdc46f0e434dc6cf61a5d2906dfcde8979e1d2c2a31875393d1",
+        "referenceEvidenceId": "ev_30b077e5b36f465e99330a01408a4e0641205b61571143e3b92f662cc867f1bc",
+        "hiddenAbilityGroundTruthVerified": false
+      },
+      "ordinaryAttributeGroundTruthVerified": true
     }
   ]
 }

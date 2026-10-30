@@ -16,7 +16,7 @@
 
 | Edition / exact executable build | Reference source | Process detection | Player / CA/PA / attributes | Writeback | Persistence |
 |---|---|---|---|---|---|
-| FM2013 local metadata `13.3.3f359652`, executable SHA-256 `df45cde67cb7361867e7afc9808dacab8bf53bd972f48145f6f881ff55d08871` | FMRTE13 13.3.3.62, above hash; same numeric build as vendor-listed Retail candidate | REA/Frida attached to user-opened process | One named record read repeatedly as a candidate; independent visible/hidden field comparison pending | UNSUPPORTED in ManagerHub | UNKNOWN / not tested |
+| FM2013 local metadata `13.3.3f359652`, executable SHA-256 `df45cde67cb7361867e7afc9808dacab8bf53bd972f48145f6f881ff55d08871` | FMRTE13 13.3.3.62, above hash; same numeric build as vendor-listed Retail candidate | REA/Frida attached to user-opened process | One record repeatedly read; ID, Passing and Pace match user-reported screen values; CA/PA unverified | UNSUPPORTED in ManagerHub | UNKNOWN / not tested |
 | FM2013 13.3.3.359720 Russian (vendor-listed candidate) | Official release documentation only | UNKNOWN for ManagerHub | UNKNOWN | UNSUPPORTED | UNKNOWN |
 | FM2026 local build not investigated | FMRTE26 26.3.2.42, hashes in inventory | UNKNOWN | UNKNOWN | UNSUPPORTED | UNKNOWN |
 
@@ -26,6 +26,6 @@ The [later live experiment](16-fm2013-live-readonly-record.md) supersedes earlie
 
 ## FM2013 validation dependency
 
-The executable metadata/hash and a private test-save snapshot are now recorded; vendor authenticity and native/player compatibility have not been independently established. Known-player ground truth and an actual record decoder/read session are needed next. Verify one ID/name/club; repeat reads; independently compare CA, PA and one transformed normal attribute; verify wrong-build/access-denied/process-exit cases. Only a verified read path permits a separately authorized write experiment. Offline sample bytes are available, but independent record extraction and a controlled same-career pair remain separate gates.
+The executable metadata/hash and a private test-save snapshot are recorded. A live read session and user-confirmed ID/Passing/Pace subset are now established on one named record. Hidden CA/PA, club, exact profile validation, second-record/restart behavior and real wrong-build/access-denied/process-exit cases remain open. The existing synthetic failure tests do not substitute for these runtime checks. Writer gates remain unsatisfied. Offline sample bytes are available, but independent record extraction and a controlled same-career pair remain separate gates.
 
 **UNSUPPORTED:** guessed offsets, FM26 layout transplantation, testing synthetic memory and calling it FM2013 support, or weakening actual-CA provenance. **UNKNOWN:** game-engine CA balancing and reload behavior.

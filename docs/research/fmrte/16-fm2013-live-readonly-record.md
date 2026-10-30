@@ -1,6 +1,6 @@
 # FM2013 live read-only record experiment
 
-**New result:** REA attached to the user-opened FM2013 process and read a record whose first/last names match the user-selected player, repeatedly. This supersedes earlier statements that no live read had run. **Still unverified:** independently displayed ID/attributes, hidden CA/PA ground truth, restart stability, catalog-wide ingestion and writer safety. No production capability is promoted.
+**New result:** REA repeatedly read a record matching the user-selected player, and its ID, Passing and Pace match values the user subsequently reported from the game screen. This supersedes earlier no-live-read and visible-comparison-pending statements. **Still unverified:** hidden CA/PA ground truth, restart stability, catalog-wide ingestion and writer safety. No production capability is promoted.
 
 ## Target and acquisition
 
@@ -20,7 +20,7 @@ Layout initializer `0x0600024e`, RVA95120, assigns ID offset20 and first/last-na
 
 The observed record is consistent with initializer `0x06000924`, RVA303780: PersonMemoryAddress is Player base+356; attribute-pointer slot is+228; CA/PA slots are+336/+338. These constants are observed assignments and a successful single-record candidate, not a universally validated FM2013 schema. An early probe mistakenly tested+32 as the attribute slot, got a null pointer and a Frida script access-violation diagnostic. Reviewing the exact field assignment established+228; the reusable probe now rejects null/invalid pointers before dereferencing them. The game process continued running.
 
-Attribute initializer `0x06000596`, RVA202196, assigns Passing offset54 and Pace85 from the attribute block. Their getters (`0x060012e6`/`0x06000fc1`) reach the signed-byte read/conversion path already recovered. Raw reads produce plausible1–20 values under the documented scale5 branch. This is consistency evidence pending independent displayed values, not independent validation.
+Attribute initializer `0x06000596`, RVA202196, assigns Passing offset54 and Pace85 from the attribute block. Their getters (`0x060012e6`/`0x06000fc1`) reach the signed-byte read/conversion path already recovered. The scale5 outputs now match the user's reported displayed values for this player. This validates the tested field subset on this record; it does not validate all attributes, profiles or records.
 
 The raw ability words are stable across repeat reads. [The recovered arithmetic](14-fmrte13-field-transforms.md) yields plausible CA/PA candidates in mode3; modes0/1 yield values outside the ordinary ability range. Plausibility alone cannot certify mode selection or Actual CA/PA. Mode3 profile routines statically call the above initializers, providing additional support, but the exact selected profile's version validator remains unresolved.
 
@@ -38,8 +38,10 @@ Five meaningful synthetic tests cover successful bounded reads with candidate pr
 
 Numeric-field changes during capture are also covered in the stale/error test. `npm.cmd run check` passed TypeScript,90 Vitest tests,60 Node tests and the production build/bundle budgets. UI/E2E and Rust checks are not applicable to this isolated research module. The existing Node localStorage experimental warning is non-failing.
 
-## Independent comparison still pending
+## User-reported visible-field comparison
 
-Computer Use found the exact game window, but its first screenshot attempt reported a minimized window; activation and refreshed-window capture then reported no screenshot target. No game buttons were clicked and no alternate screenshot mechanism was used. The user was asked for the visible ID, Passing and Pace. No screenshot or visible-value match is claimed until that input is available. Hidden CA/PA needs a separate trusted reference observation.
+Computer Use found the exact game window, but its first screenshot attempt reported a minimized window; activation and refreshed-window capture then reported no screenshot target. No game buttons were clicked and no alternate screenshot mechanism was used. The user subsequently supplied the visible ID, Passing and Pace in this chat. An exact comparison against final REA evidence `ev_30b077e5b36f465e99330a01408a4e0641205b61571143e3b92f662cc867f1bc` passed for all three fields. The confirmation is user text after earlier read results were shown, not a screenshot or blinded comparison. Its private receipt/hash is recorded in the manifest; private career values remain outside Git.
 
-The remaining tests are exact-build descriptor validation, independent known-field comparison, recovery across process restart, a second named record and a bounded catalog traversal. Source save files remain separate from this live-memory experiment; offline AFE payload decoding and all write/reload tests remain unresolved.
+This is the first user-confirmed live identity/ordinary-attribute subset in the investigation. Original runtime Evidence and probe output remain immutable with their original unverified flags: this later confirmation is a separate observation. `ordinaryAttributeGroundTruthVerified` describes only the two tested attributes on one record; full-record `independentGroundTruthVerified` and `actualAbilityVerified` remain false. Hidden CA/PA still needs a separate trusted reference observation.
+
+The remaining tests are exact-build descriptor validation, hidden-ability comparison, recovery across process restart, a second named record and a bounded catalog traversal. Source save files remain separate from this live-memory experiment; offline AFE payload decoding and all write/reload tests remain unresolved.

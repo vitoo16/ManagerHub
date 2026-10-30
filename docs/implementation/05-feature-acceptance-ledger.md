@@ -67,6 +67,8 @@ Deep REA follow-up adds [isolated field arithmetic](../research/fmrte/14-fmrte13
 
 [A subsequent REA live experiment](../research/fmrte/16-fm2013-live-readonly-record.md) reads a user-named player candidate repeatedly and executes the new identity/stale-checking read-only research probe. Independent displayed-field and hidden-ability comparisons remain pending. No native reader/editor module is marked complete or supported.
 
+The user's later in-game text confirmation matches ID, Passing and Pace for that record. This establishes a three-field acceptance subset on one named player; hidden CA/PA, broader record/profile coverage and all writer acceptance remain open. No full module or future phase is marked complete.
+
 [Player Lab HTML/CSV/TSV import, attributes, roles and limitations](07-player-lab-and-export-import.md). Real import data remains local and user-supplied. Full CA/PA save decoding, role/position fit calibration and recruitment financial assessment remain open requirements.
 
 Additional integration evidence: [opt-in local storage + role-fit lineup planner](08-local-library-and-squad-planner.md).
