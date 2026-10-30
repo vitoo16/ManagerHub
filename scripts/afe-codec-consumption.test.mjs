@@ -1,0 +1,49 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { deflateSync, deflateRawSync, gzipSync } from 'node:zlib';
+import { probeCodecConsumption } from './afe-codec-consumption.mjs';
+
+const payload = Buffer.from('repeated fixture blocks '.repeat(12));
+
+test('zlib records complete consumption only for an exact input stream', () => {
+  const stream = deflateSync(payload);
+  const exact = probeCodecConsumption(stream, payload.length)
+    .find(trial => trial.codec === 'deflate' && trial.skip === 0);
+  assert.equal(exact.result, 'candidate_only');
+  assert.equal(exact.consumedBytes, stream.length);
+  assert.equal(exact.outputBytes, payload.length);
+
+  const withJunk = Buffer.concat([stream, Buffer.from([1, 2, 3, 4])]);
+  const trailing = probeCodecConsumption(withJunk, payload.length)
+    .find(trial => trial.codec === 'deflate' && trial.skip === 0);
+  assert.equal(trailing.result, 'trailing_input');
+  assert.equal(trailing.consumedBytes, stream.length);
+  assert.equal(trailing.inputBytes, withJunk.length);
+});
+
+test('raw DEFLATE after eight-byte envelope is only a candidate when fully consumed', () => {
+  const envelope = Buffer.from([16, 0, 0, 0, 16, 0, 0, 0]);
+  const stream = deflateRawSync(payload);
+  const wrapped = Buffer.concat([envelope, stream]);
+  const trial = probeCodecConsumption(wrapped, payload.length)
+    .find(trial => trial.codec === 'deflate-raw' && trial.skip === 8);
+  assert.equal(trial.result, 'candidate_only');
+  assert.equal(trial.consumedBytes, stream.length);
+});
+
+test('gzip must consume full input and match reported output size', () => {
+  const stream = gzipSync(payload);
+  const trial = probeCodecConsumption(stream, payload.length + 1)
+    .find(trial => trial.codec === 'gzip' && trial.skip === 0);
+  assert.equal(trial.result, 'size_mismatch');
+});
+
+test('malformed data produces no false-positive candidate', () => {
+  const trials = probeCodecConsumption(Buffer.alloc(40, 0xff), 100);
+  assert.equal(trials.some(trial => trial.result === 'candidate_only'), false);
+});
+
+test('rejects oversized inputs and output expectations', () => {
+  assert.throws(() => probeCodecConsumption(Buffer.alloc(256 * 1024 + 1), 100), RangeError);
+  assert.throws(() => probeCodecConsumption(Buffer.from([1]), 2 * 1024 * 1024 + 1), RangeError);
+});
