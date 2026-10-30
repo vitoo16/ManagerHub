@@ -60,6 +60,34 @@ test('bounded batch discovers one synthetic catalogue and reports metadata only'
   }
 });
 
+test('index-only mode returns validated member locations without probing payload diagnostics', async () => {
+  const member = Buffer.concat([prefix, Buffer.alloc(110, 0x51)]);
+  const file = Buffer.concat([
+    Buffer.from([2, 1, 97, 102, 101, 46]), Buffer.alloc(12), member,
+    trailer, deflateSync(makeDirectory(member))
+  ]);
+  const dir = await mkdtemp(join(tmpdir(), 'afe-index-only-'));
+  const path = join(dir, 'synthetic.fm');
+  try {
+    await writeFile(path, file);
+    const index = await inspectLocalArchive(path, { indexOnly: true, includeMemberIndex: true });
+    assert.equal(index.status, 'experimental_index');
+    assert.equal(index.memberCount, 1);
+    assert.deepEqual(index.memberIndex, [{
+      filename: 'summary.dat', offset: 0,
+      storedBytes: member.length, reportedUncompressedBytes: 100
+    }]);
+    assert.equal('trials' in index, false);
+    assert.equal('envelopeCensus' in index, false);
+    assert.equal('gapAudit' in index, false);
+    assert.equal('framedCodecSignatures' in index, false);
+    const privateIndex = await inspectLocalArchive(path, { indexOnly: true });
+    assert.equal('memberIndex' in privateIndex, false);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
 test('decodes a nested named catalogue and accounts for its last four zero bytes', () => {
   const root = makeDirectory(Buffer.alloc(20));
   const parts = [];
