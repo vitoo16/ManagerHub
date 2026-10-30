@@ -261,7 +261,7 @@ test('opt-in full catalogue mode detects changes beyond default 32 pairs without
     assert.equal(all.comparisons.some(member => Object.hasOwn(member, 'sampledRegions')), false);
     assert.equal(JSON.stringify(all).includes('digest'), false);
     assert.equal(JSON.stringify(all).includes('sha256:'), false);
-    assert.throws(() => compareLocalAfeSaves(first, second, { allMembers: 'yes' }), TypeError);
+    await assert.rejects(compareLocalAfeSaves(first, second, { allMembers: 'yes' }), TypeError);
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
