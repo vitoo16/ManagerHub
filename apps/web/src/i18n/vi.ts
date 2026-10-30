@@ -58,6 +58,7 @@ export default {
   "Player / CA / PA": "Cầu thủ / CA / PA",
   "Not decoded": "Chưa đọc được",
   "Internal archive index": "Danh sách dữ liệu bên trong",
+  "Additional indexed groups": "Các nhóm chỉ mục bổ sung",
   "Unindexed data gaps": "Khoảng dữ liệu chưa có chỉ mục",
   "Not sampled": "Không lấy mẫu",
   "Experimental counts of repeated byte patterns only. Gaps are not decoded player records.": "Chỉ thống kê các mẫu byte lặp lại theo phương pháp thử nghiệm. Những vùng này chưa được giải mã thành dữ liệu cầu thủ.",
