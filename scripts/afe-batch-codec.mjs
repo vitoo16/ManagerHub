@@ -2,6 +2,7 @@ import { open, stat } from 'node:fs/promises';
 import { inflateSync } from 'node:zlib';
 import { probeCodecConsumption } from './afe-codec-consumption.mjs';
 import { summarizeNestedStructure } from './afe-structure-summary.mjs';
+import { summarizeByteCohort } from './afe-cohort-profile.mjs';
 
 // AFE offsets relative to 18 bytes and FMF-directory trailer are observations
 // from one save family, not a confirmed format specification.
@@ -110,6 +111,7 @@ export async function inspectLocalArchive(filePath) {
     let unparsedDirectoryBytes = 0;
     let groupCounts = [];
     let groupStructure = [];
+    let selectedCohort = [];
     let totalMembers = 0;
     // Last candidate first; cap inflation attempts on marker-heavy input.
     let attempted = 0;
@@ -131,6 +133,13 @@ export async function inspectLocalArchive(filePath) {
           members = parsed.allMembers;
           groupCounts = parsed.groups.map(group => ({ name: group.groupName, count: group.members.length }));
           groupStructure = summarizeNestedStructure(parsed);
+          // Profile only one frequent, small, equal-sized nested cohort.
+          const group = parsed.groups.find(g => g.members.length > 1);
+          const dominant = groupStructure[0]?.topSizePairs.find(pair =>
+            pair.count >= 2 && pair.storedBytes >= 9 && pair.storedBytes <= 256);
+          if (group && dominant) selectedCohort = group.members.filter(m =>
+            m.storedBytes === dominant.storedBytes &&
+            m.reportedUncompressedBytes === dominant.reportedUncompressedBytes).slice(0, 256);
           totalMembers = parsed.members.length;
           parsedDirectoryBytes = parsed.parsedBytes;
           unparsedDirectoryBytes = parsed.trailingBytes;
@@ -140,6 +149,20 @@ export async function inspectLocalArchive(filePath) {
       } catch { /* Not a bounded, valid candidate. */ }
     }
     if (!members) return { status: 'not_recognized', members: [], trials: [] };
+    let cohortProfile = null;
+    if (selectedCohort.length >= 2) {
+      const samples = [];
+      for (const member of selectedCohort) {
+        const input = Buffer.alloc(member.storedBytes);
+        const { bytesRead } = await handle.read(input, 0, input.length, BASE + member.offset);
+        if (bytesRead !== input.length) throw Error('Incomplete cohort member read');
+        samples.push(input);
+      }
+      cohortProfile = {
+        reportedUncompressedBytes: selectedCohort[0].reportedUncompressedBytes,
+        ...summarizeByteCohort(samples)
+      };
+    }
     const trials = [];
     let skipped = 0;
     let inspected = 0;
@@ -159,6 +182,7 @@ export async function inspectLocalArchive(filePath) {
     }
     return { status: 'experimental_index', directoryOffset,
       memberCount: totalMembers, nestedGroups: groupCounts, nestedStructure: groupStructure,
+      dominantCohortProfile: cohortProfile,
       totalIndexedMembers: members.length,
       parsedDirectoryBytes, unparsedDirectoryBytes,
       inspectedMembers: inspected, skippedOversized: skipped, trials };
