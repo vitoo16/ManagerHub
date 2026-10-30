@@ -74,24 +74,48 @@ export async function compareLocalAfeSaves(pathA, pathB) {
       left.filename.localeCompare(right.filename)).slice(0, MAX_COMPARE_MEMBERS);
   const [handleA, handleB] = await Promise.all([open(pathA, 'r'), open(pathB, 'r')]);
   try {
-    const read = async (handle, member) => {
-      const length = Math.min(member.storedBytes, SAMPLE_BYTES);
-      const data = Buffer.alloc(length);
-      const { bytesRead } = await handle.read(data, 0, length, DATA_BASE + member.offset);
-      if (bytesRead !== length) throw new Error('Incomplete compared member read.');
+    // Sample separated regions: a shared header does not imply an equal body.
+    // These comparisons remain samples, never a whole-member equality claim.
+    const sampleWindows = storedBytes => {
+      const length = Math.min(storedBytes, SAMPLE_BYTES);
+      const positions = [
+        0,
+        Math.max(0, Math.floor((storedBytes - length) / 2)),
+        Math.max(0, storedBytes - length)
+      ];
+      return [...new Set(positions)].map(offset => ({ offset, length }));
+    };
+    const readWindow = async (handle, member, window) => {
+      const data = Buffer.alloc(window.length);
+      const { bytesRead } = await handle.read(
+        data, 0, data.length, DATA_BASE + member.offset + window.offset
+      );
+      if (bytesRead !== data.length) throw new Error('Incomplete compared member read.');
       return data;
     };
     const comparisons = [];
     for (const memberA of paired) {
       const memberB = available.get(memberA.filename);
-      const [sampleA, sampleB] = await Promise.all([
-        read(handleA, memberA), read(handleB, memberB)
-      ]);
+      const windowsA = sampleWindows(memberA.storedBytes);
+      const windowsB = sampleWindows(memberB.storedBytes);
+      const windowResults = [];
+      for (let i = 0; i < Math.min(windowsA.length, windowsB.length); i++) {
+        const [sampleA, sampleB] = await Promise.all([
+          readWindow(handleA, memberA, windowsA[i]),
+          readWindow(handleB, memberB, windowsB[i])
+        ]);
+        windowResults.push({ region: i === 0 ? 'start' :
+          i === windowsA.length - 1 ? 'end' : 'middle',
+          ...compareMemberSamples(sampleA, sampleB) });
+      }
       comparisons.push({
         filename: memberA.filename,
         sameStoredLength: memberA.storedBytes === memberB.storedBytes,
         sameReportedLength: memberA.reportedUncompressedBytes === memberB.reportedUncompressedBytes,
-        ...compareMemberSamples(sampleA, sampleB)
+        evidence: 'sample_only',
+        sampledRegions: windowResults,
+        allComparedSamplesIdentical: windowsA.length === windowsB.length &&
+          windowResults.every(region => region.identicalSample)
       });
     }
     return {
