@@ -4,6 +4,7 @@ import { mkdtemp, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { compareMemberSamples, compareLocalAfeSaves } from './afe-cross-save.mjs';
+import { deflateSync } from 'node:zlib';
 
 test('bounded comparison distinguishes shared envelope from different payloads', () => {
   const a = Buffer.from([16, 0, 0, 0, 16, 0, 0, 0, 1, 2, 3]);
@@ -41,4 +42,43 @@ test('duplicate private-save copies are stopped before archive probing', async (
 test('rejects malformed or oversized byte samples', () => {
   assert.throws(() => compareMemberSamples(Buffer.alloc(65), Buffer.alloc(3)), RangeError);
   assert.throws(() => compareMemberSamples(Buffer.alloc(0), Buffer.alloc(3)), RangeError);
+});
+
+test('compares two distinct, synthetically indexed AFE archives end to end', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'afe-pair-fixture-'));
+  const first = join(dir, 'one.fm'), second = join(dir, 'two.fm');
+  const make = tail => {
+    const member = Buffer.concat([
+      Buffer.from([16, 0, 0, 0, 16, 0, 0, 0]),
+      Buffer.from([1, 2, 3, 4]), Buffer.from([tail])
+    ]);
+    const chunks = [];
+    const u32 = value => {
+      const b = Buffer.alloc(4); b.writeUInt32LE(value); chunks.push(b);
+    };
+    const name = value => {
+      u32(value.length); chunks.push(Buffer.from(value, 'utf16le'), Buffer.alloc(2));
+    };
+    u32(0); u32(1); name('game_info'); name('.dat');
+    u32(0); u32(member.length); u32(30);
+    return Buffer.concat([
+      Buffer.from([2, 1, 97, 102, 101, 46]), Buffer.alloc(12), member,
+      Buffer.from([2, 1, 102, 109, 102, 46, 4, 0, 0]),
+      deflateSync(Buffer.concat(chunks))
+    ]);
+  };
+  try {
+    await writeFile(first, make(0x45));
+    await writeFile(second, make(0x66));
+    const report = await compareLocalAfeSaves(first, second);
+    assert.equal(report.status, 'different_files');
+    assert.equal(report.indexedMembersA, 1);
+    assert.equal(report.indexedMembersB, 1);
+    assert.equal(report.comparedMembers, 1);
+    assert.equal(report.comparisons[0].filename, 'game_info.dat');
+    assert.equal(report.comparisons[0].commonPrefixBytes, 12);
+    assert.equal(report.comparisons[0].identicalSample, false);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
 });
