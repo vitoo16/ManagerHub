@@ -51,6 +51,9 @@ test('bounded batch discovers one synthetic catalogue and reports metadata only'
     assert.equal(result.unparsedDirectoryBytes, 0);
     assert.ok(result.parsedDirectoryBytes > 0);
     assert.equal(result.inspectedMembers, 1);
+    assert.equal(result.rawLz4Probes.length, 1);
+    assert.equal(result.rawLz4Probes[0].status, 'unsupported_codec');
+    assert.equal(Object.hasOwn(result.rawLz4Probes[0], 'payload'), false);
     assert.equal(result.validatedDecodes.length, 1);
     assert.equal(result.validatedDecodes[0].status, 'validated_stream');
     assert.equal(result.validatedDecodes[0].codec, 'zlib');
