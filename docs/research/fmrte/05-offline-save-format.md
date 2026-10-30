@@ -31,6 +31,8 @@ A structural comparison of user snapshot versus scouting tutorial finds 752 shar
 
 **UNKNOWN:** whether the analyzed FMRTE versions independently decode and rewrite an ordinary `.fm` without a running game. Absence of a recovered offline path is not proof that such a path cannot exist. FMRTE 26 observations must be assessed independently in its version-specific reports.
 
+The [deep stream-source trace](13-fmrte13-stream-source.md) now confirms FileAccess.Read, direct address-based seeks and a null Process in FMRTE13's alternate loader. Its recovered CA/PA write helper has no alternate Stream.Write path and requires a live process. This narrows the observed source's behavior without identifying a complete file format. [Recovered field transforms](14-fmrte13-field-transforms.md) apply to supplied address/word inputs; they do not resolve AFE member payload encoding or player locations in `.fm` files.
+
 **UNSUPPORTED by current evidence:** treating FMRTE live-memory access as a specification for the on-disk save format; treating `afe.` and `fmf.` as interchangeable; assigning FM2013 provenance from filename, extension or signature alone; assigning CA/PA offsets from a coincidental binary match.
 
 ## Unresolved format questions

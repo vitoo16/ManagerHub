@@ -1,0 +1,820 @@
+{
+  "schemaVersion": 1,
+  "sourceBinarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+  "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+  "oracle": "Private bounded interpreter of file-backed CIL; target assembly never loaded or executed; memory reads/writes mocked",
+  "comparisons": 99328,
+  "sequenceSha256": "a533352fa599f09d1debf668e444439b0316cb8215149a5fd717de142baa8399",
+  "vectors": [
+    {
+      "field": "ca",
+      "mode": 0,
+      "key": 0,
+      "rawWord": 0,
+      "decoded": 22544,
+      "encodeInput": 0,
+      "encoded": 4184
+    },
+    {
+      "field": "ca",
+      "mode": 0,
+      "key": 0,
+      "rawWord": 257,
+      "decoded": 22801,
+      "encodeInput": 257,
+      "encoded": 4441
+    },
+    {
+      "field": "ca",
+      "mode": 0,
+      "key": 0,
+      "rawWord": 32639,
+      "decoded": 10095,
+      "encodeInput": 32639,
+      "encoded": 28455
+    },
+    {
+      "field": "ca",
+      "mode": 0,
+      "key": 0,
+      "rawWord": 32896,
+      "decoded": -10096,
+      "encodeInput": -32640,
+      "encoded": 37080
+    },
+    {
+      "field": "ca",
+      "mode": 0,
+      "key": 0,
+      "rawWord": 65535,
+      "decoded": -22545,
+      "encodeInput": -1,
+      "encoded": 61351
+    },
+    {
+      "field": "ca",
+      "mode": 0,
+      "key": 3,
+      "rawWord": 0,
+      "decoded": -16254,
+      "encodeInput": 0,
+      "encoded": 33472
+    },
+    {
+      "field": "ca",
+      "mode": 0,
+      "key": 3,
+      "rawWord": 257,
+      "decoded": -15997,
+      "encodeInput": 257,
+      "encoded": 33729
+    },
+    {
+      "field": "ca",
+      "mode": 0,
+      "key": 3,
+      "rawWord": 32639,
+      "decoded": -16387,
+      "encodeInput": 32639,
+      "encoded": 64959
+    },
+    {
+      "field": "ca",
+      "mode": 0,
+      "key": 3,
+      "rawWord": 32896,
+      "decoded": 16386,
+      "encodeInput": -32640,
+      "encoded": 576
+    },
+    {
+      "field": "ca",
+      "mode": 0,
+      "key": 3,
+      "rawWord": 65535,
+      "decoded": 16253,
+      "encodeInput": -1,
+      "encoded": 32063
+    },
+    {
+      "field": "ca",
+      "mode": 0,
+      "key": 15,
+      "rawWord": 0,
+      "decoded": 11272,
+      "encodeInput": 0,
+      "encoded": 2092
+    },
+    {
+      "field": "ca",
+      "mode": 0,
+      "key": 15,
+      "rawWord": 257,
+      "decoded": 11529,
+      "encodeInput": 257,
+      "encoded": 2349
+    },
+    {
+      "field": "ca",
+      "mode": 0,
+      "key": 15,
+      "rawWord": 32639,
+      "decoded": 21367,
+      "encodeInput": 32639,
+      "encoded": 30547
+    },
+    {
+      "field": "ca",
+      "mode": 0,
+      "key": 15,
+      "rawWord": 32896,
+      "decoded": -21368,
+      "encodeInput": -32640,
+      "encoded": 34988
+    },
+    {
+      "field": "ca",
+      "mode": 0,
+      "key": 15,
+      "rawWord": 65535,
+      "decoded": -11273,
+      "encodeInput": -1,
+      "encoded": 63443
+    },
+    {
+      "field": "ca",
+      "mode": 1,
+      "key": 0,
+      "rawWord": 0,
+      "decoded": -32205,
+      "encodeInput": 0,
+      "encoded": 2254
+    },
+    {
+      "field": "ca",
+      "mode": 1,
+      "key": 0,
+      "rawWord": 257,
+      "decoded": -15757,
+      "encodeInput": 257,
+      "encoded": 3274
+    },
+    {
+      "field": "ca",
+      "mode": 1,
+      "key": 0,
+      "rawWord": 32639,
+      "decoded": 24044,
+      "encodeInput": 32639,
+      "encoded": 62771
+    },
+    {
+      "field": "ca",
+      "mode": 1,
+      "key": 0,
+      "rawWord": 32896,
+      "decoded": -24045,
+      "encodeInput": -32640,
+      "encoded": 2764
+    },
+    {
+      "field": "ca",
+      "mode": 1,
+      "key": 0,
+      "rawWord": 65535,
+      "decoded": 32204,
+      "encodeInput": -1,
+      "encoded": 63281
+    },
+    {
+      "field": "ca",
+      "mode": 1,
+      "key": 3,
+      "rawWord": 0,
+      "decoded": 28742,
+      "encodeInput": 0,
+      "encoded": 2254
+    },
+    {
+      "field": "ca",
+      "mode": 1,
+      "key": 3,
+      "rawWord": 257,
+      "decoded": 30798,
+      "encodeInput": 257,
+      "encoded": 10478
+    },
+    {
+      "field": "ca",
+      "mode": 1,
+      "key": 3,
+      "rawWord": 32639,
+      "decoded": -29763,
+      "encodeInput": 32639,
+      "encoded": 59169
+    },
+    {
+      "field": "ca",
+      "mode": 1,
+      "key": 3,
+      "rawWord": 32896,
+      "decoded": 29762,
+      "encodeInput": -32640,
+      "encoded": 6366
+    },
+    {
+      "field": "ca",
+      "mode": 1,
+      "key": 3,
+      "rawWord": 65535,
+      "decoded": -28743,
+      "encodeInput": -1,
+      "encoded": 63281
+    },
+    {
+      "field": "ca",
+      "mode": 1,
+      "key": 15,
+      "rawWord": 0,
+      "decoded": 1127,
+      "encodeInput": 0,
+      "encoded": 2254
+    },
+    {
+      "field": "ca",
+      "mode": 1,
+      "key": 15,
+      "rawWord": 257,
+      "decoded": -31513,
+      "encodeInput": 257,
+      "encoded": 2764
+    },
+    {
+      "field": "ca",
+      "mode": 1,
+      "key": 15,
+      "rawWord": 32639,
+      "decoded": -17448,
+      "encodeInput": 32639,
+      "encoded": 63024
+    },
+    {
+      "field": "ca",
+      "mode": 1,
+      "key": 15,
+      "rawWord": 32896,
+      "decoded": 17447,
+      "encodeInput": -32640,
+      "encoded": 2511
+    },
+    {
+      "field": "ca",
+      "mode": 1,
+      "key": 15,
+      "rawWord": 65535,
+      "decoded": -1128,
+      "encodeInput": -1,
+      "encoded": 63281
+    },
+    {
+      "field": "ca",
+      "mode": 3,
+      "key": 0,
+      "rawWord": 0,
+      "decoded": 18421,
+      "encodeInput": 0,
+      "encoded": 21631
+    },
+    {
+      "field": "ca",
+      "mode": 3,
+      "key": 0,
+      "rawWord": 257,
+      "decoded": 22501,
+      "encodeInput": 257,
+      "encoded": 17519
+    },
+    {
+      "field": "ca",
+      "mode": 3,
+      "key": 0,
+      "rawWord": 32639,
+      "decoded": -20478,
+      "encodeInput": 32639,
+      "encoded": 41864
+    },
+    {
+      "field": "ca",
+      "mode": 3,
+      "key": 0,
+      "rawWord": 32896,
+      "decoded": 20477,
+      "encodeInput": -32640,
+      "encoded": 23671
+    },
+    {
+      "field": "ca",
+      "mode": 3,
+      "key": 0,
+      "rawWord": 65535,
+      "decoded": -18422,
+      "encodeInput": -1,
+      "encoded": 43904
+    },
+    {
+      "field": "ca",
+      "mode": 3,
+      "key": 3,
+      "rawWord": 0,
+      "decoded": 16298,
+      "encodeInput": 0,
+      "encoded": 60047
+    },
+    {
+      "field": "ca",
+      "mode": 3,
+      "key": 3,
+      "rawWord": 257,
+      "decoded": 15278,
+      "encodeInput": 257,
+      "encoded": 43727
+    },
+    {
+      "field": "ca",
+      "mode": 3,
+      "key": 3,
+      "rawWord": 32639,
+      "decoded": -15785,
+      "encodeInput": 32639,
+      "encoded": 13648
+    },
+    {
+      "field": "ca",
+      "mode": 3,
+      "key": 3,
+      "rawWord": 32896,
+      "decoded": 15784,
+      "encodeInput": -32640,
+      "encoded": 51887
+    },
+    {
+      "field": "ca",
+      "mode": 3,
+      "key": 3,
+      "rawWord": 65535,
+      "decoded": -16299,
+      "encodeInput": -1,
+      "encoded": 5488
+    },
+    {
+      "field": "ca",
+      "mode": 3,
+      "key": 15,
+      "rawWord": 0,
+      "decoded": -23558,
+      "encodeInput": 0,
+      "encoded": 43262
+    },
+    {
+      "field": "ca",
+      "mode": 3,
+      "key": 15,
+      "rawWord": 257,
+      "decoded": -22530,
+      "encodeInput": 257,
+      "encoded": 59582
+    },
+    {
+      "field": "ca",
+      "mode": 3,
+      "key": 15,
+      "rawWord": 32639,
+      "decoded": 24071,
+      "encodeInput": 32639,
+      "encoded": 30497
+    },
+    {
+      "field": "ca",
+      "mode": 3,
+      "key": 15,
+      "rawWord": 32896,
+      "decoded": -24072,
+      "encodeInput": -32640,
+      "encoded": 35038
+    },
+    {
+      "field": "ca",
+      "mode": 3,
+      "key": 15,
+      "rawWord": 65535,
+      "decoded": 23557,
+      "encodeInput": -1,
+      "encoded": 22273
+    },
+    {
+      "field": "pa",
+      "mode": 0,
+      "key": 0,
+      "rawWord": 0,
+      "decoded": 2458,
+      "encodeInput": 0,
+      "encoded": 13121
+    },
+    {
+      "field": "pa",
+      "mode": 0,
+      "key": 0,
+      "rawWord": 257,
+      "decoded": 402,
+      "encodeInput": 257,
+      "encoded": 4961
+    },
+    {
+      "field": "pa",
+      "mode": 0,
+      "key": 0,
+      "rawWord": 32639,
+      "decoded": -3487,
+      "encodeInput": 32639,
+      "encoded": 56494
+    },
+    {
+      "field": "pa",
+      "mode": 0,
+      "key": 0,
+      "rawWord": 32896,
+      "decoded": 3486,
+      "encodeInput": -32640,
+      "encoded": 9041
+    },
+    {
+      "field": "pa",
+      "mode": 0,
+      "key": 0,
+      "rawWord": 65535,
+      "decoded": -2459,
+      "encodeInput": -1,
+      "encoded": 52414
+    },
+    {
+      "field": "pa",
+      "mode": 0,
+      "key": 3,
+      "rawWord": 0,
+      "decoded": 16691,
+      "encodeInput": 0,
+      "encoded": 13121
+    },
+    {
+      "field": "pa",
+      "mode": 0,
+      "key": 3,
+      "rawWord": 257,
+      "decoded": 16434,
+      "encodeInput": 257,
+      "encoded": 12864
+    },
+    {
+      "field": "pa",
+      "mode": 0,
+      "key": 3,
+      "rawWord": 32639,
+      "decoded": 15948,
+      "encodeInput": 32639,
+      "encoded": 19518
+    },
+    {
+      "field": "pa",
+      "mode": 0,
+      "key": 3,
+      "rawWord": 32896,
+      "decoded": -15949,
+      "encodeInput": -32640,
+      "encoded": 46017
+    },
+    {
+      "field": "pa",
+      "mode": 0,
+      "key": 3,
+      "rawWord": 65535,
+      "decoded": -16692,
+      "encodeInput": -1,
+      "encoded": 52414
+    },
+    {
+      "field": "pa",
+      "mode": 0,
+      "key": 15,
+      "rawWord": 0,
+      "decoded": 4916,
+      "encodeInput": 0,
+      "encoded": 13121
+    },
+    {
+      "field": "pa",
+      "mode": 0,
+      "key": 15,
+      "rawWord": 257,
+      "decoded": 804,
+      "encodeInput": 257,
+      "encoded": 9041
+    },
+    {
+      "field": "pa",
+      "mode": 0,
+      "key": 15,
+      "rawWord": 32639,
+      "decoded": -6973,
+      "encodeInput": 32639,
+      "encoded": 50358
+    },
+    {
+      "field": "pa",
+      "mode": 0,
+      "key": 15,
+      "rawWord": 32896,
+      "decoded": 6972,
+      "encodeInput": -32640,
+      "encoded": 15177
+    },
+    {
+      "field": "pa",
+      "mode": 0,
+      "key": 15,
+      "rawWord": 65535,
+      "decoded": -4917,
+      "encodeInput": -1,
+      "encoded": 52414
+    },
+    {
+      "field": "pa",
+      "mode": 1,
+      "key": 0,
+      "rawWord": 0,
+      "decoded": 18421,
+      "encodeInput": 0,
+      "encoded": 21631
+    },
+    {
+      "field": "pa",
+      "mode": 1,
+      "key": 0,
+      "rawWord": 257,
+      "decoded": 22501,
+      "encodeInput": 257,
+      "encoded": 17519
+    },
+    {
+      "field": "pa",
+      "mode": 1,
+      "key": 0,
+      "rawWord": 32639,
+      "decoded": -20478,
+      "encodeInput": 32639,
+      "encoded": 41864
+    },
+    {
+      "field": "pa",
+      "mode": 1,
+      "key": 0,
+      "rawWord": 32896,
+      "decoded": 20477,
+      "encodeInput": -32640,
+      "encoded": 23671
+    },
+    {
+      "field": "pa",
+      "mode": 1,
+      "key": 0,
+      "rawWord": 65535,
+      "decoded": -18422,
+      "encodeInput": -1,
+      "encoded": 43904
+    },
+    {
+      "field": "pa",
+      "mode": 1,
+      "key": 3,
+      "rawWord": 0,
+      "decoded": 16298,
+      "encodeInput": 0,
+      "encoded": 60047
+    },
+    {
+      "field": "pa",
+      "mode": 1,
+      "key": 3,
+      "rawWord": 257,
+      "decoded": 15278,
+      "encodeInput": 257,
+      "encoded": 43727
+    },
+    {
+      "field": "pa",
+      "mode": 1,
+      "key": 3,
+      "rawWord": 32639,
+      "decoded": -15785,
+      "encodeInput": 32639,
+      "encoded": 13648
+    },
+    {
+      "field": "pa",
+      "mode": 1,
+      "key": 3,
+      "rawWord": 32896,
+      "decoded": 15784,
+      "encodeInput": -32640,
+      "encoded": 51887
+    },
+    {
+      "field": "pa",
+      "mode": 1,
+      "key": 3,
+      "rawWord": 65535,
+      "decoded": -16299,
+      "encodeInput": -1,
+      "encoded": 5488
+    },
+    {
+      "field": "pa",
+      "mode": 1,
+      "key": 15,
+      "rawWord": 0,
+      "decoded": -23558,
+      "encodeInput": 0,
+      "encoded": 43262
+    },
+    {
+      "field": "pa",
+      "mode": 1,
+      "key": 15,
+      "rawWord": 257,
+      "decoded": -22530,
+      "encodeInput": 257,
+      "encoded": 59582
+    },
+    {
+      "field": "pa",
+      "mode": 1,
+      "key": 15,
+      "rawWord": 32639,
+      "decoded": 24071,
+      "encodeInput": 32639,
+      "encoded": 30497
+    },
+    {
+      "field": "pa",
+      "mode": 1,
+      "key": 15,
+      "rawWord": 32896,
+      "decoded": -24072,
+      "encodeInput": -32640,
+      "encoded": 35038
+    },
+    {
+      "field": "pa",
+      "mode": 1,
+      "key": 15,
+      "rawWord": 65535,
+      "decoded": 23557,
+      "encodeInput": -1,
+      "encoded": 22273
+    },
+    {
+      "field": "pa",
+      "mode": 3,
+      "key": 0,
+      "rawWord": 0,
+      "decoded": -26214,
+      "encodeInput": 0,
+      "encoded": 42598
+    },
+    {
+      "field": "pa",
+      "mode": 3,
+      "key": 0,
+      "rawWord": 257,
+      "decoded": -25186,
+      "encodeInput": 257,
+      "encoded": 58918
+    },
+    {
+      "field": "pa",
+      "mode": 3,
+      "key": 0,
+      "rawWord": 32639,
+      "decoded": 25703,
+      "encodeInput": 32639,
+      "encoded": 31161
+    },
+    {
+      "field": "pa",
+      "mode": 3,
+      "key": 0,
+      "rawWord": 32896,
+      "decoded": -25704,
+      "encodeInput": -32640,
+      "encoded": 34374
+    },
+    {
+      "field": "pa",
+      "mode": 3,
+      "key": 0,
+      "rawWord": 65535,
+      "decoded": 26213,
+      "encodeInput": -1,
+      "encoded": 22937
+    },
+    {
+      "field": "pa",
+      "mode": 3,
+      "key": 3,
+      "rawWord": 0,
+      "decoded": -13100,
+      "encodeInput": 0,
+      "encoded": 42598
+    },
+    {
+      "field": "pa",
+      "mode": 3,
+      "key": 3,
+      "rawWord": 257,
+      "decoded": -4876,
+      "encodeInput": 257,
+      "encoded": 44654
+    },
+    {
+      "field": "pa",
+      "mode": 3,
+      "key": 3,
+      "rawWord": 32639,
+      "decoded": 9019,
+      "encodeInput": 32639,
+      "encoded": 23965
+    },
+    {
+      "field": "pa",
+      "mode": 3,
+      "key": 3,
+      "rawWord": 32896,
+      "decoded": -9020,
+      "encodeInput": -32640,
+      "encoded": 41570
+    },
+    {
+      "field": "pa",
+      "mode": 3,
+      "key": 3,
+      "rawWord": 65535,
+      "decoded": 13099,
+      "encodeInput": -1,
+      "encoded": 22937
+    },
+    {
+      "field": "pa",
+      "mode": 3,
+      "key": 15,
+      "rawWord": 0,
+      "decoded": 19661,
+      "encodeInput": 0,
+      "encoded": 42598
+    },
+    {
+      "field": "pa",
+      "mode": 3,
+      "key": 15,
+      "rawWord": 257,
+      "decoded": 20175,
+      "encodeInput": 257,
+      "encoded": 9958
+    },
+    {
+      "field": "pa",
+      "mode": 3,
+      "key": 15,
+      "rawWord": 32639,
+      "decoded": -19917,
+      "encodeInput": 32639,
+      "encoded": 6617
+    },
+    {
+      "field": "pa",
+      "mode": 3,
+      "key": 15,
+      "rawWord": 32896,
+      "decoded": 19916,
+      "encodeInput": -32640,
+      "encoded": 58918
+    },
+    {
+      "field": "pa",
+      "mode": 3,
+      "key": 15,
+      "rawWord": 65535,
+      "decoded": -19662,
+      "encodeInput": -1,
+      "encoded": 22937
+    }
+  ]
+}

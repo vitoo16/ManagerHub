@@ -45,6 +45,11 @@
       "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm2013-followup-rea-evidence.json",
       "sha256": "d3eeb8dd25633f228abfd14609a3fe49099c8d02e4c605a12694b79f1f915ac5",
       "note": "Follow-up after user supplied FM2013 installation path; 55 records, 31,104,103 bytes. Preserves original root records plus new FM2013 resource/artifact observations."
+    },
+    {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-deep-final-rea-evidence.json",
+      "sha256": "a68611c34adddce94ad4ee218cf5c334546c79ceaef7c6c2813c592934cad21e",
+      "note": "Deep field arithmetic, profile/source selection and pointer catalogs; 33 canonical records, 27,702,518 bytes. Replaces the provisional deep bundle reference; earlier investigation bundles remain retained."
     }
   ],
   "evidenceAliases": {
@@ -60,7 +65,15 @@
     "pages13": "ev_3158299bfb3444ec8d3dc061cfe303cbd5eb84eaf52a288a7611024088db2aa4",
     "attrs13": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
     "fm2013Artifact": "ev_9d2e991593b8ab1e7851b2e08a1c309b7f33f4bea06f716cff011c3d170905d4",
-    "fm2013Resources": "ev_b4cec8b739d0f53c2e747d9a0c1da19e50f16b6e5150849405ce34118dd6977d"
+    "fm2013Resources": "ev_b4cec8b739d0f53c2e747d9a0c1da19e50f16b6e5150849405ce34118dd6977d",
+    "math13": "ev_02ee3f7d66b0b8376174370142d292a6c45c84534c8027e101b9d11d6737f792",
+    "profileOffsets13": "ev_1facaa98a62ae5884eebcfe8ae094e82c902609117b0235934c9bd461444a913",
+    "streamDeep13": "ev_cd0cfcfea5622bc352c978da5c834b6caefe70f65195afe8a4f9fbb5c411ec7d",
+    "nestedProfiles13": "ev_717e8c0d93b0767398504b2f8c5fb32e6c3fdcb2bc456319c060500a9a1d7bd7",
+    "outerProfiles13": "ev_fae623eb37f5e240acb33356fad565bb5d856c84beac978e7e56db012c570e70",
+    "profileInterface13": "ev_b430cdca4f436f5e5599da3b683d57491e5c5c9d2cbf6337cd7c89ff24790ba4",
+    "catalog13": "ev_7843e6956676f768833e4bb366ccf270166870709e4f9d79d0ff8398b232fa8c",
+    "catalogOrchestrator13": "ev_bb47ef5af519919ba7155084e4d1bc121ff9df7cb076b9c42f863b1fb6f58f3c"
   },
   "discoveries": [
     {
@@ -1444,6 +1457,1215 @@
         "Static CIL only; runtime reachability and bound delegate targets not established.",
         "No player field or native write mapping established."
       ]
+    },
+    {
+      "id": "RE13-SYMBOL-0x060008ed",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_02ee3f7d66b0b8376174370142d292a6c45c84534c8027e101b9d11d6737f792",
+      "reaLocator": "normalized_result.methods[token=0x060008ed]",
+      "symbol": "#=qx0ja8ELNNkCTNaw6hYRR9dqmQrVxb1sivSduYAkvz3rBrBZf4400HdtgK11E8MBm.#=q37lYlbAY68bww1il0uADG0M6QUG6kFuIOLwIL_d6OXs=",
+      "methodToken": "0x060008ed",
+      "rva": 297252,
+      "fileOffset": 289572,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": [
+          "i1"
+        ]
+      },
+      "sourceIlSha256": "1510bc76d17d2ca67c4360d9aa33b69ebc726bc6fd1c4c80490085be0158a311",
+      "normalizedIlSha256": "0d082b4519a54ab14bf2b7617e862a3aa995420050ed7f25a1fde867076384ea"
+    },
+    {
+      "id": "RE13-SYMBOL-0x060008ee",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_02ee3f7d66b0b8376174370142d292a6c45c84534c8027e101b9d11d6737f792",
+      "reaLocator": "normalized_result.methods[token=0x060008ee]",
+      "symbol": "#=qx0ja8ELNNkCTNaw6hYRR9dqmQrVxb1sivSduYAkvz3rBrBZf4400HdtgK11E8MBm.#=q$jLlB86aMLliXxlikjkHVISK3fVNa4o4luWco8Rw1aQ=",
+      "methodToken": "0x060008ee",
+      "rva": 297328,
+      "fileOffset": 289648,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": [
+          "i1"
+        ]
+      },
+      "sourceIlSha256": "ddba4914302cb274e3c9b9227d7b2299cc664c70d6ec0c0e76232cc1aeced3ad",
+      "normalizedIlSha256": "31c2acf5918118a7c29b96535ae8c1d282405bc141052e0bfb78775723adb9be"
+    },
+    {
+      "id": "RE13-SYMBOL-0x0600074f",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_02ee3f7d66b0b8376174370142d292a6c45c84534c8027e101b9d11d6737f792",
+      "reaLocator": "normalized_result.methods[token=0x0600074f]",
+      "symbol": "#=qRA3KfGxr5JnlsocESBdFNYhasLauAUZNhkkEn3UQgIA=.#=qEV_LyOFzDDT9Ce3mtRnLww==",
+      "methodToken": "0x0600074f",
+      "rva": 247292,
+      "fileOffset": 239612,
+      "signature": {
+        "returnType": "u4",
+        "parameterTypes": [
+          "u4",
+          "u4"
+        ]
+      },
+      "sourceIlSha256": "58a6b9000b1b6d8f4f365cc7c21048f0171acca019885deb556649c9ced44567",
+      "normalizedIlSha256": "f870eefd09dd4a079eb0b19bad98d55dbfd5ff40e8e4c6c72bd15066a7c19f75"
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000752",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_02ee3f7d66b0b8376174370142d292a6c45c84534c8027e101b9d11d6737f792",
+      "reaLocator": "normalized_result.methods[token=0x06000752]",
+      "symbol": "#=qRA3KfGxr5JnlsocESBdFNYhasLauAUZNhkkEn3UQgIA=.#=qCB3LWupS7zRJ8r2QI9IKtQ==",
+      "methodToken": "0x06000752",
+      "rva": 247376,
+      "fileOffset": 239696,
+      "signature": {
+        "returnType": "u4",
+        "parameterTypes": [
+          "u4"
+        ]
+      },
+      "sourceIlSha256": "44ce708ca60fb09bdddfcf664d2522813d8879e5284b6e906e3bf02419ea72ab",
+      "normalizedIlSha256": "96b3d820d929d79a0027ae7ec1aac051a8587ae710ffe998d994a23d85a6f3cc"
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000755",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_02ee3f7d66b0b8376174370142d292a6c45c84534c8027e101b9d11d6737f792",
+      "reaLocator": "normalized_result.methods[token=0x06000755]",
+      "symbol": "#=qRA3KfGxr5JnlsocESBdFNYhasLauAUZNhkkEn3UQgIA=.#=qy_CgTCPw9yEJBvmWuOcL4Q==",
+      "methodToken": "0x06000755",
+      "rva": 247460,
+      "fileOffset": 239780,
+      "signature": {
+        "returnType": "u4",
+        "parameterTypes": [
+          "u4",
+          "i4"
+        ]
+      },
+      "sourceIlSha256": "3117922ca76dfe82e3b0606443ac8b75da34197fdb4307e71e79d021dbb33ec2",
+      "normalizedIlSha256": "d3f8497269cdd8359e5c10261643fdcfcc612394bf63dfed8ea3cfa564d4aed2"
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000758",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_02ee3f7d66b0b8376174370142d292a6c45c84534c8027e101b9d11d6737f792",
+      "reaLocator": "normalized_result.methods[token=0x06000758]",
+      "symbol": "#=qRA3KfGxr5JnlsocESBdFNYhasLauAUZNhkkEn3UQgIA=.#=qUrHTDGPjoeSz4a567_tMqA==",
+      "methodToken": "0x06000758",
+      "rva": 247548,
+      "fileOffset": 239868,
+      "signature": {
+        "returnType": "u2",
+        "parameterTypes": [
+          "u2",
+          "u2"
+        ]
+      },
+      "sourceIlSha256": "0837c745a9e3c6e5328d218a28ab17ce548778474e66c5e155bb07595dd35c0a",
+      "normalizedIlSha256": "e6d06c489da133c71913549e5f29578398c5b9379bcfbcab70b66371625e9d9d"
+    },
+    {
+      "id": "RE13-SYMBOL-0x0600075b",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_02ee3f7d66b0b8376174370142d292a6c45c84534c8027e101b9d11d6737f792",
+      "reaLocator": "normalized_result.methods[token=0x0600075b]",
+      "symbol": "#=qRA3KfGxr5JnlsocESBdFNYhasLauAUZNhkkEn3UQgIA=.#=qKUt4r2AxXiOqyez2rkxCdA==",
+      "methodToken": "0x0600075b",
+      "rva": 247668,
+      "fileOffset": 239988,
+      "signature": {
+        "returnType": "u2",
+        "parameterTypes": [
+          "u2",
+          "i4"
+        ]
+      },
+      "sourceIlSha256": "711ead2fdf107c7272b3d2c62db5c8a7789526babe5ae1b176a68afe75763b80",
+      "normalizedIlSha256": "ebb03d683ca8304cdacd0012d97b02bef8971d122f3409c8eca58ba3cb736af6"
+    },
+    {
+      "id": "RE13-SYMBOL-0x060008d3",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_02ee3f7d66b0b8376174370142d292a6c45c84534c8027e101b9d11d6737f792",
+      "reaLocator": "normalized_result.methods[token=0x060008d3]",
+      "symbol": "#=qwzqQmrCYpl3ylG0EIO_jCKJmnnVmkFQRs9PXIxDKTiHTgmxWftUySI_UJyG3Ha2n.#=qrUhdvYfCMWFaONM_1NI7jA==",
+      "methodToken": "0x060008d3",
+      "rva": 296780,
+      "fileOffset": 289100,
+      "signature": {
+        "returnType": "u4",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "da44ef9a03dde55fef53353dec5ff16c39ef9d18f7423ed83d9b09bdbc1d0a63",
+      "normalizedIlSha256": "d8656bc11a6005ed6b2bdc2e78a2dfd12efdb583df9918a100c1d47b87da6897"
+    },
+    {
+      "id": "RE13-SYMBOL-0x060008d4",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_02ee3f7d66b0b8376174370142d292a6c45c84534c8027e101b9d11d6737f792",
+      "reaLocator": "normalized_result.methods[token=0x060008d4]",
+      "symbol": "#=qwzqQmrCYpl3ylG0EIO_jCKJmnnVmkFQRs9PXIxDKTiHTgmxWftUySI_UJyG3Ha2n.#=qxv$XmRtZNjdkS3Rz$iRV5g==",
+      "methodToken": "0x060008d4",
+      "rva": 296812,
+      "fileOffset": 289132,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "u4"
+        ]
+      },
+      "sourceIlSha256": "e92f78e65340948544fe324fbdcc495c1ac772f61c1b943af7fcdbb4b041b299",
+      "normalizedIlSha256": "d18bfff5ca9a8f0cc02f096b76bc3bcf45ab7bc9b9c238f25e991181d2eed684"
+    },
+    {
+      "id": "RE13-SYMBOL-0x060008d5",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_02ee3f7d66b0b8376174370142d292a6c45c84534c8027e101b9d11d6737f792",
+      "reaLocator": "normalized_result.methods[token=0x060008d5]",
+      "symbol": "#=qwzqQmrCYpl3ylG0EIO_jCKJmnnVmkFQRs9PXIxDKTiHTgmxWftUySI_UJyG3Ha2n.#=qi0YrAcGplshcc3Z5PFivEw==",
+      "methodToken": "0x060008d5",
+      "rva": 296840,
+      "fileOffset": 289160,
+      "signature": {
+        "returnType": "u4",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "17458f780e8852797b3ee541e8731f726669d232ae6a106b29067f3f72797519",
+      "normalizedIlSha256": "7d78e904a4625d781ee6c696fdc560d439b11f9085cc58c3499b24827f25f635"
+    },
+    {
+      "id": "RE13-SYMBOL-0x060008d6",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_02ee3f7d66b0b8376174370142d292a6c45c84534c8027e101b9d11d6737f792",
+      "reaLocator": "normalized_result.methods[token=0x060008d6]",
+      "symbol": "#=qwzqQmrCYpl3ylG0EIO_jCKJmnnVmkFQRs9PXIxDKTiHTgmxWftUySI_UJyG3Ha2n.#=q6MmfknKbWVme2slncI7F9A==",
+      "methodToken": "0x060008d6",
+      "rva": 296872,
+      "fileOffset": 289192,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "u4"
+        ]
+      },
+      "sourceIlSha256": "99f138d677f57eff640a630a3704e7ae87f84787e4e118173b6493c3289ece82",
+      "normalizedIlSha256": "401d672017f9ec34a4a0c1c33d5bba2c32fffbe865c7ceb0a48144c19f31b395"
+    },
+    {
+      "id": "RE13-SYMBOL-0x060008d7",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_02ee3f7d66b0b8376174370142d292a6c45c84534c8027e101b9d11d6737f792",
+      "reaLocator": "normalized_result.methods[token=0x060008d7]",
+      "symbol": "#=qwzqQmrCYpl3ylG0EIO_jCKJmnnVmkFQRs9PXIxDKTiHTgmxWftUySI_UJyG3Ha2n.#=q6u9G8jsp52lBtbySAStqog==",
+      "methodToken": "0x060008d7",
+      "rva": 296900,
+      "fileOffset": 289220,
+      "signature": {
+        "returnType": "u1",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "3759690a50af696ce2cc08987974dacfcb680fb370c59f2812a9ace237e6f443",
+      "normalizedIlSha256": "a4cdbc3852cc8771028512c44a9f01cbc9a7ba44d378510dcd5c115f9d21b599"
+    },
+    {
+      "id": "RE13-SYMBOL-0x060008d9",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_02ee3f7d66b0b8376174370142d292a6c45c84534c8027e101b9d11d6737f792",
+      "reaLocator": "normalized_result.methods[token=0x060008d9]",
+      "symbol": "#=qwzqQmrCYpl3ylG0EIO_jCKJmnnVmkFQRs9PXIxDKTiHTgmxWftUySI_UJyG3Ha2n.#=q$guDXUylG10d_Q38i7tf7Q==",
+      "methodToken": "0x060008d9",
+      "rva": 297008,
+      "fileOffset": 289328,
+      "signature": {
+        "returnType": "u2",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "e2670f59218e390730563c16ff846e2a6a60f88040177772a9d8a9b17263ad32",
+      "normalizedIlSha256": "488aa03a1f9080a5274970445e222610d37d6a1847a18fd826db8daaf8b52e38"
+    },
+    {
+      "id": "RE13-SYMBOL-0x060008da",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_02ee3f7d66b0b8376174370142d292a6c45c84534c8027e101b9d11d6737f792",
+      "reaLocator": "normalized_result.methods[token=0x060008da]",
+      "symbol": "#=qwzqQmrCYpl3ylG0EIO_jCKJmnnVmkFQRs9PXIxDKTiHTgmxWftUySI_UJyG3Ha2n.#=qPWVxwreiygFmw8pc9JdDNg==",
+      "methodToken": "0x060008da",
+      "rva": 297040,
+      "fileOffset": 289360,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "u2"
+        ]
+      },
+      "sourceIlSha256": "e9f273ad20f90f4229154311a780b738befb6a799c811d0892481b2efb49c0e0",
+      "normalizedIlSha256": "3468f3a995d7c297eacfbb7f48f2ff1b1c16f762d979b47c536663a2e2358b2b"
+    },
+    {
+      "id": "RE13-SYMBOL-0x060014d9",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_1facaa98a62ae5884eebcfe8ae094e82c902609117b0235934c9bd461444a913",
+      "reaLocator": "normalized_result.methods[token=0x060014d9]",
+      "symbol": "FMRTE_Framework.Settings.Config.get_AttributesMultiplier",
+      "methodToken": "0x060014d9",
+      "rva": 553496,
+      "fileOffset": 545816,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "a040f0fd87e0d42b20f9d67db340a456a610149b15dc2e430d3efea80a43a2cb",
+      "normalizedIlSha256": "92d9d8788d78d0b93ab2779d90e63cdd7e427f5543b510ad025a277207af3a9d"
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000191",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_1facaa98a62ae5884eebcfe8ae094e82c902609117b0235934c9bd461444a913",
+      "reaLocator": "normalized_result.methods[token=0x06000191]",
+      "symbol": "#=qbFAkkS8rRMeKAnVi29cQmOZITxkOSgzZhjemWVvyWPY$ydI6atM6jrEdEmgygSIj..cctor",
+      "methodToken": "0x06000191",
+      "rva": 59608,
+      "fileOffset": 51928,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "f328b0707c535a181fd2096a6c6b2d35039619cb89fe54fac099a94a705b0f32",
+      "normalizedIlSha256": "073e7e27c9ac4415bfc8adbed7b6e1def55e73632360bd5d2805f449f8b4ceee"
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000192",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_1facaa98a62ae5884eebcfe8ae094e82c902609117b0235934c9bd461444a913",
+      "reaLocator": "normalized_result.methods[token=0x06000192]",
+      "symbol": "#=qbFAkkS8rRMeKAnVi29cQmOZITxkOSgzZhjemWVvyWPY$ydI6atM6jrEdEmgygSIj.#=qQ_67q$s4wMWaFO7qcKLcTA==",
+      "methodToken": "0x06000192",
+      "rva": 60000,
+      "fileOffset": 52320,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "d428805be69768458537bf98aa499171f2aa2295d733331fbfc85c683db28d3c",
+      "normalizedIlSha256": "ddf6d3c91b101320763532a62035d04f33d4f5c469f73219c27aa7e491c63d84"
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000193",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_1facaa98a62ae5884eebcfe8ae094e82c902609117b0235934c9bd461444a913",
+      "reaLocator": "normalized_result.methods[token=0x06000193]",
+      "symbol": "#=qbFAkkS8rRMeKAnVi29cQmOZITxkOSgzZhjemWVvyWPY$ydI6atM6jrEdEmgygSIj.#=qsfl2exRCsylGbsyqeE9dWD2aE2xiGqYlVK5lqwlh1lw=",
+      "methodToken": "0x06000193",
+      "rva": 60308,
+      "fileOffset": 52628,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "4dae8b9192001c389ac7d0d2642bcbb182e840a77ecf1e545f24d84f7d5545b5",
+      "normalizedIlSha256": "79d868c2b39579c743bb49364754f701c9a667aff3bf88a5cd957cf7e26690a8"
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000922",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_1facaa98a62ae5884eebcfe8ae094e82c902609117b0235934c9bd461444a913",
+      "reaLocator": "normalized_result.methods[token=0x06000922]",
+      "symbol": "#=qybbTj6740c2RVLSDdyGG$2QMLs8gxcxKfrDyNQCXGlMG6o$bNvBOguvHxC5e$kqT..cctor",
+      "methodToken": "0x06000922",
+      "rva": 302972,
+      "fileOffset": 295292,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "4298da085987be96acf565a196356c9e92c3ab8e41b0c8a48e0f0aaf17760f84",
+      "normalizedIlSha256": "6efdce54fe75ec9d3fae2774f804f2a1e6e70d5a440b33e8ab06802492810a48"
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000923",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_1facaa98a62ae5884eebcfe8ae094e82c902609117b0235934c9bd461444a913",
+      "reaLocator": "normalized_result.methods[token=0x06000923]",
+      "symbol": "#=qybbTj6740c2RVLSDdyGG$2QMLs8gxcxKfrDyNQCXGlMG6o$bNvBOguvHxC5e$kqT.#=qrZsuP5ZBT4htacbVbQkY6qozDpM9uJbg72sl$Tnlu8E=",
+      "methodToken": "0x06000923",
+      "rva": 303392,
+      "fileOffset": 295712,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "182a8228e775ba2bc5fa7779bc199aa3804383eaddc791c63b7a7d458d66955c",
+      "normalizedIlSha256": "6a0b9b5dab507ab35cb328a5f8c2d006e0adbe9e0c063f71363618ac01f8527b"
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000924",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_1facaa98a62ae5884eebcfe8ae094e82c902609117b0235934c9bd461444a913",
+      "reaLocator": "normalized_result.methods[token=0x06000924]",
+      "symbol": "#=qybbTj6740c2RVLSDdyGG$2QMLs8gxcxKfrDyNQCXGlMG6o$bNvBOguvHxC5e$kqT.#=qviKXldKKivTZu$UCClZOTA==",
+      "methodToken": "0x06000924",
+      "rva": 303780,
+      "fileOffset": 296100,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "275934dd1ed2b1f306d844a935026043ed41d4ff081c9a44ddc3698783e1ccfe",
+      "normalizedIlSha256": "2d4057f9cbafd922d08d52d2072295674258a5340c063c6efe759e87717c978f"
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000925",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_1facaa98a62ae5884eebcfe8ae094e82c902609117b0235934c9bd461444a913",
+      "reaLocator": "normalized_result.methods[token=0x06000925]",
+      "symbol": "#=qybbTj6740c2RVLSDdyGG$2QMLs8gxcxKfrDyNQCXGlMG6o$bNvBOguvHxC5e$kqT.#=q2cFWsezVVW8f0yyHfI91EWw25iLOl8npeAhZZO8n1Ko=",
+      "methodToken": "0x06000925",
+      "rva": 304168,
+      "fileOffset": 296488,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "eba5891c54798b34bc4d33e1ca91392759e2d845ca43a7ed6d2aa0473ecef446",
+      "normalizedIlSha256": "315d526ad59cd0cc44ecb552a363df47b89c10db6c14717c537214159355022a"
+    },
+    {
+      "id": "RE13-SYMBOL-0x0600009d",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_717e8c0d93b0767398504b2f8c5fb32e6c3fdcb2bc456319c060500a9a1d7bd7",
+      "reaLocator": "normalized_result.methods[token=0x0600009d]",
+      "symbol": "#=qlT8aLnUPN4gJz6buwT_Nu37PyEC8J7M3Lj_jirZIyUc=..ctor",
+      "methodToken": "0x0600009d",
+      "rva": 25352,
+      "fileOffset": 17672,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "88498b00ea6d4001acb84d26070f32dc01395d5a15b23b59684d3485a0df341c",
+      "normalizedIlSha256": "d6753fc72712c97564aff6f65f2f49cb2697dd77607108921c348456377c940f"
+    },
+    {
+      "id": "RE13-SYMBOL-0x060000d5",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_717e8c0d93b0767398504b2f8c5fb32e6c3fdcb2bc456319c060500a9a1d7bd7",
+      "reaLocator": "normalized_result.methods[token=0x060000d5]",
+      "symbol": "#=qaf4koSDnMFPRvoSdpWTdxjToCPULyap7VX4RL3tRyPk=..ctor",
+      "methodToken": "0x060000d5",
+      "rva": 31592,
+      "fileOffset": 23912,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "4111bda32b3b42f8de8b75118f66e624bd712c453f7a7bd2097a05e660c26f94",
+      "normalizedIlSha256": "ba2025c3892270a8f942d0cb851002b748f938916a89204f1b8e1fa00cde888a"
+    },
+    {
+      "id": "RE13-SYMBOL-0x060001fe",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_717e8c0d93b0767398504b2f8c5fb32e6c3fdcb2bc456319c060500a9a1d7bd7",
+      "reaLocator": "normalized_result.methods[token=0x060001fe]",
+      "symbol": "#=qeCmbo5Sm6m3WJfwokckhvKDjaWtVxwFp4IZGtkM$BSU=..ctor",
+      "methodToken": "0x060001fe",
+      "rva": 84560,
+      "fileOffset": 76880,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "class:1056"
+        ]
+      },
+      "sourceIlSha256": "d4e1a1e1937758f88db3cf364ffdba8199b92f1e51b9ccd0e844cd54f662b22c",
+      "normalizedIlSha256": "0a7b20c4fb5439270e0630d70c99509842f4e36680d88ed492203e74ad2c192e"
+    },
+    {
+      "id": "RE13-SYMBOL-0x0600023c",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_717e8c0d93b0767398504b2f8c5fb32e6c3fdcb2bc456319c060500a9a1d7bd7",
+      "reaLocator": "normalized_result.methods[token=0x0600023c]",
+      "symbol": "#=qGLA$y3$jZUKbow2Nu7PHZzr7BlAlotJkMXGvJYhp$b8=..ctor",
+      "methodToken": "0x0600023c",
+      "rva": 91424,
+      "fileOffset": 83744,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "class:1056"
+        ]
+      },
+      "sourceIlSha256": "f0def0171c3e9de52fffa9b9950477b677b8ca55197b01cdd61404d5dcc475ca",
+      "normalizedIlSha256": "2ce712208792901142b274844c323984dda15870ff91534c527ecc371bf1085f"
+    },
+    {
+      "id": "RE13-SYMBOL-0x060003eb",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_717e8c0d93b0767398504b2f8c5fb32e6c3fdcb2bc456319c060500a9a1d7bd7",
+      "reaLocator": "normalized_result.methods[token=0x060003eb]",
+      "symbol": "#=q5yvznjSGIn$YGOFJZZ83gPOF57p5WLv3ONdfAsXucwM=..ctor",
+      "methodToken": "0x060003eb",
+      "rva": 153724,
+      "fileOffset": 146044,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "218ec7b24ab26ea4c90830af86219f456d2b7101deb99abc6868079fac3437c3",
+      "normalizedIlSha256": "1b351994f2490c12fbd2fe00f6ec47e0a053224d29a2677bf869f992b284528e"
+    },
+    {
+      "id": "RE13-SYMBOL-0x0600047b",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_717e8c0d93b0767398504b2f8c5fb32e6c3fdcb2bc456319c060500a9a1d7bd7",
+      "reaLocator": "normalized_result.methods[token=0x0600047b]",
+      "symbol": "#=qTjsjxIp0RMOvfhIhquIXfHdX3Z$Jeqmk7dhYCTiP__8=..ctor",
+      "methodToken": "0x0600047b",
+      "rva": 165920,
+      "fileOffset": 158240,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "a4811509582b927aca30e1b347c0eb4c63fa6103a81860dd9899bbda1af92d1a",
+      "normalizedIlSha256": "b358a61c8f7ceb52e445032de299ad20059402511104ca0762f7f1e9cbdb6173"
+    },
+    {
+      "id": "RE13-SYMBOL-0x060004bb",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_717e8c0d93b0767398504b2f8c5fb32e6c3fdcb2bc456319c060500a9a1d7bd7",
+      "reaLocator": "normalized_result.methods[token=0x060004bb]",
+      "symbol": "#=qzvniqVde3UGtQjEruhfsa7Pz$k_NVLnM3ZeuWBr$GDw=..ctor",
+      "methodToken": "0x060004bb",
+      "rva": 170396,
+      "fileOffset": 162716,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "class:1056"
+        ]
+      },
+      "sourceIlSha256": "8421bbb3a73cb1d474753d6e5395db100a3eca81862e51501234abe4f74050c6",
+      "normalizedIlSha256": "7d3d4f46a214ac058305a934f107da3eb401b81f828ead03fd824eabba6507fa"
+    },
+    {
+      "id": "RE13-SYMBOL-0x060004f4",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_717e8c0d93b0767398504b2f8c5fb32e6c3fdcb2bc456319c060500a9a1d7bd7",
+      "reaLocator": "normalized_result.methods[token=0x060004f4]",
+      "symbol": "#=q5yvznjSGIn$YGOFJZZ83gPOF57p5WLv3ONdfAsXucwM=..ctor",
+      "methodToken": "0x060004f4",
+      "rva": 175876,
+      "fileOffset": 168196,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "class:1056"
+        ]
+      },
+      "sourceIlSha256": "f6281ed51482d1b10661a928c1601d4beb8304ea27566c8982dceb35ac396e02",
+      "normalizedIlSha256": "57de81e5e8923c16906383e48209c0ec0fbc482cf3161d6e913e4c0db44d7a41"
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000513",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_717e8c0d93b0767398504b2f8c5fb32e6c3fdcb2bc456319c060500a9a1d7bd7",
+      "reaLocator": "normalized_result.methods[token=0x06000513]",
+      "symbol": "#=q$Zr_92HqV6GbOlqvd8pn5aU16$IL4VAeDOOEaC3mMEs=..ctor",
+      "methodToken": "0x06000513",
+      "rva": 180576,
+      "fileOffset": 172896,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "class:1056"
+        ]
+      },
+      "sourceIlSha256": "9c51f6f7e84ab5c71b45706f7963940b01f32e529de8f7f32799d94808b402ed",
+      "normalizedIlSha256": "8e9e908da0044d03ec96656399792bb97c4cd6fd61273b8d8cc890174c4e9642"
+    },
+    {
+      "id": "RE13-SYMBOL-0x060005ab",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_717e8c0d93b0767398504b2f8c5fb32e6c3fdcb2bc456319c060500a9a1d7bd7",
+      "reaLocator": "normalized_result.methods[token=0x060005ab]",
+      "symbol": "#=qoEXosZchNZ6FFAHM35lry3LJiTVVeL4D04_hhtIGmeY=..ctor",
+      "methodToken": "0x060005ab",
+      "rva": 203740,
+      "fileOffset": 196060,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "5b5689baa0ca5e59668f7da1c156f3a16bc24ee43878119c7986620a3ef6cafc",
+      "normalizedIlSha256": "a54f1ab18f09df281e7266257f633a842e076a794b1c5320c40a31ae8bd22cca"
+    },
+    {
+      "id": "RE13-SYMBOL-0x0600067a",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_717e8c0d93b0767398504b2f8c5fb32e6c3fdcb2bc456319c060500a9a1d7bd7",
+      "reaLocator": "normalized_result.methods[token=0x0600067a]",
+      "symbol": "#=q0V5tNnUONF1mia_5I5Z96i7IMhLNoUT1ydO1YM_MCkI=..ctor",
+      "methodToken": "0x0600067a",
+      "rva": 223444,
+      "fileOffset": 215764,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "01d83d7e868ccdc00951e82764738390583fe0fa1b8b184ee26a302cf0bd2e32",
+      "normalizedIlSha256": "abf06aeeb6c9307f7d9ae2de4f8ebfcf65528649c1d25a7924231702fbcde031"
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000702",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_717e8c0d93b0767398504b2f8c5fb32e6c3fdcb2bc456319c060500a9a1d7bd7",
+      "reaLocator": "normalized_result.methods[token=0x06000702]",
+      "symbol": "#=qFEDBGpMhAc4H4T1nCU7ni1Mo$4_i4lERUREqVoIrVJ0=..ctor",
+      "methodToken": "0x06000702",
+      "rva": 239128,
+      "fileOffset": 231448,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "a5533be6962b0ffb1ffc2b799a6ac62513186af4261440123fdf8ab567f2c352",
+      "normalizedIlSha256": "c713ab01a48d305b00d03c903dd72691e69401d747107336de4d95218249fc80"
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000852",
+      "confidence": "CONFIRMED",
+      "scope": "Static CIL and independently checked arithmetic where documented; no native game record validation",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_717e8c0d93b0767398504b2f8c5fb32e6c3fdcb2bc456319c060500a9a1d7bd7",
+      "reaLocator": "normalized_result.methods[token=0x06000852]",
+      "symbol": "#=qCTlj4tWs4rK9Wn9oNwnPaYQHUOQ0nUFwc4rGjhOZ2pg=..ctor",
+      "methodToken": "0x06000852",
+      "rva": 278736,
+      "fileOffset": 271056,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "class:1056"
+        ]
+      },
+      "sourceIlSha256": "ea7d67b9b3472e2ec83225e0c71b48bd04fdf761fc03e5099cab66f726ea25e7",
+      "normalizedIlSha256": "8f55efbfbb292fe12623b853f7d5e07684d9332606b3d7bb1f8eccaf14e0ae68"
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000136",
+      "confidence": "CONFIRMED",
+      "scope": "Static catalog/constructor relation; runtime identity and game root unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_7843e6956676f768833e4bb366ccf270166870709e4f9d79d0ff8398b232fa8c",
+      "reaLocator": "normalized_result.methods[token=0x06000136]",
+      "symbol": "#=q9eaBUygG09K3TAyNJPq3eFmIyox1DdRoDA8OYH6xP13LwvLH_d$eaDzjupDUU_Q5DKYHbZiOn_I_bAWPFE4Gpw==.#=qVk5o4a9kOUWz3oHTESEFMeDJZBPT87q3LTHvHZM1nOA=",
+      "methodToken": "0x06000136",
+      "rva": 41608,
+      "fileOffset": 33928,
+      "signature": {
+        "returnType": "class:257<i4>",
+        "parameterTypes": [
+          "i4",
+          "u1"
+        ]
+      },
+      "sourceIlSha256": "9fa1806c43923d71557b628581e529f189c086559bd9af96a72b04f374cffbc5",
+      "normalizedIlSha256": "d39b9a9b76d387879d9222a1e35bc3d8b2c37399ab166c0e3cde06bb20b1093f"
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000149",
+      "confidence": "CONFIRMED",
+      "scope": "Static catalog/constructor relation; runtime identity and game root unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_7843e6956676f768833e4bb366ccf270166870709e4f9d79d0ff8398b232fa8c",
+      "reaLocator": "normalized_result.methods[token=0x06000149]",
+      "symbol": "#=q9eaBUygG09K3TAyNJPq3eFmIyox1DdRoDA8OYH6xP13LwvLH_d$eaDzjupDUU_Q5DKYHbZiOn_I_bAWPFE4Gpw==.#=qe1dYTYUHBP_dqrW5xFTkGJgNMFb88JRJG7d5S0LfxMw=",
+      "methodToken": "0x06000149",
+      "rva": 47616,
+      "fileOffset": 39936,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "66bedfe0b9cacf155039f4944ae71db72f36468b71106e8a60a46cdeb93ddcae",
+      "normalizedIlSha256": "68fa5244a96f456c032f7dac805111e88cd71cd7b7950249f81aac76b363545d"
+    },
+    {
+      "id": "RE13-SYMBOL-0x060001b1",
+      "confidence": "CONFIRMED",
+      "scope": "Static catalog/constructor relation; runtime identity and game root unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_7843e6956676f768833e4bb366ccf270166870709e4f9d79d0ff8398b232fa8c",
+      "reaLocator": "normalized_result.methods[token=0x060001b1]",
+      "symbol": "#=qbFdxc4Ei6df2w0JENq$g8h545zHl5ylPjEiS_5w4xvqoFiPHa1H7HYjqzJZ2nPML.#=qgg4zg3knLpVIbw0ubA0V$SDL2S7RelzpU4PHU7ugj2o=",
+      "methodToken": "0x060001b1",
+      "rva": 62216,
+      "fileOffset": 54536,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": [
+          "class:1076",
+          "string",
+          "class:1056",
+          "bool",
+          "class:184",
+          "bool"
+        ]
+      },
+      "sourceIlSha256": "111e505afc5fa43f0627c5262d7223f1d49dacedd07908dc5b7cf8e7264337e0",
+      "normalizedIlSha256": "7e5270d9ed91f45fcfd939da7b8f11deaab46eb2bf8683b6255785b50a526f14"
+    },
+    {
+      "id": "RE13-SYMBOL-0x060001b9",
+      "confidence": "CONFIRMED",
+      "scope": "Static catalog/constructor relation; runtime identity and game root unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_7843e6956676f768833e4bb366ccf270166870709e4f9d79d0ff8398b232fa8c",
+      "reaLocator": "normalized_result.methods[token=0x060001b9]",
+      "symbol": "#=qbFdxc4Ei6df2w0JENq$g8h545zHl5ylPjEiS_5w4xvqoFiPHa1H7HYjqzJZ2nPML.#=qWFB3QqlL$XY5AUcuTKiHcw==",
+      "methodToken": "0x060001b9",
+      "rva": 66624,
+      "fileOffset": 58944,
+      "signature": {
+        "returnType": "bool",
+        "parameterTypes": [
+          "i4",
+          "i4",
+          "class:1056"
+        ]
+      },
+      "sourceIlSha256": "eb66d89cd3e8d3b2b345dbabc0f55ad3d0dfd130b65ca3c3b7c7a73b6d2c1f08",
+      "normalizedIlSha256": "d1e6b11e51d83f539c9b8ddb01cf89f4aad08d14a7f0909bd69d086be3ea60f8"
+    },
+    {
+      "id": "RE13-SYMBOL-0x060001bb",
+      "confidence": "CONFIRMED",
+      "scope": "Static catalog/constructor relation; runtime identity and game root unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_7843e6956676f768833e4bb366ccf270166870709e4f9d79d0ff8398b232fa8c",
+      "reaLocator": "normalized_result.methods[token=0x060001bb]",
+      "symbol": "#=qbFdxc4Ei6df2w0JENq$g8h545zHl5ylPjEiS_5w4xvqoFiPHa1H7HYjqzJZ2nPML.#=qzKdjKUI7$2Q6EBBZYQ6LLQ==",
+      "methodToken": "0x060001bb",
+      "rva": 67396,
+      "fileOffset": 59716,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "bool"
+        ]
+      },
+      "sourceIlSha256": "21baf9b0d1fe6d1c4d66c7a38ee3517459204ef10198c56fa822c78f3c694211",
+      "normalizedIlSha256": "18d3bd4f593d4b76c4d4b2e4e87e94843e2a51e891310b9f8d2a952d57f204db"
+    },
+    {
+      "id": "RE13-SYMBOL-0x060001be",
+      "confidence": "CONFIRMED",
+      "scope": "Static catalog/constructor relation; runtime identity and game root unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_7843e6956676f768833e4bb366ccf270166870709e4f9d79d0ff8398b232fa8c",
+      "reaLocator": "normalized_result.methods[token=0x060001be]",
+      "symbol": "#=qbFdxc4Ei6df2w0JENq$g8h545zHl5ylPjEiS_5w4xvqoFiPHa1H7HYjqzJZ2nPML.#=qFT2MrpaTv8fymUU56mAuAw==",
+      "methodToken": "0x060001be",
+      "rva": 68548,
+      "fileOffset": 60868,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "object",
+          "class:373"
+        ]
+      },
+      "sourceIlSha256": "98c7fb7e0a121c1355876eaba05ce4e2d820586de8c0a26ad87effc327ff1454",
+      "normalizedIlSha256": "8ffecee66d426435a002a8599f118e4616911e3b9c9d2dc03ee24b3ceaadca93"
+    },
+    {
+      "id": "RE13-SYMBOL-0x060001c0",
+      "confidence": "CONFIRMED",
+      "scope": "Static catalog/constructor relation; runtime identity and game root unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_7843e6956676f768833e4bb366ccf270166870709e4f9d79d0ff8398b232fa8c",
+      "reaLocator": "normalized_result.methods[token=0x060001c0]",
+      "symbol": "#=qbFdxc4Ei6df2w0JENq$g8h545zHl5ylPjEiS_5w4xvqoFiPHa1H7HYjqzJZ2nPML.#=q0gNUTSAggi_d$RgOJrkch_Ep_x$qDOfWOBiW7wwf9KQ=",
+      "methodToken": "0x060001c0",
+      "rva": 73948,
+      "fileOffset": 66268,
+      "signature": {
+        "returnType": "bool",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "c0b4721f4e3acebb944b2fe12bf5e490936f7207b16a87a85820dd9d3756c610",
+      "normalizedIlSha256": "5b799f4cde2e45cf263d4fe0a1b3ccf4900c05d8462b04be5b95d0a7f9da124b"
+    },
+    {
+      "id": "RE13-SYMBOL-0x0600044f",
+      "confidence": "CONFIRMED",
+      "scope": "Static catalog/constructor relation; runtime identity and game root unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_7843e6956676f768833e4bb366ccf270166870709e4f9d79d0ff8398b232fa8c",
+      "reaLocator": "normalized_result.methods[token=0x0600044f]",
+      "symbol": "#=qfXFl4hkZced4OeXNOOzfI9CKoclxVL6oa2HSVJ8l7rpUi1HA8UocVfCuUoCeZgkN0FVGH8b_Q0pt1SAWrETcDg==.#=qv5UTqwVFAFh_AUMt3ehwEA==",
+      "methodToken": "0x0600044f",
+      "rva": 161900,
+      "fileOffset": 154220,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "object"
+        ]
+      },
+      "sourceIlSha256": "da057df4004e806f59a284d5e2d08b3d46532d18bfe0b8216ef21682cb01ccb9",
+      "normalizedIlSha256": "48478fb2190fb2fd8a417748ba345f4b4e32050531de1edb93dfde0a98d13016"
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000454",
+      "confidence": "CONFIRMED",
+      "scope": "Static catalog/constructor relation; runtime identity and game root unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_7843e6956676f768833e4bb366ccf270166870709e4f9d79d0ff8398b232fa8c",
+      "reaLocator": "normalized_result.methods[token=0x06000454]",
+      "symbol": "#=qfXFl4hkZced4OeXNOOzfI9CKoclxVL6oa2HSVJ8l7rpUi1HA8UocVfCuUoCeZgkN0FVGH8b_Q0pt1SAWrETcDg==.#=qT$fmhAwL5ee3JDbr6OYdJGMBV3$peHaKn$i0xOl$zpw=",
+      "methodToken": "0x06000454",
+      "rva": 163384,
+      "fileOffset": 155704,
+      "signature": {
+        "returnType": "class:1484",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "0f58139409bf423af1b8f99e818084ada0d393fb1a668d5cb488dc6c09ad6e01",
+      "normalizedIlSha256": "46f486e1ed701ad24cb44de6b3ead3353557c739c3ee977cf8b0167e1071af47"
+    },
+    {
+      "id": "RE13-SYMBOL-0x060000e8",
+      "confidence": "CONFIRMED",
+      "scope": "Static catalog/constructor relation; runtime identity and game root unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_bb47ef5af519919ba7155084e4d1bc121ff9df7cb076b9c42f863b1fb6f58f3c",
+      "reaLocator": "normalized_result.methods[token=0x060000e8]",
+      "symbol": "#=q71Sz6cOSafk1fL23z1RJB2qnpXEiClGxR2DHRhZD__T5yhTFNil8JjLrfKrykR9k.#=q9_$9r5KKXaT5$upuKa$g9A==",
+      "methodToken": "0x060000e8",
+      "rva": 34956,
+      "fileOffset": 27276,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "bool"
+        ]
+      },
+      "sourceIlSha256": "4b9113b55031c2e2c2a47f4dc7e0fe189615cc9fd3516ad64b87b99e58c1377b",
+      "normalizedIlSha256": "3e25b1e9519b4ed51b2bc1714cac2d55fdb83eff2ac7c073bbec6746812c1a6b"
+    },
+    {
+      "id": "RE13-SYMBOL-0x06000f65",
+      "confidence": "CONFIRMED",
+      "scope": "Static catalog/constructor relation; runtime identity and game root unverified",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_bb47ef5af519919ba7155084e4d1bc121ff9df7cb076b9c42f863b1fb6f58f3c",
+      "reaLocator": "normalized_result.methods[token=0x06000f65]",
+      "symbol": "FMRTE_Framework.GameObjects.Person.get_PlayerSID",
+      "methodToken": "0x06000f65",
+      "rva": 445064,
+      "fileOffset": 437384,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "sourceIlSha256": "ae1860f9587dad54851fb433b6170c3786662a2912466c1d2a8a3b4f94880701",
+      "normalizedIlSha256": "5d6b067a68552d2c47df223649f8abbb810ffb005632ea7e2f2a58f3efac97bb"
     }
   ],
   "unknowns": [
@@ -1618,5 +2840,23 @@
       "controlledOneFieldPair": false
     },
     "playerFieldsVerified": false
+  },
+  "deepFieldResearch": {
+    "status": "verified research arithmetic; native adapter unsupported",
+    "code": "scripts/fmrte13-field-math.mjs",
+    "publicVectors": "field-math-vectors.json",
+    "roundTripCases": 6291456,
+    "cilComparisons": 99328,
+    "cilVerificationPath": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-cil-math-verification.json",
+    "cilVerificationSha256": "16967c67d11a39bf7e5a9ad2e77bff3709b27d1f8a3c88d2c13ce7ec1f73f809",
+    "oracleScript": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\verify-fm13-cil-math.mjs",
+    "oracleScriptSha256": "170e930cd012af59f06ff1ac3d1fcf9b7aa0835c4110c96f33208ff7ce390a56",
+    "fullCilDumper": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\dump-cil-methods.ps1",
+    "fullCilDumperSha256": "082a7ec39c8b8a33f22a64ec3a4b370e14b0c7d017e4211009a9637da4ba8230",
+    "effectiveAddressRequired": true,
+    "exactBuildProfileResolved": false,
+    "realPlayerValidated": false,
+    "liveReadPerformed": false,
+    "writePerformed": false
   }
 }

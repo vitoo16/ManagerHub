@@ -2,6 +2,10 @@
 
 **REA MCP worked. Static FM2013-oriented read/write paths were recovered in FMRTE13; no ManagerHub player reader, CA/PA extractor or editor was validated.** FMRTE26 was inspected independently and remains unresolved below delegate dispatch. No proprietary target was executed, and no installation/game/save was changed.
 
+**Deep REA follow-up:** [CA/PA and attribute arithmetic](14-fmrte13-field-transforms.md) is now independently implemented and checked against file-backed CIL: 99,328 comparisons and 6,291,456 full-word round trips pass. [Profile analysis](12-fm2013-build-profile.md) distinguishes mutable offsets from mode selectors; exact local-build selection remains unknown. [The file-source trace](13-fmrte13-stream-source.md) establishes a read-only, address-indexed stream path, without demonstrated `.fm` decoding or file writeback. This is tested research code, not a validated native player adapter.
+
+[Catalog tracing](15-fmrte13-player-catalog.md) now follows pointer/list traversal, profile type-marker checks, Player construction and a separate PlayerSID-address dictionary. Catalog roots and the UI scheduling link remain unresolved; no game record was read.
+
 **User-path follow-up:** [local `fm.exe`](10-local-fm2013-executable.md) is now identified as PE32/x86, ProductVersion `13.3.3f359652`, SHA-256 `df45cde67cb7361867e7afc9808dacab8bf53bd972f48145f6f881ff55d08871`. [The new user save and two tutorials](11-fm2013-save-samples.md) have recognized experimental AFE indexes (774/773/772 members); selected member payloads remain undecoded. Executable/save location blockers are resolved. Known-player validation and a native analysis provider remain missing; reader/editor capability is unchanged.
 
 | Question | Result / confidence | Evidence and remaining limit |
@@ -17,4 +21,4 @@
 | Q9 Shared mechanisms? | CONFIRMED managed applications with load/edit UI; shared layout/offsets/serialization UNKNOWN. | [Comparison](09-fmrte13-vs-fmrte26.md). No cross-version adapter equivalence. |
 | Q10 Implement now? | CONFIRMED reproducible PE/CIL research utilities and evidence artifacts added. Production FM2013 player reader/editor UNSUPPORTED. | [Adapter design](06-managerhub-adapter-design.md), [next actions](08-next-actions.md). |
 
-Start with [environment and inventories](00-environment-and-inventory.md) for exact paths, versions and SHA-256. [The manifest](evidence-manifest.json) records47 function discoveries, canonical REA locators and external raw-bundle digests. Raw proprietary analysis stays outside Git. [Offline save research](05-offline-save-format.md) remains independently unresolved. Unknowns are research blockers; the full27-module product scope remains unchanged.
+Start with [environment and inventories](00-environment-and-inventory.md) for exact paths, versions and SHA-256. [The manifest](evidence-manifest.json) records function discoveries, canonical REA locators and external raw-bundle digests. Raw proprietary analysis stays outside Git. [Offline save research](05-offline-save-format.md) remains independently unresolved. Unknowns are research blockers; the full27-module product scope remains unchanged.
