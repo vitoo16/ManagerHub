@@ -52,6 +52,40 @@ test('rejects duplicate or overlapping members in synthetic index', () => {
   assert.equal(parseObservedDirectory(Buffer.alloc(4), 48), null);
 });
 
+test('rejects a valid-looking trailing directory in a non-AFE container', async () => {
+  const member = Buffer.concat([prefix, deflateSync(Buffer.alloc(100, 0x44))]);
+  const file = Buffer.concat([
+    Buffer.alloc(18, 0), member, trailer, deflateSync(makeDirectory(member))
+  ]);
+  const dir = await mkdtemp(join(tmpdir(), 'afe-research-'));
+  const path = join(dir, 'not-afe.fm');
+  try {
+    await writeFile(path, file);
+    const result = await inspectLocalArchive(path);
+    assert.equal(result.status, 'not_recognized');
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test('rejects an otherwise valid directory stream with appended junk', async () => {
+  const member = Buffer.concat([prefix, deflateSync(Buffer.alloc(100, 0x44))]);
+  const file = Buffer.concat([
+    Buffer.from([2, 1, 97, 102, 101, 46]), Buffer.alloc(12), member,
+    trailer, deflateSync(makeDirectory(member)), Buffer.from([0xde, 0xad, 0xbe, 0xef])
+  ]);
+  const dir = await mkdtemp(join(tmpdir(), 'afe-research-'));
+  const path = join(dir, 'trailing.fm');
+  try {
+    await writeFile(path, file);
+    const result = await inspectLocalArchive(path);
+    assert.equal(result.status, 'not_recognized');
+    assert.equal(result.trials.length, 0);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
 test('does not claim archive support for non-AFE bytes', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'afe-research-'));
   const path = join(dir, 'random.fm');
