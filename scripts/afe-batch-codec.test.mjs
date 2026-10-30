@@ -4,7 +4,7 @@ import { mkdtemp, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { deflateSync } from 'node:zlib';
-import { inspectLocalArchive, parseObservedDirectory, parseObservedDirectoryDetails } from './afe-batch-codec.mjs';
+import { inspectLocalArchive, parseObservedDirectory, parseObservedDirectoryDetails, selectCodecProbeMembers } from './afe-batch-codec.mjs';
 
 const prefix = Buffer.from([16, 0, 0, 0, 16, 0, 0, 0]);
 const trailer = Buffer.from([2, 1, 102, 109, 102, 46, 4, 0, 0]);
@@ -20,6 +20,20 @@ function makeDirectory(member) {
   u32(0); u32(member.length); u32(100);
   return Buffer.concat(chunks);
 }
+
+test('prioritizes actual small summary files and then smaller members regardless of catalogue order', () => {
+  const members = [
+    { filename: 'huge.dat', storedBytes: 300000, reportedUncompressedBytes: 20 },
+    { filename: 'other.dat', storedBytes: 20, reportedUncompressedBytes: 25 },
+    { filename: 'save_game_summary.dat', storedBytes: 141, reportedUncompressedBytes: 170 },
+    { filename: 'small.dat', storedBytes: 9, reportedUncompressedBytes: 13 },
+    { filename: 'game_info.dat', storedBytes: 2702, reportedUncompressedBytes: 2651 }
+  ];
+  const chosen = selectCodecProbeMembers(members, 3).map(member => member.filename);
+  assert.deepEqual(chosen, ['game_info.dat', 'save_game_summary.dat', 'small.dat']);
+  assert.equal(selectCodecProbeMembers(members).some(member => member.filename === 'huge.dat'), false);
+  assert.throws(() => selectCodecProbeMembers(members, 17), RangeError);
+});
 
 test('bounded batch discovers one synthetic catalogue and reports metadata only', async () => {
   const member = Buffer.concat([prefix, deflateSync(Buffer.alloc(100, 0x44))]);
