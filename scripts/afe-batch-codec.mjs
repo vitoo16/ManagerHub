@@ -24,6 +24,21 @@ const MAX_MEMBER_BYTES = 256 * 1024;
 const MARKER = Buffer.from([2, 1, 102, 109, 102, 46, 4, 0, 0]);
 const AFE_HEADER = Buffer.from([2, 1, 97, 102, 101, 46]);
 
+/**
+ * Candidate locator inferred from one authentic AFE save.
+ * Not a documented format guarantee: caller must verify marker and catalogue.
+ */
+export function observedAfeDirectoryMarkerOffset(header, fileSize) {
+  if (!(header instanceof Uint8Array) || header.length < BASE ||
+      !Number.isSafeInteger(fileSize) || fileSize < BASE + MARKER.length + 2 ||
+      !Buffer.from(header.subarray(0, AFE_HEADER.length)).equals(AFE_HEADER)) return null;
+  const pointer = Buffer.from(header).readUInt32LE(9);
+  const offset = pointer + 9;
+  if (pointer === 0 || offset <= BASE ||
+      offset > fileSize - MARKER.length - 2) return null;
+  return offset;
+}
+
 export function parseObservedDirectoryDetails(data, boundary) {
   if (!Buffer.isBuffer(data) || data.length < 8 || !Number.isSafeInteger(boundary) || boundary < 1) return null;
   let cursor = 0;
@@ -121,17 +136,14 @@ export async function inspectLocalArchive(filePath, { includeMemberIndex = false
   if (fileStat.size < BASE + MARKER.length + 2) return { status: 'not_recognized', members: [], trials: [] };
   const handle = await open(filePath, 'r');
   try {
-    const header = Buffer.alloc(AFE_HEADER.length);
+    const header = Buffer.alloc(BASE);
     const { bytesRead: headerBytesRead } = await handle.read(header, 0, header.length, 0);
-    if (headerBytesRead !== header.length || !header.equals(AFE_HEADER)) {
+    if (headerBytesRead !== header.length || !header.subarray(0, AFE_HEADER.length).equals(AFE_HEADER)) {
       return { status: 'not_recognized', members: [], trials: [] };
     }
-    const tailStart = Math.max(0, fileStat.size - TAIL);
-    const tail = Buffer.alloc(fileStat.size - tailStart);
-    const { bytesRead } = await handle.read(tail, 0, tail.length, tailStart);
-    if (bytesRead !== tail.length) throw Error('Incomplete directory tail read');
     let members = null;
     let directoryOffset = 0;
+    let directoryLocator = null;
     let parsedDirectoryBytes = 0;
     let unparsedDirectoryBytes = 0;
     let groupCounts = [];
@@ -139,41 +151,68 @@ export async function inspectLocalArchive(filePath, { includeMemberIndex = false
     let selectedCohort = [];
     let parsedGroups = [];
     let totalMembers = 0;
-    // Last candidate first; cap inflation attempts on marker-heavy input.
-    let attempted = 0;
-    for (let cursor = tail.lastIndexOf(MARKER); cursor >= 0 && attempted < 32;
-      cursor = tail.lastIndexOf(MARKER, cursor - 1)) {
-      attempted++;
-      const offset = tailStart + cursor;
-      if (tail[cursor + MARKER.length] !== 0x78 || offset <= BASE) continue;
+    const acceptDirectory = (parsed, offset, locator) => {
+      members = parsed.allMembers;
+      parsedGroups = parsed.groups.map(group => ({ name: group.groupName, members: group.members }));
+      groupCounts = parsed.groups.map(group => ({ name: group.groupName, count: group.members.length }));
+      groupStructure = summarizeNestedStructure(parsed);
+      const group = parsed.groups.find(g => g.members.length > 1);
+      const dominant = groupStructure[0]?.topSizePairs.find(pair =>
+        pair.count >= 2 && pair.storedBytes >= 9 && pair.storedBytes <= 256);
+      if (group && dominant) selectedCohort = group.members.filter(m =>
+        m.storedBytes === dominant.storedBytes &&
+        m.reportedUncompressedBytes === dominant.reportedUncompressedBytes).slice(0, 256);
+      totalMembers = parsed.members.length;
+      parsedDirectoryBytes = parsed.parsedBytes;
+      unparsedDirectoryBytes = parsed.trailingBytes;
+      directoryOffset = offset;
+      directoryLocator = locator;
+    };
+    const parseCandidate = (bytes, offset, locator) => {
+      if (offset <= BASE || bytes.length < MARKER.length + 2 ||
+          !bytes.subarray(0, MARKER.length).equals(MARKER) ||
+          bytes[MARKER.length] !== 0x78) return false;
       try {
-        const compressed = tail.subarray(cursor + MARKER.length);
-        // Exact consumption matters: a valid index followed by unrelated bytes
-        // must not masquerade as a complete trailing directory.
+        const compressed = bytes.subarray(MARKER.length);
         const { buffer: directory, engine } = inflateSync(compressed, {
           info: true, maxOutputLength: MAX_DIRECTORY
         });
-        if (engine.bytesWritten !== compressed.length) continue;
+        if (engine.bytesWritten !== compressed.length) return false;
         const parsed = parseObservedDirectoryDetails(directory, offset - BASE);
-        if (parsed) {
-          members = parsed.allMembers;
-          parsedGroups = parsed.groups.map(group => ({ name: group.groupName, members: group.members }));
-          groupCounts = parsed.groups.map(group => ({ name: group.groupName, count: group.members.length }));
-          groupStructure = summarizeNestedStructure(parsed);
-          // Profile only one frequent, small, equal-sized nested cohort.
-          const group = parsed.groups.find(g => g.members.length > 1);
-          const dominant = groupStructure[0]?.topSizePairs.find(pair =>
-            pair.count >= 2 && pair.storedBytes >= 9 && pair.storedBytes <= 256);
-          if (group && dominant) selectedCohort = group.members.filter(m =>
-            m.storedBytes === dominant.storedBytes &&
-            m.reportedUncompressedBytes === dominant.reportedUncompressedBytes).slice(0, 256);
-          totalMembers = parsed.members.length;
-          parsedDirectoryBytes = parsed.parsedBytes;
-          unparsedDirectoryBytes = parsed.trailingBytes;
-          directoryOffset = offset;
-          break;
-        }
-      } catch { /* Not a bounded, valid candidate. */ }
+        if (!parsed) return false;
+        acceptDirectory(parsed, offset, locator);
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
+    // Observed AFE header u32 at absolute byte 9 satisfies:
+    // directory marker absolute offset = pointer + 9.
+    // Validate it; never trust the pointer without parsing the catalogue.
+    const directOffset = observedAfeDirectoryMarkerOffset(header, fileStat.size);
+    if (directOffset !== null) {
+      const bytesToRead = fileStat.size - directOffset;
+      if (bytesToRead <= MAX_DIRECTORY) {
+        const candidate = Buffer.alloc(bytesToRead);
+        const { bytesRead } = await handle.read(candidate, 0, candidate.length, directOffset);
+        if (bytesRead !== candidate.length) throw Error('Incomplete header-directed directory read');
+        parseCandidate(candidate, directOffset, 'header_pointer');
+      }
+    }
+
+    // Fallback for variant AFE headers and synthetic fixtures without pointer.
+    if (!members) {
+      const tailStart = Math.max(0, fileStat.size - TAIL);
+      const tail = Buffer.alloc(fileStat.size - tailStart);
+      const { bytesRead } = await handle.read(tail, 0, tail.length, tailStart);
+      if (bytesRead !== tail.length) throw Error('Incomplete directory tail read');
+      let attempted = 0;
+      for (let cursor = tail.lastIndexOf(MARKER); cursor >= 0 && attempted < 32;
+        cursor = tail.lastIndexOf(MARKER, cursor - 1)) {
+        attempted++;
+        if (parseCandidate(tail.subarray(cursor), tailStart + cursor, 'tail_scan')) break;
+      }
     }
     if (!members) return { status: 'not_recognized', members: [], trials: [] };
     // Cross-save comparisons only require the validated directory. Do not
@@ -182,6 +221,7 @@ export async function inspectLocalArchive(filePath, { includeMemberIndex = false
       return {
         status: 'experimental_index',
         directoryOffset,
+        directoryLocator,
         memberCount: totalMembers,
         totalIndexedMembers: members.length,
         nestedGroups: groupCounts,
@@ -236,7 +276,7 @@ export async function inspectLocalArchive(filePath, { includeMemberIndex = false
         trials.push({ filename: member.filename, ...trial });
       }
     }
-    return { status: 'experimental_index', directoryOffset,
+    return { status: 'experimental_index', directoryOffset, directoryLocator,
       memberCount: totalMembers, nestedGroups: groupCounts, nestedStructure: groupStructure,
       dominantCohortProfile: cohortProfile, envelopeCensus, framedCodecSignatures, gapAudit, gapComparisons,
       totalIndexedMembers: members.length,
