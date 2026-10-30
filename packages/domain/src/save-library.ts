@@ -28,13 +28,22 @@ function isArchiveMember(value: unknown, directoryOffset: number): value is Arch
 }
 
 function isArchiveIndex(value: unknown): value is ArchiveIndex {
-  if (!isRecord(value) || !hasOnlyKeys(value, ['family', 'evidence', 'memberCount', 'directoryOffset', 'members']) ||
+  if (!isRecord(value) || !hasOnlyKeys(value, ['family', 'evidence', 'memberCount', 'directoryOffset', 'members', 'nestedGroups']) ||
       value.family !== 'fmf-index-candidate' || value.evidence !== 'experimental') return false;
-  const { memberCount, directoryOffset, members } = value;
+  const { memberCount, directoryOffset, members, nestedGroups } = value;
   if (!isSafeNonNegativeInteger(directoryOffset) || !isSafeNonNegativeInteger(memberCount) ||
       memberCount < 1 || memberCount > MAX_ARCHIVE_MEMBERS || !Array.isArray(members) ||
       members.length !== memberCount) return false;
   if (!members.every(member => isArchiveMember(member, directoryOffset))) return false;
+  if (nestedGroups !== undefined) {
+    if (!Array.isArray(nestedGroups) || nestedGroups.length > 16 ||
+        !nestedGroups.every(group => isRecord(group) &&
+          hasOnlyKeys(group, ['name', 'memberCount']) &&
+          typeof group.name === 'string' && group.name.length > 0 && group.name.length <= 256 &&
+          isSafeNonNegativeInteger(group.memberCount) && group.memberCount > 0)) return false;
+    const nestedTotal = nestedGroups.reduce((sum, group) => sum + group.memberCount, 0);
+    if (nestedTotal >= memberCount) return false;
+  }
   const filenames = new Set<string>();
   for (const member of members as ArchiveMember[]) {
     if (filenames.has(member.filename)) return false;
@@ -86,6 +95,7 @@ export function toPersistedSaveIdentity(identity: SaveIdentity): SaveIdentity {
     evidence: identity.archiveIndex.evidence,
     memberCount: identity.archiveIndex.memberCount,
     directoryOffset: identity.archiveIndex.directoryOffset,
+    ...(identity.archiveIndex.nestedGroups ? { nestedGroups: identity.archiveIndex.nestedGroups.map(group => ({ name: group.name, memberCount: group.memberCount })) } : {}),
     members: identity.archiveIndex.members.map(member => ({
       filename: member.filename,
       offset: member.offset,
