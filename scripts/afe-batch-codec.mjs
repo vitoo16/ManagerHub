@@ -3,6 +3,7 @@ import { inflateSync } from 'node:zlib';
 import { probeCodecConsumption } from './afe-codec-consumption.mjs';
 import { summarizeNestedStructure } from './afe-structure-summary.mjs';
 import { summarizeByteCohort } from './afe-cohort-profile.mjs';
+import { censusMemberEnvelopes } from './afe-envelope-census.mjs';
 
 // AFE offsets relative to 18 bytes and FMF-directory trailer are observations
 // from one save family, not a confirmed format specification.
@@ -112,6 +113,7 @@ export async function inspectLocalArchive(filePath) {
     let groupCounts = [];
     let groupStructure = [];
     let selectedCohort = [];
+    let parsedGroups = [];
     let totalMembers = 0;
     // Last candidate first; cap inflation attempts on marker-heavy input.
     let attempted = 0;
@@ -131,6 +133,7 @@ export async function inspectLocalArchive(filePath) {
         const parsed = parseObservedDirectoryDetails(directory, offset - BASE);
         if (parsed) {
           members = parsed.allMembers;
+          parsedGroups = parsed.groups.map(group => ({ name: group.groupName, members: group.members }));
           groupCounts = parsed.groups.map(group => ({ name: group.groupName, count: group.members.length }));
           groupStructure = summarizeNestedStructure(parsed);
           // Profile only one frequent, small, equal-sized nested cohort.
@@ -149,6 +152,7 @@ export async function inspectLocalArchive(filePath) {
       } catch { /* Not a bounded, valid candidate. */ }
     }
     if (!members) return { status: 'not_recognized', members: [], trials: [] };
+    const envelopeCensus = await censusMemberEnvelopes(handle, members, parsedGroups, BASE);
     let cohortProfile = null;
     if (selectedCohort.length >= 2) {
       const samples = [];
@@ -182,7 +186,7 @@ export async function inspectLocalArchive(filePath) {
     }
     return { status: 'experimental_index', directoryOffset,
       memberCount: totalMembers, nestedGroups: groupCounts, nestedStructure: groupStructure,
-      dominantCohortProfile: cohortProfile,
+      dominantCohortProfile: cohortProfile, envelopeCensus,
       totalIndexedMembers: members.length,
       parsedDirectoryBytes, unparsedDirectoryBytes,
       inspectedMembers: inspected, skippedOversized: skipped, trials };
