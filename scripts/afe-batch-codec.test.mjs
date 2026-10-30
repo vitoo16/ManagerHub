@@ -46,16 +46,32 @@ test('bounded batch discovers one synthetic catalogue and reports metadata only'
   }
 });
 
-test('accounts for opaque trailing directory bytes without treating them as player records', () => {
-  const member = Buffer.alloc(48);
-  const index = makeDirectory(member);
-  const withOpaqueTail = Buffer.concat([index, Buffer.from([5, 4, 3, 2, 1, 0])]);
-  const parsed = parseObservedDirectoryDetails(withOpaqueTail, 48);
+test('decodes a nested named catalogue and accounts for its last four zero bytes', () => {
+  const root = makeDirectory(Buffer.alloc(20));
+  const parts = [];
+  const u32 = n => { const b = Buffer.alloc(4); b.writeUInt32LE(n); parts.push(b); };
+  const name = value => { u32(value.length); parts.push(Buffer.from(value, 'utf16le'), Buffer.alloc(2)); };
+  u32(1);
+  name('rgman');
+  u32(2);
+  name('rgman'); name('.dat'); u32(20); u32(10); u32(35);
+  name('player_stats'); name('.dat'); u32(30); u32(30); u32(100);
+  u32(0);
+  const directory = Buffer.concat([root, ...parts]);
+  const parsed = parseObservedDirectoryDetails(directory, 60);
   assert.equal(parsed?.members.length, 1);
-  assert.equal(parsed?.parsedBytes, index.length);
-  assert.equal(parsed?.trailingBytes, 6);
-  assert.equal(JSON.stringify(parsed).includes('opaqueTail'), false);
+  assert.equal(parsed?.groups[0]?.groupName, 'rgman');
+  assert.equal(parsed?.groups[0]?.members.length, 2);
+  assert.equal(parsed?.allMembers.length, 3);
+  assert.equal(parsed?.trailingBytes, 4);
+  assert.equal(parsed?.parsedBytes, directory.length - 4);
+
+  const overlapping = Buffer.from(directory);
+  // Another group member with a duplicate name must never be accepted.
+  assert.equal(parseObservedDirectoryDetails(overlapping, 55), null);
+  assert.equal(parseObservedDirectoryDetails(Buffer.concat([directory, Buffer.from([2])]), 60), null);
 });
+
 
 test('rejects duplicate or overlapping members in synthetic index', () => {
   const member = Buffer.alloc(48);
