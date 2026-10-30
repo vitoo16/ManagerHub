@@ -65,6 +65,8 @@ User-path follow-up identifies [local FM2013 executable metadata/hash](../resear
 
 Deep REA follow-up adds [isolated field arithmetic](../research/fmrte/14-fmrte13-field-transforms.md): 99,328 comparisons against a separate file-backed CIL interpreter and 6,291,456 exhaustive word round trips pass. Mutable profile slots and read-only alternate stream semantics are traced. This fulfills a research implementation step; MH-01/03/05 native reader/Actual CA/PA/editor acceptance remains open pending real entity/build validation.
 
+[A subsequent REA live experiment](../research/fmrte/16-fm2013-live-readonly-record.md) reads a user-named player candidate repeatedly and executes the new identity/stale-checking read-only research probe. Independent displayed-field and hidden-ability comparisons remain pending. No native reader/editor module is marked complete or supported.
+
 [Player Lab HTML/CSV/TSV import, attributes, roles and limitations](07-player-lab-and-export-import.md). Real import data remains local and user-supplied. Full CA/PA save decoding, role/position fit calibration and recruitment financial assessment remain open requirements.
 
 Additional integration evidence: [opt-in local storage + role-fit lineup planner](08-local-library-and-squad-planner.md).

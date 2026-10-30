@@ -16,11 +16,13 @@
 
 | Edition / exact executable build | Reference source | Process detection | Player / CA/PA / attributes | Writeback | Persistence |
 |---|---|---|---|---|---|
-| FM2013 local metadata `13.3.3f359652`, executable SHA-256 `df45cde67cb7361867e7afc9808dacab8bf53bd972f48145f6f881ff55d08871` | FMRTE13 13.3.3.62, above hash; same numeric build as vendor-listed Retail candidate | UNKNOWN / not runtime tested | UNKNOWN / no trusted same-build records | UNSUPPORTED in ManagerHub | UNKNOWN / not tested |
+| FM2013 local metadata `13.3.3f359652`, executable SHA-256 `df45cde67cb7361867e7afc9808dacab8bf53bd972f48145f6f881ff55d08871` | FMRTE13 13.3.3.62, above hash; same numeric build as vendor-listed Retail candidate | REA/Frida attached to user-opened process | One named record read repeatedly as a candidate; independent visible/hidden field comparison pending | UNSUPPORTED in ManagerHub | UNKNOWN / not tested |
 | FM2013 13.3.3.359720 Russian (vendor-listed candidate) | Official release documentation only | UNKNOWN for ManagerHub | UNKNOWN | UNSUPPORTED | UNKNOWN |
 | FM2026 local build not investigated | FMRTE26 26.3.2.42, hashes in inventory | UNKNOWN | UNKNOWN | UNSUPPORTED | UNKNOWN |
 
 No row is labeled supported. The local Football Manager build is identified from executable metadata; support still requires runtime/field validation. Metadata token/RVA coordinates in the FMRTE reports locate FMRTE code, never offsets to put into a live adapter.
+
+The [later live experiment](16-fm2013-live-readonly-record.md) supersedes earlier observations in this report that no game process/read was available. It correlates runtime image path/architecture with the selected file hash without authenticating all loaded image bytes. One same-session candidate does not establish general schema/profile compatibility.
 
 ## FM2013 validation dependency
 

@@ -1,6 +1,8 @@
 # FMRTE research summary — 2026-10-30
 
-**REA MCP worked. Static FM2013-oriented read/write paths were recovered in FMRTE13; no ManagerHub player reader, CA/PA extractor or editor was validated.** FMRTE26 was inspected independently and remains unresolved below delegate dispatch. No proprietary target was executed, and no installation/game/save was changed.
+**REA MCP worked. FMRTE13 static paths and a live, read-only player-record candidate have been recovered; no production reader, Actual CA/PA extractor or editor is certified.** FMRTE26 remains unresolved below delegate dispatch. The user-opened game was observed through REA/Frida; the agent did not launch either FMRTE application or issue gameplay-data/save writes.
+
+**Live experiment:** after the user opened FM2013 and selected a player, [REA/Frida read a matching name/ID record repeatedly](16-fm2013-live-readonly-record.md). A reusable read-only research probe now returns raw ability words and candidate scaled attributes with explicit unverified status. Independent visible-value/CA/PA comparison remains pending. This supersedes historical no-live-read observations in earlier reports; no production adapter or writer is certified.
 
 **Deep REA follow-up:** [CA/PA and attribute arithmetic](14-fmrte13-field-transforms.md) is now independently implemented and checked against file-backed CIL: 99,328 comparisons and 6,291,456 full-word round trips pass. [Profile analysis](12-fm2013-build-profile.md) distinguishes mutable offsets from mode selectors; exact local-build selection remains unknown. [The file-source trace](13-fmrte13-stream-source.md) establishes a read-only, address-indexed stream path, without demonstrated `.fm` decoding or file writeback. This is tested research code, not a validated native player adapter.
 
