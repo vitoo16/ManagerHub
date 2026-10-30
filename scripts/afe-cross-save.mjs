@@ -7,6 +7,8 @@ import { inspectLocalArchive } from './afe-batch-codec.mjs';
 const MAX_INPUT_BYTES = 256 * 1024 * 1024;
 const MAX_COMPARE_MEMBERS = 32;
 const SAMPLE_BYTES = 64;
+const HASH_CHUNK_BYTES = 64 * 1024;
+const MAX_HASH_MEMBER_BYTES = 8 * 1024 * 1024;
 const DATA_BASE = 18;
 
 async function fingerprint(path) {
@@ -93,6 +95,24 @@ export async function compareLocalAfeSaves(pathA, pathB) {
       if (bytesRead !== data.length) throw new Error('Incomplete compared member read.');
       return data;
     };
+    // Hash the complete stored member in bounded chunks. Digests never leave
+    // this function; the output records equality evidence only.
+    const digestMember = async (handle, member) => {
+      if (member.storedBytes > MAX_HASH_MEMBER_BYTES) return null;
+      const hash = createHash('sha256');
+      let consumed = 0;
+      while (consumed < member.storedBytes) {
+        const length = Math.min(HASH_CHUNK_BYTES, member.storedBytes - consumed);
+        const block = Buffer.alloc(length);
+        const { bytesRead } = await handle.read(
+          block, 0, length, DATA_BASE + member.offset + consumed
+        );
+        if (bytesRead !== length) throw new Error('Incomplete full-member hash read.');
+        hash.update(block);
+        consumed += length;
+      }
+      return hash.digest('hex');
+    };
     const comparisons = [];
     for (const memberA of paired) {
       const memberB = available.get(memberA.filename);
@@ -108,8 +128,18 @@ export async function compareLocalAfeSaves(pathA, pathB) {
           i === windowsA.length - 1 ? 'end' : 'middle',
           ...compareMemberSamples(sampleA, sampleB) });
       }
+      let completeMemberHashMatch = null;
+      if (memberA.storedBytes === memberB.storedBytes &&
+          memberA.storedBytes <= MAX_HASH_MEMBER_BYTES) {
+        const [digestA, digestB] = await Promise.all([
+          digestMember(handleA, memberA), digestMember(handleB, memberB)
+        ]);
+        completeMemberHashMatch = digestA === digestB;
+      }
       comparisons.push({
         filename: memberA.filename,
+        completeMemberHashMatch,
+        fullMemberHashAlgorithm: completeMemberHashMatch === null ? null : 'SHA-256',
         sameStoredLength: memberA.storedBytes === memberB.storedBytes,
         sameReportedLength: memberA.reportedUncompressedBytes === memberB.reportedUncompressedBytes,
         evidence: 'sample_only',

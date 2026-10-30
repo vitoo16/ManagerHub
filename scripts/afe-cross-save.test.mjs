@@ -79,6 +79,7 @@ test('compares two distinct, synthetically indexed AFE archives end to end', asy
     assert.equal(report.comparisons[0].evidence, 'sample_only');
     assert.equal(report.comparisons[0].sampledRegions[0].commonPrefixBytes, 12);
     assert.equal(report.comparisons[0].allComparedSamplesIdentical, false);
+    assert.equal(report.comparisons[0].completeMemberHashMatch, false);
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
@@ -114,6 +115,41 @@ test('stratified samples find differences beyond a shared 64-byte prefix', async
     assert.equal(compared.sampledRegions[2].identicalSample, false);
     assert.equal(compared.allComparedSamplesIdentical, false);
     assert.equal(compared.evidence, 'sample_only');
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test('full-member hash detects changes missed by all sampled windows', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'afe-full-member-hash-'));
+  const first = join(dir, 'one.fm'), second = join(dir, 'two.fm');
+  const make = value => {
+    const member = Buffer.alloc(320, 0x42);
+    Buffer.from([16, 0, 0, 0, 16, 0, 0, 0]).copy(member);
+    member[100] = value; // Outside start [0,64), middle [128,192), end [256,320).
+    const parts = [];
+    const u32 = number => {
+      const buf = Buffer.alloc(4); buf.writeUInt32LE(number); parts.push(buf);
+    };
+    const name = str => { u32(str.length); parts.push(Buffer.from(str, 'utf16le'), Buffer.alloc(2)); };
+    u32(0); u32(1); name('metadata'); name('.dat');
+    u32(0); u32(member.length); u32(360);
+    return Buffer.concat([
+      Buffer.from([2, 1, 97, 102, 101, 46]), Buffer.alloc(12), member,
+      Buffer.from([2, 1, 102, 109, 102, 46, 4, 0, 0]),
+      deflateSync(Buffer.concat(parts))
+    ]);
+  };
+  try {
+    await writeFile(first, make(0x51));
+    await writeFile(second, make(0x72));
+    const result = await compareLocalAfeSaves(first, second);
+    assert.equal(result.status, 'different_files');
+    const member = result.comparisons[0];
+    assert.equal(member.allComparedSamplesIdentical, true);
+    assert.equal(member.completeMemberHashMatch, false);
+    assert.equal(member.fullMemberHashAlgorithm, 'SHA-256');
+    assert.equal(JSON.stringify(result).includes('sha256:'), false);
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
