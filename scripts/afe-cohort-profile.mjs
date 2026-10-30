@@ -29,15 +29,12 @@ export function summarizeByteCohort(samples) {
   for (const sample of samples) {
     signatures.add(Buffer.from(sample.subarray(0, ENVELOPE_BYTES)).toString('hex'));
     suffixHashes.add(createHash('sha256').update(sample.subarray(ENVELOPE_BYTES)).digest('hex'));
-    let differing = false;
     for (let i = 0; i < commonPrefixBytes; i++) {
       if (sample[i] !== samples[0][i]) {
         commonPrefixBytes = i;
-        differing = true;
         break;
       }
     }
-    if (!differing && commonPrefixBytes < ENVELOPE_BYTES) break;
     const freq = new Uint16Array(256);
     for (let i = ENVELOPE_BYTES; i < sample.byteLength; i++) freq[sample[i]]++;
     const n = sample.byteLength - ENVELOPE_BYTES;
