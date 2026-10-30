@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { inspectArchiveIndex, parseArchiveDirectory, probeMemberEnvelopes, summarizeMemberConsistency } from './archive';
+import { inspectArchiveIndex, parseArchiveDirectory, parseArchiveDirectoryDetails, probeMemberEnvelopes, summarizeMemberConsistency } from './archive';
 import { detectSaveFamily } from './save';
 
 function syntheticIndex() {
@@ -32,6 +32,34 @@ function twoMemberIndex(secondName: string, secondOffset: number): Uint8Array {
 }
 
 describe('bounded AFE/FM directory catalogue parser', () => {
+  it('parses one nested named group and rejects overlapping child extents', () => {
+    const payload: number[] = Array.from(syntheticIndex());
+    const u32 = (n: number) => payload.push(n & 255, (n >>> 8) & 255, (n >>> 16) & 255, (n >>> 24) & 255);
+    const label = (s: string) => {
+      u32(s.length);
+      for (const char of s) payload.push(char.charCodeAt(0), 0);
+      payload.push(0, 0);
+    };
+    u32(1); label('rgman'); u32(2);
+    label('nested_one'); label('.dat'); u32(128); u32(16); u32(48);
+    label('nested_two'); label('.dat'); u32(144); u32(16); u32(48);
+    u32(0);
+    const nested = parseArchiveDirectoryDetails(Uint8Array.from(payload), 1000);
+    expect(nested?.members).toHaveLength(3);
+    expect(nested?.nestedGroups).toEqual([{ name: 'rgman', memberCount: 2 }]);
+    const overlapping = [...payload];
+    // First child begins at 128; expanding its declared size overlaps child two.
+    const marker = [128, 0, 0, 0, 16, 0, 0, 0, 48, 0, 0, 0];
+    let at = -1;
+    for (let i = 0; i <= overlapping.length - marker.length; i++) {
+      if (marker.every((value, j) => overlapping[i + j] === value)) { at = i; break; }
+    }
+    expect(at).toBeGreaterThan(0);
+    overlapping[at + 4] = 17;
+    expect(parseArchiveDirectory(Uint8Array.from(overlapping), 1000)).toBeNull();
+    expect(parseArchiveDirectory(Uint8Array.from([...payload, 3]), 1000)).toBeNull();
+  });
+
   it('rejects duplicate member filenames even when extents are distinct', () => {
     const bytes = twoMemberIndex('first', 32);
     expect(parseArchiveDirectory(bytes, 256)).toBeNull();
