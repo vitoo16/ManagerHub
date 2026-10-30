@@ -101,8 +101,8 @@ export async function compareLocalAfeSaves(pathA, pathB) {
       comparedMembers: 0, comparisons: [] };
   }
   const [a, b] = await Promise.all([
-    inspectLocalArchive(pathA, { includeMemberIndex: true }),
-    inspectLocalArchive(pathB, { includeMemberIndex: true })
+    inspectLocalArchive(pathA, { includeMemberIndex: true, indexOnly: true }),
+    inspectLocalArchive(pathB, { includeMemberIndex: true, indexOnly: true })
   ]);
   if (a.status !== 'experimental_index' || b.status !== 'experimental_index') {
     return { status: 'unsupported_or_invalid_container', identicalFiles: false,

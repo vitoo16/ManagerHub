@@ -114,7 +114,7 @@ export function selectCodecProbeMembers(members, limit = MAX_PROBES) {
     a.storedBytes - b.storedBytes || a.filename.localeCompare(b.filename)).slice(0, limit);
 }
 
-export async function inspectLocalArchive(filePath, { includeMemberIndex = false } = {}) {
+export async function inspectLocalArchive(filePath, { includeMemberIndex = false, indexOnly = false } = {}) {
   const fileStat = await stat(filePath);
   if (fileStat.size < BASE + MARKER.length + 2) return { status: 'not_recognized', members: [], trials: [] };
   const handle = await open(filePath, 'r');
@@ -174,6 +174,20 @@ export async function inspectLocalArchive(filePath, { includeMemberIndex = false
       } catch { /* Not a bounded, valid candidate. */ }
     }
     if (!members) return { status: 'not_recognized', members: [], trials: [] };
+    // Cross-save comparisons only require the validated directory. Do not
+    // rerun unrelated codec, entropy, gap or envelope studies for both saves.
+    if (indexOnly) {
+      return {
+        status: 'experimental_index',
+        directoryOffset,
+        memberCount: totalMembers,
+        totalIndexedMembers: members.length,
+        nestedGroups: groupCounts,
+        parsedDirectoryBytes,
+        unparsedDirectoryBytes,
+        ...(includeMemberIndex ? { memberIndex: members } : {})
+      };
+    }
     const envelopeCensus = await censusMemberEnvelopes(handle, members, parsedGroups, BASE);
     const framedCodecSignatures = await censusFramedCodecSignatures(handle, members, BASE);
     const gapAudit = await auditUnindexedGaps(handle, members, directoryOffset, BASE);
