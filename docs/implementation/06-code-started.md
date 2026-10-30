@@ -107,3 +107,16 @@ The 69 member extents yield **66 contiguous adjacent pairs, 2 positive gaps, and
 ### Follow-up: repeated delimiters inside unindexed gaps
 
 A further read-only byte scan of the two gaps found the exact eight-byte sequence `10 00 00 00 10 00 00 00` at **724 positions** in the 1,350,855-byte `game_db.dat` → `humans.dat` gap (including its first byte), and **1 position** in the 178,694-byte `tactics_man.dat` → `edit_session_man.dat` gap (at its first byte). These are exact pattern counts in this single save, not a validated count of records or a proven container structure. A repeated delimiter may identify internal sub-blocks, but the intervening bytes have not been decoded and their semantics remain unknown. The original data is not committed.
+
+### Corrected finding: nested `rgman` archive catalogue (2026-10-30)
+
+Earlier notes described 40,100 bytes after the first 69 catalogue entries as "opaque". Examination of the private AFE fixture **confirmed a second structured table**, not an undecoded blob:
+
+- Main table: 69 members, 4,330 parsed bytes.
+- Subsequent `u32(1)`: one named group, UTF-16LE group name `rgman`.
+- Following `u32(724)`: exactly 724 additional entries with the same UTF-16LE name, offset, stored bytes, reported unpacked bytes structure.
+- Nested table parses to decompressed-directory position **44,426** of 44,430. The last **four bytes are zero**, consistent with an observed terminator.
+- The 724 indexed member extents are contiguous, occupy **1,350,855 bytes**, and exactly fill the previously unexplained `game_db.dat` to `humans.dat` region.
+- Across both tables, the observed catalogue now covers **793 uniquely named members**, without overlapping extents. A second **178,694-byte gap** between `tactics_man.dat` and `edit_session_man.dat` remains unexplained.
+
+This supersedes the earlier "40,100 opaque bytes" characterization; do not infer this subtable decodes player attributes or confirms any member codec. The underlying private save is not committed.
