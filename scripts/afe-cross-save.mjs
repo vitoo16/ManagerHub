@@ -183,8 +183,9 @@ export async function compareLocalAfeSaves(pathA, pathB, { allMembers = false } 
         fullMemberHashAlgorithm: completeMemberHashMatch === null ? null : 'SHA-256',
         sameStoredLength: memberA.storedBytes === memberB.storedBytes,
         sameReportedLength: memberA.reportedUncompressedBytes === memberB.reportedUncompressedBytes,
-        evidence: completeMemberHashMatch === null ?
-          (allMembers ? 'not_hashed' : 'sample_only') : 'full_payload_sha256',
+        evidence: allMembers ?
+          (completeMemberHashMatch === null ? 'not_hashed' : 'full_payload_sha256') :
+          'sample_only',
         ...(allMembers ? {} : {
           sampledRegions: windowResults,
           allComparedSamplesIdentical: windowsA.length === windowsB.length &&
