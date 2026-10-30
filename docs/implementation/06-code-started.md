@@ -195,3 +195,14 @@ The private AFE sample (29,319,864 bytes) yielded a **new exact structural relat
 - The final indexed member ends at relative offset **29,310,353** (base 18), precisely where the directory marker begins.
 
 `observedAfeDirectoryMarkerOffset(header, fileSize)` now offers **candidate** marker location `readU32LE(header,9) + 9` with range checks. The local inspector first attempts a bounded header-directed read and requires the correct marker, complete zlib input consumption and a fully validated catalogue. If the candidate is absent, invalid or incompatible with a different AFE version, it falls back to its earlier bounded tail scan. Results distinguish `directoryLocator: 'header_pointer' | 'tail_scan'`. Both locator paths are regression-tested on synthetic AFE archives. This relationship is currently established for **one independent save** only (a second available file is byte-identical). It is not a blanket AFE-format specification and does not decode any member payload or CA/PA.
+
+### AFE header carries a marker-length field (2026-10-30)
+
+A closer byte-level inspection of the authentic 29,319,864-byte AFE save identified **two consecutive LE u32 fields** in the 18-byte header:
+
+| Absolute header field offset | Observed value | Structural relationship |
+| --- | ---: | --- |
+| 9 | 29,310,362 | Candidate catalogue pointer |
+| 13 | 9 | Exactly equals the trailing FMF directory marker's 9-byte length |
+
+In this one independent sample, `29,310,362 + 9 = 29,310,371`, the exact marker offset, and bytes at that offset equal `02 01 66 6d 66 2e 04 00 00`. This lends more specific support to the earlier PR #54 locator than a hard-coded +9, but remains an **empirical hypothesis, not an established format specification**. The header-driven locator now requires the second field to equal the observed FMF marker length, computes `pointer + markerLength` and still validates the actual directory. A mismatched marker-length field causes the bounded tail-scan fallback. Synthetic tests cover matching and conflicting header values without requiring private save fixtures in the repository.
