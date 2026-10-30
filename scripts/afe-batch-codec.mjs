@@ -12,6 +12,7 @@ const MAX_TEXT_UNITS = 256;
 const MAX_PROBES = 16;
 const MAX_MEMBER_BYTES = 256 * 1024;
 const MARKER = Buffer.from([2, 1, 102, 109, 102, 46, 4, 0, 0]);
+const AFE_HEADER = Buffer.from([2, 1, 97, 102, 101, 46]);
 
 export function parseObservedDirectory(data, boundary) {
   if (!Buffer.isBuffer(data) || data.length < 8 || !Number.isSafeInteger(boundary) || boundary < 1) return null;
@@ -57,6 +58,11 @@ export async function inspectLocalArchive(filePath) {
   if (fileStat.size < BASE + MARKER.length + 2) return { status: 'not_recognized', members: [], trials: [] };
   const handle = await open(filePath, 'r');
   try {
+    const header = Buffer.alloc(AFE_HEADER.length);
+    const { bytesRead: headerBytesRead } = await handle.read(header, 0, header.length, 0);
+    if (headerBytesRead !== header.length || !header.equals(AFE_HEADER)) {
+      return { status: 'not_recognized', members: [], trials: [] };
+    }
     const tailStart = Math.max(0, fileStat.size - TAIL);
     const tail = Buffer.alloc(fileStat.size - tailStart);
     const { bytesRead } = await handle.read(tail, 0, tail.length, tailStart);
@@ -72,7 +78,12 @@ export async function inspectLocalArchive(filePath) {
       if (tail[cursor + MARKER.length] !== 0x78 || offset <= BASE) continue;
       try {
         const compressed = tail.subarray(cursor + MARKER.length);
-        const directory = inflateSync(compressed, { maxOutputLength: MAX_DIRECTORY });
+        // Exact consumption matters: a valid index followed by unrelated bytes
+        // must not masquerade as a complete trailing directory.
+        const { buffer: directory, engine } = inflateSync(compressed, {
+          info: true, maxOutputLength: MAX_DIRECTORY
+        });
+        if (engine.bytesWritten !== compressed.length) continue;
         members = parseObservedDirectory(directory, offset - BASE);
         if (members) { directoryOffset = offset; break; }
       } catch { /* Not a bounded, valid candidate. */ }
