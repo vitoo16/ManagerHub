@@ -25,7 +25,7 @@ test('validates raw deflate and gzip when input is fully consumed', () => {
     [deflateRawSync(payload), 'raw-deflate'],
     [gzipSync(payload), 'gzip']
   ]) {
-    const result = decodeValidatedMemberPayload(stream, payload.length);
+    const result = decodeValidatedMemberPayload(Buffer.concat([envelope, stream]), payload.length);
     assert.equal(result.status, 'validated_stream');
     assert.equal(result.codec, codec);
     assert.deepEqual(result.payload, payload);
@@ -50,5 +50,23 @@ test('refuses oversized and invalid inputs', () => {
   assert.throws(() => decodeValidatedMemberPayload(Buffer.alloc(256 * 1024 + 1), 1), RangeError);
   assert.throws(() => decodeValidatedMemberPayload(Buffer.alloc(8), 2 * 1024 * 1024 + 1), RangeError);
   assert.throws(() => decodeValidatedMemberPayload(Buffer.alloc(8), 0), RangeError);
-  assert.equal(decodeValidatedMemberPayload(Buffer.alloc(40, 0xee), 100).status, 'unsupported_codec');
+  assert.equal(decodeValidatedMemberPayload(Buffer.alloc(40, 0xee), 100).status, 'invalid_envelope');
+});
+
+test('rejects valid standalone gzip/zlib streams without an AFE envelope', () => {
+  for (const stream of [gzipSync(payload), deflateSync(payload)]) {
+    const result = decodeValidatedMemberPayload(stream, payload.length);
+    assert.equal(result.status, 'invalid_envelope');
+    assert.equal(result.envelopeMatches, false);
+    assert.equal(Object.hasOwn(result, 'payload'), false);
+    assert.deepEqual(summarizeValidatedMemberDecode(result),
+      { status: 'invalid_envelope', envelopeMatches: false });
+  }
+});
+
+test('declared output length prevents accepting a larger decompressed stream', () => {
+  const input = Buffer.concat([envelope, deflateSync(payload)]);
+  const result = decodeValidatedMemberPayload(input, 2);
+  assert.equal(result.status, 'unsupported_codec');
+  assert.equal(Object.hasOwn(result, 'payload'), false);
 });
