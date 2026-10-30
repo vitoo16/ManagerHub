@@ -120,3 +120,16 @@ Earlier notes described 40,100 bytes after the first 69 catalogue entries as "op
 - Across both tables, the observed catalogue now covers **793 uniquely named members**, without overlapping extents. A second **178,694-byte gap** between `tactics_man.dat` and `edit_session_man.dat` remains unexplained.
 
 This supersedes the earlier "40,100 opaque bytes" characterization; do not infer this subtable decodes player attributes or confirms any member codec. The underlying private save is not committed.
+
+### AFE equal-size gap comparison (2026-10-30)
+
+The observed unindexed gap after `tactics_man.dat` is **still unindexed**. Do not mistake the equal stored lengths for membership: `regeneration_manager.dat` is a separate indexed member **after** `edit_session_man.dat`:
+
+| Extent | Relative offset | Stored size | Exclusive end |
+| --- | ---: | ---: | ---: |
+| `tactics_man.dat` | 24,965,249 | 131,060 | 25,096,309 |
+| Unindexed gap | 25,096,309 | 178,694 | 25,275,003 |
+| `edit_session_man.dat` | 25,275,003 | 57 | 25,275,060 |
+| `regeneration_manager.dat` | 25,275,060 | 178,694 | 25,453,754 |
+
+Both the unindexed gap and `regeneration_manager.dat` begin with `10 00 00 00 10 00 00 00`, yet **only 670 of 178,694 byte positions are equal**. They are not duplicate byte ranges and this comparison does not show a shared codec. The local research CLI now compares same-size gaps with bounded indexed candidates and reports equality statistics only (no raw payload).
