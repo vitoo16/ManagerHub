@@ -47,6 +47,33 @@ describe('bounded member codec hypothesis trials', () => {
     const result = await validateMemberCodecCandidates(file, index);
     expect(result.trials).toContainEqual({
       filename: 'example.dat', codec: 'deflate-raw', skippedBytes: 8,
+      result: 'size_match_unverified_input', outputBytes: plain.length
+    });
+  });
+
+  it('does not accept zlib with trailing junk as a size-matched candidate', async () => {
+    const plain = Uint8Array.from({ length: 64 }, (_, i) => i % 11);
+    const compressed = new Uint8Array(await new Response(
+      new Blob([plain]).stream().pipeThrough(new CompressionStream('deflate'))
+    ).arrayBuffer());
+    const withJunk = new Uint8Array(compressed.length + 4);
+    withJunk.set(compressed);
+    withJunk.set([0xde, 0xad, 0xbe, 0xef], compressed.length);
+    const { file, index } = await fixture(withJunk, plain.length);
+    const result = await validateMemberCodecCandidates(file, index);
+    const trial = result.trials.find(t => t.codec === 'deflate' && t.skippedBytes === 0);
+    expect(trial?.result).not.toBe('size_match');
+  });
+
+  it('accepts a correctly terminated gzip candidate', async () => {
+    const plain = Uint8Array.from({ length: 72 }, (_, i) => i % 9);
+    const compressed = new Uint8Array(await new Response(
+      new Blob([plain]).stream().pipeThrough(new CompressionStream('gzip'))
+    ).arrayBuffer());
+    const { file, index } = await fixture(compressed, plain.length);
+    const result = await validateMemberCodecCandidates(file, index);
+    expect(result.trials).toContainEqual({
+      filename: 'example.dat', codec: 'gzip', skippedBytes: 0,
       result: 'size_match', outputBytes: plain.length
     });
   });

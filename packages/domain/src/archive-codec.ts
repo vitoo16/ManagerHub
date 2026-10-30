@@ -11,13 +11,13 @@ const MAX_MEMBERS_TO_CHECK = 4;
 const START_OFFSETS = [0, 8, 16] as const;
 const CODECS = ['deflate', 'deflate-raw', 'gzip'] as const;
 type CandidateCodec = typeof CODECS[number];
-type DecodeOutcome = { status: 'decoded'; outputBytes: number } | { status: 'invalid_stream' | 'output_limit_exceeded'; outputBytes: null };
+type DecodeOutcome = { status: 'decoded' | 'trailer_mismatch'; outputBytes: number } | { status: 'invalid_stream' | 'output_limit_exceeded'; outputBytes: null };
 
 export interface MemberCodecTrial {
   readonly filename: string;
   readonly codec: CandidateCodec;
   readonly skippedBytes: number;
-  readonly result: 'size_match' | 'size_mismatch' | 'invalid_stream' | 'output_limit_exceeded';
+  readonly result: 'size_match' | 'size_match_unverified_input' | 'size_mismatch' | 'invalid_stream' | 'output_limit_exceeded' | 'trailer_mismatch';
   readonly outputBytes: number | null;
 }
 
@@ -29,6 +29,12 @@ export interface MemberCodecValidation {
 
 /** Consume only bounded byte counts. A malformed or overlarge stream never returns payload bytes. */
 async function decodeLengthOnly(bytes: Uint8Array, codec: CandidateCodec): Promise<DecodeOutcome> {
+  // Raw DEFLATE has no integrity trailer; verify zlib/gzip end checksums to
+  // reject trailing bytes that an inflater might silently ignore.
+  let adlerA = 1;
+  let adlerB = 0;
+  let crc = 0xffffffff;
+  const inputView = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   // Browsers lacking raw DEFLATE support reject the constructor. Such trials
   // remain inconclusive rather than being treated as real AFE codec failures.
   let reader: ReadableStreamDefaultReader<Uint8Array>;
@@ -44,10 +50,32 @@ async function decodeLengthOnly(bytes: Uint8Array, codec: CandidateCodec): Promi
     while (true) {
       const item = await reader.read();
       if (item.done) {
-        outcome = { status: 'decoded', outputBytes };
+        let trailerValid = true;
+        if (codec === 'deflate') {
+          trailerValid = bytes.length >= 6 &&
+            inputView.getUint32(bytes.length - 4, false) === (((adlerB << 16) | adlerA) >>> 0);
+        } else if (codec === 'gzip') {
+          trailerValid = bytes.length >= 18 &&
+            inputView.getUint32(bytes.length - 8, true) === ((crc ^ 0xffffffff) >>> 0) &&
+            inputView.getUint32(bytes.length - 4, true) === (outputBytes >>> 0);
+        }
+        outcome = { status: trailerValid ? 'decoded' : 'trailer_mismatch', outputBytes };
         break;
       }
       outputBytes += item.value.byteLength;
+      if (codec === 'deflate') {
+        for (const byte of item.value) {
+          adlerA = (adlerA + byte) % 65521;
+          adlerB = (adlerB + adlerA) % 65521;
+        }
+      } else if (codec === 'gzip') {
+        for (const byte of item.value) {
+          crc ^= byte;
+          for (let bit = 0; bit < 8; bit++) {
+            crc = crc & 1 ? (crc >>> 1) ^ 0xedb88320 : crc >>> 1;
+          }
+        }
+      }
       if (outputBytes > MAX_DECODED_BYTES) {
         outcome = { status: 'output_limit_exceeded', outputBytes: null };
         break;
@@ -104,7 +132,8 @@ export async function validateMemberCodecCandidates(
         trials.push({
           filename: member.filename, codec, skippedBytes,
           result: outcome.status === 'decoded'
-            ? outcome.outputBytes === member.reportedUncompressedBytes ? 'size_match' : 'size_mismatch'
+            ? outcome.outputBytes !== member.reportedUncompressedBytes ? 'size_mismatch'
+              : codec === 'deflate-raw' ? 'size_match_unverified_input' : 'size_match'
             : outcome.status,
           outputBytes: outcome.outputBytes
         });
