@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isSaveIdentity, MAX_SAVED_SAVE_INSPECTIONS } from './save-library';
+import { isSaveIdentity, MAX_SAVED_SAVE_INSPECTIONS, toPersistedSaveIdentity } from './save-library';
 import type { SaveIdentity } from './types';
 
 function save(overrides: Partial<SaveIdentity> = {}): SaveIdentity {
@@ -80,6 +80,39 @@ describe('save inspection metadata validation', () => {
         members: [{ filename: 'game_info.dat', offset: 0, storedBytes: 128, reportedUncompressedBytes: 256, payload: 'hidden' }]
       }
     })).toBe(false);
+  });
+
+
+  it('drops binary-derived ephemeral diagnostics before persisting a valid catalogue', () => {
+    const observed = save({
+      archiveIndex: {
+        family: 'fmf-index-candidate', evidence: 'experimental',
+        memberCount: 1, directoryOffset: 256,
+        members: [{ filename: 'game_info.dat', offset: 0, storedBytes: 128, reportedUncompressedBytes: 256 }],
+        probes: [{
+          filename: 'game_info.dat', absoluteOffset: 18, sampleBytes: 16,
+          prefixHex: '10 00 00 00 10 00 00 00 aa bb cc dd ee ff 00 11',
+          prefixKind: 'unknown', afterFirstEightBytesHex: 'aa bb cc dd ee ff 00 11',
+          afterFirstEightBytesKind: 'unknown',
+          storedBytes: 128, reportedUncompressedBytes: 256
+        }],
+        gapObservations: [{
+          afterMember: 'a.dat', beforeMember: 'game_info.dat', sizeBytes: 8,
+          markerMatches: 1, firstMarkerAt: 0, mostCommonMarkerDistance: null,
+          mostCommonDistanceOccurrences: 0, status: 'sampled'
+        }]
+      }
+    });
+    expect(isSaveIdentity(observed)).toBe(false);
+    const persisted = toPersistedSaveIdentity(observed);
+    expect(isSaveIdentity(persisted)).toBe(true);
+    expect(persisted.archiveIndex).toEqual({
+      family: 'fmf-index-candidate', evidence: 'experimental', memberCount: 1,
+      directoryOffset: 256,
+      members: [{ filename: 'game_info.dat', offset: 0, storedBytes: 128, reportedUncompressedBytes: 256 }]
+    });
+    expect(JSON.stringify(persisted)).not.toContain('aa bb cc');
+    expect(persisted).not.toBe(observed);
   });
 
   it('keeps the local inspection catalogue bounded', () => {
