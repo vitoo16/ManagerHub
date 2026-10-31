@@ -1,5 +1,7 @@
 # Verification and reproducibility
 
+The [biography follow-up](21-fm2013-biography-fields.md) subsequently passes109 Vitest/81 Node tests (190), TypeScript and build/bundle budgets. Private replay matches three guarded DOB observations to earlier UI receipts; independent review passes3/3 calendar tests. Snapshot schema/capabilities remain unchanged.
+
 Updated 2026-11-01. **This chronological record starts with static-only research and later adds real live reads, reference comparisons and local snapshot normalization. No writer or production adapter is certified.** Initial 2026-10-30 results follow; later sections supersede their missing-input observations.
 
 | Executed command / operation | Actual outcome | Meaning |

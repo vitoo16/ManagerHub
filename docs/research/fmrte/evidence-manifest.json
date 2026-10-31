@@ -103,6 +103,16 @@
       "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-club-contract-rea-evidence.json",
       "sha256": "1ada19683422c8cec30ea7a0f6b4db95dff3717ba988f3d165ee40abdc38a6ad",
       "note": "Club/contract/date/currency source-method evidence; 14 canonical records, private."
+    },
+    {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-biography-root-rea-evidence.json",
+      "sha256": "343576c34ea28a7a8d72eb366adb825eafec164fb921b5d0a5131bd837376337",
+      "note": "2026-11-01 biography follow-up; private canonical metadata/runtime evidence, no proprietary bodies or player data committed."
+    },
+    {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-nationality-rea-evidence-final.json",
+      "sha256": "635e3d8bcbb06871970cfbf18c78a6373ad6b910ec315c5342b218a766efa488",
+      "note": "2026-11-01 biography follow-up; private canonical metadata/runtime evidence, no proprietary bodies or player data committed."
     }
   ],
   "evidenceAliases": {
@@ -7905,6 +7915,184 @@
         "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
         "No manager visibility/whole-career/contract currency/current-employer or writer certification."
       ]
+    },
+    {
+      "id": "RE13-BIO-0x06000f86",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact biography source method; runtime comparison is separately sampled.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_340c303fb209860b2edfef989acbd316b43a87e77ce976e9cc140b9bce1bb832",
+      "reaLocator": "normalized_result.methods[token=0x06000f86]",
+      "symbol": "FMRTE_Framework.GameObjects.Person::get_NationAddress",
+      "methodToken": "0x06000f86",
+      "rva": 447528,
+      "fileOffset": 439848,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "1e29eea8ebe636736e8eab07fcddd4fd979a48d12083f2dc9c4c990c9bbed7fe",
+      "sourceIlSha256": "0609d27d9e7cbed0840d7bbf822f0e09b93d090fa586a7b7c9f970e1c4bcca26",
+      "limitations": [
+        "Exact SHA/MVID required; three DOB reference matches do not certify all records.",
+        "Primary nation is not all citizenships or national eligibility; no age/current-game-date publication."
+      ]
+    },
+    {
+      "id": "RE13-BIO-0x06000f88",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact biography source method; runtime comparison is separately sampled.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_340c303fb209860b2edfef989acbd316b43a87e77ce976e9cc140b9bce1bb832",
+      "reaLocator": "normalized_result.methods[token=0x06000f88]",
+      "symbol": "FMRTE_Framework.GameObjects.Person::get_Nation",
+      "methodToken": "0x06000f88",
+      "rva": 447640,
+      "fileOffset": 439960,
+      "signature": {
+        "returnType": "class:1760",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "1015f7e83dd976afd7910b2b2a71abe87138876dcd5c71143b6401ac4dc72fe2",
+      "sourceIlSha256": "20e3338d3d8d6617f65f04b0f9a3b9bd79241a25345152bd798fd350316fbe65",
+      "limitations": [
+        "Exact SHA/MVID required; three DOB reference matches do not certify all records.",
+        "Primary nation is not all citizenships or national eligibility; no age/current-game-date publication."
+      ]
+    },
+    {
+      "id": "RE13-BIO-0x060007c7",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact biography source method; runtime comparison is separately sampled.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_bb55229d298fc99886e89b806add3f2250c9b09a651cce61fc66ece3b389545c",
+      "reaLocator": "normalized_result.methods[token=0x060007c7]",
+      "symbol": "#=qSt5I5mKAHMkBcWXgxtulPUTiXsJa_W3js5yZVvOece1TQ3Q$au$uiUYIxs_bSBw4::op_Implicit",
+      "methodToken": "0x060007c7",
+      "rva": 255172,
+      "fileOffset": 247492,
+      "signature": {
+        "returnType": "i2",
+        "parameterTypes": [
+          "valuetype:900"
+        ]
+      },
+      "normalizedIlSha256": "b1411960b9686e953a1fbdb85f65aa02926fc7777c76a50f4ad31acbfd666685",
+      "sourceIlSha256": "8344e2305911efd06160d484136bacd8e88f59e0ff9213e5f3add4adbc9aa2b6",
+      "limitations": [
+        "Exact SHA/MVID required; three DOB reference matches do not certify all records.",
+        "Primary nation is not all citizenships or national eligibility; no age/current-game-date publication."
+      ]
+    },
+    {
+      "id": "RE13-BIO-0x06000ed8",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact biography source method; runtime comparison is separately sampled.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0c0f4f9b8513558c9b50607e832766610d3f5347a7eb93404242c359a36ac8b0",
+      "reaLocator": "normalized_result.methods[token=0x06000ed8]",
+      "symbol": "FMRTE_Framework.GameObjects.Nation::.ctor",
+      "methodToken": "0x06000ed8",
+      "rva": 437248,
+      "fileOffset": 429568,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "i4"
+        ]
+      },
+      "normalizedIlSha256": "6807f6f1d3a34ed60d337763603fb19667c70a37b5a73b4a41c812baa680b757",
+      "sourceIlSha256": "51392f0409e9731eebe9f37f490d212f75aab8b5845a841b58ff27b67e0a566c",
+      "limitations": [
+        "Exact SHA/MVID required; three DOB reference matches do not certify all records.",
+        "Primary nation is not all citizenships or national eligibility; no age/current-game-date publication."
+      ]
+    },
+    {
+      "id": "RE13-BIO-0x06000f80",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact biography source method; runtime comparison is separately sampled.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_340c303fb209860b2edfef989acbd316b43a87e77ce976e9cc140b9bce1bb832",
+      "reaLocator": "normalized_result.methods[token=0x06000f80]",
+      "symbol": "FMRTE_Framework.GameObjects.Person::get_Born",
+      "methodToken": "0x06000f80",
+      "rva": 446976,
+      "fileOffset": 439296,
+      "signature": {
+        "returnType": "valuetype:477",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "06f24c68409044bf5ba62875cd658dab476287001561f3264d81314fb2ce9809",
+      "sourceIlSha256": "295f3a753280065c478d97d0b0313cb73c1f749e1498b3ced070f967b480aea0",
+      "limitations": [
+        "Exact SHA/MVID required; three DOB reference matches do not certify all records.",
+        "Primary nation is not all citizenships or national eligibility; no age/current-game-date publication."
+      ]
+    },
+    {
+      "id": "RE13-BIO-0x06000f82",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact biography source method; runtime comparison is separately sampled.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_340c303fb209860b2edfef989acbd316b43a87e77ce976e9cc140b9bce1bb832",
+      "reaLocator": "normalized_result.methods[token=0x06000f82]",
+      "symbol": "FMRTE_Framework.GameObjects.Person::get_Age",
+      "methodToken": "0x06000f82",
+      "rva": 447088,
+      "fileOffset": 439408,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "db19b958ea714032801ae07e286881dfec12e3227f512b39df3c14e358bc9ce5",
+      "sourceIlSha256": "4965d1bde3c37e4d6ccda80fe997f9929120330647426057c17f4d9886e67b9a",
+      "limitations": [
+        "Exact SHA/MVID required; three DOB reference matches do not certify all records.",
+        "Primary nation is not all citizenships or national eligibility; no age/current-game-date publication."
+      ]
     }
   ],
   "unknowns": [
@@ -8667,5 +8855,52 @@
     "desktopIpcImplemented": false,
     "productionAdapterCertified": false,
     "writerCertified": false
+  },
+  "biographyResearch": {
+    "date": "2026-11-01",
+    "gameBuild": "13.3.3f359652",
+    "dobOffsetFromPerson": 80,
+    "primaryNationOffsetFromPerson": 108,
+    "dobObservationEvidenceId": "ev_5a9f785772bacf957b12a62305f7092e0677ac2c441ec3b80e216621fbaba751",
+    "dobReferenceMatches": 3,
+    "comparisonBlinded": false,
+    "officialGameOracle": false,
+    "primaryNationRuntimeValidated": false,
+    "calendarDecoder": "packages/domain/src/fm2013-date.ts",
+    "calendarPolicy": "Signed little-endian dayIndex/year; year1001..2999 and day strictly within that Gregorian year; no fallback or overflow calendar date.",
+    "agePolicy": "No age emitted; FMRTE tick-duration algorithm and current-game-date source require separate validation.",
+    "snapshotSchemaChanged": false,
+    "productionAdapterCertified": false,
+    "writerCertified": false,
+    "allOwnedFridaSessionsDetached": true,
+    "verification": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-bio-verification.json",
+      "sha256": "3045f020cd919e960f361a5fac384082b4979c0c1709a4349e3b07c1f49add07"
+    },
+    "verifier": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\verify-fm13-bio.mjs",
+      "sha256": "b12502168d4e7a9240ab1afe3a3d2767d6c6605e50caf2e44976944a0e9295a2"
+    },
+    "nationalityProof": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-nationality-proof.json",
+      "sha256": "c8866a223ba79f15dbf50163620494630f4211c2ded84f0fe5c2601855a83097"
+    },
+    "dobSource": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-biography-dob-cil.json",
+      "sha256": "2fb251eda4719587e9473903f5e2f8e89b17c0697d74c8d96cbe7a238047a25b"
+    },
+    "offsetConstructorSource": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-biography-offset-constructor-cil.json",
+      "sha256": "7fbbd8a68e4f0b2a903bac59f2437402f36fb8aeaf4ab43cd408a98a234241db"
+    },
+    "tests": {
+      "command": "npm.cmd run check",
+      "vitestPassed": 109,
+      "nodePassed": 81,
+      "typecheck": "PASS",
+      "buildAndBundleBudgets": "PASS",
+      "failed": 0,
+      "skipped": 0
+    }
   }
 }

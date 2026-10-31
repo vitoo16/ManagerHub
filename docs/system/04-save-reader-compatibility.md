@@ -52,3 +52,5 @@ Subsequent user-reported screen values match ID, Passing and Pace on that same r
 All fields remain `live_game`/provisional. The declared binary hash/PID/profile, manual career ID and capture time do not authenticate the source or loaded career; roster completeness remains unverified. Per-pass faults/limits/rejected candidates are retained and produce partial results. `ready` means valid payload admission.
 
 Editor retains provisional ordinary/familiarity ratings. Realism redacts all exact numeric ratings before return/serialization while manager/scouting knowledge is undecoded. Both modes keep CA/PA and contract Money/date fields null. Club links preserve source relationships without asserting employer/loan status; position bytes derive no eligibility. Product IPC/storage/UI integration, broad source/error-state checks, offline parsing and writer validation remain separate gates.
+
+[Biography research](../research/fmrte/21-fm2013-biography-fields.md) adds three sampled DOB reference matches and a tested conservative calendar helper. Primary nationality remains static-only; no new snapshot field or supported build is enabled.

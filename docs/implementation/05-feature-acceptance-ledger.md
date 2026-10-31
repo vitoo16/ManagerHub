@@ -94,3 +94,5 @@ Additional integration evidence: [opt-in local storage + role-fit lineup planner
 | Bundle regression guard | Implemented; CI passed (run #125) | Production build emits a Vite manifest and checks initial static asset and per-JS-chunk size budgets. |
 | Measured runtime improvement | **Needs verification** | Do not claim a percentage improvement until CI passes and representative browser profiles are recorded. |
 
+
+2026-11-01 biography research: three guarded DOB reads match earlier FMRTE receipts; primary-nation layout is static-only. Original conservative date decoder passes3 focused tests; full check passes190 tests/build. Snapshot schema and module completion remain unchanged. See docs/research/fmrte/21-fm2013-biography-fields.md.

@@ -11,3 +11,4 @@ export * from './recruitment-preview';
 export * from './archive-gaps';
 export * from './archive-codec';
 export * from './live-snapshot';
+export * from './fm2013-date';

@@ -1,5 +1,7 @@
 # FMRTE research summary — 2026-11-01
 
+**Biography follow-up:** [birth date and primary nation](21-fm2013-biography-fields.md) recovers their exact-profile storage. Three guarded live DOB reads match earlier reference receipts; nationality remains static-only. An original conservative calendar decoder passes boundary tests without exposing age or changing snapshot admission/capabilities.
+
 **REA MCP works. Exact-build live research now produces immutable, source-aware snapshots of 4,058 player records through original reader and normalization code; no production reader/editor is certified.** FMRTE26 remains unresolved below delegate dispatch. After explicit user approval, the installed FMRTE13 was opened for read-only UI reference comparison. No game/save edit was requested or performed.
 
 **Latest implementation:** [the live snapshot contract](20-fm2013-live-snapshot-contract.md) admits a complete capture with 49 ordinary attribute bytes and 15 position bytes per record, plus 3,730 observed club links and 328 unknown relationships. The local Node CLI normalizes it without process access or uploads. All observations remain provisional; career identity is caller-declared and roster completeness unverified. Editor preserves the decoded numeric ratings. Realism redacts all 49 exact ordinary ratings and 15 familiarity ratings because manager/scouting knowledge has not been decoded. CA/PA and contract fields remain null in both modes. Browser/desktop IPC and product UI integration remain unimplemented.
