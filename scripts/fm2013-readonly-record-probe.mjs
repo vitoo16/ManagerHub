@@ -1,11 +1,9 @@
 // Isolated REA/Frida research probe, never imported by the browser application.
 // This layout is a candidate from one exact-build session, not a certified adapter.
 import { FM2013_ORDINARY_ATTRIBUTES } from './fm2013-ordinary-attributes.mjs';
-export const FM2013_RESEARCH_BINARY_SHA256 = 'df45cde67cb7361867e7afc9808dacab8bf53bd972f48145f6f881ff55d08871';
-const nativeKinds = {
-  player: { decoratedName: '.?AVACTUAL_PLAYER@@', personOffset: 356 },
-  playerStaff: { decoratedName: '.?AVACTUAL_PLAYER_AND_NON_PLAYER@@', personOffset: 452 },
-};
+import profile from '../packages/domain/src/fm2013-live-profile.json' with { type: 'json' };
+export const FM2013_RESEARCH_BINARY_SHA256 = profile.binarySha256;
+const nativeKinds = profile.nativeKinds;
 
 function observeRecord(config) {
   function fail(code) { throw new Error(code); }
@@ -18,13 +16,16 @@ function observeRecord(config) {
     if (address < 0x10000 || address > 0xfffff000 || address % 4 !== 0) fail('invalid_pointer');
     return value;
   }
-  function readName(object) {
-    const header = checkedPointer(checkedPointer(object).add(40).readPointer());
+  function readStringHeader(pointer, maximum) {
+    const header = checkedPointer(pointer);
     const length = header.add(1).readU8();
-    if (header.readU8() !== 1 || length === 0 || length > 64) fail('invalid_name_header');
+    if (header.readU8() !== 1 || length === 0 || length > maximum) fail('invalid_name_header');
     const name = header.add(4).readUtf16String(length);
     if (typeof name !== 'string' || name.length !== length || /[\u0000-\u001f]/u.test(name)) fail('invalid_name');
     return name;
+  }
+  function readName(object) {
+    return readStringHeader(checkedPointer(object).add(40).readPointer(), 64);
   }
   function readIdentity(person) {
     return {
@@ -34,6 +35,28 @@ function observeRecord(config) {
       firstName: readName(person.add(92).readPointer()),
       lastName: readName(person.add(96).readPointer()),
     };
+  }
+  function readClubLink(player, person, nativeKind) {
+    try {
+      function teamPointer() {
+        if (nativeKind === 'player') return checkedPointer(player.add(664).readPointer());
+        const header = player.add(608), begin = header.readPointer(), end = header.add(4).readPointer();
+        const bytes = end.toUInt32() - begin.toUInt32();
+        if (bytes < 4 || bytes > 16 || bytes % 4 !== 0) fail('unsupported_contract_vector');
+        const contract = checkedPointer(checkedPointer(begin).readPointer());
+        if (contract.add(4).readPointer().toString() !== person.toString()) fail('contract_person_mismatch');
+        return checkedPointer(contract.add(8).readPointer());
+      }
+      const team = teamPointer(), club = checkedPointer(team.add(32).readPointer());
+      const nativeId = club.add(20).readS32(), name = readStringHeader(club.add(32).readPointer(), 128);
+      if (nativeId <= 0) fail('invalid_club_id');
+      if (teamPointer().toString() !== team.toString() || team.add(32).readPointer().toString() !== club.toString() ||
+          club.add(20).readS32() !== nativeId || readStringHeader(club.add(32).readPointer(), 128) !== name) fail('stale_club');
+      return { club: { nativeId, name, relation: nativeKind === 'player' ? 'player_team_pointer' : 'primary_contract_team' } };
+    } catch (error) {
+      // An unresolved affiliation never becomes a fabricated no-club value.
+      return { clubDiagnostic: String(error.message || error).slice(0, 200) };
+    }
   }
   function readCandidate(player, expected, includeAbilities) {
     const person = player.add(config.imageType?.subobjectOffset ?? config.personOffset);
@@ -47,12 +70,16 @@ function observeRecord(config) {
       const raw = attributes.add(offset).readS8();
       return [key, { raw, candidateScale5: Math.max(1, Math.round(raw / 5)) }];
     }));
+    const positions = config.positionLayout.length ? Object.fromEntries(config.positionLayout.map(({ key, nativeCode, offset }) =>
+      [key, { nativeCode, raw: attributes.add(offset).readS8() }])) : null;
+    const clubLink = config.includeClubLinks ? readClubLink(player, person, config.imageType?.nativeKind ?? config.nativeKind) : null;
     const words = includeAbilities ? { ca: caAddress.readU16(), pa: paAddress.readU16() } : null;
     const after = readIdentity(person);
     if (JSON.stringify(before) !== JSON.stringify(after) ||
         player.add(228).readPointer().toString() !== attributes.toString()) fail('stale_record');
     if ((words && (caAddress.readU16() !== words.ca || paAddress.readU16() !== words.pa)) ||
-        config.attributeLayout.some(({ key, offset }) => attributes.add(offset).readS8() !== ordinary[key].raw)) fail('changed_fields');
+        config.attributeLayout.some(({ key, offset }) => attributes.add(offset).readS8() !== ordinary[key].raw) ||
+        config.positionLayout.some(({ key, offset }) => attributes.add(offset).readS8() !== positions[key].raw)) fail('changed_fields');
     return {
       kind: 'fm2013-readonly-record', status: 'observed_candidate', pid: Process.id,
       artifact: artifact(),
@@ -63,6 +90,8 @@ function observeRecord(config) {
         ca: caAddress.toString(), pa: paAddress.toString() },
       ...(words ? { rawAbilityWords: words } : {}),
       attributes: ordinary,
+      ...(positions ? { positions } : {}),
+      ...(clubLink ?? {}),
       actualAbilityVerified: false,
     };
   }
@@ -144,7 +173,7 @@ function observeRecord(config) {
     };
   }
   try {
-    const expectedPath = 'C:\\Program Files (x86)\\Football Manager 2013\\fm.exe';
+    const expectedPath = config.imagePath;
     if (Process.id !== config.pid) fail('pid_mismatch');
     if (Process.arch !== 'ia32' || Process.pointerSize !== 4) fail('architecture_mismatch');
     if (Process.mainModule.path.toLowerCase() !== expectedPath.toLowerCase()) fail('image_path_mismatch');
@@ -162,10 +191,14 @@ function checkedTarget(config) {
   if (!Number.isInteger(config.pid) || config.pid < 1 || config.pid > 0x7fffffff) throw new RangeError('Invalid PID');
   const nativeKind = config.nativeKind ?? 'player', attributeSet = config.attributeSet ?? 'passing_pace';
   if (!Object.hasOwn(nativeKinds, nativeKind) || !['passing_pace', 'ordinary49'].includes(attributeSet)) throw new RangeError('Unsupported research field selection');
+  if (config.includePositions !== undefined && typeof config.includePositions !== 'boolean') throw new RangeError('Invalid position selection');
+  if (config.includeClubLinks !== undefined && typeof config.includeClubLinks !== 'boolean') throw new RangeError('Invalid club selection');
   const selected = attributeSet === 'ordinary49' ? FM2013_ORDINARY_ATTRIBUTES :
     FM2013_ORDINARY_ATTRIBUTES.filter(attribute => ['passing', 'pace'].includes(attribute.key));
-  return { binarySha256: config.binarySha256, pid: config.pid, nativeKind, personOffset: nativeKinds[nativeKind].personOffset,
-    attributeSet, attributeLayout: selected.map(({ key, offset }) => ({ key, offset })) };
+  return { binarySha256: config.binarySha256, imagePath: profile.imagePath, pid: config.pid, nativeKind, personOffset: nativeKinds[nativeKind].personOffset,
+    attributeSet, attributeLayout: selected.map(({ key, offset }) => ({ key, offset })),
+    includeClubLinks: config.includeClubLinks === true,
+    positionLayout: config.includePositions ? profile.positions.map(({ key, nativeCode, offset }) => ({ key, nativeCode, offset })) : [] };
 }
 
 function checkedConfig(config) {
@@ -193,8 +226,8 @@ export function buildFm2013ReadOnlyPlayerScan(config, limits = {}) {
 }
 
 function checkedScanLimits(limits) {
-  const scan = { maxBytes: 1073741824, maxDurationMs: 20000, maxRecords: 10000, maxMatches: 20000, ...limits };
-  const ceilings = { maxBytes: 1073741824, maxDurationMs: 20000, maxRecords: 10000, maxMatches: 20000 };
+  const ceilings = profile.limits;
+  const scan = { ...ceilings, ...limits };
   for (const key of Object.keys(scan)) {
     if (!Object.hasOwn(ceilings, key) || !Number.isSafeInteger(scan[key]) || scan[key] < (key === 'maxBytes' ? 4 : 1) ||
         scan[key] > ceilings[key]) throw new RangeError(`Invalid scan limit: ${key}`);

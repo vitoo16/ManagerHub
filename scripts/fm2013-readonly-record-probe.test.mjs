@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import vm from 'node:vm';
 import { FM2013_ORDINARY_ATTRIBUTES } from './fm2013-ordinary-attributes.mjs';
+import profile from '../packages/domain/src/fm2013-live-profile.json' with { type: 'json' };
 import { buildFm2013ReadOnlyRecordProbe, buildFm2013ReadOnlyPlayerScan,
   buildFm2013ImageRelativePlayerScan, FM2013_RESEARCH_BINARY_SHA256 } from './fm2013-readonly-record-probe.mjs';
 
@@ -27,11 +28,25 @@ function execute(options = {}) {
     const address = 0x40000 + attribute.offset;
     if (!numbers.has(address)) numbers.set(address, 80);
   }
+  if (options.positions) profile.positions.forEach((p, i) => numbers.set(0x40000 + p.offset, i));
   for (const [address, value] of [...numbers]) {
     if (address >= 0x10000 && address < 0x10300) numbers.set(address + 0x2000, value);
   }
   numbers.set(0x12000 + personOffset + 20, options.duplicateId ? 123 : 456);
   numbers.set(0x12000 + personOffset + 28, options.duplicateId ? 123 : 456);
+  if (options.club) {
+    numbers.set(0x70000 + 32, 0x71000); numbers.set(0x71000 + 20, 77); numbers.set(0x71000 + 32, 0x72000);
+    numbers.set(0x72000, 1); numbers.set(0x72001, 9); strings.set(0x72004, 'Test Club');
+    for (const [i, base] of [0x10000, 0x12000].entries()) {
+      if (!options.dual) numbers.set(base + 664, options.badClub ? 0 : 0x70000);
+      else {
+        const begin = 0x73000 + i * 0x2000, contract = begin + 0x1000;
+        numbers.set(base + 608, begin); numbers.set(base + 612, begin + 4); numbers.set(begin, contract);
+        numbers.set(contract + 4, base + (options.mismatchContractPerson ? 356 : personOffset));
+        numbers.set(contract + 8, 0x70000);
+      }
+    }
+  }
   if (options.imageRelative) {
     const locator = imageBase + 0x2000, descriptor = imageBase + 0x3000;
     for (const [offset, value] of [[0, 0], [4, options.wrongLocator ? 360 : personOffset], [8, 4],
@@ -48,6 +63,7 @@ function execute(options = {}) {
     if (options.stale && address === 0x10000 + personOffset + 20 && reads.filter(x => x === address).length > 1) return 124;
     if (options.changedFields && address === 0x10000 + 336 && reads.filter(x => x === address).length > 1) return 12346;
     if (options.changedOrdinary && address === 0x40000 + 59 && reads.filter(x => x === address).length > 1) return 81;
+    if (options.changedPositions && address === 0x40000 + 32 && reads.filter(x => x === address).length > 1) return 15;
     return numbers.get(address);
   }
   function pointer(address) {
@@ -79,10 +95,11 @@ function execute(options = {}) {
   const proof = options.dual ? { ...imageProof, candidates: [{ ...imageProof.candidates[0],
     decoratedName: '.?AVACTUAL_PLAYER_AND_NON_PLAYER@@', subobjectOffset: 452 }] } : imageProof;
   const source = options.imageRelative ? buildFm2013ImageRelativePlayerScan({ binarySha256: config.binarySha256,
-    pid: options.config?.pid ?? config.pid, attributeSet: options.ordinary49 ? 'ordinary49' : 'passing_pace' }, proof, options.limits) :
+    pid: options.config?.pid ?? config.pid, attributeSet: options.ordinary49 ? 'ordinary49' : 'passing_pace',
+    includePositions: !!options.positions, includeClubLinks: !!options.club }, proof, options.limits) :
     options.scan ? buildFm2013ReadOnlyPlayerScan({ ...config, ...options.config }, options.limits) :
     buildFm2013ReadOnlyRecordProbe({ ...config, ...options.config, nativeKind: options.dual ? 'playerStaff' : 'player',
-      attributeSet: options.ordinary49 ? 'ordinary49' : 'passing_pace' });
+      attributeSet: options.ordinary49 ? 'ordinary49' : 'passing_pace', includePositions: !!options.positions, includeClubLinks: !!options.club });
   vm.runInNewContext(source, { Process, Memory, Date: Clock, ptr: pointer,
     send: message => messages.push(JSON.parse(JSON.stringify(message))) }, { timeout: 1000 });
   return { result: messages[0], reads, scans };
@@ -227,4 +244,22 @@ test('ordinary49 reads and repeats every selected field without hidden/personali
   assert.equal(result.records[0].attributes.consistency, undefined);
   assert.equal(result.records[0].attributes.ambition, undefined);
   assert.equal(execute({ ordinary49: true, changedOrdinary: true }).result.diagnostic, 'changed_fields');
+});
+
+test('optional position bytes preserve zero without attribute scaling and reject concurrent changes', () => {
+  const { result } = execute({ positions: true });
+  assert.equal(Object.keys(result.positions).length, 15);
+  assert.deepEqual(result.positions.goalkeeper, { nativeCode: 'GK', raw: 0 });
+  assert.equal(result.positions.attackerCentral.raw, 12);
+  assert.equal(execute({ positions: true, changedPositions: true }).result.diagnostic, 'changed_fields');
+});
+
+test('club links retain their source relationship across normal and bound dual contracts', () => {
+  assert.deepEqual(execute({ club: true }).result.club, { nativeId: 77, name: 'Test Club', relation: 'player_team_pointer' });
+  assert.deepEqual(execute({ club: true, dual: true }).result.club, { nativeId: 77, name: 'Test Club', relation: 'primary_contract_team' });
+  const broken = execute({ club: true, dual: true, mismatchContractPerson: true }).result;
+  assert.equal(broken.status, 'observed_candidate'); assert.equal(broken.club, undefined);
+  assert.equal(broken.clubDiagnostic, 'contract_person_mismatch');
+  const missing = execute({ club: true, badClub: true }).result;
+  assert.equal(missing.club, undefined); assert.equal(missing.clubDiagnostic, 'invalid_pointer');
 });

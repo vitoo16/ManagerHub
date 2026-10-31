@@ -88,6 +88,21 @@
       "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-ordinary49-rea-evidence.json",
       "sha256": "7732eca572165c9c066851300d96337d205ef060d55b36ec34e5f15517768915",
       "note": "2026-10-31 reference/coverage research: 8 canonical records. Private career and proprietary raw data stay outside Git."
+    },
+    {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-live-snapshot-rea-evidence.json",
+      "sha256": "cfdb036672bb4d4b4984b3a19006fa4117669b5ef37acaf3eab61d582a0086dc",
+      "note": "Complete compact live capture plus rejected truncated transport and selected link observations; 11 canonical records, private."
+    },
+    {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-positions-rea-evidence-final.json",
+      "sha256": "876f109d2132ab8ed03c3c58a4a8bd0b84e3bd4fe85496c3cc8c14f3217e98b5",
+      "note": "Exact-build position getters/initializer and reference UI semantics; 10 canonical records, private."
+    },
+    {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-club-contract-rea-evidence.json",
+      "sha256": "1ada19683422c8cec30ea7a0f6b4db95dff3717ba988f3d165ee40abdc38a6ad",
+      "note": "Club/contract/date/currency source-method evidence; 14 canonical records, private."
     }
   ],
   "evidenceAliases": {
@@ -5434,6 +5449,2462 @@
         "Three matched reference records do not certify every record or production adapter."
       ],
       "sourceIlSha256": "af04843e1f273aeebf512215c2a9209a635e5295c811006f6c0b083663344b65"
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001024",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_340c303fb209860b2edfef989acbd316b43a87e77ce976e9cc140b9bce1bb832",
+      "reaLocator": "normalized_result.methods[token=0x06001024]",
+      "symbol": "FMRTE_Framework.GameObjects.Player::get_Positions",
+      "methodToken": "0x06001024",
+      "rva": 458320,
+      "fileOffset": 450640,
+      "signature": {
+        "returnType": "class:1868",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "cd352802e2d0bf4e612fc99b296d19d01bebaca497fe6e7b36fc3bf89404c4f7",
+      "sourceIlSha256": "4a01573245b8f57cf61f9b4b90939be1db7a14a59fb40df9ea183b3d6cb32c38",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x060010f8",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x060010f8]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_Defender",
+      "methodToken": "0x060010f8",
+      "rva": 484920,
+      "fileOffset": 477240,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "374dbe6c43a7ea5cec60e7f885136008151beb9eeca6a86c41b9491b34990b56",
+      "sourceIlSha256": "831fc62e4b9a581feb1f79927dc167a05f98382e6cb7e3b9be275efa45647a73",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x060010f9",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x060010f9]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_WingBack",
+      "methodToken": "0x060010f9",
+      "rva": 485032,
+      "fileOffset": 477352,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "119b0aff77d5a314f694d0e24ccfc853d8f6612839fa368826c8448249f3047e",
+      "sourceIlSha256": "6edac5d3efcb9063f82cf6bf3964e1b3da1e933aa9d67503cac52771fadc66fd",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x060010fa",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x060010fa]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_Midfielder",
+      "methodToken": "0x060010fa",
+      "rva": 485120,
+      "fileOffset": 477440,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "cb45a788900ea433dc928f6c79c7f759f7ca3c7d4c042024767d247dc2b391e9",
+      "sourceIlSha256": "c8ab66d7632b64b3f21f377cc61af053402a004d62c201be9769a6502ef06171",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x060010fb",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x060010fb]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_AttackingMidfielder",
+      "methodToken": "0x060010fb",
+      "rva": 485232,
+      "fileOffset": 477552,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "e7d38dd76b98dd03152d61c0d0f5a997236995c82503eb00bbce2c27b189c4d6",
+      "sourceIlSha256": "525d917b4e705a4e41d4507d3ceef55888df0c6555f6a9412c6f8445faa17bb3",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x060010fc",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x060010fc]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_Right",
+      "methodToken": "0x060010fc",
+      "rva": 485344,
+      "fileOffset": 477664,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "66272ed4132c6d4c4e5ce4f7422262325a0f8682c9927a3e023b43f0922f6f00",
+      "sourceIlSha256": "09cc4c2a3182e609fef86452a8b6cbc191ad6f2ea24e6349112b6f48c02f55a8",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x060010fd",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x060010fd]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_Left",
+      "methodToken": "0x060010fd",
+      "rva": 485480,
+      "fileOffset": 477800,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "91ca42c20774a344c78fa8a1bcae574f0f1fed548ce5cf9c5365c05be077359f",
+      "sourceIlSha256": "e446aeb494dca06b0e6ab2dcc2df4e142595ad3abd431ba4dcedaf7f3e4ba076",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x060010fe",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x060010fe]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_Centre",
+      "methodToken": "0x060010fe",
+      "rva": 485616,
+      "fileOffset": 477936,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "ba96bf3a1d8a3dd6f436a2b0b0d4268951995f4ff94620addc78f05c877918cb",
+      "sourceIlSha256": "fcfad45590a6a2b715e818e7f4f2a0c685f801dd338798cefa9656da1ba864dc",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x060010ff",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x060010ff]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_PositionsDesc",
+      "methodToken": "0x060010ff",
+      "rva": 485728,
+      "fileOffset": 478048,
+      "signature": {
+        "returnType": "string",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "f72cdca3bdbf847ed6af06f33fb3193465f167c5ecfefc3ffa6c8747ac307c3c",
+      "sourceIlSha256": "e3c40a2a4a18070918ce117bc6a18a6ba01de4f97e42886d57331a1f3a22bd83",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001100",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x06001100]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_PositionsDescVal",
+      "methodToken": "0x06001100",
+      "rva": 486384,
+      "fileOffset": 478704,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "b9f764efbf6bf9c439f2f857c1a771cd9c01a1b38e311dd330090465091a4713",
+      "sourceIlSha256": "65cd276468b4260798f5f506fac60108583f34ce83c3e7a132a0bc840ac427fb",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001101",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x06001101]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_Goalkeeper",
+      "methodToken": "0x06001101",
+      "rva": 487128,
+      "fileOffset": 479448,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "a129564fa0b3ce9a22931607c9902efec444b33e5a859dc8651bdead2dbd619b",
+      "sourceIlSha256": "6b01388d5b55740ba1860eb464b9c96a365529ec5fbd52eacf80a6d8eb9ffb6e",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001103",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x06001103]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_Sweeper",
+      "methodToken": "0x06001103",
+      "rva": 487216,
+      "fileOffset": 479536,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "6464993221fc8c7fd2d02b81effd232e9f43049b5f946bb448062143cd04b6d7",
+      "sourceIlSha256": "29f382f968446a28d3c655b1870e5d1340b323fdeacc20aac37a5fb203c57817",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001105",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x06001105]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_AttackerCentral",
+      "methodToken": "0x06001105",
+      "rva": 487304,
+      "fileOffset": 479624,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "671504edc17e5a622c397c07fe1bd5bb62ba9fccdef08c9facd01f573dc509f1",
+      "sourceIlSha256": "01d7d738e1e977c96f0d02cfc794ef5681ac424bd6bc858d7ad8ed5055c6c633",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001107",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x06001107]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_AttackingMidCentral",
+      "methodToken": "0x06001107",
+      "rva": 487392,
+      "fileOffset": 479712,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "27a2ae52e170e569d37ed10d54ce60e8d3873334d7928285624f6c65bff8aa99",
+      "sourceIlSha256": "268a60661cf2a22fe3fbf1fed5f83c8ff2444501a31cbbff9e41f7ca4523b848",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001109",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x06001109]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_AttackingMidLeft",
+      "methodToken": "0x06001109",
+      "rva": 487480,
+      "fileOffset": 479800,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "f3dcd3ebf6cf29e89c0055d1b56d21251b78316c2e80093856be442fb8393355",
+      "sourceIlSha256": "a22224e15de814ef554e3a17ea53e212e5ba56d417f8c47b19152057add6fc81",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x0600110b",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x0600110b]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_AttackingMidRight",
+      "methodToken": "0x0600110b",
+      "rva": 487568,
+      "fileOffset": 479888,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "c34f30da74b61fd7c0dea2b8e4a1f77b8304cb928490135ee59e3ea495527f27",
+      "sourceIlSha256": "e87ba98bb5bfab84deb304edf168b53274ff8f2cb580dd0d477074c3aab8a26e",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x0600110d",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x0600110d]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_DefenderCentral",
+      "methodToken": "0x0600110d",
+      "rva": 487656,
+      "fileOffset": 479976,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "4191fcd85ae5aa4c4f1a507b32d0562e4bdd6137795ddbd063877a108de0e491",
+      "sourceIlSha256": "106fb24331f469baec75a4b45098121897afff17c0ab1b4f39e0bb62c83d6d36",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x0600110f",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x0600110f]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_DefenderLeft",
+      "methodToken": "0x0600110f",
+      "rva": 487744,
+      "fileOffset": 480064,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "1aa0e02b0479a9b73505f5953ff60a000729428ac752025a281337ab210a6576",
+      "sourceIlSha256": "a4c2743784809b7db233c9f7c512f016b6ad62026a9ddd5d8628106e1f80f21f",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001111",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x06001111]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_DefenderRight",
+      "methodToken": "0x06001111",
+      "rva": 487832,
+      "fileOffset": 480152,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "f7d5d7e0ee6d9904c7bd98c2ad2ff52d30ce2fdb6d05ff84f01e316d759ce8b0",
+      "sourceIlSha256": "38d9e62a3a0efea987b767d73eea2589c396de47e10ad09753241db41a395095",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001113",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x06001113]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_DefensiveMidfielder",
+      "methodToken": "0x06001113",
+      "rva": 487920,
+      "fileOffset": 480240,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "707392aadc3b58b21e84b8d33e99c223e9808c6fa2cc3ef2fcac1f07d8f77062",
+      "sourceIlSha256": "9cc35ada79b23e3680e8911a6d2e43d73e15744054d75691ce76448778319aa2",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001115",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x06001115]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_MidfielderCentral",
+      "methodToken": "0x06001115",
+      "rva": 488008,
+      "fileOffset": 480328,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "c980bbb28c61411cf73d1949b5106c90e3fd7819a67ecf48f973b27ff4c0ec8d",
+      "sourceIlSha256": "c679fe780be053e63bca02a4537b2a9374c4c553e4d1b57a4a1a36a77950d8eb",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001117",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x06001117]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_MidfielderLeft",
+      "methodToken": "0x06001117",
+      "rva": 488096,
+      "fileOffset": 480416,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "20e2bee03a825fd9e2f82ddadca598b5b99d2e27ccd05e72ad051f3a1580cced",
+      "sourceIlSha256": "6b9f6f6f7cffd5b1a94430b4ce44d8c254809b55ef6a0d0bdb9cfb7cccb9a7b2",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001119",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x06001119]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_MidfielderRight",
+      "methodToken": "0x06001119",
+      "rva": 488184,
+      "fileOffset": 480504,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "0b99f91448348a30030e3eb6d217895d076b0ee16394202b654209e3e4be2105",
+      "sourceIlSha256": "08ea14b8c9a3d804ee0a167f730b3be4334393598bff035d2671c9cde0f6fd1f",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x0600111b",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x0600111b]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_WingBackLeft",
+      "methodToken": "0x0600111b",
+      "rva": 488272,
+      "fileOffset": 480592,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "f93881305728ed95bbe405a701c66a940d8253859757cbba55759a33f21ff749",
+      "sourceIlSha256": "718a137da7521aea698851ec8d3a8e8ddbcc64fb081cb204fedf3f12b39439d0",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x0600111d",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x0600111d]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::get_WingBackRight",
+      "methodToken": "0x0600111d",
+      "rva": 488360,
+      "fileOffset": 480680,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "ded784f297fff36083be26860df0463f6343248363a73930c1f2bbb9fd0739c0",
+      "sourceIlSha256": "896759d5393762ed16162012e53674afffab67d61eddfb4fc5a0cd3da7e1c136",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x060010f7",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_b1e0fe0f79217cb812c740acf46ecf1a99b7b79ab46d067e2aa01a51ef80742d",
+      "reaLocator": "normalized_result.methods[token=0x060010f7]",
+      "symbol": "FMRTE_Framework.GameObjects.Positions::.ctor",
+      "methodToken": "0x060010f7",
+      "rva": 484884,
+      "fileOffset": 477204,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "i4"
+        ]
+      },
+      "normalizedIlSha256": "e039fdf1167abbae6c0f4ab08854772278bbac110d117111edbf794cd7be9edb",
+      "sourceIlSha256": "aeb81398c202baf8b4fa5e81199ed0f1158175a461687e13667ac33ee4cb9662",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000559",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_097b85cd73490dc3787df82b427b0527944d5996985bd06e45b0caf2ff80cab3",
+      "reaLocator": "normalized_result.methods[token=0x06000559]",
+      "symbol": "#=qj5V755lBZkLnIGh3Z0fUiijTkyiqvXiO6j8Mb_9dr7KwaeRnzCbVf1nuMe7sv_Zh::.cctor",
+      "methodToken": "0x06000559",
+      "rva": 191800,
+      "fileOffset": 184120,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "5cc4572a35baf7a032fe2b1b940a1a1ea53af18b0dde32a5554a50ef2e4728e8",
+      "sourceIlSha256": "9dfcf5eb7044e9166d5964cd9d2c92f153f887c010f4ab47cadce37327734236",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x0600055a",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_097b85cd73490dc3787df82b427b0527944d5996985bd06e45b0caf2ff80cab3",
+      "reaLocator": "normalized_result.methods[token=0x0600055a]",
+      "symbol": "#=qj5V755lBZkLnIGh3Z0fUiijTkyiqvXiO6j8Mb_9dr7KwaeRnzCbVf1nuMe7sv_Zh::#=qjNp1qeuKTpCeFSXYD7O$CA==",
+      "methodToken": "0x0600055a",
+      "rva": 192024,
+      "fileOffset": 184344,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "8ccc6444b6a8a20d21aaa2434560b0a00a35ee6409f1014baa020c3e97e1d3e9",
+      "sourceIlSha256": "a1918cafa073cbdf087ec870c6cc7f9c332dd0e135b1b394c74410cc5fb1edb2",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001ce0",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_fb8ac3d9014e1ce9de77b2af5efa225bb184a00c7df63216856b7c73be953670",
+      "reaLocator": "normalized_result.methods[token=0x06001ce0]",
+      "symbol": "FMRTE_GUI.UserControls.userPlayerPositions::incrementPos",
+      "methodToken": "0x06001ce0",
+      "rva": 959516,
+      "fileOffset": 951836,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "i1&"
+        ]
+      },
+      "normalizedIlSha256": "9981670c460dfe5f181f4edd5fde774bda240de3fb7acd9f5098fd574f50330b",
+      "sourceIlSha256": "4783a766ab4cc641c318e85c0ab46f17c8b6a762e6650995b89f22154742f784",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001cd8",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_fb8ac3d9014e1ce9de77b2af5efa225bb184a00c7df63216856b7c73be953670",
+      "reaLocator": "normalized_result.methods[token=0x06001cd8]",
+      "symbol": "FMRTE_GUI.UserControls.userPlayerPositions::resetPositionsValues",
+      "methodToken": "0x06001cd8",
+      "rva": 957296,
+      "fileOffset": 949616,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "8a36b538d668c46f95bde1688fc5660404d3afedb938ff3e2e8f898f2e99ba9e",
+      "sourceIlSha256": "be9044aaaa824c1abca69049e2e09896c44541230d7dd3b94c51446ba2a36eda",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001cda",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_fb8ac3d9014e1ce9de77b2af5efa225bb184a00c7df63216856b7c73be953670",
+      "reaLocator": "normalized_result.methods[token=0x06001cda]",
+      "symbol": "FMRTE_GUI.UserControls.userPlayerPositions::reloadImages",
+      "methodToken": "0x06001cda",
+      "rva": 957672,
+      "fileOffset": 949992,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "cb433485341a3f7c8099c51f78ef7988829df0fe338391e9daca7aadc2338000",
+      "sourceIlSha256": "34162d04c5bb73c6003e6691eba7a86c4d481a5ce9a36cc84a7dc12063785cac",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001cdd",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_fb8ac3d9014e1ce9de77b2af5efa225bb184a00c7df63216856b7c73be953670",
+      "reaLocator": "normalized_result.methods[token=0x06001cdd]",
+      "symbol": "FMRTE_GUI.UserControls.userPlayerPositions::setPosition",
+      "methodToken": "0x06001cdd",
+      "rva": 958848,
+      "fileOffset": 951168,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "valuetype:1600",
+          "i1"
+        ]
+      },
+      "normalizedIlSha256": "e282baf261a8f0d031aa925dd7f353ca0a77d77e70b8619bc97554bedec7b56b",
+      "sourceIlSha256": "1a3bcca72f3c11dd8b86576aec776511429bb2f12bfeb17dfcecb8266730bcde",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001d2b",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_fb8ac3d9014e1ce9de77b2af5efa225bb184a00c7df63216856b7c73be953670",
+      "reaLocator": "normalized_result.methods[token=0x06001d2b]",
+      "symbol": "FMRTE_GUI.UserControls.usrControlPositions::calcNewIncrement",
+      "methodToken": "0x06001d2b",
+      "rva": 972624,
+      "fileOffset": 964944,
+      "signature": {
+        "returnType": "u1",
+        "parameterTypes": [
+          "u1"
+        ]
+      },
+      "normalizedIlSha256": "390e63c2db1ca0755288ef36ac55a2194da95f0e2f5e437e36ab25b0732c96aa",
+      "sourceIlSha256": "061cc33c02a98ea9304c609a91aa2e78517939941f9dfbead13a7da666f35e9c",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000fcb",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_340c303fb209860b2edfef989acbd316b43a87e77ce976e9cc140b9bce1bb832",
+      "reaLocator": "normalized_result.methods[token=0x06000fcb]",
+      "symbol": "FMRTE_Framework.GameObjects.Player::get_TeamAddress",
+      "methodToken": "0x06000fcb",
+      "rva": 451776,
+      "fileOffset": 444096,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "ea8a7a748943d451c285250401e1c1102dc5f8b83efe94489cfa45373e81983c",
+      "sourceIlSha256": "ff7714315f5caa8a15c69b9b750684cbfe9d4f599757d830509b2618d66a377c",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x0600109e",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_95211a16516eb59c912c89dfc36f7e690f95551ef7f1e1856240f7d3d720c1e1",
+      "reaLocator": "normalized_result.methods[token=0x0600109e]",
+      "symbol": "FMRTE_Framework.GameObjects.PlayerStaff::get_TeamAddress",
+      "methodToken": "0x0600109e",
+      "rva": 478140,
+      "fileOffset": 470460,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "732981ad94ea362ebcd915a2ed7ec6d336c08c778f75e86b8c705901e4592cba",
+      "sourceIlSha256": "9d4d5062943bda66fce91eece26bf45a8d05245caa5704edd771d078bf37fcb5",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001002",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_340c303fb209860b2edfef989acbd316b43a87e77ce976e9cc140b9bce1bb832",
+      "reaLocator": "normalized_result.methods[token=0x06001002]",
+      "symbol": "FMRTE_Framework.GameObjects.Player::get_Contracts",
+      "methodToken": "0x06001002",
+      "rva": 454976,
+      "fileOffset": 447296,
+      "signature": {
+        "returnType": "class:257<class:1576>",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "9f3f45e2e8e619e73c5fae68bbe5dba83ec00456be39a0e5ad405de2b244e9a3",
+      "sourceIlSha256": "93d556d173639877e242c2a6e778ab5c5801617d27102da4a6d621e1d6f05d20",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001003",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_340c303fb209860b2edfef989acbd316b43a87e77ce976e9cc140b9bce1bb832",
+      "reaLocator": "normalized_result.methods[token=0x06001003]",
+      "symbol": "FMRTE_Framework.GameObjects.Player::get_ContractAddress",
+      "methodToken": "0x06001003",
+      "rva": 455128,
+      "fileOffset": 447448,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "9a1343808794ec4bb06afaaa8edcf585892332a857c52b3771dd710f3385fbbd",
+      "sourceIlSha256": "19ea22c67d39980086929526a3b7d5401840b6fe080daac151106ca567f8be6c",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001007",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_340c303fb209860b2edfef989acbd316b43a87e77ce976e9cc140b9bce1bb832",
+      "reaLocator": "normalized_result.methods[token=0x06001007]",
+      "symbol": "FMRTE_Framework.GameObjects.Player::get_HasContract",
+      "methodToken": "0x06001007",
+      "rva": 455800,
+      "fileOffset": 448120,
+      "signature": {
+        "returnType": "bool",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "754520219924c79474d061ccef2ca1e5a19f9deec3b0cefde0df92a0b02d72df",
+      "sourceIlSha256": "4f47da2e7948d5083d7af8ab8f635efff70287b4575ced88d095239933f10c53",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001009",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_340c303fb209860b2edfef989acbd316b43a87e77ce976e9cc140b9bce1bb832",
+      "reaLocator": "normalized_result.methods[token=0x06001009]",
+      "symbol": "FMRTE_Framework.GameObjects.Player::get_Contract",
+      "methodToken": "0x06001009",
+      "rva": 455960,
+      "fileOffset": 448280,
+      "signature": {
+        "returnType": "class:1576",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "6a4f952f7d0d671f632a1da30d37aaa0b09164028af44293a7575167e5064c7d",
+      "sourceIlSha256": "a84872800691369518e042ef9c430afbd509ea32b2af33dac2d7a13de4c7688e",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x0600100b",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_340c303fb209860b2edfef989acbd316b43a87e77ce976e9cc140b9bce1bb832",
+      "reaLocator": "normalized_result.methods[token=0x0600100b]",
+      "symbol": "FMRTE_Framework.GameObjects.Player::get_NumberOfContracts",
+      "methodToken": "0x0600100b",
+      "rva": 456164,
+      "fileOffset": 448484,
+      "signature": {
+        "returnType": "u1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "3156036b7c3462f930e2d4576dabb2b3b6fb7d917fd87087f9aec4cdc8a2da19",
+      "sourceIlSha256": "4d57819c8c2814253e6f3686dc82e1e694f0c7de0969e6189d5bf55a08580fec",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000d27",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x06000d27]",
+      "symbol": "FMRTE_Framework.GameObjects.Contract::get_TeamPointer",
+      "methodToken": "0x06000d27",
+      "rva": 410788,
+      "fileOffset": 403108,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "5b5f4af935d9387e65aab1543f5d7cdac80169de1ac868ffa68e5d9e5cf49f23",
+      "sourceIlSha256": "f2c109f106524566269bff97c143f37648fb557cf4962c9c45aad140486772d7",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000d2b",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x06000d2b]",
+      "symbol": "FMRTE_Framework.GameObjects.Contract::get_Club",
+      "methodToken": "0x06000d2b",
+      "rva": 410964,
+      "fileOffset": 403284,
+      "signature": {
+        "returnType": "class:1436",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "03384f52cbe834ed7af592dc37d6699f71a27194cc33aa890d42f58a23bb6e3b",
+      "sourceIlSha256": "cd7ba4efb734418ce5a8f7da6d1f4077f983b1b59d5fe9d1a2b037b399624371",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000d2e",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x06000d2e]",
+      "symbol": "FMRTE_Framework.GameObjects.Contract::get_ContractExpiryDate",
+      "methodToken": "0x06000d2e",
+      "rva": 411056,
+      "fileOffset": 403376,
+      "signature": {
+        "returnType": "valuetype:477",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "75cde931ef47fc13b2baf20226866eded92c35138d86b43e9f16e5adcae321d8",
+      "sourceIlSha256": "1f02ff81edae7a123ab5a2bc438ba24b81bf51f23312d36e7edc70aef9527b45",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000d30",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x06000d30]",
+      "symbol": "FMRTE_Framework.GameObjects.Contract::get_ContractStarted",
+      "methodToken": "0x06000d30",
+      "rva": 411144,
+      "fileOffset": 403464,
+      "signature": {
+        "returnType": "valuetype:477",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "f0a07ed370389a2e4364795449e9b017d624fa27ce631c687a7a68763166c1d8",
+      "sourceIlSha256": "b00c4c71efa88b307337ac61b28865fa1fce9ec94aac147142a711b2b7bf1c23",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000d38",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x06000d38]",
+      "symbol": "FMRTE_Framework.GameObjects.Contract::get_WagePerWeek",
+      "methodToken": "0x06000d38",
+      "rva": 411844,
+      "fileOffset": 404164,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "93a164155ead5b9c3c270581e7ca562e9f5ef776d4467fdbb800f073d42ce0bd",
+      "sourceIlSha256": "f65e1b0ff5f136dc30c5a649ba69676d4d73f46ea23dfcce7d9dd053d22aa2b1",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000d3a",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x06000d3a]",
+      "symbol": "FMRTE_Framework.GameObjects.Contract::get_ContractType",
+      "methodToken": "0x06000d3a",
+      "rva": 411948,
+      "fileOffset": 404268,
+      "signature": {
+        "returnType": "u1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "d08128273f6b1237913ed1fd5c1cb7282c3ee2b88b824f7c9cafb255991babef",
+      "sourceIlSha256": "7b1d5e41d22f4ecf1331e056367be2a8c707e512cd42eb143f9e6ea296dac409",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000d3c",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x06000d3c]",
+      "symbol": "FMRTE_Framework.GameObjects.Contract::get_TeamStatus",
+      "methodToken": "0x06000d3c",
+      "rva": 412036,
+      "fileOffset": 404356,
+      "signature": {
+        "returnType": "valuetype:2008",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "95574968d460ebd11828a5d016365d06ea2eecf512fed1bc0df8016ce83f6068",
+      "sourceIlSha256": "0479748d4378a94c464bcc4fd32a0bc73a73c819c0d9dd19c0648915e28f9bfc",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000d5d",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x06000d5d]",
+      "symbol": "FMRTE_Framework.GameObjects.Contract::get_ContractClassType",
+      "methodToken": "0x06000d5d",
+      "rva": 414524,
+      "fileOffset": 406844,
+      "signature": {
+        "returnType": "valuetype:1516",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "aeaf3e14e615369bcc162ae5b2e377ab2d0df447e96d63636056c2a7ac28a7a3",
+      "sourceIlSha256": "78a52e1fda9bb45cb02abec2c4cba4d76f4a256edff139b7f7c7e6176d418c76",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x060012ac",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x060012ac]",
+      "symbol": "FMRTE_Framework.GameObjects.Team::get_ID",
+      "methodToken": "0x060012ac",
+      "rva": 516752,
+      "fileOffset": 509072,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "1b45cce320dc72ea357073d7e487301ea15cd1dd6b20ea6150a0e1b6c17cd3b2",
+      "sourceIlSha256": "09d1606068d454c52ac5e8eefd3d4e9aa056035e434bc65c735129fa481fd8e6",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x060012af",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x060012af]",
+      "symbol": "FMRTE_Framework.GameObjects.Team::get_ClubAddress",
+      "methodToken": "0x060012af",
+      "rva": 516880,
+      "fileOffset": 509200,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "b33554d537ecd099a0ac949a705863400e062412a0b38d9d46b37fa955107dab",
+      "sourceIlSha256": "3dc38def2c2c59989429cd7294f214b2ff48ebf2e83b85d73c89f485f9f8d3a5",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x060012b2",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x060012b2]",
+      "symbol": "FMRTE_Framework.GameObjects.Team::get_Club",
+      "methodToken": "0x060012b2",
+      "rva": 517008,
+      "fileOffset": 509328,
+      "signature": {
+        "returnType": "class:1532",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "1aa347e3f35d92ff8410d381516257f2ab59871e86d7369d5164a0024a02ea36",
+      "sourceIlSha256": "977e89ebbb6fc4431b43d2e7f06f825098953ddae60c22213422e8117f35526b",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000bc5",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x06000bc5]",
+      "symbol": "FMRTE_Framework.GameObjects.AbstractClub::get_Name",
+      "methodToken": "0x06000bc5",
+      "rva": 387488,
+      "fileOffset": 379808,
+      "signature": {
+        "returnType": "string",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "bb934ba6d34c9053613734bbb5e8a223ed05f2df8c078d769e75e4a24990835a",
+      "sourceIlSha256": "b10ea35c80f8709f31c5dd43b9cfbba9654f37057349b181f7dd508eed46fd56",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000bc9",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x06000bc9]",
+      "symbol": "FMRTE_Framework.GameObjects.AbstractClub::get_ShortName",
+      "methodToken": "0x06000bc9",
+      "rva": 387864,
+      "fileOffset": 380184,
+      "signature": {
+        "returnType": "string",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "5a349d9f96f60da43623d88252cf555f8719d3eec6ce1cf811c2ba92ef5aa49e",
+      "sourceIlSha256": "3b7ab6a5f678a021db9b2e50112d54108326ff22bb286c7f6b01ca8055e35397",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000bdd",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x06000bdd]",
+      "symbol": "FMRTE_Framework.GameObjects.AbstractClub::get_ID",
+      "methodToken": "0x06000bdd",
+      "rva": 390868,
+      "fileOffset": 383188,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "d1520a3ee7b4ce99e40d8183f3f281317f90a4e13095fc7a593f727cefb02860",
+      "sourceIlSha256": "9e6f47cc5268d3116c0e1af3793b32531f4eb1bcdb09cf52ee7bc8cc8639638d",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000d8b",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x06000d8b]",
+      "symbol": "FMRTE_Framework.GameObjects.GameCurrency::get_ID",
+      "methodToken": "0x06000d8b",
+      "rva": 416972,
+      "fileOffset": 409292,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "0b2b3eea8efc7f23852e88973cf789d228d7813a681a739a24ea3b14d73b7fe6",
+      "sourceIlSha256": "7906d620fa67dc10e0709a88cd6945a5529589b6aa2f8a77079a0090f3c2d944",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000d8e",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x06000d8e]",
+      "symbol": "FMRTE_Framework.GameObjects.GameCurrency::get_ShortName",
+      "methodToken": "0x06000d8e",
+      "rva": 417092,
+      "fileOffset": 409412,
+      "signature": {
+        "returnType": "string",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "12d8840430232c32e5ad790f7309d07eb34c3382fec3946a853e0c4d2ffc2da0",
+      "sourceIlSha256": "0d44f47923b49b69c82c989fb9bdfa4a9edc7d7507c4936d8e00403f5da5ab24",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000d8f",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x06000d8f]",
+      "symbol": "FMRTE_Framework.GameObjects.GameCurrency::get_Name",
+      "methodToken": "0x06000d8f",
+      "rva": 417204,
+      "fileOffset": 409524,
+      "signature": {
+        "returnType": "string",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "1ac4769d9fb1b2909296a5b2fad907c17de36257fc4e0eeaae3b2eb9f53cec86",
+      "sourceIlSha256": "650d9d6bb5e158695fd561b12d007ab93b7c9bed1f3e3a64de4403c2a2bf0ca7",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000184",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_7edb5b8eebbcf0ea22e66caf63608dd91d55dc74ab06ce0c70e958556818c8b5",
+      "reaLocator": "normalized_result.methods[token=0x06000184]",
+      "symbol": "#=qB6SZKKshXtM_TT_kfSWftQ1J7_QNUgS0EVMGaJT8ha06FSDlHLO7yxf6UOaUjIqK::#=q72$m$VOYRNaczVO1jaaLMg==",
+      "methodToken": "0x06000184",
+      "rva": 58452,
+      "fileOffset": 50772,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "e1fcddc7c85b628025c3842d85210a8b05725a143691911fc2eded12a1641442",
+      "sourceIlSha256": "61eada22f367a43e47d103e7f8701974faa12d641692cdc561aa80a8bff6a2d2",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000256",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_7edb5b8eebbcf0ea22e66caf63608dd91d55dc74ab06ce0c70e958556818c8b5",
+      "reaLocator": "normalized_result.methods[token=0x06000256]",
+      "symbol": "#=qDjlkC27GeV7oQ88OqqPzTBEoM2UD05JmkRuEcOi9LEirnG51Gq357I5WoeaODi6N::#=q0kLYCFBJOJ1Q7g4qEyPTHA==",
+      "methodToken": "0x06000256",
+      "rva": 97084,
+      "fileOffset": 89404,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "2b385eedcb13089905c0093cb1154e61df4be335d48adc374ca289280d38a740",
+      "sourceIlSha256": "c78c79c5df561b80cd877351783e1fd6a0066426f830f0d06bcd2392a27d6123",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000798",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_7edb5b8eebbcf0ea22e66caf63608dd91d55dc74ab06ce0c70e958556818c8b5",
+      "reaLocator": "normalized_result.methods[token=0x06000798]",
+      "symbol": "#=qrELVxQHZVkKJVkFzjjK1_nFaZQ0$$lu$BBvXa128zoI$z2cKlD_qnyAMXqhD9VhM::#=qDvJI1_6pu7ejD9P1cZT0Cg==",
+      "methodToken": "0x06000798",
+      "rva": 251068,
+      "fileOffset": 243388,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "97d382d02185f59e55cead8ccae63e44d0bc67a58080687ed29b60df3e31960c",
+      "sourceIlSha256": "8c679252298fe950b703a3e38d4584c60caf5dc10277de8f0c288a2c71f5fac5",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x060003d9",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_7edb5b8eebbcf0ea22e66caf63608dd91d55dc74ab06ce0c70e958556818c8b5",
+      "reaLocator": "normalized_result.methods[token=0x060003d9]",
+      "symbol": "#=qetfbmIRAPZEgy6puDuzlTsdFhtJvcQ8GSXx_aECj8lbl5shp94L866FwI7_hRlpG::#=qGcWu5uuqGSydn11UABvcML961MtpRCJhxKJHzX6CJPY=",
+      "methodToken": "0x060003d9",
+      "rva": 152540,
+      "fileOffset": 144860,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": [
+          "i4",
+          "bool"
+        ]
+      },
+      "normalizedIlSha256": "74d89159f28da798f64440c5422b6f144760feaf18dd80ef6a8bb9caa6005672",
+      "sourceIlSha256": "42502ff45df94576c03af8e91d8cdc0b45409aca2782d97dcb1404bb548665e1",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x0600042a",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_d0607aba2a6662460bffc27f6f15f37c637e82c2901872eb3746bc20e63eacaa",
+      "reaLocator": "normalized_result.methods[token=0x0600042a]",
+      "symbol": "#=qfXFl4hkZced4OeXNOOzfI5UCaurKfoYYq7jjB$fVi4YYISy5gWTumaPTvfndTxH9::#=qz9oHd2jKZ$H_fLtRo8SULA==",
+      "methodToken": "0x0600042a",
+      "rva": 159208,
+      "fileOffset": 151528,
+      "signature": {
+        "returnType": "valuetype:477",
+        "parameterTypes": [
+          "i4"
+        ]
+      },
+      "normalizedIlSha256": "0d99d50028c47f5598cfda87da8fe24ecbef03cac9f282ca7cb85300f4640392",
+      "sourceIlSha256": "5940455f64a685242641a3ded6f4e78c7a4fea42cb50e19e55f88f3d3ecbcf1d",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001004",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_340c303fb209860b2edfef989acbd316b43a87e77ce976e9cc140b9bce1bb832",
+      "reaLocator": "normalized_result.methods[token=0x06001004]",
+      "symbol": "FMRTE_Framework.GameObjects.Player::set_ContractAddress",
+      "methodToken": "0x06001004",
+      "rva": 455208,
+      "fileOffset": 447528,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "i4"
+        ]
+      },
+      "normalizedIlSha256": "a05a6d45037b6986c8bf7cb5f684b5ae9a3a34743156ce210a960697551eb7da",
+      "sourceIlSha256": "4be0f0ae39b21783f9841196f3aa28ebc7ff2ee6a86e0b938f1b7190b1b08fbd",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001005",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_340c303fb209860b2edfef989acbd316b43a87e77ce976e9cc140b9bce1bb832",
+      "reaLocator": "normalized_result.methods[token=0x06001005]",
+      "symbol": "FMRTE_Framework.GameObjects.Player::SwapContracts",
+      "methodToken": "0x06001005",
+      "rva": 455288,
+      "fileOffset": 447608,
+      "signature": {
+        "returnType": "bool",
+        "parameterTypes": [
+          "class:1808"
+        ]
+      },
+      "normalizedIlSha256": "cf85d116b8de1c133bab1d3f2f7112bddf193dc0797d85ea864d5b582476de78",
+      "sourceIlSha256": "8d67125280274ca366f54b9ecd9a69ee96915f260da89daae7a7337d2f0d6928",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x060004c2",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_717e8c0d93b0767398504b2f8c5fb32e6c3fdcb2bc456319c060500a9a1d7bd7",
+      "reaLocator": "normalized_result.methods[token=0x060004c2]",
+      "symbol": "#=qzvniqVde3UGtQjEruhfsa7Pz$k_NVLnM3ZeuWBr$GDw=::#=qQO4U95cShAYXIWiMSawo6Q==",
+      "methodToken": "0x060004c2",
+      "rva": 171912,
+      "fileOffset": 164232,
+      "signature": {
+        "returnType": "bool",
+        "parameterTypes": [
+          "i4",
+          "i8",
+          "class:193<class:744,class:257<i4>>&"
+        ]
+      },
+      "normalizedIlSha256": "f07aeb62ad471100de3bfb7871ed8136c52e3441af93d01f9803b5d4a7af68e0",
+      "sourceIlSha256": "a7ec8659fc4f44851d442601f4c7c8aca92ef2e0f1f18a4bfa25790f87bff785",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x060004c3",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_717e8c0d93b0767398504b2f8c5fb32e6c3fdcb2bc456319c060500a9a1d7bd7",
+      "reaLocator": "normalized_result.methods[token=0x060004c3]",
+      "symbol": "#=qzvniqVde3UGtQjEruhfsa7Pz$k_NVLnM3ZeuWBr$GDw=::#=quUCUdM9BDtnhMQPTnpDr0A==",
+      "methodToken": "0x060004c3",
+      "rva": 172692,
+      "fileOffset": 165012,
+      "signature": {
+        "returnType": "bool",
+        "parameterTypes": [
+          "i4",
+          "i8",
+          "class:193<class:744,class:257<i4>>&"
+        ]
+      },
+      "normalizedIlSha256": "82bccac2830b9f422ba3652ed84e2c2f26cf9c7621855896cf9325374c6f30ae",
+      "sourceIlSha256": "0fee1604f47a74c3cd9453beddadba2cd802b4fe59c2a606a4b4127a94294b6a",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x060004be",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_717e8c0d93b0767398504b2f8c5fb32e6c3fdcb2bc456319c060500a9a1d7bd7",
+      "reaLocator": "normalized_result.methods[token=0x060004be]",
+      "symbol": "#=qzvniqVde3UGtQjEruhfsa7Pz$k_NVLnM3ZeuWBr$GDw=::#=q9QQsG2iGEoxyCfzYotaxPNeWI2dCAT$VvlgugzHqEtA=",
+      "methodToken": "0x060004be",
+      "rva": 171760,
+      "fileOffset": 164080,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "904af2d6ef6b56f3a0929d1b9f3bc5eaac51ff2b6b70fb44525ec49baeb62127",
+      "sourceIlSha256": "352466555505e8cf1daaacf962c3eb021e61c118ec4eeb979e5f5e46467e3c94",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000ad7",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_7edb5b8eebbcf0ea22e66caf63608dd91d55dc74ab06ce0c70e958556818c8b5",
+      "reaLocator": "normalized_result.methods[token=0x06000ad7]",
+      "symbol": "FMRTE_Core.Managers.Currency::poundToCurrency",
+      "methodToken": "0x06000ad7",
+      "rva": 349124,
+      "fileOffset": 341444,
+      "signature": {
+        "returnType": "r8",
+        "parameterTypes": [
+          "r8",
+          "class:1304"
+        ]
+      },
+      "normalizedIlSha256": "5468306852547962ecbe41af1999b44e2a019f699016d50162fd72838193dd24",
+      "sourceIlSha256": "6d8307466bd62f02785217a066e9794662e4f47ffb8738d8fe607243c12b2f6a",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000247",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_7edb5b8eebbcf0ea22e66caf63608dd91d55dc74ab06ce0c70e958556818c8b5",
+      "reaLocator": "normalized_result.methods[token=0x06000247]",
+      "symbol": "#=qcNaGAIKaLL8T4E$rePrXtN9Oh0uO61QTaoUuxo_8t8$LBCgvPqOqwR9y3kkqZZUp::#=qKkwupc7k5fq3RolnnEDsNQk4FWOF7jaurEKpciO9YfQ=",
+      "methodToken": "0x06000247",
+      "rva": 94260,
+      "fileOffset": 86580,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "i4",
+          "i4",
+          "i4&",
+          "i4&"
+        ]
+      },
+      "normalizedIlSha256": "277e7a1fe8e79126ac7a8c5512235a7f6292c7a913ec92d38e78148f9738c9b3",
+      "sourceIlSha256": "b44fb208d31cb417a15a18e69132858f8780010af83d5a74e94ecc46c2918cc2",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x0600148a",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_1facaa98a62ae5884eebcfe8ae094e82c902609117b0235934c9bd461444a913",
+      "reaLocator": "normalized_result.methods[token=0x0600148a]",
+      "symbol": "FMRTE_Framework.Settings.Config::get_Wages",
+      "methodToken": "0x0600148a",
+      "rva": 550912,
+      "fileOffset": 543232,
+      "signature": {
+        "returnType": "valuetype:2164",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "f27680123d3081f578f4841db06061d495a394189acc758473305d413c73d200",
+      "sourceIlSha256": "d58d92bd5a36d303c1930eb5668651407739291fe12152c0486c0ad58b95b93a",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06001490",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_1facaa98a62ae5884eebcfe8ae094e82c902609117b0235934c9bd461444a913",
+      "reaLocator": "normalized_result.methods[token=0x06001490]",
+      "symbol": "FMRTE_Framework.Settings.Config::get_Currency",
+      "methodToken": "0x06001490",
+      "rva": 551092,
+      "fileOffset": 543412,
+      "signature": {
+        "returnType": "class:1304",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "21c349b2ceb9d8e0d3665ec487a28f522673715cdc3d5c378cd48e90a0efecb1",
+      "sourceIlSha256": "749ac1cb6bc1afcd8aa4afc9a12d4031f90dbcaa83c5fd7ce9fc721b68920afa",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000d25",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x06000d25]",
+      "symbol": "FMRTE_Framework.GameObjects.Contract::.ctor",
+      "methodToken": "0x06000d25",
+      "rva": 410692,
+      "fileOffset": 403012,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "i4"
+        ]
+      },
+      "normalizedIlSha256": "8ccdbdf6082b167d481d7da3255dc5abfeaa2353db67ed8fea9d1d5bfb4b4dc7",
+      "sourceIlSha256": "aef1f1ce06fa861b94684b5daf3ccd9d6386cc2a087882fcc3988397b9200c71",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000435",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_d0607aba2a6662460bffc27f6f15f37c637e82c2901872eb3746bc20e63eacaa",
+      "reaLocator": "normalized_result.methods[token=0x06000435]",
+      "symbol": "#=qfXFl4hkZced4OeXNOOzfI5UCaurKfoYYq7jjB$fVi4YYISy5gWTumaPTvfndTxH9::#=qioyGyBOwKE82Lj4lq$QT1HfD6oeOBoucI9$Eg9u3xVo=",
+      "methodToken": "0x06000435",
+      "rva": 159968,
+      "fileOffset": 152288,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": [
+          "i4",
+          "i4"
+        ]
+      },
+      "normalizedIlSha256": "c9759b459da07cc3db4a14df781a82fb88aaf397eae6bf46a0133333040cf10c",
+      "sourceIlSha256": "ceb8bc3a7d3dd678b4bb74cd63732441d62b4adb738c38f929a3aaa7e72dc01b",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x060012aa",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x060012aa]",
+      "symbol": "FMRTE_Framework.GameObjects.Team::.ctor",
+      "methodToken": "0x060012aa",
+      "rva": 516516,
+      "fileOffset": 508836,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "i4"
+        ]
+      },
+      "normalizedIlSha256": "6ae514388435e912d5a4090d2ae95a915a11213da62a40f63142c38dcb41d8e0",
+      "sourceIlSha256": "63bb76c1077a97e32e547b4db92b2450e5e6f75decf166a4788d14f302651f68",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000d8d",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x06000d8d]",
+      "symbol": "FMRTE_Framework.GameObjects.GameCurrency::get_RowID",
+      "methodToken": "0x06000d8d",
+      "rva": 417052,
+      "fileOffset": 409372,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "06f1fd07eb120cc495e237b186b4205a676c663fe777e6fbeb413a55154d9c7b",
+      "sourceIlSha256": "55b9a76c5cd321965fe19530a6ce7d09e090f30a796b487fec115bc827a6ce93",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000d90",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x06000d90]",
+      "symbol": "FMRTE_Framework.GameObjects.GameCurrency::get_Symbol",
+      "methodToken": "0x06000d90",
+      "rva": 417316,
+      "fileOffset": 409636,
+      "signature": {
+        "returnType": "string",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "1f6fb3104cdc988566e673d295d3b950cf14f2b0f95395a1612de744a06abbae",
+      "sourceIlSha256": "d4588b63df1de9c88ac3aa8161c51991fb6157bd40d57130c4dff21e60a2b8c9",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000ad3",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_7edb5b8eebbcf0ea22e66caf63608dd91d55dc74ab06ce0c70e958556818c8b5",
+      "reaLocator": "normalized_result.methods[token=0x06000ad3]",
+      "symbol": "FMRTE_Core.Managers.Currency::get_Value",
+      "methodToken": "0x06000ad3",
+      "rva": 349004,
+      "fileOffset": 341324,
+      "signature": {
+        "returnType": "r8",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "c557d2f8a7dd3535a2e0a10790de343fa4ff15a3d92846585448a9ffd9a3e8a1",
+      "sourceIlSha256": "63ff150f667a5e1fef94ead1c855338074084748c0a73a89a6ce884a446380ba",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x060014dd",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_1facaa98a62ae5884eebcfe8ae094e82c902609117b0235934c9bd461444a913",
+      "reaLocator": "normalized_result.methods[token=0x060014dd]",
+      "symbol": "FMRTE_Framework.Settings.Config::#=qvqWI_8T21_AjGdA8$ZiJtTah1n11dEA2MI4me1M2WeI=",
+      "methodToken": "0x060014dd",
+      "rva": 554736,
+      "fileOffset": 547056,
+      "signature": {
+        "returnType": "bool",
+        "parameterTypes": [
+          "class:1304"
+        ]
+      },
+      "normalizedIlSha256": "1a4de2b5a21e74c471e4a046f05b430c06d30dfa4f34d9ed062d7aa5bc172d62",
+      "sourceIlSha256": "311c13a2010a7d75c68b5805f517d837b4e835cd671ad41225bd2a20f066e3ba",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x060014de",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_1facaa98a62ae5884eebcfe8ae094e82c902609117b0235934c9bd461444a913",
+      "reaLocator": "normalized_result.methods[token=0x060014de]",
+      "symbol": "FMRTE_Framework.Settings.Config::#=qQfWEFlF$OJ2P3B$JMQ9cb9MbQT9eG$b06cwjGONE7RI=",
+      "methodToken": "0x060014de",
+      "rva": 554780,
+      "fileOffset": 547100,
+      "signature": {
+        "returnType": "bool",
+        "parameterTypes": [
+          "class:1304"
+        ]
+      },
+      "normalizedIlSha256": "c181f335938df543f573250c53b9c8af78b2036d555bc42d88f2bfc3bf02b06e",
+      "sourceIlSha256": "02bade41ba4e24d9fa4c9d3cf9ef604d3b9b7e73b8f94af12330fb6fe7965a8a",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000d28",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x06000d28]",
+      "symbol": "FMRTE_Framework.GameObjects.Contract::set_TeamPointer",
+      "methodToken": "0x06000d28",
+      "rva": 410828,
+      "fileOffset": 403148,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "i4"
+        ]
+      },
+      "normalizedIlSha256": "9ff3301dc696e64dbb8c9caa082c09f0263d51fbb2b8266bf056fd5c5b82c7f6",
+      "sourceIlSha256": "6b11d6fc7f32d533c302b5fe76bce73bb908c1dd8b99514aeed63784ec4adce0",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000d29",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x06000d29]",
+      "symbol": "FMRTE_Framework.GameObjects.Contract::get_PersonPointer",
+      "methodToken": "0x06000d29",
+      "rva": 410876,
+      "fileOffset": 403196,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "c3b00dc02994e010390abc2bd6381e91718a6e5f4166c154095f9567f22fdac8",
+      "sourceIlSha256": "74740910268a41aa9d9705a00c39aaf3bf354839c018c854f1f2dabbac1f575c",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000d8c",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x06000d8c]",
+      "symbol": "FMRTE_Framework.GameObjects.GameCurrency::get_ID2",
+      "methodToken": "0x06000d8c",
+      "rva": 417012,
+      "fileOffset": 409332,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "f557f8f70f5e66c1c5186080022da768d824ac120770459bad1f374d75745927",
+      "sourceIlSha256": "f1889315c45958e40d23d0fbbed673625667ea5fb4ca677774f32130213d38f8",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
+    },
+    {
+      "id": "RE13-SNAPSHOT-0x06000bc7",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; sampled live/UI observations and uncertified snapshot admission are recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_0131becba96b4071b64a9900b76280011909f2b711071f806f36a5a8ac6e2fd0",
+      "reaLocator": "normalized_result.methods[token=0x06000bc7]",
+      "symbol": "FMRTE_Framework.GameObjects.AbstractClub::CompareTo",
+      "methodToken": "0x06000bc7",
+      "rva": 387680,
+      "fileOffset": 380000,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": [
+          "object"
+        ]
+      },
+      "normalizedIlSha256": "b689e6c450121a24c85e07a18cf1a909fe235d3b0c5f376cc895cbe6cf29d082",
+      "sourceIlSha256": "4645a2ddaae0a2cae2683cab595cd998d5891c5e13bb568e643365046205d702",
+      "limitations": [
+        "Exact SHA/MVID required; source method recovery does not certify every runtime object or field semantics.",
+        "No manager visibility/whole-career/contract currency/current-employer or writer certification."
+      ]
     }
   ],
   "unknowns": [
@@ -5441,8 +7912,8 @@
       "id": "U13-ENTITY",
       "question": "End-to-end catalog construction and native identity/layout on exact local FM2013 build",
       "status": "UNKNOWN",
-      "resolvedSubset": "File-derived Player/PlayerStaff discovery,4058 distinct loaded IDs matching reference count,49 ordinary fields, and process/image relocation observed.",
-      "remaining": "General career/build/schema completeness and production adapter certification."
+      "resolvedSubset": "Exact-build normal/dual discovery; 4058 distinct loaded IDs; 49 ordinary attributes and 15 position bytes per record; 3730 typed club links; immutable provisional local snapshots with visibility gates.",
+      "remaining": "Atomic career identity, manager/scouting knowledge, broader career/build/error-state coverage, current-employer semantics and production/IPC certification."
     },
     {
       "id": "U13-CA-PA",
@@ -5475,6 +7946,19 @@
       "id": "U-OFFLINE",
       "question": "Independently decoded offline .fm records and roundtrip writer",
       "status": "UNKNOWN"
+    },
+    {
+      "id": "U13-VISIBILITY",
+      "question": "Per-player manager/scouting visibility and attribute masks",
+      "status": "UNKNOWN",
+      "remaining": "All exact numeric ordinary attributes and position familiarity are redacted before Realism snapshot return; Editor remains explicit research data."
+    },
+    {
+      "id": "U13-CONTRACT",
+      "question": "End-to-end contract units, configured currency/rate, loan selection and current employment",
+      "status": "UNKNOWN",
+      "resolvedSubset": "Static getter/layout/base wage-frequency/date behavior plus one selected record matching two reference date fields and club display; one displayed wage ratio is inferred only.",
+      "remaining": "Canonical contract fields stay null; no currency/rate/loan/current-employer certification."
     }
   ],
   "productCapabilities": {
@@ -5486,7 +7970,7 @@
   },
   "constraints": [
     "No proprietary binaries, decompiled source, private saves, memory dumps or license data in repository.",
-    "Read-only static target inspection; no installation or game-state mutation."
+    "Read-only static/live target inspection and explicitly authorized reference UI; no installation/save/game-data edits or writer execution."
   ],
   "artifactObservations": [
     {
@@ -5785,7 +8269,7 @@
       "verificationScriptSha256": "38b2059ad190d9f029f5e194c412eb2073a0e521c39c2ab95c817ad2da79173b"
     }
   ],
-  "lastUpdatedDate": "2026-10-31",
+  "lastUpdatedDate": "2026-11-01",
   "nativePlayerTypeResearch": {
     "date": "2026-10-31",
     "report": "18-fm2013-file-relative-discovery.md",
@@ -6017,5 +8501,171 @@
       "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-reference-final-index.json",
       "sha256": "28709c2c064ced9f21cd646cfbca7b0d69d572f65912dc1ed414190864815dbc"
     }
+  },
+  "liveSnapshotResearch": {
+    "date": "2026-11-01",
+    "exactGameBuild": "13.3.3f359652",
+    "profileVersion": "fm2013-live-research-1",
+    "implementation": [
+      "packages/domain/src/fm2013-live-profile.json",
+      "packages/domain/src/live-snapshot.ts",
+      "scripts/fm2013-live-wire.mjs",
+      "scripts/fm2013-normalize-live.mjs"
+    ],
+    "sourceProofs": [
+      {
+        "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-positions-proof.json",
+        "sha256": "746aad47675520b52e2198950ac18c6d493ad038f171775892c33a4950924add"
+      },
+      {
+        "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-club-contract-proof.json",
+        "sha256": "9e2b140b4914bfdd9d06cdc651b0ca2f714a27656b1de582f6c91191e72bfcbe"
+      },
+      {
+        "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-club-contract-semantics.json",
+        "sha256": "52e4939ca4ed5866f0d1e4bd5346d309d12223d7ec7c023dd14a7bb96fee3c8f"
+      }
+    ],
+    "sourceCanonicalMethodsWithoutMatchedRecord": [
+      {
+        "proof": "fm13-club-contract-proof.json",
+        "methodToken": "0x0600024a",
+        "sourceIlSha256": "bee7d4cfa9b9ac2fc01712b994a5f2dfb951fd4ae18c21e3bb2e3fdf975a7842"
+      },
+      {
+        "proof": "fm13-club-contract-proof.json",
+        "methodToken": "0x06000c63",
+        "sourceIlSha256": "07811137d87ba39a6b871145eae0f6c0b75edcacc1e8c9672b78ec2447e1984d"
+      }
+    ],
+    "captureEvidenceId": "ev_8d3ff8dc594e957ee64e49e8854652bf7addb367344ea021a27fb831ecb4275d",
+    "rejectedTruncatedEvidenceId": "ev_2fe1827761eb6d631c4369cf2900c5918664d07308c2327638efe02ab9a807df",
+    "selectedLinkEvidenceId": "ev_b14262a1993ebfad5a1ead27f5e9adddf1f5fb02c48fda545c7a42af7627277b",
+    "capture": {
+      "encoding": "hex-i8-tuples-v1",
+      "messagesTruncated": false,
+      "playerCount": 4058,
+      "passCounts": [
+        {
+          "nativeKind": "player",
+          "count": 4036
+        },
+        {
+          "nativeKind": "playerStaff",
+          "count": 22
+        }
+      ],
+      "ordinaryAttributeCells": 198842,
+      "positionCells": 60870,
+      "observedClubLinks": 3730,
+      "unknownClubLinks": 328,
+      "relationCounts": {
+        "player_team_pointer": 3713,
+        "primary_contract_team": 17
+      },
+      "packedDictionaryEntries": 527,
+      "dictionaryEntryIsUniqueClubClaim": false,
+      "batchAbilityWordsRead": false,
+      "rawAddressesInWire": false
+    },
+    "snapshot": {
+      "source": "live_game",
+      "verification": "provisional",
+      "rosterCompleteness": "unverified",
+      "scoutingKnowledge": "not_decoded",
+      "runtimeImageBytesAuthenticated": false,
+      "captureTimeAuthority": "caller_declared",
+      "careerIdentityAuthority": "user_declared",
+      "editorAttributeCells": 198842,
+      "editorPositionCells": 60870,
+      "realismRedactedAttributeCells": 198842,
+      "realismRedactedPositionCells": 60870,
+      "actualCaPaAlwaysNull": true,
+      "contractFieldsAlwaysNull": true,
+      "zeroPositionsInObservedCohort": 0,
+      "zeroPreservationSyntheticTested": true,
+      "readyMeans": "bounded capture admitted; no product, atomic-career or roster-completeness certification"
+    },
+    "reference": {
+      "positionComparisons": 15,
+      "contractDateComparisons": 2,
+      "displayedClubNameMatches": 1,
+      "recordCount": 1,
+      "nativeKind": "playerStaff",
+      "blinded": false,
+      "officialEngineOracle": false,
+      "currencyRatioOnlyInferred": true,
+      "runtimeCurrencyRateRead": false,
+      "receipts": [
+        {
+          "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-reference-davids-positions.json",
+          "sha256": "5810d843408f787f301075dd02fa575c1422d0de86f3ccc08328df0cc7b5bf3f"
+        },
+        {
+          "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-reference-davids-positions.png",
+          "sha256": "1a636c45eb61e371a02e7e35535f6ee8549459a3cc841c0950fc6f0fe39d107e"
+        },
+        {
+          "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-reference-davids-contract.json",
+          "sha256": "5af19830f744503f6cdf8358576f6e0cff4aeef229c01695566a86b7154e07d7"
+        },
+        {
+          "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-reference-davids-contract.jpg",
+          "sha256": "d6f876e32b49d6387568764df28e0bc83ce3be2d33672b3447b1c9e8fdf6157e"
+        }
+      ]
+    },
+    "input": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-live-wire-complete.json",
+      "sha256": "7290120eda97cb4f5531001e8e896aa84c1386529181a3f0668c830b13fc96bc"
+    },
+    "normalizedEditor": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-normalized-editor-v2.json",
+      "sha256": "72405456e4fef117b92331f7c5d6c7bbfa03d583c0e4084adfafd8a07e14fc8d"
+    },
+    "normalizedRealism": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-normalized-realism-v2.json",
+      "sha256": "37d2e0876fe8cc2c7d0447bb59ab71f34e3f47c5e4e6e057270e4a7a9cfc1c0a"
+    },
+    "verifier": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\verify-fm13-live-snapshot-final.mjs",
+      "sha256": "85d7fa020e966b2ffc69837dea83f25a8cc1aa5f94b89bfd1c08f7767f6c60c2"
+    },
+    "verification": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-live-snapshot-final-verification.json",
+      "sha256": "26d18357d329a95834990c006588c2dc5dedea9f1f969dd8a8b655486850e5f9"
+    },
+    "independentReview": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-snapshot-review.json",
+      "sha256": "d11762fdfd7a10ed183d2831572ae81062a30ac00b4a7d78378f403bdd237a4c"
+    },
+    "runtimeSource": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-live-wire-packed-v1.frida.js",
+      "sha256": "680a03d103d73eae7c362c98c2e9083db1e95a1c404838f425ae7639b78f4a60"
+    },
+    "tests": {
+      "command": "npm.cmd run check",
+      "typecheck": "PASS",
+      "vitestPassed": 106,
+      "nodePassed": 81,
+      "failed": 0,
+      "skipped": 0,
+      "buildAndBundleBudgets": "PASS"
+    },
+    "limits": {
+      "maxInputBytes": 24000000,
+      "maxTextCharacters": 12000000,
+      "maxPlayers": 10000,
+      "maxSerializedOutputBytes": 167772160,
+      "maxScanBytesPerPass": 1073741824,
+      "maxScanDurationMsPerPass": 20000
+    },
+    "inputResourceBound": "Opened regular-file handle, bounded buffer/read loop and final size/mtime check; fatal UTF-8; fresh output flag wx.",
+    "sourceFilesUnmodifiedByNormalizer": true,
+    "allOwnedFridaSessionsDetached": true,
+    "browserProcessOperationsAdded": false,
+    "desktopIpcImplemented": false,
+    "productionAdapterCertified": false,
+    "writerCertified": false
   }
 }

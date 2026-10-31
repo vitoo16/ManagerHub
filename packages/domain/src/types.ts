@@ -1,7 +1,7 @@
 import type { ArchiveIndex } from './archive';
 export type SourceStatus = 'verified' | 'provisional' | 'unsupported';
-export type MissingReason = 'not_present' | 'not_decoded' | 'incompatible_build' | 'redacted' | 'not_applicable';
-export type SourceKind = 'decoded_save' | 'game_export' | 'manual' | 'derived_model' | 'scenario';
+export type MissingReason = 'not_present' | 'not_decoded' | 'not_verified' | 'incompatible_build' | 'redacted' | 'not_applicable';
+export type SourceKind = 'decoded_save' | 'live_game' | 'game_export' | 'manual' | 'derived_model' | 'scenario';
 
 export interface EvidenceField<T> {
   readonly value: T | null;
