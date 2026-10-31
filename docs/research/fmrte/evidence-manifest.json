@@ -73,6 +73,21 @@
       "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-profile-strings-rea-evidence.json",
       "sha256": "deb1454075ac1a80ceeed0b2a7049e4e2a86287e65caa9b2a3ea9bc976986a02",
       "note": "2026-10-31 static profile decoding evidence; 14 canonical records. Raw data stays outside Git."
+    },
+    {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-reference-coverage-final-rea-evidence.json",
+      "sha256": "ad8b43b3955c98d53feb90f429b1ae27554b8d24f61d189962f7a88b119453b0",
+      "note": "2026-10-31 reference/coverage research: 7 canonical records. Private career and proprietary raw data stay outside Git."
+    },
+    {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-playerstaff-rea-evidence.json",
+      "sha256": "4b1a3e7a5d27dabe5d7be2642a6231b93fb1d765c08ce67746199ee7fadb055a",
+      "note": "2026-10-31 reference/coverage research: 4 canonical records. Private career and proprietary raw data stay outside Git."
+    },
+    {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-ordinary49-rea-evidence.json",
+      "sha256": "7732eca572165c9c066851300d96337d205ef060d55b36ec34e5f15517768915",
+      "note": "2026-10-31 reference/coverage research: 8 canonical records. Private career and proprietary raw data stay outside Git."
     }
   ],
   "evidenceAliases": {
@@ -108,7 +123,12 @@
     "imageRelativeScan13": "ev_e08c13b9f543af992d7a3102678e8c3599f1e29119ba49534ebd110605e124fc",
     "restartLoadedScan13": "ev_63fac4d303656a06163af42351e1661115ce4054cf319980041e95695ebdff2b",
     "exactDeclaredProfile13": "ev_6a15a2fe6c7746301799675bbb5c9776050faffc246b54aafb0a82b4e374369c",
-    "exactProfileDescriptor13": "ev_ca570eaade761c768efee06eb07187bc5a82c866512c9c17e9013aadf8133622"
+    "exactProfileDescriptor13": "ev_ca570eaade761c768efee06eb07187bc5a82c866512c9c17e9013aadf8133622",
+    "dualClassCoverage13": "ev_173c58a453222f89289e6d7e9a47b5cc78de3b9e8138c4e4fa9e1375743e5d20",
+    "referenceThreeRecords13": "ev_25af0a29742fa614a3eeac5933c7ce4ac2a2dc3e45d4e3025512bc8b9dd3b8dc",
+    "ordinary49Batch13": "ev_31f503ffadbadfad924be73db340c8bc52a0747dc51d319847e4803be3e6e264",
+    "ordinary49Getters13": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+    "ordinary49Initializer13": "ev_57c0eb7dbec6b0e01bedf7e1be43eeae525542c2078262b0fc403071b5b7c069"
   },
   "discoveries": [
     {
@@ -3701,18 +3721,1735 @@
         "No runtime FMRTE profile selection or hidden-value certification."
       ],
       "sourceIlSha256": "785b80a257637cd0542e9254adb2df69c0d5e4c767171141e354ab955d52fa4d"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000de0",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000de0]",
+      "symbol": "FMRTE_Framework.GameObjects.GoalKeeperAttributes::get_AerialAbility",
+      "methodToken": "0x06000de0",
+      "rva": 422068,
+      "fileOffset": 414388,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "f8799b0c2a917d35627000d4f23ad326b94ee12617287a15ae102c81a56858a3",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "7785f15d4fd00e64319c3e176be3d2ddcf2b77f69b885c0219befcfd78f04701"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000de2",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000de2]",
+      "symbol": "FMRTE_Framework.GameObjects.GoalKeeperAttributes::get_CommandOfArea",
+      "methodToken": "0x06000de2",
+      "rva": 422168,
+      "fileOffset": 414488,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "b8585cd168a57c55004a201ef06b3889cc16389682d7433ade7ee8eaf790b696",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "779b2babbfe2c7750b05665fb9dedeb5fa784b0f8cd918310b5215fa95b03cb6"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000de4",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000de4]",
+      "symbol": "FMRTE_Framework.GameObjects.GoalKeeperAttributes::get_Communication",
+      "methodToken": "0x06000de4",
+      "rva": 422268,
+      "fileOffset": 414588,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "3ddc58ad8abfb983d2c17c0a5a564e5f7d958cf42914f0b8a4f3c99b03043a15",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "69a7c567f423d96de964f42428158464ffa4a866b6d582f2e5420d36f5699088"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000de6",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000de6]",
+      "symbol": "FMRTE_Framework.GameObjects.GoalKeeperAttributes::get_Eccentricity",
+      "methodToken": "0x06000de6",
+      "rva": 422368,
+      "fileOffset": 414688,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "0ab1ae7c7c44d833abf959b4cd78271a471d9563dbcfa0fae4a80560b0ea2f39",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "25fd8079707d81b0eb746e506169ae860c8a1641227a7f8c76f8642e23b0516b"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000de8",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000de8]",
+      "symbol": "FMRTE_Framework.GameObjects.GoalKeeperAttributes::get_Handling",
+      "methodToken": "0x06000de8",
+      "rva": 422468,
+      "fileOffset": 414788,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "c41f36f109bcda1985405fd47850ce35dbefce3b33d3bfe8e77ac69d9abc158d",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "126aa152bbf1a61f696ece968af997ba5655c213ee19ca0b7bee9dbb4415f867"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000dea",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000dea]",
+      "symbol": "FMRTE_Framework.GameObjects.GoalKeeperAttributes::get_Kicking",
+      "methodToken": "0x06000dea",
+      "rva": 422568,
+      "fileOffset": 414888,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "5a6a9bb74ab48a0bb7252940aa96d272fbe2594aa164ae0903d19564beb8630e",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "b2b790cad0a25c102e96714f64612fa0d19b5b264275fcf17f88d64b03aa4a2f"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000dec",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000dec]",
+      "symbol": "FMRTE_Framework.GameObjects.GoalKeeperAttributes::get_OneOnOnes",
+      "methodToken": "0x06000dec",
+      "rva": 422668,
+      "fileOffset": 414988,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "8a54deae780c5b5a499933e40454333fe8e7928d22aef383e1cd12a95bd209b0",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "8228834301504c6c58e4ac6f40f4bbcc6a944a545adf9dc8e0d6e51b11f08581"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000dee",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000dee]",
+      "symbol": "FMRTE_Framework.GameObjects.GoalKeeperAttributes::get_Reflexes",
+      "methodToken": "0x06000dee",
+      "rva": 422768,
+      "fileOffset": 415088,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "2f1032a1be1989d558bfee379cf12170b66ae584a1aa0ad4455b342185cb3a0f",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "0cc32f3d1b35f50517dd9db3e3ca19eeaf11c93b010c4734ea767e7df0afba61"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000df0",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000df0]",
+      "symbol": "FMRTE_Framework.GameObjects.GoalKeeperAttributes::get_RushingOut",
+      "methodToken": "0x06000df0",
+      "rva": 422868,
+      "fileOffset": 415188,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "ebe67d13667e9166243bb482199f3f3962e9017de2d93b60fc3622367f6d452d",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "ed7e92cb4f74de74337617883cd00187f991a703576602446e5fdfd0fff52bb4"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000df2",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000df2]",
+      "symbol": "FMRTE_Framework.GameObjects.GoalKeeperAttributes::get_TendencyToPunch",
+      "methodToken": "0x06000df2",
+      "rva": 422968,
+      "fileOffset": 415288,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "395fabd4a45f58c18ce7042744679a45f02cecaa8ab9153d6ff358b5d5e812a9",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "2cc2ef554d21c0c0007bdb0e6d6f3603bc9c50695adab5f946ecbc04f8ae45e9"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000df4",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000df4]",
+      "symbol": "FMRTE_Framework.GameObjects.GoalKeeperAttributes::get_Throwing",
+      "methodToken": "0x06000df4",
+      "rva": 423068,
+      "fileOffset": 415388,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "348afffe94129bfbbe2cca802b4bdd263cee4dd9dacb0f410a8ad5949f62c0c5",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "5ec918b28e9d791b1b001d931eb80cfd4e4395b0b5525130c555f1ba6339c9ac"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000ebc",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000ebc]",
+      "symbol": "FMRTE_Framework.GameObjects.MentalAttributes::get_Aggression",
+      "methodToken": "0x06000ebc",
+      "rva": 435848,
+      "fileOffset": 428168,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "96952137c493248be6a36a01087eeda963b3df14e8a70708899f51157d6850fb",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "dd98adbed97c943add9a561319159d2bfdee7e23c7fab00a47fab3f536905247"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000ebe",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000ebe]",
+      "symbol": "FMRTE_Framework.GameObjects.MentalAttributes::get_Anticipation",
+      "methodToken": "0x06000ebe",
+      "rva": 435948,
+      "fileOffset": 428268,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "941bc516722f105b023d6ebc8b8363a953a40dcb1105585fcd2b7101380d090c",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "4a1076a474c9e645c41d3a24deea0f2e2aaf2d492b25f9585eb9b87d4daf134a"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000ec0",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000ec0]",
+      "symbol": "FMRTE_Framework.GameObjects.MentalAttributes::get_Bravery",
+      "methodToken": "0x06000ec0",
+      "rva": 436048,
+      "fileOffset": 428368,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "49fe2426b443321e1c8b90d261a38ab823b7efd45eafd60b54faa5fe365cc4a8",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "926c710aec5c01764a754dd0aef2039e2310a79dcd02b817590a40229b6c4822"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000ec2",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000ec2]",
+      "symbol": "FMRTE_Framework.GameObjects.MentalAttributes::get_Composure",
+      "methodToken": "0x06000ec2",
+      "rva": 436148,
+      "fileOffset": 428468,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "8d8a62f0a90d33e5dda360d04edbc2046c99e2e3361334883da35b96c1c34826",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "1c0607de833b6cfebbb220b09c4fdd0c656212c24bb5069ddd52477746dd1a35"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000ec4",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000ec4]",
+      "symbol": "FMRTE_Framework.GameObjects.MentalAttributes::get_Concentration",
+      "methodToken": "0x06000ec4",
+      "rva": 436248,
+      "fileOffset": 428568,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "d05bcb4016f1afbc7fa6a8e40faaf59d1f27c98a52e917215108965043cc267b",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "abeb2516e7b6f58f5d51f967c62ae55a39b59b1b9f0fd7076de4e54d7415d0eb"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000ec6",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000ec6]",
+      "symbol": "FMRTE_Framework.GameObjects.MentalAttributes::get_Creativity",
+      "methodToken": "0x06000ec6",
+      "rva": 436348,
+      "fileOffset": 428668,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "6655521eea17497b43b59d78c3c51bad719890dcb9deb26ec3d4fe92a1c32a9f",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "ff988c9f8621f9b08fcf747e5ab1e07202e511e4c181d3a317bd5d0fd920e6da"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000ec8",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000ec8]",
+      "symbol": "FMRTE_Framework.GameObjects.MentalAttributes::get_Decisions",
+      "methodToken": "0x06000ec8",
+      "rva": 436448,
+      "fileOffset": 428768,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "6575f659062976e8c6ba936ccdcca112f1471d1e1eb516f4882e5f7ae288e679",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "31810bcb625655d861bae185d6925f76933eef169f4386965506d8c8f49f85b0"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000eca",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000eca]",
+      "symbol": "FMRTE_Framework.GameObjects.MentalAttributes::get_Determination",
+      "methodToken": "0x06000eca",
+      "rva": 436548,
+      "fileOffset": 428868,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "c3567a9313b76de7fdf226ef3e50ef323aa4d48e4384e2143a70dc654295d79c",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "45701448fbba08e3abeba1c0000809d7cba4cfa6a49438129693b95795400c40"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000ecc",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000ecc]",
+      "symbol": "FMRTE_Framework.GameObjects.MentalAttributes::get_Flair",
+      "methodToken": "0x06000ecc",
+      "rva": 436648,
+      "fileOffset": 428968,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "52ef87020bde73e94d1b4ed546cdeec5635f00719e852ac7dffdc1c2b3272f2d",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "ab116c98459ff0f1907668143cef78b1e1bc1cc15760f8a05a95671ea05698ac"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000ece",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000ece]",
+      "symbol": "FMRTE_Framework.GameObjects.MentalAttributes::get_Influence",
+      "methodToken": "0x06000ece",
+      "rva": 436748,
+      "fileOffset": 429068,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "48ea642660de069e67ac880c1a0635582525c9116bb2fe16f10d70a8c5c0d1a1",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "52502cee4e39d1b2571de0c9d0980c1ea69fc8a390ef9058ef7598884c1cb9cb"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000ed0",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000ed0]",
+      "symbol": "FMRTE_Framework.GameObjects.MentalAttributes::get_OffTheBall",
+      "methodToken": "0x06000ed0",
+      "rva": 436848,
+      "fileOffset": 429168,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "7eacc68d8fee84bfc6153f9ea78cad1ce9aa7810dfe4dc7b7ddd0437f59c95d8",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "3b3895f3075459f286a5da0538915b83486a37763073b15849319d38f25baf38"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000ed2",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000ed2]",
+      "symbol": "FMRTE_Framework.GameObjects.MentalAttributes::get_Positioning",
+      "methodToken": "0x06000ed2",
+      "rva": 436948,
+      "fileOffset": 429268,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "68b418b04574363c1256206cb416238e3028af53eda7cf6f22f20f0106723885",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "bf0b682156e715f063da64a018c8a631c99d3c6aa7b92200e1534e0118a3a024"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000ed4",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000ed4]",
+      "symbol": "FMRTE_Framework.GameObjects.MentalAttributes::get_Teamwork",
+      "methodToken": "0x06000ed4",
+      "rva": 437048,
+      "fileOffset": 429368,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "356204ed3c4a5afda68d79da5eceeb3b50f661ddeb74f39082528b3b747e059d",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "f688dbbbc23ff0c5e2a121ea4d909bca10403e4f4b84217c57338d224daa185a"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000ed6",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000ed6]",
+      "symbol": "FMRTE_Framework.GameObjects.MentalAttributes::get_Workrate",
+      "methodToken": "0x06000ed6",
+      "rva": 437148,
+      "fileOffset": 429468,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "de470901971dced2384ce2b0ba937cb8a580876ddca08a9fd48d7417dfad6d4d",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "218b1e7156d607cb8471866a831c9fc8094b177db28d0a172cabfa68bf8bef03"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000fb5",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000fb5]",
+      "symbol": "FMRTE_Framework.GameObjects.PhysicalAttributes::get_Acceleration",
+      "methodToken": "0x06000fb5",
+      "rva": 450580,
+      "fileOffset": 442900,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "8b66e8c4938efe0151dda1ab0c138e12b9c17453a72fb726579abb6894ac4173",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "d981ce4652bebf2837f1d7fb9d085a1657daaeb313338aa32a244b9fdc09458d"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000fb7",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000fb7]",
+      "symbol": "FMRTE_Framework.GameObjects.PhysicalAttributes::get_Agility",
+      "methodToken": "0x06000fb7",
+      "rva": 450680,
+      "fileOffset": 443000,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "30466742cd83d3962e80825685a51300ac5ecfd0a4675fa99a0669fc9fe0425b",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "6fbd5e37271e8797261d159b1930ed32736fb440deeb47a93343d7042fed4ba5"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000fb9",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000fb9]",
+      "symbol": "FMRTE_Framework.GameObjects.PhysicalAttributes::get_Balance",
+      "methodToken": "0x06000fb9",
+      "rva": 450780,
+      "fileOffset": 443100,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "7a04afa48bcd2d5997f77ad8ba6a6795f6e1ab2c22c7a96d05761c197d0bc973",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "25ac18e0b94e969e3a7f11dcba6b7d39f6ff034740669f78fcefc355650cb2ca"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000fbb",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000fbb]",
+      "symbol": "FMRTE_Framework.GameObjects.PhysicalAttributes::get_Jumping",
+      "methodToken": "0x06000fbb",
+      "rva": 450880,
+      "fileOffset": 443200,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "aa336fc7ac075c6de695727ee971124d19431d2698865375b52ebca0fb14bcc5",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "0cb7337ffcc0192b8f50002371a91aac054a1e3817112d5856a81f5ed009ff44"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000fbd",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000fbd]",
+      "symbol": "FMRTE_Framework.GameObjects.PhysicalAttributes::get_LeftFoot",
+      "methodToken": "0x06000fbd",
+      "rva": 450980,
+      "fileOffset": 443300,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "9276b72ac5b0f9b98947f727dd3b4ab9eb57c317ebdeb0e9b8423745fdfe88f7",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "92845acae36adcc9fc24fdf4c339c50bc99c2ff14d614067932c0efec9fb55c2"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000fbf",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000fbf]",
+      "symbol": "FMRTE_Framework.GameObjects.PhysicalAttributes::get_NaturalFitness",
+      "methodToken": "0x06000fbf",
+      "rva": 451080,
+      "fileOffset": 443400,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "29b2030263c4cf3249893c640812f2197d78beda86a4226f51dbe28abb44422f",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "84d0de7a8363a80aa41d0ab6a6639423da540f89e3f21b46f88957e3e9ae2075"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000fc3",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000fc3]",
+      "symbol": "FMRTE_Framework.GameObjects.PhysicalAttributes::get_RightFoot",
+      "methodToken": "0x06000fc3",
+      "rva": 451280,
+      "fileOffset": 443600,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "17cfa0fab8b60cade395e214d5f0c7b3789b5f39c02b7d78b74dcb3a3b93dc78",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "89d69cdf8f3da8a65c636cfd70217ae06cd61eb16288891ea77046926443f4a6"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000fc5",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000fc5]",
+      "symbol": "FMRTE_Framework.GameObjects.PhysicalAttributes::get_Stamina",
+      "methodToken": "0x06000fc5",
+      "rva": 451380,
+      "fileOffset": 443700,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "a1a7798de4841f56cb88eca8696d9deef7536d1b64bab02014bb0cbc488bc462",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "8c69ea0b113438fb325d12943c60a55217eac9b00796ab4c528783c1e67e8c61"
+    },
+    {
+      "id": "RE13-COVERAGE-0x06000fc7",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x06000fc7]",
+      "symbol": "FMRTE_Framework.GameObjects.PhysicalAttributes::get_Strength",
+      "methodToken": "0x06000fc7",
+      "rva": 451480,
+      "fileOffset": 443800,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "7f186d2b9d02f53b9717a2843dee18f1e8f5ecf77dbb1fd1d48be01d5b5820c9",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "883da9dff920e5b3049f25109696dcac4b7b0e009d07138cc27e9fa629cbe8d0"
+    },
+    {
+      "id": "RE13-COVERAGE-0x060012d2",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x060012d2]",
+      "symbol": "FMRTE_Framework.GameObjects.TechnicalAttributes::get_Corners",
+      "methodToken": "0x060012d2",
+      "rva": 519292,
+      "fileOffset": 511612,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "291bebe4db04ca7f6b6adce3270f4b55d214d44290fafeef00cb173933c0a1ce",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "f9db749e95e951afb18c09b3ad5000726ec2abab15bb58144204b46a4c9b9f6e"
+    },
+    {
+      "id": "RE13-COVERAGE-0x060012d4",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x060012d4]",
+      "symbol": "FMRTE_Framework.GameObjects.TechnicalAttributes::get_Crossing",
+      "methodToken": "0x060012d4",
+      "rva": 519392,
+      "fileOffset": 511712,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "ee0d61f01bde022ae8bf7e58755170fa2c7a6e08b63c3577530c79a901379ee2",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "2d96833b0677e0fd96c00bd364a46beb6a1cba657fbda98bd34663599622cf3c"
+    },
+    {
+      "id": "RE13-COVERAGE-0x060012d6",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x060012d6]",
+      "symbol": "FMRTE_Framework.GameObjects.TechnicalAttributes::get_Dribbling",
+      "methodToken": "0x060012d6",
+      "rva": 519492,
+      "fileOffset": 511812,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "14334a05bfaa00a47ca5154d3e10a74114992157eb0f36b288d8d73c109269e6",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "1edfb24ee21517f398361bc247f8d8e8d27cd88a4b42b229059887ed4a015696"
+    },
+    {
+      "id": "RE13-COVERAGE-0x060012d8",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x060012d8]",
+      "symbol": "FMRTE_Framework.GameObjects.TechnicalAttributes::get_Finishing",
+      "methodToken": "0x060012d8",
+      "rva": 519592,
+      "fileOffset": 511912,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "c2b2544ded235e1b038d85cb75e52e6549dfb0fb76079b3c0bb2a0dbe9a8bfac",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "b371ce166f696d0e1d4382645ad4a9acb7d53069aeae6f84b42960eb1ba0e53c"
+    },
+    {
+      "id": "RE13-COVERAGE-0x060012da",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x060012da]",
+      "symbol": "FMRTE_Framework.GameObjects.TechnicalAttributes::get_FirstTouch",
+      "methodToken": "0x060012da",
+      "rva": 519692,
+      "fileOffset": 512012,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "0a599ec6fb4f0107753220a7bf24a9788cb4fc42f751eb67ab50d1ec70c18fc0",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "886e7b3dedfe900c053cce8050c5e9387d7d0bd0f0aafa623ee9a0ce7b9fc438"
+    },
+    {
+      "id": "RE13-COVERAGE-0x060012dc",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x060012dc]",
+      "symbol": "FMRTE_Framework.GameObjects.TechnicalAttributes::get_Freekicks",
+      "methodToken": "0x060012dc",
+      "rva": 519792,
+      "fileOffset": 512112,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "84de9cddc34fa1f9995c077c39cc3c6a85df4eef7e869e7e3e7937df303a9285",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "0a214a3c6240feddbcf6db3c41960da78e53a8bc851a7e394f4db8a554e8b92e"
+    },
+    {
+      "id": "RE13-COVERAGE-0x060012de",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x060012de]",
+      "symbol": "FMRTE_Framework.GameObjects.TechnicalAttributes::get_Heading",
+      "methodToken": "0x060012de",
+      "rva": 519892,
+      "fileOffset": 512212,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "b48c106faf783c9394a7e9543bcd61ad077a176f07becdae9d394ce8f74f22f5",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "8ba49a42a944706686b321e7f25d1c90e389a2f3afb0fdea3406e1c7a424654a"
+    },
+    {
+      "id": "RE13-COVERAGE-0x060012e0",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x060012e0]",
+      "symbol": "FMRTE_Framework.GameObjects.TechnicalAttributes::get_LongShots",
+      "methodToken": "0x060012e0",
+      "rva": 519992,
+      "fileOffset": 512312,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "bdbdefe159fff399acf1ad72e12eb2ddc2dfab667d2dbfef6d3281d3e02d3d28",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "e9569b684e060b512943260f03289f5e59d95f22ceaf02f63ae63505e73eb783"
+    },
+    {
+      "id": "RE13-COVERAGE-0x060012e2",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x060012e2]",
+      "symbol": "FMRTE_Framework.GameObjects.TechnicalAttributes::get_Longthrows",
+      "methodToken": "0x060012e2",
+      "rva": 520092,
+      "fileOffset": 512412,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "233c59ba803b76419204b1948740152853765a378f27f4a0ff2696fb67c9bac9",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "94eeb5dd5405e007da31035d522eb672fc2182f652e9d85bd8e7eb1c66c55212"
+    },
+    {
+      "id": "RE13-COVERAGE-0x060012e4",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x060012e4]",
+      "symbol": "FMRTE_Framework.GameObjects.TechnicalAttributes::get_Marking",
+      "methodToken": "0x060012e4",
+      "rva": 520192,
+      "fileOffset": 512512,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "f39cfe2a88648aefcc120f60fd41d231077da4bf060cf8ee8c0a05395f55d4c5",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "ab7f16c14eb191f4778c517d129bc3409bc9ae2f1769c556e1bdd3b1f893b6d4"
+    },
+    {
+      "id": "RE13-COVERAGE-0x060012e8",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x060012e8]",
+      "symbol": "FMRTE_Framework.GameObjects.TechnicalAttributes::get_PenaltyTaking",
+      "methodToken": "0x060012e8",
+      "rva": 520392,
+      "fileOffset": 512712,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "3ccff9275a9e46efdddbfc7f67e112d63e65129171fb03d52f39f00509db3fa8",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "db26637868465b8ca5c4b2f2c9edc8c0d522f0e04276d9b932156b9af2e90d94"
+    },
+    {
+      "id": "RE13-COVERAGE-0x060012ea",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x060012ea]",
+      "symbol": "FMRTE_Framework.GameObjects.TechnicalAttributes::get_Tackling",
+      "methodToken": "0x060012ea",
+      "rva": 520492,
+      "fileOffset": 512812,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "74d207a2cd876c9ed5af4f74860b08ef608cd767090a8a5237daf68f534c4100",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "573fa78f908fa4e8efd3481f440dc212a1041b8c59a5db24d283513465c0296d"
+    },
+    {
+      "id": "RE13-COVERAGE-0x060012ec",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_2492e46cfee6398508d31358bfd6fb0544d5ce878451307b3ddb5e9cf92d8923",
+      "reaLocator": "normalized_result.methods[token=0x060012ec]",
+      "symbol": "FMRTE_Framework.GameObjects.TechnicalAttributes::get_Technique",
+      "methodToken": "0x060012ec",
+      "rva": 520592,
+      "fileOffset": 512912,
+      "signature": {
+        "returnType": "i1",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "0bddd372823851c40c12f92001cab1d7dc4e22ecb59e8931e963ac06147bf9b3",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "4fe050a355c49fcbae007db35ad0f3926fd72b69a35f976d019bec999dea2019"
+    },
+    {
+      "id": "RE13-COVERAGE-0x0600108b",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_95211a16516eb59c912c89dfc36f7e690f95551ef7f1e1856240f7d3d720c1e1",
+      "reaLocator": "normalized_result.methods[token=0x0600108b]",
+      "symbol": "FMRTE_Framework.GameObjects.PlayerStaff::.ctor",
+      "methodToken": "0x0600108b",
+      "rva": 476244,
+      "fileOffset": 468564,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "i4"
+        ]
+      },
+      "normalizedIlSha256": "3bff326d15ef2b2a0bf24027c2dc1fb6e9eaedb9427b60da75e4af70140b5416",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "a2b66523e9f786b8de404714af2f931ab7e8eb19459dd195a841837d4292d33c"
+    },
+    {
+      "id": "RE13-COVERAGE-0x0600108c",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_95211a16516eb59c912c89dfc36f7e690f95551ef7f1e1856240f7d3d720c1e1",
+      "reaLocator": "normalized_result.methods[token=0x0600108c]",
+      "symbol": "FMRTE_Framework.GameObjects.PlayerStaff::get_IsPlayer",
+      "methodToken": "0x0600108c",
+      "rva": 476304,
+      "fileOffset": 468624,
+      "signature": {
+        "returnType": "bool",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "d1c5989af864078704e5332f0d69bf036bac720ae1e96256dee2e5a491a832bd",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "5e39bce6a3119e9a3ebd949e9e9a2751bb0087fc477aec1b48736c9025dfd701"
+    },
+    {
+      "id": "RE13-COVERAGE-0x0600108d",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_95211a16516eb59c912c89dfc36f7e690f95551ef7f1e1856240f7d3d720c1e1",
+      "reaLocator": "normalized_result.methods[token=0x0600108d]",
+      "symbol": "FMRTE_Framework.GameObjects.PlayerStaff::get_StaffAddress",
+      "methodToken": "0x0600108d",
+      "rva": 476408,
+      "fileOffset": 468728,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "87c07c2bff475f3ade7891f3df5058322d1db5406d2a7abd796032a14e586738",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "15429786b317b5575f524ae9300510f39bff297787945a594734866e1f665408"
+    },
+    {
+      "id": "RE13-COVERAGE-0x060010ba",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_95211a16516eb59c912c89dfc36f7e690f95551ef7f1e1856240f7d3d720c1e1",
+      "reaLocator": "normalized_result.methods[token=0x060010ba]",
+      "symbol": "FMRTE_Framework.GameObjects.PlayerStaff::get_AttributesAddress",
+      "methodToken": "0x060010ba",
+      "rva": 479484,
+      "fileOffset": 471804,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "21fcfd10e254e6fa6b39906daff706c1626f6fbcb70b371ca6b153f8be8e1cd9",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "47947348f1f639cb10f1628f37f390cf5f31f1fe80e5814b0189badfcfdaa616"
+    },
+    {
+      "id": "RE13-COVERAGE-0x060010bb",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_95211a16516eb59c912c89dfc36f7e690f95551ef7f1e1856240f7d3d720c1e1",
+      "reaLocator": "normalized_result.methods[token=0x060010bb]",
+      "symbol": "FMRTE_Framework.GameObjects.PlayerStaff::get_PersonalityAddress",
+      "methodToken": "0x060010bb",
+      "rva": 479524,
+      "fileOffset": 471844,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "1768f4e9ba91b55de53a9f4e0cc4b6390426ecea6778f08f369313813e809bf5",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "2dec26f2506c202fbac186b184d637d44d42588506caffc527f90886aca7e700"
+    },
+    {
+      "id": "RE13-COVERAGE-0x060010bc",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_95211a16516eb59c912c89dfc36f7e690f95551ef7f1e1856240f7d3d720c1e1",
+      "reaLocator": "normalized_result.methods[token=0x060010bc]",
+      "symbol": "FMRTE_Framework.GameObjects.PlayerStaff::get_GoalKeeperAttributes",
+      "methodToken": "0x060010bc",
+      "rva": 479564,
+      "fileOffset": 471884,
+      "signature": {
+        "returnType": "class:1636",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "d1ff74daf9a9900d17b2423b2658d41b03b48d71aa204905bd8a5471e3a558fa",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "c4aadb2286b4677a0e6ba3d770e40685f33057bca4397270b72a72a6da278f2d"
+    },
+    {
+      "id": "RE13-COVERAGE-0x060010bd",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_95211a16516eb59c912c89dfc36f7e690f95551ef7f1e1856240f7d3d720c1e1",
+      "reaLocator": "normalized_result.methods[token=0x060010bd]",
+      "symbol": "FMRTE_Framework.GameObjects.PlayerStaff::get_MentalAttributes",
+      "methodToken": "0x060010bd",
+      "rva": 479600,
+      "fileOffset": 471920,
+      "signature": {
+        "returnType": "class:1752",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "2e4dc690aa5ab3652e5ddf5194a2539f9c3c6ae5a4792fa4e9734978bcc06857",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "bb58889d17e0c6f60256b436f6db82cbd522c89d981740722d0fdac924144d1b"
+    },
+    {
+      "id": "RE13-COVERAGE-0x060010be",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_95211a16516eb59c912c89dfc36f7e690f95551ef7f1e1856240f7d3d720c1e1",
+      "reaLocator": "normalized_result.methods[token=0x060010be]",
+      "symbol": "FMRTE_Framework.GameObjects.PlayerStaff::get_PhysicalAttributes",
+      "methodToken": "0x060010be",
+      "rva": 479636,
+      "fileOffset": 471956,
+      "signature": {
+        "returnType": "class:1796",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "eb51254bebc01f222c5ebd0c335421f8a90d7126d9fd42996c4420f1c17713a4",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "53408d1d3a341d3ee2bf4f1319bcf021b26ab003c5a437d50ae345a31c01c901"
+    },
+    {
+      "id": "RE13-COVERAGE-0x060010bf",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_95211a16516eb59c912c89dfc36f7e690f95551ef7f1e1856240f7d3d720c1e1",
+      "reaLocator": "normalized_result.methods[token=0x060010bf]",
+      "symbol": "FMRTE_Framework.GameObjects.PlayerStaff::get_HiddenAttributes",
+      "methodToken": "0x060010bf",
+      "rva": 479672,
+      "fileOffset": 471992,
+      "signature": {
+        "returnType": "class:1648",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "453f7ecb584d51104ccd425ad364fbb5778f1a217d8aa062d6c880cffd3d70ea",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "531d387708bc8a79ae4fbd6f9eb1113d81d7d8812757160eb1984014febe6607"
+    },
+    {
+      "id": "RE13-COVERAGE-0x060010c0",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_95211a16516eb59c912c89dfc36f7e690f95551ef7f1e1856240f7d3d720c1e1",
+      "reaLocator": "normalized_result.methods[token=0x060010c0]",
+      "symbol": "FMRTE_Framework.GameObjects.PlayerStaff::get_TechnicalAttributes",
+      "methodToken": "0x060010c0",
+      "rva": 479708,
+      "fileOffset": 472028,
+      "signature": {
+        "returnType": "class:2012",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "09837a1d8719f5f48404e88e78615202c754f805df88b4e0945c70a9e77034e4",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "b86ec25d69665cbf8e11ac44381742650e45046a46a83a86e364c4a1d23380bc"
+    },
+    {
+      "id": "RE13-COVERAGE-0x060010c1",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_95211a16516eb59c912c89dfc36f7e690f95551ef7f1e1856240f7d3d720c1e1",
+      "reaLocator": "normalized_result.methods[token=0x060010c1]",
+      "symbol": "FMRTE_Framework.GameObjects.PlayerStaff::get_Positions",
+      "methodToken": "0x060010c1",
+      "rva": 479744,
+      "fileOffset": 472064,
+      "signature": {
+        "returnType": "class:1868",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "cb8d8a5fef820446c0b53fcaa5eabd593cb9f40810dfb8bfcba4882a32072d47",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "2492aa1a9b2545ed7f35805fbded192647bfe66dfd822bfbdc01caf50bc62eba"
+    },
+    {
+      "id": "RE13-COVERAGE-0x060010c2",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact CIL; field-limited live reference validation recorded separately",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_95211a16516eb59c912c89dfc36f7e690f95551ef7f1e1856240f7d3d720c1e1",
+      "reaLocator": "normalized_result.methods[token=0x060010c2]",
+      "symbol": "FMRTE_Framework.GameObjects.PlayerStaff::get_PersonalityAttributes",
+      "methodToken": "0x060010c2",
+      "rva": 479780,
+      "fileOffset": 472100,
+      "signature": {
+        "returnType": "class:1788",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "800d7e17c021a3272fdc1431ce6a8b987087ac27277faf2e351bc615310ae8dc",
+      "limitations": [
+        "Build-local coordinates require exact SHA/MVID.",
+        "Three matched reference records do not certify every record or production adapter."
+      ],
+      "sourceIlSha256": "af04843e1f273aeebf512215c2a9209a635e5295c811006f6c0b083663344b65"
     }
   ],
   "unknowns": [
     {
       "id": "U13-ENTITY",
       "question": "End-to-end catalog construction and native identity/layout on exact local FM2013 build",
-      "status": "UNKNOWN"
+      "status": "UNKNOWN",
+      "resolvedSubset": "File-derived Player/PlayerStaff discovery,4058 distinct loaded IDs matching reference count,49 ordinary fields, and process/image relocation observed.",
+      "remaining": "General career/build/schema completeness and production adapter certification."
     },
     {
       "id": "U13-CA-PA",
       "question": "Actual known-player CA/PA values, layout selection, repeat consistency",
-      "status": "UNKNOWN"
+      "status": "UNKNOWN",
+      "resolvedSubset": "Six CA/PA values match the authorized running FMRTE13 reference across three identified records and both native classes; source words/effective-address/mode3 decoding retained.",
+      "remaining": "All-record and broader career/build validation, official engine-independent oracle and product/writer certification."
     },
     {
       "id": "U13-UI",
@@ -3820,7 +5557,10 @@
     "knownPlayerVisibleFieldRecordCount": 2,
     "boundedCandidateScanPerformed": true,
     "restartRecoveredCandidateCount": 4036,
-    "staticDeclaredVersionProfileResolved": true
+    "staticDeclaredVersionProfileResolved": true,
+    "referenceToolAbilityComparedRecords": 3,
+    "loadedPlayerCountMatched": 4058,
+    "actualImageRelocationObserved": true
   },
   "localFixtures": [
     {
@@ -3906,7 +5646,8 @@
       "pace"
     ],
     "visibleFieldValidatedRecordCount": 2,
-    "staticDeclaredVersionProfileResolved": true
+    "staticDeclaredVersionProfileResolved": true,
+    "referenceAbilityValuesMatchedForComparedRecords": 3
   },
   "liveReadExperiments": [
     {
@@ -4159,5 +5900,122 @@
         "sha256": "8b7760c174aedfdb6a5d8fdcd8fc66227c5a0126d995826dd07996952a4591b8"
       }
     }
-  ]
+  ],
+  "ordinaryAttributeResearch": {
+    "date": "2026-10-31",
+    "code": "scripts/fm2013-ordinary-attributes.mjs",
+    "fields": 49,
+    "categories": {
+      "goalkeeping": 11,
+      "mental": 14,
+      "physical": 10,
+      "technical": 14
+    },
+    "sourceCatalogue": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-ordinary49-catalog.json",
+      "sha256": "f14ba553f0269f1881bf427f3c7a6960a5ea0bec10f0d5ea0f2e9937b6b90c97"
+    },
+    "sourceInitializer": "0x06000596",
+    "scale5Guard": "Config.attributesRange ==20",
+    "mode3ControlsOrdinaryScaling": false,
+    "rawFieldCellsRead": 198842,
+    "referenceComparedFieldValues": 147,
+    "exclusions": [
+      "Personality",
+      "Hidden attributes",
+      "Positions",
+      "Modern aliases",
+      "Player data",
+      "Actual CA/PA"
+    ],
+    "productionSchema": false
+  },
+  "dualClassResearch": {
+    "date": "2026-10-31",
+    "proof": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-playerstaff-proof.json",
+      "sha256": "90c741617a6bb600be1545bd8649b14f8ce2731fb9e7baa628afc2e411e73100"
+    },
+    "nativeName": ".?AVACTUAL_PLAYER_AND_NON_PLAYER@@",
+    "personOffset": 452,
+    "attributesPointerOffset": 228,
+    "caOffset": 336,
+    "paOffset": 338,
+    "nativeRecordsObserved": 22,
+    "combinedDistinctPlayerIds": 4058,
+    "referenceCountMatches": true,
+    "referenceComparedDualRecords": 1,
+    "wholeDatabaseCompletenessVerified": false,
+    "reaEvidenceId": "ev_173c58a453222f89289e6d7e9a47b5cc78de3b9e8138c4e4fa9e1375743e5d20"
+  },
+  "referenceToolValidation": {
+    "date": "2026-10-31",
+    "report": "19-fm2013-reference-comparison.md",
+    "reference": "FMRTE13 13.3.3.62 authorized read-only UI",
+    "referenceAppLaunchedWithExplicitUserConsent": true,
+    "referencedGameBuild": "13.3.3f359652",
+    "recordCount": 3,
+    "nativeKinds": [
+      "player",
+      "playerStaff"
+    ],
+    "identityMatches": 3,
+    "ordinaryAttributeMatches": 147,
+    "caPaMatches": 6,
+    "referenceAbilityValuesMatchedForComparedRecords": true,
+    "screenshotAndAccessibilityReceipts": [
+      {
+        "nativeKind": "player",
+        "reference": {
+          "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-reference-rooney-ui.json",
+          "sha256": "e4a4b4b5c395933ab549d4142b168611e8b9696dea1632038cb63d45b352aed4"
+        },
+        "screenshot": {
+          "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-reference-rooney-ui.png",
+          "sha256": "e404fb53fe7699c49e9e6c7aa259c84ad2e6c4a7c5a1193badd836c8ac53e688"
+        }
+      },
+      {
+        "nativeKind": "player",
+        "reference": {
+          "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-reference-vanpersie-ui.json",
+          "sha256": "92a8b59e4d438878afba80cb76f0b64876f0fb00436d0c8f0dfd5d90d7bbbc81"
+        },
+        "screenshot": {
+          "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-reference-vanpersie-ui.png",
+          "sha256": "648d405ccb52b71e7cea14015773cb0606234df233aa46229ec3b66df013497c"
+        }
+      },
+      {
+        "nativeKind": "playerStaff",
+        "reference": {
+          "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-reference-davids-ui.json",
+          "sha256": "a77c0f97a37838ed1c1bbf6e476434dc6f8134c714f6b8c67b27b1c52f586df2"
+        },
+        "screenshot": {
+          "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-reference-davids-ui.png",
+          "sha256": "fe38aaaed0e9126973f61aa299c11874d1b46527e07acb9637c5ba43e0e45683"
+        }
+      }
+    ],
+    "blinded": false,
+    "independentOfficialGameEngineOracle": false,
+    "productionAdapterCertified": false,
+    "writerCertified": false,
+    "gameDataEditRequested": false,
+    "allSessionsDetached": true,
+    "rawProbeFlagsRewritten": false,
+    "verification": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-reference-final-verification-v2.json",
+      "sha256": "b88a70acc29864c7678f90e3d8972e4e58a6977e7f6d7ac0e201eb5a7f49810c"
+    },
+    "verifier": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\verify-fm13-reference-final.cjs",
+      "sha256": "439ad30a01dcb615f37a353bde95e65d80a7cbbd88d369bb417de672545b0359"
+    },
+    "runtimeIndex": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-reference-final-index.json",
+      "sha256": "28709c2c064ced9f21cd646cfbca7b0d69d572f65912dc1ed414190864815dbc"
+    }
+  }
 }

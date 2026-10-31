@@ -73,6 +73,8 @@ The user's later in-game text confirmation matches ID, Passing and Pace for that
 
 2026-10-31: [file-derived RTTI discovery](../research/fmrte/18-fm2013-file-relative-discovery.md) removes supplied player addresses and passes one actual restart comparison across4,036 relocated records. Exact local-version profile strings/mode assignments are reproduced statically. Standard TypeScript/tests/build pass (162 tests); independent source review and17 focused tests pass. This resolves a research restart requirement, not MH-01/03/05 completion: hidden-ability ground truth, full field/type coverage, offline parsing and certified writing remain open.
 
+[Authorized reference comparison](../research/fmrte/19-fm2013-reference-comparison.md) extends live research to4,058 unique Player/PlayerStaff records matching FMRTE's displayed count,198,842 ordinary cells read/repeated, and153 numeric values matching three UI reference records. The shared reader gains typed dual-class support and an opt-in49-field source-era catalogue. Full check passes164 tests/build;19 focused tests and independent review pass. This resolves the lack of any running-reference CA/PA comparison. MH-01/03/05 remain incomplete pending broader coverage, remaining domain contracts, reviewed ingestion, offline decoding and writing certification; no full module/phase is marked complete.
+
 [Player Lab HTML/CSV/TSV import, attributes, roles and limitations](07-player-lab-and-export-import.md). Real import data remains local and user-supplied. Full CA/PA save decoding, role/position fit calibration and recruitment financial assessment remain open requirements.
 
 Additional integration evidence: [opt-in local storage + role-fit lineup planner](08-local-library-and-squad-planner.md).

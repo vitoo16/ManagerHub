@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import vm from 'node:vm';
+import { FM2013_ORDINARY_ATTRIBUTES } from './fm2013-ordinary-attributes.mjs';
 import { buildFm2013ReadOnlyRecordProbe, buildFm2013ReadOnlyPlayerScan,
   buildFm2013ImageRelativePlayerScan, FM2013_RESEARCH_BINARY_SHA256 } from './fm2013-readonly-record-probe.mjs';
 
@@ -13,34 +14,40 @@ const imageProof = { fileSha256: FM2013_RESEARCH_BINARY_SHA256, imageSize: 0x100
 }] };
 
 function execute(options = {}) {
-  const numbers = new Map([[0x10000 + 356 + 20, 123], [0x10000 + 356 + 28, 123],
-    [0x10000 + 356 + 24, 45], [0x10000 + 356 + 92, 0x20000], [0x10000 + 356 + 96, 0x21000],
+  const personOffset = options.dual ? 452 : 356;
+  const numbers = new Map([[0x10000 + personOffset + 20, 123], [0x10000 + personOffset + 28, 123],
+    [0x10000 + personOffset + 24, 45], [0x10000 + personOffset + 92, 0x20000], [0x10000 + personOffset + 96, 0x21000],
     [0x20000 + 40, 0x30000], [0x21000 + 40, 0x31000], [0x30000, 1], [0x30001, 4],
     [0x31000, 1], [0x31001, 7], [0x10000 + 228, 0x40000], [0x40000 + 54, 80],
     [0x40000 + 85, 75], [0x10000 + 336, 12345], [0x10000 + 338, 54321]]);
   const strings = new Map([[0x30004, 'Test'], [0x31004, 'Fixture']]);
   const imageBase = options.imageBase ?? 0x50000, marker = options.imageRelative ? imageBase + 0x1000 : 0x50000;
-  numbers.set(0x10000 + 356, marker);
-  for (const [address, value] of [...numbers]) {
-    if (address >= 0x10000 && address < 0x10200) numbers.set(address + 0x2000, value);
+  numbers.set(0x10000 + personOffset, marker);
+  if (options.ordinary49) for (const attribute of FM2013_ORDINARY_ATTRIBUTES) {
+    const address = 0x40000 + attribute.offset;
+    if (!numbers.has(address)) numbers.set(address, 80);
   }
-  numbers.set(0x12000 + 356 + 20, options.duplicateId ? 123 : 456);
-  numbers.set(0x12000 + 356 + 28, options.duplicateId ? 123 : 456);
+  for (const [address, value] of [...numbers]) {
+    if (address >= 0x10000 && address < 0x10300) numbers.set(address + 0x2000, value);
+  }
+  numbers.set(0x12000 + personOffset + 20, options.duplicateId ? 123 : 456);
+  numbers.set(0x12000 + personOffset + 28, options.duplicateId ? 123 : 456);
   if (options.imageRelative) {
     const locator = imageBase + 0x2000, descriptor = imageBase + 0x3000;
-    for (const [offset, value] of [[0, 0], [4, options.wrongLocator ? 360 : 356], [8, 4],
+    for (const [offset, value] of [[0, 0], [4, options.wrongLocator ? 360 : personOffset], [8, 4],
       [12, descriptor], [16, imageBase + 0x4000]]) numbers.set(locator + offset, value);
     numbers.set(marker - 4, locator);
     for (let i = 0; i < 3; i++) numbers.set(marker + i * 4, imageBase + 0x5000 + i * 4 + (options.wrongFunction ? 4 : 0));
-    const name = options.wrongType ? '.?AVWRONG_NATIVE@@' : imageProof.candidates[0].decoratedName;
+    const name = options.wrongType ? '.?AVWRONG_NATIVE@@' : options.dual ? '.?AVACTUAL_PLAYER_AND_NON_PLAYER@@' : imageProof.candidates[0].decoratedName;
     for (let i = 0; i <= name.length; i++) numbers.set(descriptor + 8 + i, i === name.length ? 0 : name.charCodeAt(i));
   }
   const reads = [], messages = [], scans = [];
   function numeric(address) {
     reads.push(address);
     if (!numbers.has(address)) throw new Error('unmapped_read');
-    if (options.stale && address === 0x10000 + 356 + 20 && reads.filter(x => x === address).length > 1) return 124;
+    if (options.stale && address === 0x10000 + personOffset + 20 && reads.filter(x => x === address).length > 1) return 124;
     if (options.changedFields && address === 0x10000 + 336 && reads.filter(x => x === address).length > 1) return 12346;
+    if (options.changedOrdinary && address === 0x40000 + 59 && reads.filter(x => x === address).length > 1) return 81;
     return numbers.get(address);
   }
   function pointer(address) {
@@ -64,15 +71,18 @@ function execute(options = {}) {
   const Memory = { scanSync(base, length, pattern) {
     scans.push({ base: base.toUInt32(), length, pattern });
     if (options.fault) throw new Error('unreadable_page');
-    return (options.hits ?? [0x10000 + 356, 0x12000 + 356]).filter(address =>
+    return (options.hits ?? [0x10000 + personOffset, 0x12000 + personOffset]).filter(address =>
       address >= base.toUInt32() && address + 4 <= base.toUInt32() + length).map(address => ({ address: pointer(address) }));
   } };
   let ticks = 0;
   class Clock extends Date { static now() { return options.clockStep ? (ticks++ * options.clockStep) : 1000; } }
+  const proof = options.dual ? { ...imageProof, candidates: [{ ...imageProof.candidates[0],
+    decoratedName: '.?AVACTUAL_PLAYER_AND_NON_PLAYER@@', subobjectOffset: 452 }] } : imageProof;
   const source = options.imageRelative ? buildFm2013ImageRelativePlayerScan({ binarySha256: config.binarySha256,
-    pid: options.config?.pid ?? config.pid }, imageProof, options.limits) :
+    pid: options.config?.pid ?? config.pid, attributeSet: options.ordinary49 ? 'ordinary49' : 'passing_pace' }, proof, options.limits) :
     options.scan ? buildFm2013ReadOnlyPlayerScan({ ...config, ...options.config }, options.limits) :
-    buildFm2013ReadOnlyRecordProbe({ ...config, ...options.config });
+    buildFm2013ReadOnlyRecordProbe({ ...config, ...options.config, nativeKind: options.dual ? 'playerStaff' : 'player',
+      attributeSet: options.ordinary49 ? 'ordinary49' : 'passing_pace' });
   vm.runInNewContext(source, { Process, Memory, Date: Clock, ptr: pointer,
     send: message => messages.push(JSON.parse(JSON.stringify(message))) }, { timeout: 1000 });
   return { result: messages[0], reads, scans };
@@ -105,6 +115,7 @@ test('identity mismatch refuses to read attributes or ability words', () => {
 
 test('stale record, null pointer and invalid string header reject explicitly', () => {
   assert.equal(execute({ stale: true }).result.diagnostic, 'stale_record');
+  assert.equal(execute({ dual: true, stale: true }).result.diagnostic, 'stale_record');
   assert.equal(execute({ changedFields: true }).result.diagnostic, 'changed_fields');
   assert.equal(execute({ nullAttributes: true }).result.diagnostic, 'invalid_pointer');
   assert.equal(execute({ badHeader: true }).result.diagnostic, 'invalid_name_header');
@@ -188,10 +199,32 @@ test('file-relative scan rejects mismatching runtime RTTI, code pointers or imag
 
 test('file-relative builder refuses wrong artifacts, ambiguous markers and malformed coordinates', () => {
   const target = { binarySha256: config.binarySha256, pid: config.pid };
+  for (const change of [{ nativeKind: 'playerStaff' }, { nativeKind: 'coach' }, { attributeSet: 'hidden' }]) {
+    assert.throws(() => buildFm2013ImageRelativePlayerScan({ ...target, ...change }, imageProof), RangeError);
+  }
   for (const proof of [{ ...imageProof, fileSha256: 'wrong' }, { ...imageProof, candidates: [] },
     { ...imageProof, candidates: [...imageProof.candidates, ...imageProof.candidates] },
     ...[{ markerRva: 3 }, { locatorRva: 0x10000 }, { subobjectOffset: 360 }, { decoratedName: '.?AVOTHER@@' },
       { firstFunctionRvas: [4] }].map(change => ({ ...imageProof, candidates: [{ ...imageProof.candidates[0], ...change }] }))]) {
     assert.throws(() => buildFm2013ImageRelativePlayerScan(target, proof), RangeError);
   }
+});
+
+test('dual-class discovery uses the452-byte Person subobject while retaining original player base', () => {
+  const { result } = execute({ imageRelative: true, dual: true });
+  assert.equal(result.records.length, 2);
+  assert.equal(result.records[0].nativeKind, 'playerStaff');
+  assert.equal(result.records[0].addresses.player, '0x10000');
+  assert.equal(result.records[0].addresses.person, `0x${(0x10000 + 452).toString(16)}`);
+  assert.equal(execute({ dual: true }).result.rawAbilityWords.ca, 12345);
+});
+
+test('ordinary49 reads and repeats every selected field without hidden/personality fields', () => {
+  const { result } = execute({ imageRelative: true, ordinary49: true });
+  assert.equal(Object.keys(result.records[0].attributes).length, 49);
+  assert.equal(result.records[0].attributes.passing.candidateScale5, 16);
+  assert.equal(result.records[0].attributes.aerialAbility.candidateScale5, 16);
+  assert.equal(result.records[0].attributes.consistency, undefined);
+  assert.equal(result.records[0].attributes.ambition, undefined);
+  assert.equal(execute({ ordinary49: true, changedOrdinary: true }).result.diagnostic, 'changed_fields');
 });

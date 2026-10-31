@@ -1,6 +1,11 @@
 // Isolated REA/Frida research probe, never imported by the browser application.
 // This layout is a candidate from one exact-build session, not a certified adapter.
+import { FM2013_ORDINARY_ATTRIBUTES } from './fm2013-ordinary-attributes.mjs';
 export const FM2013_RESEARCH_BINARY_SHA256 = 'df45cde67cb7361867e7afc9808dacab8bf53bd972f48145f6f881ff55d08871';
+const nativeKinds = {
+  player: { decoratedName: '.?AVACTUAL_PLAYER@@', personOffset: 356 },
+  playerStaff: { decoratedName: '.?AVACTUAL_PLAYER_AND_NON_PLAYER@@', personOffset: 452 },
+};
 
 function observeRecord(config) {
   function fail(code) { throw new Error(code); }
@@ -31,30 +36,33 @@ function observeRecord(config) {
     };
   }
   function readCandidate(player, expected, includeAbilities) {
-    const person = player.add(356);
+    const person = player.add(config.imageType?.subobjectOffset ?? config.personOffset);
     const before = readIdentity(person);
     if (before.id <= 0 || before.id !== before.id2 || before.sid < 0) fail('invalid_identity');
     if (expected && (before.id !== expected.expectedId || before.firstName !== expected.firstName ||
         before.lastName !== expected.lastName)) fail('identity_mismatch');
     const attributes = checkedPointer(player.add(228).readPointer());
     const caAddress = player.add(336), paAddress = player.add(338);
-    const passingRaw = attributes.add(54).readS8(), paceRaw = attributes.add(85).readS8();
+    const ordinary = Object.fromEntries(config.attributeLayout.map(({ key, offset }) => {
+      const raw = attributes.add(offset).readS8();
+      return [key, { raw, candidateScale5: Math.max(1, Math.round(raw / 5)) }];
+    }));
     const words = includeAbilities ? { ca: caAddress.readU16(), pa: paAddress.readU16() } : null;
     const after = readIdentity(person);
     if (JSON.stringify(before) !== JSON.stringify(after) ||
         player.add(228).readPointer().toString() !== attributes.toString()) fail('stale_record');
     if ((words && (caAddress.readU16() !== words.ca || paAddress.readU16() !== words.pa)) ||
-        attributes.add(54).readS8() !== passingRaw || attributes.add(85).readS8() !== paceRaw) fail('changed_fields');
+        config.attributeLayout.some(({ key, offset }) => attributes.add(offset).readS8() !== ordinary[key].raw)) fail('changed_fields');
     return {
       kind: 'fm2013-readonly-record', status: 'observed_candidate', pid: Process.id,
       artifact: artifact(),
       layoutStatus: 'candidate', independentGroundTruthVerified: false,
+      nativeKind: config.imageType?.nativeKind ?? config.nativeKind, attributeSet: config.attributeSet,
       identity: before,
       addresses: { player: player.toString(), person: person.toString(), attributes: attributes.toString(),
         ca: caAddress.toString(), pa: paAddress.toString() },
       ...(words ? { rawAbilityWords: words } : {}),
-      attributes: { passing: { raw: passingRaw, candidateScale5: Math.max(1, Math.round(passingRaw / 5)) },
-        pace: { raw: paceRaw, candidateScale5: Math.max(1, Math.round(paceRaw / 5)) } },
+      attributes: ordinary,
       actualAbilityVerified: false,
     };
   }
@@ -111,7 +119,7 @@ function observeRecord(config) {
           try {
             const candidatePerson = checkedPointer(hit.address);
             if (candidatePerson.readU32() !== marker) fail('stale_marker');
-            const record = readCandidate(checkedPointer(candidatePerson.add(-356)), null, false);
+            const record = readCandidate(checkedPointer(candidatePerson.add(-(config.imageType?.subobjectOffset ?? config.personOffset))), null, false);
             if (candidatePerson.readU32() !== marker) fail('stale_marker');
             if (seenIds.has(record.identity.id)) { duplicates++; continue; }
             seenIds.add(record.identity.id); records.push(record);
@@ -152,7 +160,12 @@ function observeRecord(config) {
 function checkedTarget(config) {
   if (config?.binarySha256 !== FM2013_RESEARCH_BINARY_SHA256) throw new RangeError('Unsupported research artifact');
   if (!Number.isInteger(config.pid) || config.pid < 1 || config.pid > 0x7fffffff) throw new RangeError('Invalid PID');
-  return { binarySha256: config.binarySha256, pid: config.pid };
+  const nativeKind = config.nativeKind ?? 'player', attributeSet = config.attributeSet ?? 'passing_pace';
+  if (!Object.hasOwn(nativeKinds, nativeKind) || !['passing_pace', 'ordinary49'].includes(attributeSet)) throw new RangeError('Unsupported research field selection');
+  const selected = attributeSet === 'ordinary49' ? FM2013_ORDINARY_ATTRIBUTES :
+    FM2013_ORDINARY_ATTRIBUTES.filter(attribute => ['passing', 'pace'].includes(attribute.key));
+  return { binarySha256: config.binarySha256, pid: config.pid, nativeKind, personOffset: nativeKinds[nativeKind].personOffset,
+    attributeSet, attributeLayout: selected.map(({ key, offset }) => ({ key, offset })) };
 }
 
 function checkedConfig(config) {
@@ -197,16 +210,19 @@ export function buildFm2013ImageRelativePlayerScan(config, fileProof, limits = {
     throw new RangeError('Missing unique exact-artifact RTTI proof');
   }
   const candidate = fileProof.candidates[0];
-  if (candidate.decoratedName !== '.?AVACTUAL_PLAYER@@' || candidate.subobjectOffset !== 356 ||
+  const nativeKind = Object.keys(nativeKinds).find(key => nativeKinds[key].decoratedName === candidate.decoratedName &&
+    nativeKinds[key].personOffset === candidate.subobjectOffset);
+  if (!nativeKind ||
       !Number.isSafeInteger(candidate.constructorDisplacement) || candidate.constructorDisplacement < 0 ||
       candidate.constructorDisplacement > 65536 || !Array.isArray(candidate.firstFunctionRvas) || candidate.firstFunctionRvas.length !== 3) {
     throw new RangeError('Unsupported native type proof');
   }
+  if (config.nativeKind !== undefined && config.nativeKind !== nativeKind) throw new RangeError('Native kind/proof mismatch');
   for (const rva of [candidate.markerRva, candidate.locatorRva, candidate.typeDescriptorRva, candidate.hierarchyRva,
     ...candidate.firstFunctionRvas]) {
     if (!Number.isSafeInteger(rva) || rva < 4 || rva + 128 > fileProof.imageSize || rva % 4 !== 0) throw new RangeError('Invalid native type RVA');
   }
-  const imageType = { imageSize: fileProof.imageSize, decoratedName: candidate.decoratedName,
+  const imageType = { imageSize: fileProof.imageSize, decoratedName: candidate.decoratedName, nativeKind,
     subobjectOffset: candidate.subobjectOffset, constructorDisplacement: candidate.constructorDisplacement,
     markerRva: candidate.markerRva, locatorRva: candidate.locatorRva, typeDescriptorRva: candidate.typeDescriptorRva,
     hierarchyRva: candidate.hierarchyRva, firstFunctionRvas: candidate.firstFunctionRvas };
