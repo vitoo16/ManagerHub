@@ -71,6 +71,8 @@ The user's later in-game text confirmation matches ID, Passing and Pace for that
 
 [Bounded REA discovery](../research/fmrte/17-fm2013-bounded-player-discovery.md) adds a second three-field user-text comparison and two identical4,036-candidate scans from different anchors in the same process. Shared research code now has byte/time/record/match ceilings and explicit partial/fault handling;10 focused tests pass, alongside the standard155-test check/build. This advances research acceptance only: MH-01/03/05 remain incomplete, with hidden abilities, restart-safe discovery, full database coverage and writing unresolved.
 
+2026-10-31: [file-derived RTTI discovery](../research/fmrte/18-fm2013-file-relative-discovery.md) removes supplied player addresses and passes one actual restart comparison across4,036 relocated records. Exact local-version profile strings/mode assignments are reproduced statically. Standard TypeScript/tests/build pass (162 tests); independent source review and17 focused tests pass. This resolves a research restart requirement, not MH-01/03/05 completion: hidden-ability ground truth, full field/type coverage, offline parsing and certified writing remain open.
+
 [Player Lab HTML/CSV/TSV import, attributes, roles and limitations](07-player-lab-and-export-import.md). Real import data remains local and user-supplied. Full CA/PA save decoding, role/position fit calibration and recruitment financial assessment remain open requirements.
 
 Additional integration evidence: [opt-in local storage + role-fit lineup planner](08-local-library-and-squad-planner.md).

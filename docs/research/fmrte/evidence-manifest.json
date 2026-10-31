@@ -63,6 +63,16 @@
       "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-catalog-final-rea-evidence.json",
       "sha256": "bd3fd15a11d0809353a2fd00e55a56d7a47379d5bac598eecb759004553f9f4c",
       "note": "Private bounded-discovery evidence; 68 canonical records, 46758054 bytes. Full emitted career records stay outside Git."
+    },
+    {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-image-relative-rea-evidence.json",
+      "sha256": "c610181e9c2052182a54611b7b616a358f7728ba103042ab6a191357fecfc5b7",
+      "note": "2026-10-31 private runtime/RTTI/restart evidence; 75 canonical records. Raw data stays outside Git."
+    },
+    {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-profile-strings-rea-evidence.json",
+      "sha256": "deb1454075ac1a80ceeed0b2a7049e4e2a86287e65caa9b2a3ea9bc976986a02",
+      "note": "2026-10-31 static profile decoding evidence; 14 canonical records. Raw data stays outside Git."
     }
   ],
   "evidenceAliases": {
@@ -93,7 +103,12 @@
     "catalogProfilePreparation13": "ev_ee3b373fb1514a3e7c7e761fc13f69770d0c5e2d5de5a08e8aca853408337c57",
     "catalogGenericDiscovery13": "ev_dcdc817da7d2a760dfbc94ed93d764b721274d5d620d8c9a6759262231d9c7cf",
     "livePlayerScan13": "ev_31bca470589810638fb66355c428390ee4352c25ffafd481e907785cab38b8fe",
-    "livePlayerScanSecondAnchor13": "ev_a068e86c61857321138fbe668a808db1578c36c5416a7a522bcdb999d5eb4d38"
+    "livePlayerScanSecondAnchor13": "ev_a068e86c61857321138fbe668a808db1578c36c5416a7a522bcdb999d5eb4d38",
+    "nativePlayerRtti13": "ev_a3a75246e940aac9a28bb8868c2604d018dcc776e6d64138e5e65c0eae76f423",
+    "imageRelativeScan13": "ev_e08c13b9f543af992d7a3102678e8c3599f1e29119ba49534ebd110605e124fc",
+    "restartLoadedScan13": "ev_63fac4d303656a06163af42351e1661115ce4054cf319980041e95695ebdff2b",
+    "exactDeclaredProfile13": "ev_6a15a2fe6c7746301799675bbb5c9776050faffc246b54aafb0a82b4e374369c",
+    "exactProfileDescriptor13": "ev_ca570eaade761c768efee06eb07187bc5a82c866512c9c17e9013aadf8133622"
   },
   "discoveries": [
     {
@@ -3408,6 +3423,284 @@
         "Original live scanner uses an independently observed same-session marker, not a certified global root."
       ],
       "sourceIlSha256": "5c99a164675c0113b792e6356467a75c65f36559d27832719fba7ad0a66667a6"
+    },
+    {
+      "id": "RE13-PROFILE-DECODE-0x060004ab",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed file-backed CIL/resource decode under the normal same-assembly initializer branch; runtime selection unobserved",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_fae623eb37f5e240acb33356fad565bb5d856c84beac978e7e56db012c570e70",
+      "reaLocator": "normalized_result.methods[token=0x060004ab]",
+      "symbol": "#=qgvPKxW2avxJZfWiTCRCo38QmFbeNar4t_ZNv0ik4Av3xXKByH3aM32AqAIbYUBqZ::.ctor",
+      "methodToken": "0x060004ab",
+      "rva": 169472,
+      "fileOffset": 161792,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "05576c9cefcc517068322002bc095391508005377b1e418b0d56e1cb06afda49",
+      "limitations": [
+        "Exact artifact SHA/MVID required.",
+        "Seed derivation assumes the normal same-assembly StackTrace initializer branch.",
+        "No runtime FMRTE profile selection or hidden-value certification."
+      ],
+      "sourceIlSha256": "56c43ff034b14932788a70dc11f1d6210aaf1590a3b57c4dd22e16520e9f5e47"
+    },
+    {
+      "id": "RE13-PROFILE-DECODE-0x060004b5",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed file-backed CIL/resource decode under the normal same-assembly initializer branch; runtime selection unobserved",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_fae623eb37f5e240acb33356fad565bb5d856c84beac978e7e56db012c570e70",
+      "reaLocator": "normalized_result.methods[token=0x060004b5]",
+      "symbol": "#=qgvPKxW2avxJZfWiTCRCo38QmFbeNar4t_ZNv0ik4Av3xXKByH3aM32AqAIbYUBqZ::#=qkIbYUhGcjg5NxbXCV8LD0davFpf1dMVKy0NhMeyATtw=",
+      "methodToken": "0x060004b5",
+      "rva": 169892,
+      "fileOffset": 162212,
+      "signature": {
+        "returnType": "bool",
+        "parameterTypes": [
+          "class:2080",
+          "valuetype:696"
+        ]
+      },
+      "normalizedIlSha256": "06b523bb1ed6efc5a6a26a3672b1b97cb723608036c5cae55fa814eafe8b6a29",
+      "limitations": [
+        "Exact artifact SHA/MVID required.",
+        "Seed derivation assumes the normal same-assembly StackTrace initializer branch.",
+        "No runtime FMRTE profile selection or hidden-value certification."
+      ],
+      "sourceIlSha256": "f33d862c7f08a904d723b73b4aad1839ee749d6a2d4568ea5269d298a17f318d"
+    },
+    {
+      "id": "RE13-PROFILE-DECODE-0x060004c4",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed file-backed CIL/resource decode under the normal same-assembly initializer branch; runtime selection unobserved",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_717e8c0d93b0767398504b2f8c5fb32e6c3fdcb2bc456319c060500a9a1d7bd7",
+      "reaLocator": "normalized_result.methods[token=0x060004c4]",
+      "symbol": "#=qzvniqVde3UGtQjEruhfsa7Pz$k_NVLnM3ZeuWBr$GDw=::#=q5Zv8qEutnd3h4ymQPz9XqOKCMJSINLwmqQtOwpYv0vg=",
+      "methodToken": "0x060004c4",
+      "rva": 173100,
+      "fileOffset": 165420,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "caaaa24e077bee4f7928c4293f29ce7975e81dae8a0e48c729d9dd7baf6d3535",
+      "limitations": [
+        "Exact artifact SHA/MVID required.",
+        "Seed derivation assumes the normal same-assembly StackTrace initializer branch.",
+        "No runtime FMRTE profile selection or hidden-value certification."
+      ],
+      "sourceIlSha256": "6ea7c2b97900dec1b41fad9de4d8158519d08fb95cdb73932c00ddeb619c3eeb"
+    },
+    {
+      "id": "RE13-PROFILE-DECODE-0x0600091e",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed file-backed CIL/resource decode under the normal same-assembly initializer branch; runtime selection unobserved",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_ee3b373fb1514a3e7c7e761fc13f69770d0c5e2d5de5a08e8aca853408337c57",
+      "reaLocator": "normalized_result.methods[token=0x0600091e]",
+      "symbol": "#=qYb6NgeB6q2lRKt3_xzBg96qeZwSXYXw1VdSaBk5NU0zrTSzPQSbR7KhgQmbPajJH2DsrXVtQxYAr1uHB3z$xpg==::#=q5Zv8qEutnd3h4ymQPz9XqOKCMJSINLwmqQtOwpYv0vg=",
+      "methodToken": "0x0600091e",
+      "rva": 302844,
+      "fileOffset": 295164,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "ae6db1282a680413f5e7d5f2705b3e95105f51e7e3fd1b5cfc0e2c39972464b7",
+      "limitations": [
+        "Exact artifact SHA/MVID required.",
+        "Seed derivation assumes the normal same-assembly StackTrace initializer branch.",
+        "No runtime FMRTE profile selection or hidden-value certification."
+      ],
+      "sourceIlSha256": "684888c0ebb17f374298b65ee2807526c066094c701bcc7ebbe1c1095f494fc1"
+    },
+    {
+      "id": "RE13-PROFILE-DECODE-0x06000823",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed file-backed CIL/resource decode under the normal same-assembly initializer branch; runtime selection unobserved",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_f4e840260c25d2d6b920b89bab46fd41df8c3ef7aa55804f6a695fa1434aedda",
+      "reaLocator": "normalized_result.methods[token=0x06000823]",
+      "symbol": "#=qUBaCM9ZZ$v4UDacNbuErEMFOjgVEbfktq9byU6rfeeY=::.cctor",
+      "methodToken": "0x06000823",
+      "rva": 272808,
+      "fileOffset": 265128,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "c933e6c8ae3e9e39cfa9e0ccf5e3ddab895af8e36f9e55316783137fa02df0e7",
+      "limitations": [
+        "Exact artifact SHA/MVID required.",
+        "Seed derivation assumes the normal same-assembly StackTrace initializer branch.",
+        "No runtime FMRTE profile selection or hidden-value certification."
+      ],
+      "sourceIlSha256": "b1faa81f96acec6a0e6d4a505a1b4151f7f326aeafc12f8f2c308ece326d2a1a"
+    },
+    {
+      "id": "RE13-PROFILE-DECODE-0x060005e0",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed file-backed CIL/resource decode under the normal same-assembly initializer branch; runtime selection unobserved",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_f4e840260c25d2d6b920b89bab46fd41df8c3ef7aa55804f6a695fa1434aedda",
+      "reaLocator": "normalized_result.methods[token=0x060005e0]",
+      "symbol": "#=qlvvnxPW6wSlAgW5XU75rMepBv93RQ66RPE3jxg5rmys=::#=qIRyBm2K6OCyop4wBH$NQ7w==",
+      "methodToken": "0x060005e0",
+      "rva": 209120,
+      "fileOffset": 201440,
+      "signature": {
+        "returnType": "i8",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "c2a95508ff887c52775e16e1d2bebd18a2add818da756a938a46932e3f7ba02c",
+      "limitations": [
+        "Exact artifact SHA/MVID required.",
+        "Seed derivation assumes the normal same-assembly StackTrace initializer branch.",
+        "No runtime FMRTE profile selection or hidden-value certification."
+      ],
+      "sourceIlSha256": "e47b5de0155289c10d8929ec292de20fcbc6b57e6b37ac0b77f7e2ea1b9b49a4"
+    },
+    {
+      "id": "RE13-PROFILE-DECODE-0x060007e2",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed file-backed CIL/resource decode under the normal same-assembly initializer branch; runtime selection unobserved",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_f4e840260c25d2d6b920b89bab46fd41df8c3ef7aa55804f6a695fa1434aedda",
+      "reaLocator": "normalized_result.methods[token=0x060007e2]",
+      "symbol": "#=qTGcNRYmhN3j5n9V0f14IKx1OLCBk3Vd3iiMV0gEfJj4MVpv5A05aM_fLFwhpe$4N::#=q7qOPk_38Tq$rMEV$qvg7aw==",
+      "methodToken": "0x060007e2",
+      "rva": 256744,
+      "fileOffset": 249064,
+      "signature": {
+        "returnType": "u1[]",
+        "parameterTypes": [
+          "u1[]",
+          "u1[]"
+        ]
+      },
+      "normalizedIlSha256": "2754d2f195a027cf909c6f272cf489f6abdc0898104da88a737d9ebea8d70350",
+      "limitations": [
+        "Exact artifact SHA/MVID required.",
+        "Seed derivation assumes the normal same-assembly StackTrace initializer branch.",
+        "No runtime FMRTE profile selection or hidden-value certification."
+      ],
+      "sourceIlSha256": "10236449919aa85cd2df7601a80176c28a0425eefd6830fa2dfb451ea4cb0106"
+    },
+    {
+      "id": "RE13-PROFILE-DECODE-0x06000503",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed file-backed CIL/resource decode under the normal same-assembly initializer branch; runtime selection unobserved",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_ee3b373fb1514a3e7c7e761fc13f69770d0c5e2d5de5a08e8aca853408337c57",
+      "reaLocator": "normalized_result.methods[token=0x06000503]",
+      "symbol": "#=qhYVcrIne1sSLNKEe9OGNBABbeomBLPBXxkjHfQO3JKOvMXA26AAIH0B_G3AElqxC::.ctor",
+      "methodToken": "0x06000503",
+      "rva": 179700,
+      "fileOffset": 172020,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "e0f7f04e744af1d85e1857153bd583752a85725289f6e280d15a78f99b45e98a",
+      "limitations": [
+        "Exact artifact SHA/MVID required.",
+        "Seed derivation assumes the normal same-assembly StackTrace initializer branch.",
+        "No runtime FMRTE profile selection or hidden-value certification."
+      ],
+      "sourceIlSha256": "c9f7c4e9222f46b8d10beec6215a285bee8b8ca508be2a89991ad3c86dd7db80"
+    },
+    {
+      "id": "RE13-PROFILE-DECODE-0x06000825",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed file-backed CIL/resource decode under the normal same-assembly initializer branch; runtime selection unobserved",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_f4e840260c25d2d6b920b89bab46fd41df8c3ef7aa55804f6a695fa1434aedda",
+      "reaLocator": "normalized_result.methods[token=0x06000825]",
+      "symbol": "#=qUBaCM9ZZ$v4UDacNbuErEMFOjgVEbfktq9byU6rfeeY=::#=qAW8m6H_t2UGbz6buoeBHlw==",
+      "methodToken": "0x06000825",
+      "rva": 273396,
+      "fileOffset": 265716,
+      "signature": {
+        "returnType": "string",
+        "parameterTypes": [
+          "i4"
+        ]
+      },
+      "normalizedIlSha256": "d384bec39a71e8a1a8c3d34131ac3d8ade0081b1e2cd61c6648963d7ad0ee401",
+      "limitations": [
+        "Exact artifact SHA/MVID required.",
+        "Seed derivation assumes the normal same-assembly StackTrace initializer branch.",
+        "No runtime FMRTE profile selection or hidden-value certification."
+      ],
+      "sourceIlSha256": "785b80a257637cd0542e9254adb2df69c0d5e4c767171141e354ab955d52fa4d"
     }
   ],
   "unknowns": [
@@ -3525,7 +3818,9 @@
     "userNamedRecordObserved": true,
     "knownPlayerVisibleFieldsConfirmed": true,
     "knownPlayerVisibleFieldRecordCount": 2,
-    "boundedCandidateScanPerformed": true
+    "boundedCandidateScanPerformed": true,
+    "restartRecoveredCandidateCount": 4036,
+    "staticDeclaredVersionProfileResolved": true
   },
   "localFixtures": [
     {
@@ -3610,7 +3905,8 @@
       "passing",
       "pace"
     ],
-    "visibleFieldValidatedRecordCount": 2
+    "visibleFieldValidatedRecordCount": 2,
+    "staticDeclaredVersionProfileResolved": true
   },
   "liveReadExperiments": [
     {
@@ -3746,6 +4042,122 @@
       "verificationSha256": "d37624c0112f47229696972ed96ec27a36701d1cffb8c873b1a466c429fc159f",
       "verificationScriptPath": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\finalize-fm13-catalog.cjs",
       "verificationScriptSha256": "38b2059ad190d9f029f5e194c412eb2073a0e521c39c2ab95c817ad2da79173b"
+    }
+  ],
+  "lastUpdatedDate": "2026-10-31",
+  "nativePlayerTypeResearch": {
+    "date": "2026-10-31",
+    "report": "18-fm2013-file-relative-discovery.md",
+    "code": "scripts/pe32-rtti-vtables.mjs",
+    "tests": "scripts/pe32-rtti-vtables.test.mjs",
+    "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-rtti-locator-observation.json",
+    "sha256": "4d4994fc0308ecd68f7681f99be82bb502e1894f585073db7ea34c9bfbccd3fd",
+    "decoratedName": ".?AVACTUAL_PLAYER@@",
+    "markerRva": 34118796,
+    "subobjectOffset": 356,
+    "uniqueFileCandidate": true,
+    "runtimeNarrowMetadataVerified": true,
+    "runtimeImageBytesAuthenticated": false,
+    "reaEvidenceId": "ev_a3a75246e940aac9a28bb8868c2604d018dcc776e6d64138e5e65c0eae76f423"
+  },
+  "profileStringResearch": {
+    "date": "2026-10-31",
+    "report": "18-fm2013-file-relative-discovery.md",
+    "proof": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-profile-strings-proof.json",
+      "sha256": "8246e956486621cafe4d54097eea09b985024ea10356029714f93755d4f345cb"
+    },
+    "seedProof": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-profile-strings-seed-proof.json",
+      "sha256": "5627f1c1c56de8d658deea2b0c159db9c90cb452740f7851062f6449d7ab2167"
+    },
+    "seedProofScript": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-profile-strings-seed-proof.mjs",
+      "sha256": "20b679eeca69f9d1f0d252c19725fcadca43cdd337d9ecb1c2c3b6ecadb8ce98"
+    },
+    "exactDeclaredVersion": "13.3.3f359652",
+    "constructor": "0x060004ab",
+    "validator": "0x060004b5",
+    "descriptor": "0x060004bb",
+    "declaredCaPaMode": 3,
+    "previousCandidateDeclaredEdition": "13.3.2",
+    "assumptions": [
+      "Normal same-assembly StackTrace string-initializer branch"
+    ],
+    "runtimeProfileSelectionObserved": false,
+    "runtimePlaintextObserved": false
+  },
+  "imageRelativeReadExperiments": [
+    {
+      "date": "2026-10-31",
+      "report": "18-fm2013-file-relative-discovery.md",
+      "builder": "buildFm2013ImageRelativePlayerScan",
+      "module": "scripts/fm2013-readonly-record-probe.mjs",
+      "oldHeapAddressSupplied": false,
+      "before": {
+        "reaEvidenceId": "ev_e08c13b9f543af992d7a3102678e8c3599f1e29119ba49534ebd110605e124fc",
+        "pid": 10500,
+        "records": 4036,
+        "coverage": {
+          "bytesScanned": 835719663,
+          "duplicates": 0,
+          "elapsedMs": 1577,
+          "faultCount": 0,
+          "faults": [],
+          "matches": 4036,
+          "rejected": 0,
+          "selectedMappingsExhausted": true,
+          "stopReason": null
+        }
+      },
+      "restartEarly": {
+        "reaEvidenceId": "ev_9212422a8caf7aae94dcab9f9a86faac5600e9a0e9ccc7921a635ff45344cbed",
+        "pid": 29056,
+        "records": 0,
+        "gameLoadedStateVerified": false
+      },
+      "after": {
+        "reaEvidenceId": "ev_63fac4d303656a06163af42351e1661115ce4054cf319980041e95695ebdff2b",
+        "pid": 29056,
+        "records": 4036,
+        "coverage": {
+          "bytesScanned": 796388146,
+          "duplicates": 0,
+          "elapsedMs": 1484,
+          "faultCount": 0,
+          "faults": [],
+          "matches": 4036,
+          "rejected": 0,
+          "selectedMappingsExhausted": true,
+          "stopReason": null
+        }
+      },
+      "candidateRecordCount": 4036,
+      "realRestartObserved": true,
+      "allPlayerAddressesChanged": true,
+      "allIdentitiesAndTwoAttributesEqual": true,
+      "moduleBaseChanged": false,
+      "imageRebaseOnlySyntheticTested": true,
+      "batchHiddenAbilityWordsRead": false,
+      "actualAbilityVerified": false,
+      "wholeDatabaseCompletenessVerified": false,
+      "productionAdapterCertified": false,
+      "negativeCaseEvidenceId": "ev_4f492afe5f7b5f665ce67fba28c58615a7a5b4a4871cb4e7bf2a473c951e1fbc",
+      "quotaCaseEvidenceId": "ev_df59ab83c1634b4b04ec8218d61ff5d2d995d67a8b0d45c74ccc26ab37aaa6c8",
+      "sessionDetached": true,
+      "writePerformed": false,
+      "verification": {
+        "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-image-relative-verification.json",
+        "sha256": "f70c19214c625fdc820a2e575f90a75662cb0ea7be33e6eee0cd727ed8255d02"
+      },
+      "verifier": {
+        "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\finalize-fm13-relative.cjs",
+        "sha256": "f609fdf4185bad6d110d7d358e1e9a732b77dcfda65b2a949020a3115a14445a"
+      },
+      "runtimeIndex": {
+        "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-image-relative-final-index.json",
+        "sha256": "8b7760c174aedfdb6a5d8fdcd8fc66227c5a0126d995826dd07996952a4591b8"
+      }
     }
   ]
 }

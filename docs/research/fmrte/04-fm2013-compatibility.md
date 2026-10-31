@@ -16,7 +16,7 @@
 
 | Edition / exact executable build | Reference source | Process detection | Player / CA/PA / attributes | Writeback | Persistence |
 |---|---|---|---|---|---|
-| FM2013 local metadata `13.3.3f359652`, executable SHA-256 `df45cde67cb7361867e7afc9808dacab8bf53bd972f48145f6f881ff55d08871` | FMRTE13 13.3.3.62, above hash; same numeric build as vendor-listed Retail candidate | REA/Frida attached to user-opened process | ID/Passing/Pace match user text on two records; two repeated4,036-candidate scans; CA/PA and database completeness unverified | UNSUPPORTED in ManagerHub | UNKNOWN / not tested |
+| FM2013 local metadata `13.3.3f359652`, executable SHA-256 `df45cde67cb7361867e7afc9808dacab8bf53bd972f48145f6f881ff55d08871` | FMRTE13 13.3.3.62; matching version list/mode decoded statically | REA/Frida attached before/after user-driven restart | Two user-text ID/Passing/Pace matches; file-relative discovery recovers4,036 relocated records; CA/PA and database completeness unverified | UNSUPPORTED in ManagerHub | Editing/save-reload UNKNOWN / not tested |
 | FM2013 13.3.3.359720 Russian (vendor-listed candidate) | Official release documentation only | UNKNOWN for ManagerHub | UNKNOWN | UNSUPPORTED | UNKNOWN |
 | FM2026 local build not investigated | FMRTE26 26.3.2.42, hashes in inventory | UNKNOWN | UNKNOWN | UNSUPPORTED | UNKNOWN |
 
@@ -27,5 +27,7 @@ The [later live experiment](16-fm2013-live-readonly-record.md) supersedes earlie
 ## FM2013 validation dependency
 
 The executable metadata/hash and a private test-save snapshot are recorded. [Bounded live discovery](17-fm2013-bounded-player-discovery.md) establishes a user-confirmed ID/Passing/Pace subset on two named records and repeated candidate enumeration. Hidden CA/PA, club, exact profile validation, restart behavior and real wrong-build/access-denied/process-exit cases remain open. Synthetic failure tests do not substitute for these runtime checks. Writer gates remain unsatisfied. Offline record extraction and a controlled same-career pair remain separate gates.
+
+[The file-relative follow-up](18-fm2013-file-relative-discovery.md) resolves the supplied-anchor/restart gap on one tested career: all4,036 record addresses change across a new process, while identities/two attributes remain equal. File-derived RTTI and runtime metadata checks select the marker without old player addresses. Local-version profile declarations are now decoded statically; actual FMRTE runtime selection, hidden values, wider coverage and write/reload support remain uncertified.
 
 **UNSUPPORTED:** guessed offsets, FM26 layout transplantation, testing synthetic memory and calling it FM2013 support, or weakening actual-CA provenance. **UNKNOWN:** game-engine CA balancing and reload behavior.

@@ -2,10 +2,15 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import vm from 'node:vm';
 import { buildFm2013ReadOnlyRecordProbe, buildFm2013ReadOnlyPlayerScan,
-  FM2013_RESEARCH_BINARY_SHA256 } from './fm2013-readonly-record-probe.mjs';
+  buildFm2013ImageRelativePlayerScan, FM2013_RESEARCH_BINARY_SHA256 } from './fm2013-readonly-record-probe.mjs';
 
 const config = { binarySha256: FM2013_RESEARCH_BINARY_SHA256, pid: 100, playerAddress: '0x10000',
   expectedId: 123, firstName: 'Test', lastName: 'Fixture' };
+const imageProof = { fileSha256: FM2013_RESEARCH_BINARY_SHA256, imageSize: 0x10000, candidates: [{
+  decoratedName: '.?AVACTUAL_PLAYER@@', subobjectOffset: 356, constructorDisplacement: 4,
+  markerRva: 0x1000, locatorRva: 0x2000, typeDescriptorRva: 0x3000, hierarchyRva: 0x4000,
+  firstFunctionRvas: [0x5000, 0x5004, 0x5008],
+}] };
 
 function execute(options = {}) {
   const numbers = new Map([[0x10000 + 356 + 20, 123], [0x10000 + 356 + 28, 123],
@@ -14,13 +19,22 @@ function execute(options = {}) {
     [0x31000, 1], [0x31001, 7], [0x10000 + 228, 0x40000], [0x40000 + 54, 80],
     [0x40000 + 85, 75], [0x10000 + 336, 12345], [0x10000 + 338, 54321]]);
   const strings = new Map([[0x30004, 'Test'], [0x31004, 'Fixture']]);
-  const marker = 0x50000;
+  const imageBase = options.imageBase ?? 0x50000, marker = options.imageRelative ? imageBase + 0x1000 : 0x50000;
   numbers.set(0x10000 + 356, marker);
   for (const [address, value] of [...numbers]) {
     if (address >= 0x10000 && address < 0x10200) numbers.set(address + 0x2000, value);
   }
   numbers.set(0x12000 + 356 + 20, options.duplicateId ? 123 : 456);
   numbers.set(0x12000 + 356 + 28, options.duplicateId ? 123 : 456);
+  if (options.imageRelative) {
+    const locator = imageBase + 0x2000, descriptor = imageBase + 0x3000;
+    for (const [offset, value] of [[0, 0], [4, options.wrongLocator ? 360 : 356], [8, 4],
+      [12, descriptor], [16, imageBase + 0x4000]]) numbers.set(locator + offset, value);
+    numbers.set(marker - 4, locator);
+    for (let i = 0; i < 3; i++) numbers.set(marker + i * 4, imageBase + 0x5000 + i * 4 + (options.wrongFunction ? 4 : 0));
+    const name = options.wrongType ? '.?AVWRONG_NATIVE@@' : imageProof.candidates[0].decoratedName;
+    for (let i = 0; i <= name.length; i++) numbers.set(descriptor + 8 + i, i === name.length ? 0 : name.charCodeAt(i));
+  }
   const reads = [], messages = [], scans = [];
   function numeric(address) {
     reads.push(address);
@@ -43,8 +57,9 @@ function execute(options = {}) {
   if (options.nullAttributes) numbers.set(0x10000 + 228, 0);
   if (options.badHeader) numbers.set(0x30001, 255);
   const Process = { id: options.pid ?? 100, arch: options.arch ?? 'ia32', pointerSize: 4,
-    mainModule: { base: pointer(marker), size: 0x10000,
+    mainModule: { base: pointer(options.imageRelative ? imageBase : marker), size: options.imageSize ?? 0x10000,
       path: options.path ?? 'C:\\Program Files (x86)\\Football Manager 2013\\fm.exe' },
+    findRangeByAddress: () => ({ protection: options.nonExecutable ? 'r--' : 'r-x' }),
     enumerateRanges: () => options.ranges ?? [{ base: pointer(0x10000), size: 0x4000 }] };
   const Memory = { scanSync(base, length, pattern) {
     scans.push({ base: base.toUInt32(), length, pattern });
@@ -54,7 +69,9 @@ function execute(options = {}) {
   } };
   let ticks = 0;
   class Clock extends Date { static now() { return options.clockStep ? (ticks++ * options.clockStep) : 1000; } }
-  const source = options.scan ? buildFm2013ReadOnlyPlayerScan({ ...config, ...options.config }, options.limits) :
+  const source = options.imageRelative ? buildFm2013ImageRelativePlayerScan({ binarySha256: config.binarySha256,
+    pid: options.config?.pid ?? config.pid }, imageProof, options.limits) :
+    options.scan ? buildFm2013ReadOnlyPlayerScan({ ...config, ...options.config }, options.limits) :
     buildFm2013ReadOnlyRecordProbe({ ...config, ...options.config });
   vm.runInNewContext(source, { Process, Memory, Date: Clock, ptr: pointer,
     send: message => messages.push(JSON.parse(JSON.stringify(message))) }, { timeout: 1000 });
@@ -145,5 +162,36 @@ test('scan limits reject oversized work, non-integers and unknown keys', () => {
   for (const limits of [{ maxBytes: 3 }, { maxBytes: 1073741825 }, { maxDurationMs: 20001 },
     { maxRecords: 0 }, { maxRecords: 1.5 }, { maxMatches: 20001 }, { unknown: 1 }, { constructor: 1 }]) {
     assert.throws(() => buildFm2013ReadOnlyPlayerScan(config, limits), RangeError);
+  }
+});
+
+test('file-relative discovery uses no supplied record address and relocates with the image base', () => {
+  for (const imageBase of [0x50000, 0x950000]) {
+    const { result, reads } = execute({ imageRelative: true, imageBase });
+    assert.equal(result.status, 'observed_candidates'); assert.equal(result.imageTypeMetadataVerified, true);
+    assert.equal(result.marker, `0x${(imageBase + 0x1000).toString(16)}`);
+    assert.deepEqual(result.records.map(record => record.identity.id), [123, 456]);
+    assert.equal(result.anchorFound, null); assert.equal(result.actualAbilityVerified, false);
+    assert.ok(!reads.includes(0x10000 + 336));
+  }
+});
+
+test('file-relative scan rejects mismatching runtime RTTI, code pointers or image size before scanning', () => {
+  for (const [option, diagnostic] of [['wrongLocator', 'rtti_locator_mismatch'], ['wrongType', 'rtti_name_mismatch'],
+    ['wrongFunction', 'rtti_function_mismatch'], ['nonExecutable', 'rtti_function_mismatch']]) {
+    const { result, scans } = execute({ imageRelative: true, [option]: true });
+    assert.equal(result.diagnostic, diagnostic); assert.equal(scans.length, 0);
+  }
+  const size = execute({ imageRelative: true, imageSize: 0x11000 });
+  assert.equal(size.result.diagnostic, 'image_size_mismatch'); assert.equal(size.scans.length, 0);
+});
+
+test('file-relative builder refuses wrong artifacts, ambiguous markers and malformed coordinates', () => {
+  const target = { binarySha256: config.binarySha256, pid: config.pid };
+  for (const proof of [{ ...imageProof, fileSha256: 'wrong' }, { ...imageProof, candidates: [] },
+    { ...imageProof, candidates: [...imageProof.candidates, ...imageProof.candidates] },
+    ...[{ markerRva: 3 }, { locatorRva: 0x10000 }, { subobjectOffset: 360 }, { decoratedName: '.?AVOTHER@@' },
+      { firstFunctionRvas: [4] }].map(change => ({ ...imageProof, candidates: [{ ...imageProof.candidates[0], ...change }] }))]) {
+    assert.throws(() => buildFm2013ImageRelativePlayerScan(target, proof), RangeError);
   }
 });

@@ -77,3 +77,9 @@ The user's subsequent text confirmation matches all three displayed fields (ID, 
 ## Bounded multi-record follow-up
 
 The shared probe now also builds an anchor-derived scanner. Ten focused synthetic tests pass, including multi-record validation, exclusion of hidden ability reads, partial limits, failed chunks, chunk-boundary markers and duplicate IDs. `npm.cmd run check` passed TypeScript,90 Vitest tests,65 Node tests and production build/bundle budgets. [The live report](17-fm2013-bounded-player-discovery.md) records two real4,036-candidate scans with identical identities/addresses/tested attributes and a second user-text three-field comparison. The same-process repeats do not validate restart recovery, hidden abilities or whole-database completeness. Raw evidence stays outside Git; the Frida session was detached without killing the target.
+
+## File-relative discovery and real restart — 2026-10-31
+
+[The next report](18-fm2013-file-relative-discovery.md) executes a file-derived RTTI scan without input player addresses. All4,036 heap record addresses change after a user-driven process restart; identities and two tested attributes remain equal. Real wrong-locator rejection and a64KiB partial result are retained. Independent file-backed decoding identifies the local-version profile/mode declaration; runtime FMRTE selection remains unobserved.
+
+`npm.cmd run check` passes90 Vitest tests,72 Node tests, TypeScript and build/bundle budgets. Independent agent source review finds no actionable issue and reproduces17 focused tests. Final evidence audit passes128 method coordinates,150 unique canonical records, eight bundle hashes,424 unchanged inventoried installation files, three unchanged save samples and every report link/Evidence ID. Separate replay verifies generated-script hashes, native type metadata, the restart comparison and retained unverified flags. All raw player data remains outside Git; both owned Frida sessions are detached.
