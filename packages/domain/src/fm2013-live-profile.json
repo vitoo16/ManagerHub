@@ -7,6 +7,7 @@
   "imagePath": "C:\\Program Files (x86)\\Football Manager 2013\\fm.exe",
   "sourceFmrteSha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
   "sourceFmrteMvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+  "biography": { "birthDateOffset": 80, "primaryNationOffset": 108, "nationIdOffset": 20, "nationNamePointerOffset": 32 },
   "nativeKinds": {
     "player": {
       "decoratedName": ".?AVACTUAL_PLAYER@@",

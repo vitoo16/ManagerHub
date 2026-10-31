@@ -30,6 +30,8 @@ The immutable snapshot includes declared source identity, edition/build, reader 
 
 The real capture normalizes 4,058 players with 49 ordinary rating fields, 15 familiarity fields and 3,730 source-qualified club links. Editor retains provisional ratings; Realism removes all exact numeric ratings before returning/serializing because `scoutingKnowledge:'not_decoded'`. CA/PA are always null, and wage/frequency/currency/expiry stay unknown. A club link preserves `player_team_pointer` or `primary_contract_team`, without asserting current employment. Familiarity zero remains valid; no position eligibility or role catalog is inferred.
 
+[The subsequent biography extension](../research/fmrte/22-fm2013-biography-cohort.md) adds nullable `birthDate` and `primaryNation` evidence fields. Optional four-byte date input reuses the conservative calendar decoder; malformed data rejects and invalid calendars stay unknown. The primary-nation value retains native ID/name with relationship `person_primary_nation`. All4,058 observed records normalize these fields in Editor; Realism redacts supplied biography before serialization while visibility knowledge is undecoded. Older captures omit them and remain unknown. No age, ISO code, all-citizenship or national eligibility model is inferred. The additive research shape is not a claim of compatibility with future persisted product consumers.
+
 The local Node CLI creates a fresh explicit JSON output with input SHA-256. Product desktop IPC, snapshot storage/projection/UI, authenticated source/career identity and other-career/build validation remain unfinished. No live snapshot is silently cast into the existing export library.
 
 ## Product-specific metrics

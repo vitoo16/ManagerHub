@@ -1,4 +1,5 @@
 import profile from './fm2013-live-profile.json' with { type: 'json' };
+import { decodeFm2013Date } from './fm2013-date.ts';
 import type { EvidenceField, MissingReason } from './types';
 
 export type LiveNativeKind = 'player' | 'playerStaff';
@@ -36,6 +37,13 @@ export interface LivePlayer {
   readonly firstName: EvidenceField<string>;
   readonly lastName: EvidenceField<string>;
   readonly name: EvidenceField<string>;
+  readonly birthDate: EvidenceField<string>;
+  /** Observed primary-person link only; no citizenship or national-team eligibility inference. */
+  readonly primaryNation: EvidenceField<{
+    readonly nativeId: number;
+    readonly name: string;
+    readonly relation: 'person_primary_nation';
+  }>;
   readonly attributes: Readonly<Record<string, LiveAttribute>>;
   readonly positions: Readonly<Record<string, LivePosition>>;
   /** Observed link only; neither relationship establishes current employment or loan status. */
@@ -167,6 +175,7 @@ export function parseFm2013LiveCapture(text: string, context: LiveSnapshotContex
     const ids = new Set<number>();
     const diagnostics = ['Research capture: all observed fields remain provisional; roster completeness and loaded career identity are unverified.'];
     if (mode === 'realism') diagnostics.push('Research Realism redacts exact numeric ratings because manager scouting and visibility knowledge have not been decoded.');
+    if (mode === 'realism') diagnostics.push('Research Realism also redacts supplied birth dates and primary-nation links pending manager visibility evidence.');
     let partial = false;
     for (const rawPass of capture.passes) {
       const pass = record(rawPass, ['nativeKind', 'imageTypeMetadataVerified', 'coverage', 'records']);
@@ -199,13 +208,25 @@ export function parseFm2013LiveCapture(text: string, context: LiveSnapshotContex
         diagnostics.push(`${nativeKind}: ${rejected} rejected candidates; ${duplicates} duplicate candidates. Coverage may omit records.`);
       }
       for (const rawPlayer of pass.records) {
-        const player = record(rawPlayer, ['nativeId', 'firstName', 'lastName', 'attributeBytes'], ['positionBytes', 'club']);
+        const player = record(rawPlayer, ['nativeId', 'firstName', 'lastName', 'attributeBytes'], ['positionBytes', 'club', 'birthDateBytes', 'primaryNation']);
         const nativeId = integer(player.nativeId, 1, 2_147_483_647);
         if (ids.has(nativeId)) throw new Error('Duplicate native ID across capture records.');
         ids.add(nativeId);
         const firstName = boundedText(player.firstName, 64, true);
         const lastName = boundedText(player.lastName, 64, true);
         if (!firstName.trim() && !lastName.trim()) throw new Error('Player has no observed name.');
+        let birthDate: LivePlayer['birthDate'] = missing('not_decoded');
+        if (Object.hasOwn(player, 'birthDateBytes')) {
+          const rawDate = numericArray(player.birthDateBytes, 4, 0, 255);
+          const decoded = decodeFm2013Date(Uint8Array.from(rawDate));
+          birthDate = mode === 'realism' ? missing('redacted') : decoded.status === 'decoded' ? observed(decoded.iso) : missing('not_decoded');
+        }
+        let primaryNation: LivePlayer['primaryNation'] = missing('not_decoded');
+        if (Object.hasOwn(player, 'primaryNation')) {
+          const nation = record(player.primaryNation, ['nativeId', 'name']);
+          const value = { nativeId: integer(nation.nativeId, 1, 2_147_483_647), name: boundedText(nation.name, 128), relation: 'person_primary_nation' as const };
+          primaryNation = mode === 'realism' ? missing('redacted') : observed(value);
+        }
         const attributeBytes = numericArray(player.attributeBytes, profile.attributes.length, -128, 127);
         const attributes: Record<string, LiveAttribute> = Object.create(null) as Record<string, LiveAttribute>;
         profile.attributes.forEach((attribute, index) => {
@@ -230,7 +251,7 @@ export function parseFm2013LiveCapture(text: string, context: LiveSnapshotContex
           club = observed({ nativeId: integer(rawClub.nativeId, 1, 2_147_483_647), name: boundedText(rawClub.name, 128), relation: rawClub.relation });
         }
         players.push({ id: `${snapshotId}:${nativeId}`, nativeId, nativeKind, firstName: observed(firstName), lastName: observed(lastName),
-          name: observed([firstName.trim(), lastName.trim()].filter(Boolean).join(' ')), attributes, positions, club,
+          name: observed([firstName.trim(), lastName.trim()].filter(Boolean).join(' ')), birthDate, primaryNation, attributes, positions, club,
           actualCa: missing(mode === 'realism' ? 'redacted' : 'not_verified'), potentialAbility: missing(mode === 'realism' ? 'redacted' : 'not_verified'),
           contract: { weeklyWage: missing('not_decoded'), wageFrequency: missing('not_decoded'), currency: missing('not_decoded'), expiresAt: missing('not_decoded') } });
       }

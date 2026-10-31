@@ -113,6 +113,11 @@
       "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-nationality-rea-evidence-final.json",
       "sha256": "635e3d8bcbb06871970cfbf18c78a6373ad6b910ec315c5342b218a766efa488",
       "note": "2026-11-01 biography follow-up; private canonical metadata/runtime evidence, no proprietary bodies or player data committed."
+    },
+    {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-biography-cohort-rea-evidence.json",
+      "sha256": "495031c5ec36f8f6d3654801e638cfd59321a143842b11639b9f1c64b7610499",
+      "note": "2026-11-01 complete v2 compact biography cohort;16 canonical records including earlier records. Private player data remain outside Git."
     }
   ],
   "evidenceAliases": {
@@ -8902,5 +8907,117 @@
       "failed": 0,
       "skipped": 0
     }
+  },
+  "biographyCohortResearch": {
+    "date": "2026-11-01",
+    "gameBuild": "13.3.3f359652",
+    "evidenceId": "ev_5ccc5c00f65002b6f303993368cf23d253ba35a2619869ed094320646f28dbf0",
+    "encoding": "hex-i8-tuples-v2",
+    "schema": 1,
+    "additiveOptionalFields": [
+      "birthDateBytes",
+      "primaryNation"
+    ],
+    "legacyV1TransportAccepted": true,
+    "passCounts": [
+      {
+        "nativeKind": "player",
+        "records": 4036,
+        "elapsedMs": 2658
+      },
+      {
+        "nativeKind": "playerStaff",
+        "records": 22,
+        "elapsedMs": 1361
+      }
+    ],
+    "scanBytesPerPass": 807337144,
+    "playerCount": 4058,
+    "rawDateRows": 4058,
+    "decodedDates": 4058,
+    "primaryNationLinks": 4058,
+    "unknownDateRows": 0,
+    "unknownNationRows": 0,
+    "nationDictionaryEntries": 127,
+    "dictionaryIsGlobalNationCount": false,
+    "dateReferenceMatches": 3,
+    "nationNameReferenceMatches": 3,
+    "reference": "Previously retained FMRTE Information-page receipts for three identified normal/dual players; not blinded, no fresh UI capture or official engine oracle.",
+    "sourceRelation": "person_primary_nation",
+    "allCitizenshipsInferred": false,
+    "nationalEligibilityInferred": false,
+    "isoCodesInferred": false,
+    "ageEmitted": false,
+    "runtimeNationRttiValidated": false,
+    "runtimeImageBytesAuthenticated": false,
+    "atomicSnapshot": false,
+    "wholeRosterCertified": false,
+    "careerIdentity": "user_declared",
+    "source": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-biography-cohort.frida.js",
+      "sha256": "f84cc61d4cd5a9874b91121cc114269e6780c4dd87e5222a87cd5479a66016cb"
+    },
+    "verification": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-biography-cohort-verification.json",
+      "sha256": "db5e76d9cfd22def46e61c1099c935ddf1035b165af58590bfbac0ded99ecc27"
+    },
+    "realismBiography": "redacted before return/serialization",
+    "hiddenAbilitiesAlwaysNull": true,
+    "contractAlwaysUnknown": true,
+    "rawDiagnosticsAndAddressesExcludedFromWire": true,
+    "optionalFieldFailure": "independent null/not_decoded with private probe diagnostic; stable unrelated fields retained",
+    "input": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-biography-wire.json",
+      "sha256": "f8418ea1b71edee93017a29dfc600873207664b0e3d07dccdb58c2655fa66565"
+    },
+    "editor": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-biography-editor.json",
+      "sha256": "9432d34bc69905efbde76cf6cc3fbebddf5d501ded31407d8535215389f4e873"
+    },
+    "realism": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-biography-realism.json",
+      "sha256": "730dc9592d6fdfcae57b91ac1f7b0f4621f6ccf44a4f29e8a991fc38cf6e8919"
+    },
+    "verifier": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\verify-fm13-biography-cohort.mjs",
+      "sha256": "df218284777e7a82ba71982e566ab74a3c2bf2232d83edf6eaf33af7722f41b0"
+    },
+    "code": [
+      {
+        "path": "packages/domain/src/fm2013-live-profile.json",
+        "sha256": "f42957389a43912b13b991f0215d0fecd7a6f4d6ffa9d7a8da969f0918b022ed"
+      },
+      {
+        "path": "packages/domain/src/live-snapshot.ts",
+        "sha256": "ba971d8981766cb7113e16e4a5b7daa2178a2b44ea519a1f825a51bf7dd8f108"
+      },
+      {
+        "path": "scripts/fm2013-readonly-record-probe.mjs",
+        "sha256": "d51c95bf0ff9e3661ed5a78e5425f246f6e9c4b28f23b46f8adfeb32e9818a0f"
+      },
+      {
+        "path": "scripts/fm2013-live-wire.mjs",
+        "sha256": "200bea7e71ee07ed1dd5c727d95456ac16dd337444eed95f6c35624eb23be682"
+      }
+    ],
+    "tests": {
+      "command": "npm.cmd run check",
+      "vitestPassed": 113,
+      "nodePassed": 84,
+      "failed": 0,
+      "skipped": 0,
+      "typecheck": "PASS",
+      "buildAndBundleBudgets": "PASS"
+    },
+    "independentReview": {
+      "focusedNodePassed": 25,
+      "focusedDomainAndDatePassed": 23,
+      "actionableDefects": 0,
+      "remainingLimit": "Individual repeat checks do not establish an atomic record or career snapshot."
+    },
+    "allOwnedFridaSessionsDetached": true,
+    "gameDataEditRequested": false,
+    "productionAdapterCertified": false,
+    "writerCertified": false
   }
 }

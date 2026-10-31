@@ -36,6 +36,8 @@ The executable identity and private save snapshot are recorded. [Bounded discove
 
 ## Local snapshot contract — 2026-11-01
 
+[The subsequent biography capture](22-fm2013-biography-cohort.md) extends local snapshot admission with DOB and primary-nation evidence on all4,058 observed records. Three dates and three nation names match prior reference receipts; Editor exposes provisional values and Realism redacts both. Legacy captures remain admissible with unknown biography. This does not add a supported build, authenticate native Nation objects or certify nationality eligibility, whole-career coverage or product integration.
+
 [The new pipeline](20-fm2013-live-snapshot-contract.md) normalizes a complete, address-free real capture into 4,058 immutable records in both modes. It retains exact-build declarations and provisional per-field/per-pass evidence without treating the declared executable hash, career ID or timestamp as authenticated runtime facts. `ready` means payload admission, not roster or adapter certification.
 
 Editor exposes the49 provisional ordinary ratings and 15 familiarity ratings; Realism redacts all exact numeric ratings because manager/scouting knowledge remains undecoded. CA/PA are null in both modes, as are wage/currency/frequency/expiry. The3,730 club links retain `player_team_pointer` or `primary_contract_team`;328 unknown links are not interpreted as no club. Position bytes derive no eligibility. One dual-class reference page matches 15 position values; a separately captured contract page supports a limited date/wage comparison, without certifying unit/currency or contract semantics.

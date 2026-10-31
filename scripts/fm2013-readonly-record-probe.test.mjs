@@ -47,6 +47,18 @@ function execute(options = {}) {
       }
     }
   }
+  if (options.biography) {
+    for (const base of [0x10000, 0x12000]) {
+      [59, 0, 208, 7].forEach((byte, index) => {
+        if (!(options.birthFault && index === 0)) numbers.set(base + personOffset + 80 + index, byte);
+      });
+      numbers.set(base + personOffset + 108, options.missingNation ? 0 : 0x81000);
+    }
+    numbers.set(0x81000 + 20, options.invalidNationId ? 0 : 77);
+    numbers.set(0x81000 + 32, 0x82000);
+    numbers.set(0x82000, 1); numbers.set(0x82001, options.badNationName ? 255 : 10);
+    strings.set(0x82004, 'TestNation');
+  }
   if (options.imageRelative) {
     const locator = imageBase + 0x2000, descriptor = imageBase + 0x3000;
     for (const [offset, value] of [[0, 0], [4, options.wrongLocator ? 360 : personOffset], [8, 4],
@@ -64,6 +76,9 @@ function execute(options = {}) {
     if (options.changedFields && address === 0x10000 + 336 && reads.filter(x => x === address).length > 1) return 12346;
     if (options.changedOrdinary && address === 0x40000 + 59 && reads.filter(x => x === address).length > 1) return 81;
     if (options.changedPositions && address === 0x40000 + 32 && reads.filter(x => x === address).length > 1) return 15;
+    if (options.changedBirth && address === 0x10000 + personOffset + 80 && reads.filter(x => x === address).length > 1) return 60;
+    if (options.changedNation && address === 0x81000 + 20 && reads.filter(x => x === address).length > 1) return 78;
+    if (options.changedNationPointer && address === 0x10000 + personOffset + 108 && reads.filter(x => x === address).length > 1) return 0x83000;
     return numbers.get(address);
   }
   function pointer(address) {
@@ -73,6 +88,7 @@ function execute(options = {}) {
       readU8: () => numeric(value), readS8: () => numeric(value), readS32: () => numeric(value),
       readU16: () => numeric(value), readU32: () => numeric(value), readUtf16String: length => {
         reads.push(value); const text = strings.get(value);
+        if (options.changedNationName && value === 0x82004 && reads.filter(x => x === value).length > 1) return 'NextNation';
         if (text === undefined || text.length !== length) throw new Error('unmapped_string');
         return text;
       } };
@@ -96,10 +112,11 @@ function execute(options = {}) {
     decoratedName: '.?AVACTUAL_PLAYER_AND_NON_PLAYER@@', subobjectOffset: 452 }] } : imageProof;
   const source = options.imageRelative ? buildFm2013ImageRelativePlayerScan({ binarySha256: config.binarySha256,
     pid: options.config?.pid ?? config.pid, attributeSet: options.ordinary49 ? 'ordinary49' : 'passing_pace',
-    includePositions: !!options.positions, includeClubLinks: !!options.club }, proof, options.limits) :
-    options.scan ? buildFm2013ReadOnlyPlayerScan({ ...config, ...options.config }, options.limits) :
+    includePositions: !!options.positions, includeClubLinks: !!options.club, includeBiography: !!options.biography }, proof, options.limits) :
+    options.scan ? buildFm2013ReadOnlyPlayerScan({ ...config, ...options.config, includeBiography: !!options.biography }, options.limits) :
     buildFm2013ReadOnlyRecordProbe({ ...config, ...options.config, nativeKind: options.dual ? 'playerStaff' : 'player',
-      attributeSet: options.ordinary49 ? 'ordinary49' : 'passing_pace', includePositions: !!options.positions, includeClubLinks: !!options.club });
+      attributeSet: options.ordinary49 ? 'ordinary49' : 'passing_pace', includePositions: !!options.positions,
+      includeClubLinks: !!options.club, includeBiography: !!options.biography });
   vm.runInNewContext(source, { Process, Memory, Date: Clock, ptr: pointer,
     send: message => messages.push(JSON.parse(JSON.stringify(message))) }, { timeout: 1000 });
   return { result: messages[0], reads, scans };
@@ -262,4 +279,42 @@ test('club links retain their source relationship across normal and bound dual c
   assert.equal(broken.clubDiagnostic, 'contract_person_mismatch');
   const missing = execute({ club: true, badClub: true }).result;
   assert.equal(missing.club, undefined); assert.equal(missing.clubDiagnostic, 'invalid_pointer');
+});
+
+test('optional biography uses each native Person base and preserves exact date bytes without deriving age', () => {
+  for (const dual of [false, true]) {
+    const { result } = execute({ imageRelative: true, biography: true, dual });
+    assert.equal(result.records.length, 2);
+    for (const row of result.records) {
+      assert.deepEqual(row.biography, { birthDateBytes: [59, 0, 208, 7], primaryNation: { nativeId: 77, name: 'TestNation' } });
+      assert.equal(row.age, undefined); assert.equal(row.rawAbilityWords, undefined);
+      assert.equal(row.biographyDiagnostic, undefined);
+    }
+  }
+  assert.equal(execute().result.biography, undefined);
+  assert.throws(() => buildFm2013ReadOnlyRecordProbe({ ...config, includeBiography: 'yes' }), RangeError);
+});
+
+test('faulting or changing optional biography fields are isolated with explicit diagnostics', () => {
+  for (const dual of [false, true]) {
+    for (const [option, diagnostic, retained] of [
+      ['changedBirth', 'birth_date:stale_birth_date', 'primaryNation'],
+      ['birthFault', 'birth_date:unmapped_read', 'primaryNation'],
+      ['missingNation', 'primary_nation:unresolved_primary_nation', 'birthDateBytes'],
+      ['invalidNationId', 'primary_nation:invalid_primary_nation_id', 'birthDateBytes'],
+      ['badNationName', 'primary_nation:invalid_name_header', 'birthDateBytes'],
+      ['changedNation', 'primary_nation:stale_primary_nation', 'birthDateBytes'],
+      ['changedNationPointer', 'primary_nation:stale_primary_nation', 'birthDateBytes'],
+      ['changedNationName', 'primary_nation:stale_primary_nation', 'birthDateBytes'],
+    ]) {
+      const { result } = execute({ biography: true, dual, [option]: true });
+      assert.equal(result.status, 'observed_candidate');
+      assert.equal(result.attributes.passing.raw, 80);
+      assert.equal(result.biographyDiagnostic, diagnostic);
+      assert.ok(result.biography[retained]);
+      assert.equal(Object.keys(result.biography).length, 1);
+    }
+    const stale = execute({ biography: true, dual, stale: true }).result;
+    assert.equal(stale.status, 'rejected'); assert.equal(stale.diagnostic, 'stale_record');
+  }
 });

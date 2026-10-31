@@ -58,6 +58,27 @@ function observeRecord(config) {
       return { clubDiagnostic: String(error.message || error).slice(0, 200) };
     }
   }
+  function readBiography(person) {
+    const layout = config.biographyLayout, biography = {}, diagnostics = [];
+    try {
+      const address = person.add(layout.birthDateOffset);
+      const bytes = [0, 1, 2, 3].map(offset => address.add(offset).readU8());
+      if (bytes.some((byte, offset) => address.add(offset).readU8() !== byte)) fail('stale_birth_date');
+      biography.birthDateBytes = bytes;
+    } catch (error) { diagnostics.push(`birth_date:${String(error.message || error).slice(0, 100)}`); }
+    try {
+      const slot = person.add(layout.primaryNationOffset), value = slot.readPointer();
+      if (value.toUInt32() === 0) fail('unresolved_primary_nation');
+      const nation = checkedPointer(value), header = nation.add(layout.nationNamePointerOffset).readPointer();
+      const nativeId = nation.add(layout.nationIdOffset).readS32(), name = readStringHeader(header, 128);
+      if (nativeId <= 0) fail('invalid_primary_nation_id');
+      if (slot.readPointer().toString() !== nation.toString() ||
+          nation.add(layout.nationNamePointerOffset).readPointer().toString() !== header.toString() ||
+          nation.add(layout.nationIdOffset).readS32() !== nativeId || readStringHeader(header, 128) !== name) fail('stale_primary_nation');
+      biography.primaryNation = { nativeId, name };
+    } catch (error) { diagnostics.push(`primary_nation:${String(error.message || error).slice(0, 100)}`); }
+    return { biography, ...(diagnostics.length ? { biographyDiagnostic: diagnostics.join(';') } : {}) };
+  }
   function readCandidate(player, expected, includeAbilities) {
     const person = player.add(config.imageType?.subobjectOffset ?? config.personOffset);
     const before = readIdentity(person);
@@ -73,6 +94,7 @@ function observeRecord(config) {
     const positions = config.positionLayout.length ? Object.fromEntries(config.positionLayout.map(({ key, nativeCode, offset }) =>
       [key, { nativeCode, raw: attributes.add(offset).readS8() }])) : null;
     const clubLink = config.includeClubLinks ? readClubLink(player, person, config.imageType?.nativeKind ?? config.nativeKind) : null;
+    const biography = config.biographyLayout ? readBiography(person) : null;
     const words = includeAbilities ? { ca: caAddress.readU16(), pa: paAddress.readU16() } : null;
     const after = readIdentity(person);
     if (JSON.stringify(before) !== JSON.stringify(after) ||
@@ -92,6 +114,7 @@ function observeRecord(config) {
       attributes: ordinary,
       ...(positions ? { positions } : {}),
       ...(clubLink ?? {}),
+      ...(biography ?? {}),
       actualAbilityVerified: false,
     };
   }
@@ -193,11 +216,19 @@ function checkedTarget(config) {
   if (!Object.hasOwn(nativeKinds, nativeKind) || !['passing_pace', 'ordinary49'].includes(attributeSet)) throw new RangeError('Unsupported research field selection');
   if (config.includePositions !== undefined && typeof config.includePositions !== 'boolean') throw new RangeError('Invalid position selection');
   if (config.includeClubLinks !== undefined && typeof config.includeClubLinks !== 'boolean') throw new RangeError('Invalid club selection');
+  if (config.includeBiography !== undefined && typeof config.includeBiography !== 'boolean') throw new RangeError('Invalid biography selection');
+  const biographyLayout = config.includeBiography ? Object.fromEntries(
+    ['birthDateOffset', 'primaryNationOffset', 'nationIdOffset', 'nationNamePointerOffset'].map(key => {
+      const offset = profile.biography?.[key];
+      if (!Number.isSafeInteger(offset) || offset < 0 || offset > 1024) throw new RangeError('Invalid biography profile');
+      return [key, offset];
+    })) : null;
   const selected = attributeSet === 'ordinary49' ? FM2013_ORDINARY_ATTRIBUTES :
     FM2013_ORDINARY_ATTRIBUTES.filter(attribute => ['passing', 'pace'].includes(attribute.key));
   return { binarySha256: config.binarySha256, imagePath: profile.imagePath, pid: config.pid, nativeKind, personOffset: nativeKinds[nativeKind].personOffset,
     attributeSet, attributeLayout: selected.map(({ key, offset }) => ({ key, offset })),
     includeClubLinks: config.includeClubLinks === true,
+    biographyLayout,
     positionLayout: config.includePositions ? profile.positions.map(({ key, nativeCode, offset }) => ({ key, nativeCode, offset })) : [] };
 }
 

@@ -1,5 +1,11 @@
 # Verification and reproducibility
 
+The [complete biography cohort](22-fm2013-biography-cohort.md) supersedes the following sampled-only stage:4,058 DOB and primary-nation observations pass complete extraction and fresh Editor/Realism CLI normalization. Private replay matches three dates and three nation names against earlier retained UI receipts. Independent review reproduces25 Node and23 domain/date focused tests; full checks and evidence audit are recorded in the later section.
+
+Latest full `npm.cmd run check` passes TypeScript,113 Vitest/84 Node tests (197 total), production build and bundle budgets. The additional biography/transport tests cover malformed bytes, optional-field failures, legacy encoding, native field changes and pre-serialization privacy. The canonical evidence audit is separate from these executed tests and the real cohort replay.
+
+The biography-cohort evidence audit passes276 method coordinates, two artifact observations,194 unique canonical records,17 bundle hashes and all research links/Evidence IDs. All424 inventoried installation files and three save samples retain their hashes. The previous276 source-method discovery entries remain unchanged; the new observation extends runtime evidence rather than inventing additional static anchors.
+
 The [biography follow-up](21-fm2013-biography-fields.md) subsequently passes109 Vitest/81 Node tests (190), TypeScript and build/bundle budgets. Private replay matches three guarded DOB observations to earlier UI receipts; independent review passes3/3 calendar tests. Snapshot schema/capabilities remain unchanged.
 
 Updated 2026-11-01. **This chronological record starts with static-only research and later adds real live reads, reference comparisons and local snapshot normalization. No writer or production adapter is certified.** Initial 2026-10-30 results follow; later sections supersede their missing-input observations.

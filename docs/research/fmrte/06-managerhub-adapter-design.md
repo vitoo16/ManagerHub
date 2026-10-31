@@ -43,6 +43,8 @@ The research snapshot retains edition/build, declared executable hash/PID, reade
 
 ## Implemented local research contract
 
+[The biography extension](22-fm2013-biography-cohort.md) now adds optional four-byte date and primary-nation observations to the existing version1 envelope. The compact v2 transport retains v1 extraction compatibility. Real replay normalizes4,058 dates/links; Editor keeps provisional values and Realism redacts supplied biography before returning the immutable snapshot. Missing/invalid dates remain unknown. Primary-nation relations do not become citizenship/ISO/eligibility facts, and no age is derived. These fields reuse the calendar helper and evidence primitive; production storage/UI/IPC integration remains a separate contract.
+
 [The snapshot report](20-fm2013-live-snapshot-contract.md) documents the shared profile, strict parser, compact transport and Node file CLI. The complete real capture has 4,058 records, 49 ordinary fields and 15 position fields per record, with 3,730 source-qualified club links. Editor retains provisional ratings; Realism redacts all exact numeric ratings because scouting knowledge is not decoded. CA/PA and contract fields stay null in both modes.
 
 The parser rejects incompatible declarations, extra/hidden fields, addresses, duplicates and inconsistent coverage. It returns frozen `ready`, `partial`, `empty` or `rejected` results; `ready` means admission only. The CLI reads through one bounded opened handle, decodes UTF-8 strictly, hashes input bytes and creates a fresh bounded JSON output without uploads or process APIs. This implements normalization, not a product desktop bridge or a capture-authentication service.

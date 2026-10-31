@@ -16,6 +16,10 @@ function capture() {
     passes: [pass(), pass('playerStaff', [player(43)])] };
 }
 const parse = (value: unknown, declared = context) => parseFm2013LiveCapture(JSON.stringify(value), declared);
+function captureWithBiography(birthDateBytes: unknown = [59, 0, 208, 7], primaryNation: unknown = { nativeId: 88, name: 'Synthetic Nation' }) {
+  const input = capture();
+  return { ...input, passes: input.passes.map(scan => ({ ...scan, records: scan.records.map(p => ({ ...p, birthDateBytes, primaryNation })) })) };
+}
 
 describe('FM2013 live capture admission', () => {
   it('admits only the exact build and retains independent provenance limits', () => {
@@ -136,6 +140,61 @@ describe('FM2013 live capture admission', () => {
 });
 
 describe('FM2013 field normalization and privacy', () => {
+  it('normalizes optional biography as provisional evidence without age or eligibility inferences', () => {
+    const result = parse(captureWithBiography());
+    expect(result.status).toBe('ready');
+    const p = result.snapshot?.players[0];
+    expect(p?.birthDate).toMatchObject({ value: '2000-02-29', source: 'live_game', verification: 'provisional', edition: 'FM2013', build: profile.build, missingReason: null });
+    expect(p?.primaryNation).toMatchObject({ value: { nativeId: 88, name: 'Synthetic Nation', relation: 'person_primary_nation' }, source: 'live_game', verification: 'provisional' });
+    for (const key of ['age', 'citizenships', 'nationalEligibility', 'isoCountryCode']) expect(p).not.toHaveProperty(key);
+    expect(Object.isFrozen(p?.birthDate)).toBe(true);
+    expect(Object.isFrozen(p?.primaryNation.value)).toBe(true);
+    expect(() => { Object.assign(p?.primaryNation.value ?? {}, { relation: 'all_citizenships' }); }).toThrow(TypeError);
+    expect(JSON.stringify(result)).not.toContain('birthDateBytes');
+  });
+
+  it('preserves omitted biography as unknown and invalid native calendars without fallback dates', () => {
+    for (const mode of ['editor', 'realism'] as const) {
+      const p = parse(capture(), { ...context, mode }).snapshot?.players[0];
+      expect(p?.birthDate).toMatchObject({ value: null, missingReason: 'not_decoded' });
+      expect(p?.primaryNation).toMatchObject({ value: null, missingReason: 'not_decoded' });
+    }
+    for (const raw of [[0, 0, 232, 3], [109, 1, 221, 7], [255, 255, 220, 7]]) {
+      const result = parse(captureWithBiography(raw));
+      expect(result.status).toBe('ready');
+      expect(result.snapshot?.players[0]?.birthDate).toMatchObject({ value: null, verification: 'unsupported', missingReason: 'not_decoded' });
+      expect(result.snapshot?.players[0]?.primaryNation.value?.name).toBe('Synthetic Nation');
+    }
+  });
+
+  it('rejects malformed biography and foreign claims even when Realism would redact it', () => {
+    const badDates: unknown[] = [null, [], [0, 0, 220], [0, 0, 220, 7, 0], [256, 0, 220, 7], [-1, 0, 220, 7], [1.5, 0, 220, 7], ['0', 0, 220, 7]];
+    const badNations: unknown[] = [null, [], {}, { nativeId: 0, name: 'Nation' }, { nativeId: 1.5, name: 'Nation' },
+      { nativeId: 88, name: '' }, { nativeId: 88, name: 'a'.repeat(129) }, { nativeId: 88, name: 'bad\nname' },
+      { nativeId: 88, name: 'Nation', relation: 'citizenship' }, { nativeId: 88, name: 'Nation', verified: true },
+      { nativeId: 88, name: 'Nation', address: '0xbeef' }, { nativeId: 88, name: 'Nation', nativeIds: [88,89] }];
+    for (const mode of ['editor', 'realism'] as const) {
+      for (const raw of badDates) expect(parse(captureWithBiography(raw), { ...context, mode }).status).toBe('rejected');
+      for (const raw of badNations) expect(parse(captureWithBiography(undefined, raw), { ...context, mode }).status).toBe('rejected');
+    }
+  });
+
+  it('redacts supplied biography before Realism return and serialization without mutating the input', () => {
+    const input = captureWithBiography(), before = JSON.stringify(input);
+    const result = parse(input, { ...context, mode: 'realism' });
+    expect(result.status).toBe('ready');
+    for (const p of result.snapshot?.players ?? []) {
+      expect(p.birthDate).toMatchObject({ value: null, missingReason: 'redacted', verification: 'unsupported' });
+      expect(p.primaryNation).toMatchObject({ value: null, missingReason: 'redacted', verification: 'unsupported' });
+    }
+    const serialized = JSON.stringify(result);
+    expect(serialized).not.toMatch(/birthDateBytes|2000-02-29|Synthetic Nation|person_primary_nation/u);
+    expect(JSON.stringify(input)).toBe(before);
+    const restored: unknown = JSON.parse(serialized);
+    expect(restored).toMatchObject({ snapshot: { players: [{ birthDate: { value: null }, primaryNation: { value: null } }, { birthDate: { value: null }, primaryNation: { value: null } }] } });
+    expect(parse(input).snapshot?.players[0]?.birthDate.value).toBe('2000-02-29');
+  });
+
   it('requires and preserves the observed club relationship without claiming current employment', () => {
     for (const relation of ['player_team_pointer', 'primary_contract_team']) {
       const input = capture(); input.passes[0]!.records[0]!.club.relation = relation;

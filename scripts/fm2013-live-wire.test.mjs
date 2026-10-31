@@ -16,7 +16,23 @@ test('wire builder requires both unique file-bound native kinds before any runti
   }
   const source = buildFm2013LiveWireCapture(target, [proof('playerStaff'), proof('player')]);
   assert.ok(source.includes('fm2013-live-capture-v1'));
-  assert.ok(source.includes('hex-i8-tuples-v1'));
+  assert.ok(source.includes('hex-i8-tuples-v2'));
+});
+
+test('biography transport preserves unsigned date bytes, optional absence and bounded nation references', () => {
+  const row = [42, 'Synthetic', 'Fixture', '4b'.repeat(49), '00'.repeat(15)+':c600dc07:0', -1];
+  const payload = { kind: 'fm2013-live-capture', status: 'captured', encoding: 'hex-i8-tuples-v2', capture: {
+    schema: profile.schema, profileVersion: profile.profileVersion, target: {}, clubs: [], nations: [[77, 'Synthetic Nation']],
+    passes: [{ nativeKind: 'player', records: [row] }, { nativeKind: 'playerStaff', records: [] }] } };
+  const evidence = () => ({ normalized_result: { messages_truncated: false, messages: [{ type: 'send', payload }] } });
+  let player = extractFm2013WireCapture(evidence()).passes[0].records[0];
+  assert.deepEqual(player.birthDateBytes, [198, 0, 220, 7]);
+  assert.deepEqual(player.primaryNation, { nativeId: 77, name: 'Synthetic Nation' });
+  row[4] = '00'.repeat(15)+':-:-1';
+  player = extractFm2013WireCapture(evidence()).passes[0].records[0];
+  assert.equal(Object.hasOwn(player, 'birthDateBytes'), false); assert.equal(Object.hasOwn(player, 'primaryNation'), false);
+  row[4] = '00'.repeat(15)+':-:1'; assert.throws(() => extractFm2013WireCapture(evidence()));
+  row[4] = '00'.repeat(15)+':ff:0'; assert.throws(() => extractFm2013WireCapture(evidence()));
 });
 test('extractor refuses truncated, failed or ambiguous captures instead of accepting previews', () => {
   const capture = { schema: profile.schema, passes: [] };

@@ -95,4 +95,6 @@ Additional integration evidence: [opt-in local storage + role-fit lineup planner
 | Measured runtime improvement | **Needs verification** | Do not claim a percentage improvement until CI passes and representative browser profiles are recorded. |
 
 
-2026-11-01 biography research: three guarded DOB reads match earlier FMRTE receipts; primary-nation layout is static-only. Original conservative date decoder passes3 focused tests; full check passes190 tests/build. Snapshot schema and module completion remain unchanged. See docs/research/fmrte/21-fm2013-biography-fields.md.
+Initial2026-11-01 biography research: three guarded DOB reads matched earlier FMRTE receipts, while primary-nation layout was static-only. Original conservative date decoder passed3 focused tests; full check passed190 tests/build. See docs/research/fmrte/21-fm2013-biography-fields.md.
+
+The [subsequent biography cohort](../research/fmrte/22-fm2013-biography-cohort.md) admits DOB/primary-nation evidence for all4,058 observed records through complete transport and fresh local Editor/Realism normalization. Three date/three nation-name values match previous UI receipts; native objects and broader career coverage remain uncertified. Realism redacts supplied biography; Editor fields stay provisional, no age/eligibility is derived and CA/PA/contracts stay null. Optional input preserves legacy captures; product IPC/storage/UI integration remains unfinished. Full check passes113 Vitest/84 Node tests (197), TypeScript, build and bundle budgets. No module or full phase is marked complete.
