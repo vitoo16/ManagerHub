@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import vm from 'node:vm';
 import profile from '../packages/domain/src/fm2013-live-profile.json' with { type: 'json' };
 import { buildFm2013LiveWireCapture, extractFm2013WireCapture } from './fm2013-live-wire.mjs';
 
@@ -17,6 +18,26 @@ test('wire builder requires both unique file-bound native kinds before any runti
   const source = buildFm2013LiveWireCapture(target, [proof('playerStaff'), proof('player')]);
   assert.ok(source.includes('fm2013-live-capture-v1'));
   assert.ok(source.includes('hex-i8-tuples-v2'));
+});
+
+test('game date brackets both native passes and refuses a changed date before emitting a capture', () => {
+  function run(changed) {
+    const base=0x50000, proofs=['player','playerStaff'].map(kind=>({...proof(kind),imageSize:profile.gameDate.imageSize}));
+    let stage=-1,dateReads=0;const messages=[];
+    const pointer=address=>({add:n=>pointer(address+n),toUInt32:()=>address,toString:()=>`0x${address.toString(16)}`,
+      readU32(){const rva=address-base;if(rva===0x2000){stage++;return 0;}if(rva===0x2004)return stage===0?356:452;if(rva===0x2008)return 4;throw Error('unexpected_u32');},
+      readPointer(){const rva=address-base;if(rva===0xffc)return pointer(base+0x2000);if(rva===0x200c)return pointer(base+0x3000);if(rva===0x2010)return pointer(base+0x4000);if(rva>=0x1000&&rva<=0x1008)return pointer(base+0x5000+(rva-0x1000));throw Error('unexpected_pointer');},
+      readU8(){const rva=address-base;if(rva>=profile.gameDate.rva&&rva<profile.gameDate.rva+4){const offset=rva-profile.gameDate.rva;dateReads++;return offset===0?(changed&&dateReads>8?199:198):[198,0,220,7][offset];}
+        const name=profile.nativeKinds[stage===0?'player':'playerStaff'].decoratedName;const offset=rva-0x3008;if(offset>=0&&offset<=name.length)return offset===name.length?0:name.charCodeAt(offset);throw Error('unexpected_byte');}});
+    const Process={id:100,arch:'ia32',pointerSize:4,mainModule:{path:profile.imagePath,size:profile.gameDate.imageSize,base:pointer(base)},
+      findRangeByAddress:()=>({protection:'r-x'}),enumerateRanges:()=>[]};
+    vm.runInNewContext(buildFm2013LiveWireCapture({pid:100,binarySha256:profile.binarySha256},proofs),{Process,send:m=>messages.push(m)});
+    return {message:messages[0],dateReads,stage};
+  }
+  const stable=run(false);assert.equal(stable.stage,1);assert.equal(stable.dateReads,16);assert.equal(stable.message.status,'captured');
+  assert.deepEqual(Array.from(stable.message.capture.gameDateBytes),[198,0,220,7]);
+  const changed=run(true);assert.equal(changed.message.status,'rejected');assert.equal(changed.message.diagnostic,'game_date_changed_across_capture');
+  assert.equal(Object.hasOwn(changed.message,'capture'),false);
 });
 
 test('biography transport preserves unsigned date bytes, optional absence and bounded nation references', () => {

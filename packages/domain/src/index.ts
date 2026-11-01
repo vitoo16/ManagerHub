@@ -12,3 +12,4 @@ export * from './archive-gaps';
 export * from './archive-codec';
 export * from './live-snapshot';
 export * from './fm2013-date';
+export * from './fm2013-calendar-age';

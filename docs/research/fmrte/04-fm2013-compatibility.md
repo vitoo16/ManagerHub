@@ -36,6 +36,8 @@ The executable identity and private save snapshot are recorded. [Bounded discove
 
 ## Local snapshot contract — 2026-11-01
 
+[The dated-cohort follow-up](23-fm2013-game-date-calendar-age.md) reads an image-relative date and matches one fresh game screenshot. A new PID is handled through fresh RTTI discovery rather than old player addresses. Both date endpoints match around4,058 observed records; Editor adds `derived_model` calendar age and Realism redacts it. This does not certify actual engine age, atomic career state, loaded image bytes or general process lifecycle. Old captures remain admissible with unknown date/age; product flags remain disabled.
+
 [The subsequent biography capture](22-fm2013-biography-cohort.md) extends local snapshot admission with DOB and primary-nation evidence on all4,058 observed records. Three dates and three nation names match prior reference receipts; Editor exposes provisional values and Realism redacts both. Legacy captures remain admissible with unknown biography. This does not add a supported build, authenticate native Nation objects or certify nationality eligibility, whole-career coverage or product integration.
 
 [The new pipeline](20-fm2013-live-snapshot-contract.md) normalizes a complete, address-free real capture into 4,058 immutable records in both modes. It retains exact-build declarations and provisional per-field/per-pass evidence without treating the declared executable hash, career ID or timestamp as authenticated runtime facts. `ready` means payload admission, not roster or adapter certification.

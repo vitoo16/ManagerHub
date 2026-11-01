@@ -2,6 +2,8 @@
 
 **Status as of 2026-11-01:** some modules have **partial production code** plus isolated live-reader research; the full 27-module scope remains incomplete. Do not change to Complete without integrated code, tests, UI and acceptance evidence. This is a planning tracker, not claims of available features.
 
+[Dated-cohort research](../research/fmrte/23-fm2013-game-date-calendar-age.md) adds repeat-bracketed native game date and4,058 explicitly derived calendar ages in Editor, with Realism age redaction. One fresh FM date screenshot and three earlier FMRTE age headers match selected results. Four computed cohort formula/model disagreements are not four UI comparisons. Full checks pass208 tests/build; no module/phase or production capability is marked complete. Manager visibility, atomic career identity, lifecycle coverage and reviewed local product ingestion remain open.
+
 **Do not build an MVP:** all modules are in full-product scope. Each is assigned to the earliest phase where it becomes fully integrated; foundational work in earlier phases can be reused. Canonical [7-phase plan](01-full-delivery-plan.md), [agent prompts](02-agent-prompts.md).
 
 | ID | Module | Integration phase | Dependency | End-to-end exit criterion | Initial status |

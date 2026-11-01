@@ -1,5 +1,6 @@
 import profile from './fm2013-live-profile.json' with { type: 'json' };
 import { decodeFm2013Date } from './fm2013-date.ts';
+import { calculateCalendarAge, CALENDAR_AGE_MODEL_VERSION } from './fm2013-calendar-age.ts';
 import type { EvidenceField, MissingReason } from './types';
 
 export type LiveNativeKind = 'player' | 'playerStaff';
@@ -14,6 +15,11 @@ export interface LiveAttribute extends EvidenceField<number> {
 }
 export interface LivePosition extends EvidenceField<number> {
   readonly nativeCode: string;
+}
+export interface LiveCalendarAge extends EvidenceField<number> {
+  readonly source: 'derived_model';
+  readonly modelVersion: typeof CALENDAR_AGE_MODEL_VERSION;
+  readonly asOf: 'snapshot_game_date';
 }
 export interface LiveCaptureCoverage {
   readonly nativeKind: LiveNativeKind;
@@ -38,6 +44,7 @@ export interface LivePlayer {
   readonly lastName: EvidenceField<string>;
   readonly name: EvidenceField<string>;
   readonly birthDate: EvidenceField<string>;
+  readonly calendarAge: LiveCalendarAge;
   /** Observed primary-person link only; no citizenship or national-team eligibility inference. */
   readonly primaryNation: EvidenceField<{
     readonly nativeId: number;
@@ -65,6 +72,7 @@ export interface GameSnapshot {
   readonly id: string;
   readonly careerId: EvidenceField<string> & { readonly declaration: 'user_declared' };
   readonly capturedAt: string;
+  readonly gameDate: EvidenceField<string>;
   readonly captureTimeAuthority: 'caller_declared';
   readonly sourceIdentity: {
     readonly binarySha256: string;
@@ -161,12 +169,17 @@ export function parseFm2013LiveCapture(text: string, context: LiveSnapshotContex
     if (declared.mode !== 'realism' && declared.mode !== 'editor') throw new Error('Unknown visibility mode.');
     const mode = declared.mode;
     if (typeof text !== 'string' || text.length > MAX_TEXT) throw new Error('Capture exceeds the text limit.');
-    const capture = record(JSON.parse(text) as unknown, ['schema', 'profileVersion', 'target', 'passes']);
+    const capture = record(JSON.parse(text) as unknown, ['schema', 'profileVersion', 'target', 'passes'], ['gameDateBytes']);
     if (capture.schema !== profile.schema || capture.profileVersion !== profile.profileVersion) throw new Error('Unsupported capture profile.');
     const target = record(capture.target, ['pid', 'arch', 'pointerSize', 'imagePath', 'binarySha256']);
     const targetPid = integer(target.pid, 1, 4_294_967_295);
     if (target.arch !== 'ia32' || target.pointerSize !== 4 || target.imagePath !== profile.imagePath || target.binarySha256 !== profile.binarySha256) {
       throw new Error('Capture target does not match the exact FM2013 build.');
+    }
+    let gameDate: EvidenceField<string> = missing('not_decoded');
+    if (Object.hasOwn(capture, 'gameDateBytes')) {
+      const decoded = decodeFm2013Date(Uint8Array.from(numericArray(capture.gameDateBytes, 4, 0, 255)));
+      if (decoded.status === 'decoded') gameDate = observed(decoded.iso);
     }
     if (!Array.isArray(capture.passes) || capture.passes.length > 2) throw new Error('Invalid native pass count.');
     const players: LivePlayer[] = [];
@@ -174,6 +187,7 @@ export function parseFm2013LiveCapture(text: string, context: LiveSnapshotContex
     const kinds = new Set<LiveNativeKind>();
     const ids = new Set<number>();
     const diagnostics = ['Research capture: all observed fields remain provisional; roster completeness and loaded career identity are unverified.'];
+    if (gameDate.value !== null) diagnostics.push('Calendar age is derived using a Gregorian month/day policy; it does not assert game-engine or FMRTE reference age.');
     if (mode === 'realism') diagnostics.push('Research Realism redacts exact numeric ratings because manager scouting and visibility knowledge have not been decoded.');
     if (mode === 'realism') diagnostics.push('Research Realism also redacts supplied birth dates and primary-nation links pending manager visibility evidence.');
     let partial = false;
@@ -221,6 +235,12 @@ export function parseFm2013LiveCapture(text: string, context: LiveSnapshotContex
           const decoded = decodeFm2013Date(Uint8Array.from(rawDate));
           birthDate = mode === 'realism' ? missing('redacted') : decoded.status === 'decoded' ? observed(decoded.iso) : missing('not_decoded');
         }
+        let ageEvidence: EvidenceField<number> = missing(mode === 'realism' ? 'redacted' : 'not_decoded');
+        if (mode === 'editor' && birthDate.value !== null && gameDate.value !== null) {
+          const age = calculateCalendarAge(birthDate.value, gameDate.value);
+          if (age.status === 'calculated') ageEvidence = { ...observed(age.value), source: 'derived_model' };
+        }
+        const calendarAge: LiveCalendarAge = { ...ageEvidence, source: 'derived_model', modelVersion: CALENDAR_AGE_MODEL_VERSION, asOf: 'snapshot_game_date' };
         let primaryNation: LivePlayer['primaryNation'] = missing('not_decoded');
         if (Object.hasOwn(player, 'primaryNation')) {
           const nation = record(player.primaryNation, ['nativeId', 'name']);
@@ -251,7 +271,7 @@ export function parseFm2013LiveCapture(text: string, context: LiveSnapshotContex
           club = observed({ nativeId: integer(rawClub.nativeId, 1, 2_147_483_647), name: boundedText(rawClub.name, 128), relation: rawClub.relation });
         }
         players.push({ id: `${snapshotId}:${nativeId}`, nativeId, nativeKind, firstName: observed(firstName), lastName: observed(lastName),
-          name: observed([firstName.trim(), lastName.trim()].filter(Boolean).join(' ')), birthDate, primaryNation, attributes, positions, club,
+          name: observed([firstName.trim(), lastName.trim()].filter(Boolean).join(' ')), birthDate, calendarAge, primaryNation, attributes, positions, club,
           actualCa: missing(mode === 'realism' ? 'redacted' : 'not_verified'), potentialAbility: missing(mode === 'realism' ? 'redacted' : 'not_verified'),
           contract: { weeklyWage: missing('not_decoded'), wageFrequency: missing('not_decoded'), currency: missing('not_decoded'), expiresAt: missing('not_decoded') } });
       }
@@ -259,7 +279,7 @@ export function parseFm2013LiveCapture(text: string, context: LiveSnapshotContex
     if (kinds.size !== 2) { partial = true; diagnostics.push('One or both native player kinds were not scanned.'); }
     if (players.length === 0) diagnostics.push('No accepted player records; this does not establish whether a career is loaded.');
     const snapshot: GameSnapshot = { id: snapshotId, careerId: { ...observed(careerId), source: 'manual', declaration: 'user_declared' },
-      capturedAt, captureTimeAuthority: 'caller_declared', sourceIdentity: { binarySha256: profile.binarySha256, targetPid, arch: 'ia32', pointerSize: 4,
+      capturedAt, gameDate, captureTimeAuthority: 'caller_declared', sourceIdentity: { binarySha256: profile.binarySha256, targetPid, arch: 'ia32', pointerSize: 4,
         profileVersion: profile.profileVersion, runtimeImageBytesAuthenticated: false, localOnly: true },
       readerVersion: profile.profileVersion, edition: profile.edition, build: profile.build, source: 'live_game', verification: 'provisional',
       mode, rosterCompleteness: 'unverified', scoutingKnowledge: 'not_decoded', captureCoverage, players };

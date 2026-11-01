@@ -35,6 +35,8 @@ The real capture normalizes 4,058 players with 49 ordinary rating fields, 15 fam
 The local Node CLI creates a fresh explicit JSON output with input SHA-256. Product desktop IPC, snapshot storage/projection/UI, authenticated source/career identity and other-career/build validation remain unfinished. No live snapshot is silently cast into the existing export library.
 
 ## Product-specific metrics
+
+[The dated FM2013 research snapshot](../research/fmrte/23-fm2013-game-date-calendar-age.md) adds nullable provisional `gameDate` from native bytes and a distinct `calendarAge` field with source `derived_model`, model version `gregorian-month-day-v1` and `asOf:'snapshot_game_date'`. Valid birth/game dates are required; future/missing/invalid dates never become zero. A newborn age of zero is valid. Realism redacts derived age before returning/serializing it. This calendar policy, including a common-year March1 leap-day anniversary, is not an observed engine-age property or a promise of FMRTE formula equivalence. The host clock/caller timestamp never supplies the game's date.
 Actual CA, eCA, RCA-style budget estimate, Role Fit, Tactical Fit, collective cohesion and percentile are distinct typed metrics with definitions and scales. No probabilistic claims without calibration and held-out evaluation.
 
 See [analytics glossary](../business/12-football-analytics-glossary.md), [Player Intelligence](08-player-intelligence-engine.md), [data UX](../product/02-design-system.md).

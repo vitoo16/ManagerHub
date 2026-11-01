@@ -21,6 +21,51 @@ function captureWithBiography(birthDateBytes: unknown = [59, 0, 208, 7], primary
   return { ...input, passes: input.passes.map(scan => ({ ...scan, records: scan.records.map(p => ({ ...p, birthDateBytes, primaryNation })) })) };
 }
 
+describe('captured game date and derived calendar age', () => {
+  it('uses the decoded game date, labels the model and never uses capture time as age', () => {
+    const input = { ...captureWithBiography(), gameDateBytes: [59, 0, 209, 7] };
+    const result = parse(input);
+    expect(result.status).toBe('ready');
+    expect(result.snapshot?.gameDate).toMatchObject({ value: '2001-03-01', source: 'live_game', verification: 'provisional' });
+    expect(result.snapshot?.players[0]?.calendarAge).toMatchObject({ value: 1, source: 'derived_model', verification: 'provisional',
+      modelVersion: 'gregorian-month-day-v1', asOf: 'snapshot_game_date', missingReason: null });
+    expect(parse(input, { ...context, capturedAt: '2030-01-01T00:00:00Z' }).snapshot?.players[0]?.calendarAge.value).toBe(1);
+    expect(result.snapshot?.players[0]).not.toHaveProperty('actualAge');
+    expect(Object.isFrozen(result.snapshot?.gameDate)).toBe(true);
+    expect(Object.isFrozen(result.snapshot?.players[0]?.calendarAge)).toBe(true);
+  });
+  it('keeps legacy, invalid calendar, missing DOB and future DOB unknown instead of zero', () => {
+    expect(parse(captureWithBiography()).snapshot?.gameDate).toMatchObject({ value: null, missingReason: 'not_decoded' });
+    expect(parse(captureWithBiography()).snapshot?.players[0]?.calendarAge).toMatchObject({ value: null, source: 'derived_model', missingReason: 'not_decoded' });
+    for (const input of [
+      { ...captureWithBiography(), gameDateBytes: [255, 255, 255, 255] },
+      { ...captureWithBiography(), gameDateBytes: [365 & 255, 1, 209, 7] },
+      { ...captureWithBiography(), gameDateBytes: [0, 0, 207, 7] },
+      { ...capture(), gameDateBytes: [59, 0, 209, 7] },
+    ]) expect(parse(input).snapshot?.players[0]?.calendarAge).toMatchObject({ value: null, missingReason: 'not_decoded' });
+    const newborn = parse({ ...captureWithBiography(), gameDateBytes: [59, 0, 208, 7] });
+    expect(newborn.snapshot?.players[0]?.calendarAge.value).toBe(0);
+  });
+  it('rejects malformed date payloads rather than accepting declared clock or age evidence', () => {
+    for (const value of [null, [0], [0, 0, 0, 256], [0, 0, -1, 7], { value: '2001-03-01', verified: true }]) {
+      expect(parse({ ...captureWithBiography(), gameDateBytes: value }).status).toBe('rejected');
+    }
+    expect(parse({ ...captureWithBiography(), gameDate: '2001-03-01' }).status).toBe('rejected');
+  });
+  it('redacts age before Realism serialization even with otherwise sufficient dates', () => {
+    const result = parse({ ...captureWithBiography(), gameDateBytes: [59, 0, 209, 7] }, { ...context, mode: 'realism' });
+    expect(result.snapshot?.gameDate.value).toBe('2001-03-01');
+    for (const p of result.snapshot?.players ?? []) {
+      expect(p.calendarAge).toMatchObject({ value: null, source: 'derived_model', missingReason: 'redacted',
+        modelVersion: 'gregorian-month-day-v1', asOf: 'snapshot_game_date' });
+      expect(p.birthDate.value).toBeNull();
+    }
+    const serialized = JSON.parse(JSON.stringify(result)) as typeof result;
+    expect(serialized.snapshot?.players[0]?.calendarAge.value).toBeNull();
+    expect(JSON.stringify(serialized.snapshot?.players[0]?.calendarAge)).not.toContain('"value":1');
+  });
+});
+
 describe('FM2013 live capture admission', () => {
   it('admits only the exact build and retains independent provenance limits', () => {
     const result = parse(capture());

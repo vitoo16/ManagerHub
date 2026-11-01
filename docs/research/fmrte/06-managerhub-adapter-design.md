@@ -69,6 +69,8 @@ The parser rejects incompatible declarations, extra/hidden fields, addresses, du
 
 ## Minimum implementation evidence
 
+[Game-date/age admission](23-fm2013-game-date-calendar-age.md) now extends the local boundary: repeat the exact-profile date before and after both native passes, reject changed endpoints, and retain optional raw date bytes through strict parsing. `gameDate` is provisional live evidence; `calendarAge` is explicitly `derived_model`, `gregorian-month-day-v1`, referenced to `snapshot_game_date`. Editor computes only from valid native birth/game dates; Realism redacts age. Missing/invalid inputs remain unknown. No host-clock fallback, ActualAge claim, atomic snapshot or existing-product persistence compatibility is implied.
+
 | Next work | Classification now | Exit evidence before enabling |
 |---|---|---|
 | FM2013 source/build detection | CONFIRMED file identity plus runtime path/architecture/RTTI checks | Wider career/build/error-state checks and product source authorization; loaded image bytes remain unauthenticated. |

@@ -1,5 +1,6 @@
 import profile from '../packages/domain/src/fm2013-live-profile.json' with { type: 'json' };
 import { buildFm2013ImageRelativePlayerScan } from './fm2013-readonly-record-probe.mjs';
+import { createFm2013GameDateConfig, readFm2013GameDate } from './fm2013-game-date-probe.mjs';
 
 /** Address-free local transport. The research envelope never carries ability words or handles. */
 export function buildFm2013LiveWireCapture(target, proofs, limits = {}) {
@@ -39,11 +40,14 @@ export function buildFm2013LiveWireCapture(target, proofs, limits = {}) {
       }) });
   }
   const metadata = { schema: profile.schema, profileVersion: profile.profileVersion, binarySha256: profile.binarySha256,
+    gameDateConfig: createFm2013GameDateConfig(target),
     attributes: profile.attributes.map(({ key }) => ({ key })), positions: profile.positions.map(({ key }) => ({ key })) };
-  return `(function(metadata){const passes=[],clubs=[],clubIndex=new Map(),nations=[],nationIndex=new Map();const collect=${collectPass.toString()};try{
+  return `(function(metadata){const passes=[],clubs=[],clubIndex=new Map(),nations=[],nationIndex=new Map();const collect=${collectPass.toString()},readDate=${readFm2013GameDate.toString()};try{
+const gameDateBytes=readDate(metadata.gameDateConfig);
 ${sources.map(source => `(function(send){${source}})(payload=>collect(payload,passes,metadata.attributes,metadata.positions,clubs,clubIndex,nations,nationIndex));`).join('\n')}
+if(JSON.stringify(gameDateBytes)!==JSON.stringify(readDate(metadata.gameDateConfig)))throw Error('game_date_changed_across_capture');
 send({kind:'fm2013-live-capture',status:'captured',encoding:'hex-i8-tuples-v2',capture:{schema:metadata.schema,profileVersion:metadata.profileVersion,
-target:{pid:Process.id,arch:Process.arch,pointerSize:Process.pointerSize,imagePath:Process.mainModule.path,binarySha256:metadata.binarySha256},passes,clubs,nations}});
+target:{pid:Process.id,arch:Process.arch,pointerSize:Process.pointerSize,imagePath:Process.mainModule.path,binarySha256:metadata.binarySha256},passes,clubs,nations,gameDateBytes}});
 }catch(error){send({kind:'fm2013-live-capture',status:'rejected',diagnostic:String(error.message||error)});}})(${JSON.stringify(metadata)});`;
 }
 
@@ -90,5 +94,6 @@ export function extractFm2013WireCapture(evidence) {
           ...(bio && bio[3] !== '-1' ? { primaryNation: nations[Number(bio[3])] } : {}) };
       }) };
   });
-  return { schema: packed.schema, profileVersion: packed.profileVersion, target: packed.target, passes };
+  return { schema: packed.schema, profileVersion: packed.profileVersion, target: packed.target, passes,
+    ...(Object.hasOwn(packed, 'gameDateBytes') ? { gameDateBytes: packed.gameDateBytes } : {}) };
 }

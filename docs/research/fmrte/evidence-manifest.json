@@ -118,6 +118,11 @@
       "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-biography-cohort-rea-evidence.json",
       "sha256": "495031c5ec36f8f6d3654801e638cfd59321a143842b11639b9f1c64b7610499",
       "note": "2026-11-01 complete v2 compact biography cohort;16 canonical records including earlier records. Private player data remain outside Git."
+    },
+    {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-dated-cohort-rea-evidence.json",
+      "sha256": "a370e4d63bfdf263ec5979a689174f4639b91555568e089a22b476b5c28c8859",
+      "note": "Current-session metadata/runtime evidence after tool/process changes; six records including one unmatched nested-name selection and corrected exact selection. Private data stay outside Git."
     }
   ],
   "evidenceAliases": {
@@ -8098,6 +8103,211 @@
         "Exact SHA/MVID required; three DOB reference matches do not certify all records.",
         "Primary nation is not all citizenships or national eligibility; no age/current-game-date publication."
       ]
+    },
+    {
+      "id": "RE13-GAMEDATE-0x060000e9",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; current game-date reference experiment recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_45f9c6ba99e4642ef18454556e7278b63309b05a125e9d485ea294962b5b32ab",
+      "reaLocator": "normalized_result.methods[token=0x060000e9]",
+      "symbol": "#=q71Sz6cOSafk1fL23z1RJB2qnpXEiClGxR2DHRhZD__T5yhTFNil8JjLrfKrykR9k::#=q$vCkHEdbsfuklK$cMGnKgg==",
+      "methodToken": "0x060000e9",
+      "rva": 34988,
+      "fileOffset": 27308,
+      "signature": {
+        "returnType": "valuetype:477",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "0b4e685d530ed8149785782b939551e1970f92cf75c37f986d995402e57a2d48",
+      "sourceIlSha256": "52bb5826f70852f48ce8e43ac4a6a15deae81da063cf2b2f1ac8ef34bcab0682",
+      "limitations": [
+        "GameProcess.BaseAddress ownership and actual FMRTE runtime profile selection are not inferred from property names.",
+        "One current-date UI match and bracketed dates do not certify image bytes, atomic career identity or game-engine age."
+      ]
+    },
+    {
+      "id": "RE13-GAMEDATE-0x060000e0",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; current game-date reference experiment recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_45f9c6ba99e4642ef18454556e7278b63309b05a125e9d485ea294962b5b32ab",
+      "reaLocator": "normalized_result.methods[token=0x060000e0]",
+      "symbol": "#=q71Sz6cOSafk1fL23z1RJB2qnpXEiClGxR2DHRhZD__T5yhTFNil8JjLrfKrykR9k::#=q6tif2TAH5DNzJoC$kgRgNGvEHPWhPy4eNVK64sdycmo=",
+      "methodToken": "0x060000e0",
+      "rva": 34364,
+      "fileOffset": 26684,
+      "signature": {
+        "returnType": "class:1056",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "da2f69504e0d68b0218edb06c003ba7d2335f3a4b59a5b20a7576acfc84c5523",
+      "sourceIlSha256": "aa59c013ac07848e8e5e0f1cd0206d3578ff4b26e132c90c207f3f85e7a79a92",
+      "limitations": [
+        "GameProcess.BaseAddress ownership and actual FMRTE runtime profile selection are not inferred from property names.",
+        "One current-date UI match and bracketed dates do not certify image bytes, atomic career identity or game-engine age."
+      ]
+    },
+    {
+      "id": "RE13-GAMEDATE-0x060000e2",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; current game-date reference experiment recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_45f9c6ba99e4642ef18454556e7278b63309b05a125e9d485ea294962b5b32ab",
+      "reaLocator": "normalized_result.methods[token=0x060000e2]",
+      "symbol": "#=q71Sz6cOSafk1fL23z1RJB2qnpXEiClGxR2DHRhZD__T5yhTFNil8JjLrfKrykR9k::#=q7sbpHUUEWL4wW00JTqdW$A==",
+      "methodToken": "0x060000e2",
+      "rva": 34424,
+      "fileOffset": 26744,
+      "signature": {
+        "returnType": "class:144",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "6390d8957d3e3c990d4a99df5bdfb5bae2c8eb52f754487fdf797aa63ebb9607",
+      "sourceIlSha256": "411b91d56f2f5adbaa83333e9c4a19aad1a689b7b4111377a0b85cdb0f14e314",
+      "limitations": [
+        "GameProcess.BaseAddress ownership and actual FMRTE runtime profile selection are not inferred from property names.",
+        "One current-date UI match and bracketed dates do not certify image bytes, atomic career identity or game-engine age."
+      ]
+    },
+    {
+      "id": "RE13-GAMEDATE-0x060008b7",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; current game-date reference experiment recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_ee3b373fb1514a3e7c7e761fc13f69770d0c5e2d5de5a08e8aca853408337c57",
+      "reaLocator": "normalized_result.methods[token=0x060008b7]",
+      "symbol": "#=qwzqQmrCYpl3ylG0EIO_jCCKqMQyH0rwmWkVfoGeO8f$_PO37rq_zPhHEtaROMzFjYK12Q8eAzOrllT1yWTqNPg==::.ctor",
+      "methodToken": "0x060008b7",
+      "rva": 295604,
+      "fileOffset": 287924,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "82abc3b33ca09d8ac390550b0c559e86e22c1f1224fd3f9b82bec476e5bd8b02",
+      "sourceIlSha256": "901375bb19907748ff747f5cdd81cc683f73c413c285fb0e1a9c8d8eac1432e6",
+      "limitations": [
+        "GameProcess.BaseAddress ownership and actual FMRTE runtime profile selection are not inferred from property names.",
+        "One current-date UI match and bracketed dates do not certify image bytes, atomic career identity or game-engine age."
+      ]
+    },
+    {
+      "id": "RE13-GAMEDATE-0x060008c3",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; current game-date reference experiment recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_ee3b373fb1514a3e7c7e761fc13f69770d0c5e2d5de5a08e8aca853408337c57",
+      "reaLocator": "normalized_result.methods[token=0x060008c3]",
+      "symbol": "#=qwzqQmrCYpl3ylG0EIO_jCCKqMQyH0rwmWkVfoGeO8f$_PO37rq_zPhHEtaROMzFjYK12Q8eAzOrllT1yWTqNPg==::#=qrX686Bi10G6aGNQYN5v2dA==",
+      "methodToken": "0x060008c3",
+      "rva": 296016,
+      "fileOffset": 288336,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "ae5042f0ad7fa5244d7ca946ab3576228bd32a922211e15f754af75591522b0f",
+      "sourceIlSha256": "1a5ac91fb8137abcc9d22aecd3c8449ce45f0eedc2f2b120cfd0a1ee6d743056",
+      "limitations": [
+        "GameProcess.BaseAddress ownership and actual FMRTE runtime profile selection are not inferred from property names.",
+        "One current-date UI match and bracketed dates do not certify image bytes, atomic career identity or game-engine age."
+      ]
+    },
+    {
+      "id": "RE13-GAMEDATE-0x060008c4",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; current game-date reference experiment recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_ee3b373fb1514a3e7c7e761fc13f69770d0c5e2d5de5a08e8aca853408337c57",
+      "reaLocator": "normalized_result.methods[token=0x060008c4]",
+      "symbol": "#=qwzqQmrCYpl3ylG0EIO_jCCKqMQyH0rwmWkVfoGeO8f$_PO37rq_zPhHEtaROMzFjYK12Q8eAzOrllT1yWTqNPg==::#=qKbQuk2QErYDGXdvgut5NqQ==",
+      "methodToken": "0x060008c4",
+      "rva": 296048,
+      "fileOffset": 288368,
+      "signature": {
+        "returnType": "void",
+        "parameterTypes": [
+          "i4"
+        ]
+      },
+      "normalizedIlSha256": "eec1dc4d5ab092edd37ab465c9c17050bc223eb59231cfbafd32d5728e0e9af7",
+      "sourceIlSha256": "aba0e178a181b72241caf902b4a426c0e849344dacb430ab0fd050f9a2ca30ce",
+      "limitations": [
+        "GameProcess.BaseAddress ownership and actual FMRTE runtime profile selection are not inferred from property names.",
+        "One current-date UI match and bracketed dates do not certify image bytes, atomic career identity or game-engine age."
+      ]
+    },
+    {
+      "id": "RE13-GAMEDATE-0x06001374",
+      "confidence": "CONFIRMED",
+      "scope": "Confirmed exact-artifact source method; current game-date reference experiment recorded separately.",
+      "sourceVersion": "13.3.3.62",
+      "assemblyVersion": "13.3.3.62",
+      "resolvedInstallationPath": "C:\\BraCa Soft\\FMRTE 13",
+      "binaryPath": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "binarySha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "mvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
+      "architecture": "x86",
+      "framework": ".NETFramework,Version=v4.0,Profile=Client",
+      "reaEvidenceId": "ev_340c303fb209860b2edfef989acbd316b43a87e77ce976e9cc140b9bce1bb832",
+      "reaLocator": "normalized_result.methods[token=0x06001374]",
+      "symbol": "FMRTE_Framework.ProcessFunctions.GameProcess::get_BaseAddress",
+      "methodToken": "0x06001374",
+      "rva": 527756,
+      "fileOffset": 520076,
+      "signature": {
+        "returnType": "i4",
+        "parameterTypes": []
+      },
+      "normalizedIlSha256": "b43e0948fb77f50b23d8b13dab33fabf8e044ea3c3d824b72e9f82655773f0dc",
+      "sourceIlSha256": "bbe204e760397707aeb7ea0c040f112acd25b1f0a376a887e6eeacc7ea4c968a",
+      "limitations": [
+        "GameProcess.BaseAddress ownership and actual FMRTE runtime profile selection are not inferred from property names.",
+        "One current-date UI match and bracketed dates do not certify image bytes, atomic career identity or game-engine age."
+      ]
     }
   ],
   "unknowns": [
@@ -9017,6 +9227,145 @@
     },
     "allOwnedFridaSessionsDetached": true,
     "gameDataEditRequested": false,
+    "productionAdapterCertified": false,
+    "writerCertified": false
+  },
+  "gameDateAndCalendarAgeResearch": {
+    "date": "2026-11-01",
+    "gameBuild": "13.3.3f359652",
+    "profileDateRva": 38309656,
+    "staticSource": "e9 uses GameProcess.BaseAddress + descriptor00659.get8c3;4bb sets its00618 through8c4 to0066e(38309580)+76. Own reader uses Process.mainModule.base and confirms one current FM UI date.",
+    "postacceptScope": "Inspected4c4 has no direct00659/date-field override; no global runtime immutability claim.",
+    "captureEvidenceId": "ev_c787c93a256355c0a7d56965e6f7046347e8b3fec66723cfbe547d67d7e70acd",
+    "standaloneDateEvidenceId": "ev_0b6a422ba29e656c3d7fdc2eec9f56d37cbccb20623f5ce1193142fc83bdef76",
+    "documentedStalePidAttachRefusal": {
+      "pid": 22472,
+      "operation": "start_frida_session",
+      "reportedReason": "Unable to find process with pid22472",
+      "canonicalEvidenceId": null
+    },
+    "currentObservedPid": 22984,
+    "restartCause": "unknown; no agent kill/launch",
+    "playerCount": 4058,
+    "calendarAgesCalculated": 4058,
+    "unknownCalendarAges": 0,
+    "currentGameDateVisualMatches": 1,
+    "previousFmrteHeaderAgeMatches": 3,
+    "modelVersion": "gregorian-month-day-v1",
+    "ageSource": "derived_model",
+    "anniversaryPolicy": "Feb29 reaches anniversaryMarch1 in common years",
+    "gameDateSource": "live_game",
+    "verification": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-dated-cohort-verification.json",
+      "sha256": "398d1b0072709b636d9ef17e99f6669155e373da66978f8002de403b26958e92"
+    },
+    "ageAsOf": "snapshot_game_date",
+    "hostClockUsedForAge": false,
+    "actualEngineAgeClaimed": false,
+    "syntheticCilFormulaComparisons": 995,
+    "syntheticFormulaMismatches": 0,
+    "syntheticMonthDayDisagreements": 127,
+    "syntheticAddYearsDisagreements": 119,
+    "computedReferenceFormulaCohortDisagreements": 4,
+    "cohortDisagreementsAreUiObservations": false,
+    "gameDateCheckedAtBothCaptureEndpoints": true,
+    "gameDateChangeRejectsBeforeEmit": true,
+    "atomicSnapshot": false,
+    "runtimeImageBytesAuthenticated": false,
+    "realismCalendarAgeRedactions": 4058,
+    "legacyMissingGameDate": "null/not_decoded; no age from capture/host time",
+    "source": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-dated-cohort.frida.js",
+      "sha256": "a2d3d38289f60173ae3afa028ecd67c41306f4da4164969bab9dfc01071593cf"
+    },
+    "input": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-dated-wire.json",
+      "sha256": "6ec2dba84c4fc19d61de9dd1e42dee16388d9ba9c3fe217d97f6f1b399a45d0b"
+    },
+    "editor": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-dated-editor.json",
+      "sha256": "bb4e9b56e68a16d12df913d05dc0fc0e04b79540a7b4bec02311b7a3da8acdae"
+    },
+    "realism": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-dated-realism.json",
+      "sha256": "2d373b211f2110b58b9861fd27723ca29a2676b58817bfcbdb2bc92727191e78"
+    },
+    "receipts": [
+      {
+        "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-game-date-current-reference.json",
+        "sha256": "66fb7f41f771f3e01fc9f85ece70dc58c3201884b94a714009195bee7514a956"
+      },
+      {
+        "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-game-date-current-reference.jpg",
+        "sha256": "7609559c00db8a611f10dd421045599044c5420be2c4576a3f5d978394061c78"
+      }
+    ],
+    "verifier": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\verify-fm13-dated-cohort.mjs",
+      "sha256": "fbf5b3716c5b88b4a0cdbbd48b4b2b69cbb98ea2d498efd3ac04fb0ed7b69a9e"
+    },
+    "syntheticCilReplay": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-age-cil-calendar-root-proof.json",
+      "sha256": "8428030bb59afe33bbeb4f92a27c349fda519ebb4586487339b40ee2e2fbef5f"
+    },
+    "syntheticCilVerifier": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-age-cil-compare-root.ps1",
+      "sha256": "3937a3f7aa6f7dab690aade047a8e07ca33d1e3b4d903db8083405daf8bd7541"
+    },
+    "staticProofSources": [
+      {
+        "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-game-date-descriptor-cil.json",
+        "sha256": "bba3515dfc5f58dbf24c7250a52a51295e80c5d47f8f4a5a92ff4f43f78dbc9a"
+      },
+      {
+        "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-game-date-postaccept-cil.json",
+        "sha256": "b3c7682d7b7b75a614e820eb0413396be264c065a00f8c28785622732a95c805"
+      },
+      {
+        "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-biography-dob-cil.json",
+        "sha256": "2fb251eda4719587e9473903f5e2f8e89b17c0697d74c8d96cbe7a238047a25b"
+      },
+      {
+        "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-game-date-getters-cil.json",
+        "sha256": "3ca89235d2680b890418cd2b64f981bed0d19aae52fdaed80b106180d4c1049e"
+      },
+      {
+        "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-game-date-address-cil.json",
+        "sha256": "8dd8b28c73a07bb6811c446f8531d743346cfd7ce16c40df8d4cf5feeb5038bb"
+      },
+      {
+        "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-game-date-base-cil.json",
+        "sha256": "4efaa3b6e054b27b96a1354d2bbbcb7ef078de689fa9b9053d0fc5d05022eeab"
+      }
+    ],
+    "code": [
+      {
+        "path": "packages/domain/src/fm2013-calendar-age.ts",
+        "sha256": "03ac84599faabd1a5c1e97dc4065f91ed3510b78bf7ae957939c83dba0506ad0"
+      },
+      {
+        "path": "packages/domain/src/live-snapshot.ts",
+        "sha256": "292a5e94c905ad4d367824d22589e349b4a2de3113338b9786277fee45b5f84b"
+      },
+      {
+        "path": "scripts/fm2013-game-date-probe.mjs",
+        "sha256": "568ac44409ed245e063adda3041e7dec3394affe0edffb0eee4db9b2ea6a7f09"
+      },
+      {
+        "path": "scripts/fm2013-live-wire.mjs",
+        "sha256": "a06067f9320fc44bdcf44057b94b66467c415a94be1e9bbafc56df797484ea1a"
+      }
+    ],
+    "tests": {
+      "command": "npm.cmd run check",
+      "vitestPassed": 121,
+      "nodePassed": 87,
+      "failed": 0,
+      "skipped": 0,
+      "typecheck": "PASS",
+      "buildAndBundleBudgets": "PASS"
+    },
+    "allOwnedFridaSessionsDetached": true,
     "productionAdapterCertified": false,
     "writerCertified": false
   }
