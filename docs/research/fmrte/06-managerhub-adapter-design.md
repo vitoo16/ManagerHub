@@ -1,5 +1,7 @@
 # ManagerHub data-access design after FMRTE research
 
+[Local session admission](24-fm2013-local-session-lifecycle.md) implements a further connected research boundary: issue a process-instance ticket and generated read-only script, explicitly capture through REA, then reobserve identity around shared normalization. UUID/PID/creation FILETIME/path/hash, expiry and script/Evidence consistency are checked before fresh historical output. The optional `session` wrapper explicitly leaves currentness, career lineage and capture authentication unverified. This is a bounded CLI handoff, not the future IPC service, native watcher or existing-product storage projection. The separate file-only normalizer retains its process-free path; no competing backend is installed.
+
 Updated 2026-11-01 (Asia/Bangkok). **Result: preserve the existing application and use the implemented provisional live-snapshot contract as a research boundary. Product native access remains a separately reviewed integration.** Source-code observations are CONFIRMED within this checkout; proposed product boundaries remain design choices, not recovered FMRTE implementations.
 
 ## Existing implementation and reuse

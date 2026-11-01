@@ -123,6 +123,11 @@
       "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-dated-cohort-rea-evidence.json",
       "sha256": "a370e4d63bfdf263ec5979a689174f4639b91555568e089a22b476b5c28c8859",
       "note": "Current-session metadata/runtime evidence after tool/process changes; six records including one unmatched nested-name selection and corrected exact selection. Private data stay outside Git."
+    },
+    {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-session-capture-rea-evidence.json",
+      "sha256": "5864d3076b2fe3602d925f30da7faed235a61dc97503b2adbfd5901b6c7e61c1",
+      "note": "Local process-instance ticket workflow: seven canonical records including the prepared-script capture. Raw football data, UUID and process creation identity remain private."
     }
   ],
   "evidenceAliases": {
@@ -9368,5 +9373,152 @@
     "allOwnedFridaSessionsDetached": true,
     "productionAdapterCertified": false,
     "writerCertified": false
+  },
+  "localSessionLifecycleResearch": {
+    "date": "2026-11-01",
+    "gameBuild": "13.3.3f359652",
+    "captureEvidenceId": "ev_093f4b59d744225b26c91dc03364eae4cf561713dbcad4401624ee9a4df128fc",
+    "playerCount": 4058,
+    "workflow": [
+      "explicit local prepare",
+      "authorized REA handoff",
+      "explicit selected-Evidence finalize",
+      "fresh historical snapshot output"
+    ],
+    "identity": [
+      "pid",
+      "opaque creation FILETIME string",
+      "canonical executable path",
+      "exact binary SHA-256"
+    ],
+    "windowMilliseconds": 600000,
+    "captureUuidBound": true,
+    "preparedScriptShaBound": true,
+    "sourceEvidenceShaRecorded": true,
+    "actualHostOsIdentityChecks": true,
+    "actualModesFinalized": [
+      "editor",
+      "realism"
+    ],
+    "actualSameInstanceRecheckedAfterAbsolutePowerShellHardening": true,
+    "sandboxVisibilityFailurePreserved": true,
+    "hostReadOnlyExecutionReviewed": true,
+    "processObservationScope": "caller OS context; sandbox absence is not global absence",
+    "actualElapsedExpiryRejected": true,
+    "expiredAttemptCreatedOutput": false,
+    "publicationAvailability": "historical_capture",
+    "currentness": "unverified",
+    "captureAuthenticated": false,
+    "runtimeImageBytesAuthenticated": false,
+    "careerLineage": "unverified",
+    "atomicSnapshot": false,
+    "oneUseTickets": false,
+    "controllerAutomaticallyAttaches": false,
+    "watcherImplemented": false,
+    "desktopIpcImplemented": false,
+    "browserProcessApiAdded": false,
+    "sourceIoPolicy": "Bounded opened-file reads, strict UTF-8, fresh wx outputs; no implicit upload/deletion/replacement, no atomic filesystem transaction promised.",
+    "bounds": {
+      "plainWireBytes": 24000000,
+      "evidenceBytes": 67108864,
+      "imageBytes": 67108864,
+      "scriptBytes": 1048576,
+      "requestBytes": 65536,
+      "outputBytesIncludingNewline": 167772160
+    },
+    "failuresBeforePublication": [
+      "changed PID or creation identity",
+      "wrong token/PID/hash/script",
+      "expired request including during normalization",
+      "current time before issuance",
+      "not-found/denied/failed observation",
+      "unsupported build",
+      "truncated/malformed evidence"
+    ],
+    "realProcessExitDuringCaptureExercised": false,
+    "realPidReuseExercised": false,
+    "syntheticExitAndPidReuseTestsPassed": true,
+    "code": [
+      {
+        "path": "packages/domain/src/live-session.ts",
+        "sha256": "9b5636cc17c0c64cc0fe35b7de1db99b9829d973b5f10ceb95f3d2f5559db7cf"
+      },
+      {
+        "path": "scripts/fm2013-local-session.mjs",
+        "sha256": "7922f0c71a0e5e14436826cf25ee17ff67daa6d7d8f1312ff76fcf50249bc2b1"
+      },
+      {
+        "path": "scripts/fm2013-process-observer.mjs",
+        "sha256": "2fd6ff15e995b357cb81091ae818f2b487930daa770cd11c69c934362cb52972"
+      },
+      {
+        "path": "scripts/local-research-files.mjs",
+        "sha256": "dcc689452eeeccbe262cbdc1ab338cd042a94ca05faa138978be790d66e47c52"
+      },
+      {
+        "path": "scripts/fm2013-normalize-live.mjs",
+        "sha256": "6af6ffb8ca2aaa8b2926d698fdb3f7c12b2cdd53576ceccd5471bb2d3523b974"
+      },
+      {
+        "path": "scripts/fm2013-live-wire.mjs",
+        "sha256": "7fd2f0b35f63526c9779ff74fceac6e831615040c09df0363f1acf0410eb421b"
+      }
+    ],
+    "request": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-session-request.json",
+      "sha256": "b7063043954864ac8e936e93d6f56e9fe7aa01f65e4a75ef085cdc0ff6de0e46"
+    },
+    "source": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-session-capture.frida.js",
+      "sha256": "6a3a89c215ec5bb54d3b5f02ce4667ffbf8615ee1812f95d3613d5563ae6241e"
+    },
+    "editor": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-session-editor.json",
+      "sha256": "843617c5e517f3f23213bdfeef549289f04023c1c8a3e5aa05c8c159c5fdff75"
+    },
+    "realism": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-session-realism.json",
+      "sha256": "cf61f7e2bc37ae2c420788d1cb56b168a007564fe92352362bfd40710b81e2a0"
+    },
+    "verification": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-session-workflow-verification.json",
+      "sha256": "9bfaf69d712a7da3946af461bb463ae14b93b9e73518f36f9e89e59f842b7e3a"
+    },
+    "verifier": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\verify-fm13-session-workflow.mjs",
+      "sha256": "3b504da8cca9a27a85401127288595e1507caa5fa350ca788bb1f61957c97323"
+    },
+    "hostObserverVerification": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-host-observer-final-verification.json",
+      "sha256": "f59969dc5ad5bee5e402a55b0f41253c1add1af59bbedd9dab045756a0089f14"
+    },
+    "expiryVerification": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-session-expiry-verification.json",
+      "sha256": "71b846eeebc6fd3eb9650350b9afe8d09b84b1030068c0ef4353d17b67dc4a65"
+    },
+    "sandboxFailure": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-process-observer-real-v1.json",
+      "sha256": "0f7fa37758bbee26455c7b9ce35f904669ee40de96ba9eee48d7fb6d1545c8dd"
+    },
+    "independentReview": {
+      "path": "C:\\Users\\viett\\.codex\\visualizations\\2026\\10\\30\\01a18c2c-5b30-7ac2-841d-290449543b12\\fm13-local-session-independent-review-v3.json",
+      "sha256": "e5328241b1b1fafe7ea8af23441e9abcb47b151cf2432de1a697e2ab4e9efcd9"
+    },
+    "tests": {
+      "command": "npm.cmd run check",
+      "vitestPassed": 128,
+      "nodePassed": 98,
+      "failed": 0,
+      "skipped": 0,
+      "typecheck": "PASS",
+      "buildAndBundleBudgets": "PASS",
+      "independentFocusedNodePassed": 18,
+      "finalIndependentWorkflowPassed": 5
+    },
+    "allOwnedFridaSessionsDetached": true,
+    "gameDataEdited": false,
+    "productionAdapterCertified": false,
+    "writerCertified": false,
+    "embeddedScriptPathPolicy": "Absolute .js path; explicit UNC/device prefixes rejected before process observation or secondary file read; storage locality not authenticated."
   }
 }

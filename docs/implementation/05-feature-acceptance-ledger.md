@@ -1,5 +1,7 @@
 # ManagerHub — 27-module implementation and acceptance ledger
 
+2026-11-01: [local session lifecycle research](../research/fmrte/24-fm2013-local-session-lifecycle.md) connects actual host process identity, generated read-only script, REA capture and fresh Editor/Realism normalization for4,058 observed records. Historical-only output, opaque creation-time checks, expiry/token/script consistency and synthetic failure tests pass; full checks pass226 tests/build. Product watcher/IPC, trusted current availability, career identity, full source coverage and writer certification remain unfinished. No module or delivery phase is marked complete.
+
 **Status as of 2026-11-01:** some modules have **partial production code** plus isolated live-reader research; the full 27-module scope remains incomplete. Do not change to Complete without integrated code, tests, UI and acceptance evidence. This is a planning tracker, not claims of available features.
 
 [Dated-cohort research](../research/fmrte/23-fm2013-game-date-calendar-age.md) adds repeat-bracketed native game date and4,058 explicitly derived calendar ages in Editor, with Realism age redaction. One fresh FM date screenshot and three earlier FMRTE age headers match selected results. Four computed cohort formula/model disagreements are not four UI comparisons. Full checks pass208 tests/build; no module/phase or production capability is marked complete. Manager visibility, atomic career identity, lifecycle coverage and reviewed local product ingestion remain open.

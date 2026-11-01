@@ -1,5 +1,7 @@
 # FM2013 compatibility — tested research subset only
 
+[The local lifecycle workflow](24-fm2013-local-session-lifecycle.md) now prepares a UUID-bound ticket using actual host PID/creation FILETIME/path/hash, then admits a complete4,058-record capture through fresh Editor/Realism outputs after process-instance checks. Sandbox process visibility differed from REA; host execution was separately approved and the failed sandbox receipt retained. This adds a tested research path, not authenticated capture, ongoing currentness, career identity or another supported build. Product/writer certification remains disabled.
+
 **Target:** FM2013. FMRTE13 is the primary reference. FMRTE26 evidence does not grant compatibility.
 
 ## What is independently established

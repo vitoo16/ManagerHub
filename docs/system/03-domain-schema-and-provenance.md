@@ -1,5 +1,7 @@
 # S03 — Canonical domain model and provenance
 
+[The implemented local session contract](../research/fmrte/24-fm2013-local-session-lifecycle.md) adds immutable process-instance tickets and an optional normalized-document `session` wrapper. Opaque100ns creation FILETIME is retained as a string alongside PID/path/hash; a ten-minute capture UUID binds the selected script/Evidence handoff. Endpoint admission emits only historical availability with currentness, career lineage and capture authentication unverified. This metadata does not replace per-field provenance, snapshot-scoped player keys or source privacy. The legacy file-only normalizer remains admissible without process observation; neither path authenticates a career or enables writing.
+
 All records must include source edition/build where known, save lineage/snapshot ID, adapter version and missingness.
 
 ## Entities

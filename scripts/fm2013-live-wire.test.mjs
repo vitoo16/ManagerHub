@@ -18,6 +18,7 @@ test('wire builder requires both unique file-bound native kinds before any runti
   const source = buildFm2013LiveWireCapture(target, [proof('playerStaff'), proof('player')]);
   assert.ok(source.includes('fm2013-live-capture-v1'));
   assert.ok(source.includes('hex-i8-tuples-v2'));
+  assert.throws(() => buildFm2013LiveWireCapture(target, [proof('player'), proof('playerStaff')], {}, 'not-a-capture-id'), RangeError);
 });
 
 test('game date brackets both native passes and refuses a changed date before emitting a capture', () => {
@@ -31,10 +32,11 @@ test('game date brackets both native passes and refuses a changed date before em
         const name=profile.nativeKinds[stage===0?'player':'playerStaff'].decoratedName;const offset=rva-0x3008;if(offset>=0&&offset<=name.length)return offset===name.length?0:name.charCodeAt(offset);throw Error('unexpected_byte');}});
     const Process={id:100,arch:'ia32',pointerSize:4,mainModule:{path:profile.imagePath,size:profile.gameDate.imageSize,base:pointer(base)},
       findRangeByAddress:()=>({protection:'r-x'}),enumerateRanges:()=>[]};
-    vm.runInNewContext(buildFm2013LiveWireCapture({pid:100,binarySha256:profile.binarySha256},proofs),{Process,send:m=>messages.push(m)});
+    vm.runInNewContext(buildFm2013LiveWireCapture({pid:100,binarySha256:profile.binarySha256},proofs,{},'12345678-1234-4234-8234-123456789abc'),{Process,send:m=>messages.push(m)});
     return {message:messages[0],dateReads,stage};
   }
   const stable=run(false);assert.equal(stable.stage,1);assert.equal(stable.dateReads,16);assert.equal(stable.message.status,'captured');
+  assert.equal(stable.message.captureId,'12345678-1234-4234-8234-123456789abc');
   assert.deepEqual(Array.from(stable.message.capture.gameDateBytes),[198,0,220,7]);
   const changed=run(true);assert.equal(changed.message.status,'rejected');assert.equal(changed.message.diagnostic,'game_date_changed_across_capture');
   assert.equal(Object.hasOwn(changed.message,'capture'),false);

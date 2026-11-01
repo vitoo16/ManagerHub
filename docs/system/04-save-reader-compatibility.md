@@ -1,5 +1,7 @@
 # S04 — Save Reader and FM compatibility research
 
+[Local capture-session admission](../research/fmrte/24-fm2013-local-session-lifecycle.md) now succeeds with actual host process queries, prepared-script/UUID binding, complete REA capture and fresh historical Editor/Realism outputs on4,058 records. The initial sandbox observation failed despite REA visibility and was preserved; no identity fallback was fabricated. PID/creation time/path/hash consistency and expiry checks do not certify loaded image bytes, currentness, career lineage or atomicity. No offline decoder, product watcher/IPC or writer capability is enabled.
+
 **Status: no validated format decoder committed.** The earlier sample `Untitled Game (v03).fm` was 29,319,864 bytes; header began `02 01 61 66 65 2e` (ASCII segment `afe.`). These observations **do not prove which edition generated it, or that player CA/PA was extracted**. Do not commit sample save data or speculate on fields.
 
 **2026-11-01 live-research status:** [the exact-build local pipeline](../research/fmrte/20-fm2013-live-snapshot-contract.md) now normalizes a complete running-game capture into 4,058 provisional immutable records. This is separate from offline `.fm` decoding and product compatibility. The browser has no memory bridge; production native reader/editor capability flags remain disabled.
