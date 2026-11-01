@@ -1,5 +1,7 @@
 # FMRTE research summary — 2026-11-01
 
+**Tiếp quản:** [handoff cho agent không có Computer Use](25-handoff-no-computer-use.md) và [prompt copy/paste](26-prompt-next-agent.md) ghi baseline, code map, private-artifact limits và acceptance của consumer snapshot lịch sử tiếp theo. Code baseline7588216 đã được push lên `research/fmrte-static`; chưa merge main.
+
 **Latest lifecycle result:** [local capture tickets and process-instance admission](24-fm2013-local-session-lifecycle.md) connect actual host OS queries, a prepared read-only script, complete REA capture and fresh Editor/Realism finalization for4,058 records. PID plus opaque creation FILETIME/path/hash and a ten-minute UUID binding reject tested stale-instance/token cases before output. Files are explicitly historical, with unverified currentness/authentication/career lineage. Full checks pass226 tests/build; no product watcher or IPC service is added.
 
 **Earlier dated capture:** [native game date and derived calendar age](23-fm2013-game-date-calendar-age.md) matches one fresh game screenshot and brackets a complete4,058-record capture with repeated date reads. Editor now carries explicitly modeled calendar age; Realism redacts it. The reference tool's duration formula differs at some boundaries, so no engine/ActualAge equivalence is claimed. Full checks pass208 tests/build; product certification remains open.
