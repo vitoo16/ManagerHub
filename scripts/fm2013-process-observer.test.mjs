@@ -48,14 +48,16 @@ test('observer stops before hashing denied, absent or unsupported targets and re
   const wrongHash = fixture([identity], '0'.repeat(64));
   assert.deepEqual(await observeFm2013Process(123, wrongHash.options), { status: 'unsupported_build' });
   assert.deepEqual(wrongHash.hashes, [imagePath]);
-  const wrong = fixture([{ ...identity, imagePath: 'C:\\Other\\not-fm.exe' }]);
-  assert.deepEqual(await observeFm2013Process(123, wrong.options), { status: 'unsupported_build' }); assert.equal(wrong.hashes.length, 0);
+  for (const path of ['C:\\Other\\not-fm.exe', '\\\\server\\share\\fm.exe']) {
+    const wrong = fixture([{ ...identity, imagePath: path }]);
+    assert.deepEqual(await observeFm2013Process(123, wrong.options), { status: 'unsupported_build' }); assert.equal(wrong.hashes.length, 0);
+  }
   assert.deepEqual(await observeFm2013Process(123, fixture([identity], '0'.repeat(64)).options), { status: 'unsupported_build' });
   assert.deepEqual(await observeFm2013Process(123, fixture([identity], new Error('private hash details')).options), { status: 'observation_failed', reason: 'image_hash_failed' });
 });
 
 test('observer rejects malformed or widened protocol without leaking command errors', async () => {
-  const invalid = ['{', 'null', '[]', '{}', JSON.stringify({ ...identity, imagePath: '\\\\server\\share\\fm.exe' }), JSON.stringify({ ...identity, address: 'private' }),
+  const invalid = ['{', 'null', '[]', '{}', JSON.stringify({ ...identity, address: 'private' }),
     JSON.stringify({ ...identity, startedAtFileTime: Number(identity.startedAtFileTime) }),
     JSON.stringify({ ...identity, startedAtFileTime: 'short' }), JSON.stringify({ status: 'unknown' }),
     JSON.stringify({ ...identity, startedAtFileTime: '000000000000000000' }),
