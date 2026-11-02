@@ -1,0 +1,53 @@
+{
+  "installationRoot": "<FM2013_INSTALL_ROOT>",
+  "capturedDate": "2026-10-30",
+  "selection": "User-supplied installation directory; fm.exe only. Not an inventory of every bundled library.",
+  "method": "REA PE artifact/resource inventory + PowerShell FileVersionInfo/SHA256/PEReader; target never executed",
+  "files": [
+    {
+      "path": "<FM2013_INSTALL_ROOT>\\fm.exe",
+      "relativePath": "fm.exe",
+      "bytes": 40848024,
+      "fileVersion": "13.3.3",
+      "productVersion": "13.3.3f359652",
+      "productName": "Football Manager 2013",
+      "originalFilename": "FM2013",
+      "sha256": "df45cde67cb7361867e7afc9808dacab8bf53bd972f48145f6f881ff55d08871",
+      "machine": "I386",
+      "hasCliMetadata": false,
+      "corFlags": null,
+      "sectionCount": 14
+    }
+  ],
+  "reaEvidence": {
+    "artifact": "ev_9d2e991593b8ab1e7851b2e08a1c309b7f33f4bea06f716cff011c3d170905d4",
+    "artifactSummary": "ev_efdc69ee4f9f5ae4abf75f52d935bdf5d5b7c1a59ddf135208d7d47a4e7bc748",
+    "resources": "ev_b4cec8b739d0f53c2e747d9a0c1da19e50f16b6e5150849405ce34118dd6977d"
+  },
+  "versionResource": {
+    "index": 42,
+    "fileOffset": 39124032,
+    "bytes": 1448,
+    "sha256": "20edb78a58734a0bce0af979180229ef46e2e160c0f8404c41db61f3a73a6b8f",
+    "metadataDecoder": "Windows FileVersionInfo; REA retains opaque payload identity",
+    "literalCheck": {
+      "value": "13.3.3f359652",
+      "encoding": "UTF-16LE",
+      "firstFileOffset": 39124340,
+      "bytesExcludingTerminator": 26,
+      "occurrences": 4
+    }
+  },
+  "runtime": {
+    "executed": false,
+    "playerReadVerified": false,
+    "writeVerified": false,
+    "persistenceVerified": false
+  },
+  "limitations": [
+    "Metadata and byte hashes do not authenticate original vendor bytes.",
+    "Matching advertised build number is only a compatibility candidate.",
+    "Native providers remain unavailable; no native implementation recovered.",
+    "No disposable .fm or known-player ground truth identified."
+  ]
+}

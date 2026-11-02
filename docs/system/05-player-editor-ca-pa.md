@@ -17,3 +17,11 @@ Display Actual CA/PA only when verified and authorized by edition/build adapter.
 No automatic memory patching or bypass of game's checks; separate explicit integration research required before any live editing. Never promise bulk edits without test coverage on all affected native records.
 
 Acceptance: unsupported version disables editor; preview never mutates source; reject unexpected unrelated changes; rollback proven on fixture set; track audit log locally. See [save reader](04-save-reader-compatibility.md) and [quality](09-security-privacy-and-testing.md).
+
+## Research evidence — 2026-10-30
+
+[FMRTE13 write-path research](../research/fmrte/02-fmrte13-write-pipeline.md) identifies separate Int16 CA/PA setter paths ending at a managed `WriteProcessMemory` call site, plus signed-byte/conversion paths for Passing/Pace. This does not validate exact game offsets, safe ranges, normalization, transaction recovery or save persistence. [FMRTE26](../research/fmrte/02-fmrte26-write-pipeline.md) remains unresolved below delegate dispatch. No production editor or live-memory operation was added; all editing gates above remain required.
+
+[Recovered arithmetic](../research/fmrte/14-fmrte13-field-transforms.md) now verifies the six CA/PA transforms and attribute multiplier conversion against CIL using mocked memory. Numeric inverse functions remain isolated research utilities. [Stream-source analysis](../research/fmrte/13-fmrte13-stream-source.md) does not establish file writeback. These findings do not satisfy entity identity, build, preview, confirmation, recovery or game-load gates.
+
+[Subsequent REA runtime research](../research/fmrte/16-fm2013-live-readonly-record.md) executes a guarded, read-only probe on one matching user-named record. Independent Actual CA/PA ground truth and writer gates remain unsatisfied. The probe returns candidate/raw values and cannot write or certify an edit.

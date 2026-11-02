@@ -1,0 +1,125 @@
+{
+  "installationRoot": "<FMRTE13_INSTALL_ROOT>",
+  "capturedDate": "2026-10-30",
+  "method": "PowerShell FileVersionInfo + System.Reflection.Metadata PEReader; never target execution",
+  "files": [
+    {
+      "path": "<FMRTE13_INSTALL_ROOT>\\BouncyCastle.Crypto.dll",
+      "relativePath": "BouncyCastle.Crypto.dll",
+      "bytes": 1503232,
+      "fileVersion": "1.7.4114.6375",
+      "sha256": "8063ac472e4d34d086ac22b003d2027137b367652f92c111e6076ff98d1c8580",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE13_INSTALL_ROOT>\\FMRTE.exe",
+      "relativePath": "FMRTE.exe",
+      "bytes": 3233792,
+      "fileVersion": "13.3.3.62",
+      "sha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, Requires32Bit"
+    },
+    {
+      "path": "<FMRTE13_INSTALL_ROOT>\\miniFMRTE.exe",
+      "relativePath": "miniFMRTE.exe",
+      "bytes": 360960,
+      "fileVersion": "13.3.3.62",
+      "sha256": "82b9b79847dee7a11d2ed748f2d66dea81619ea55cc1b75f847c3783c9350a30",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly"
+    },
+    {
+      "path": "<FMRTE13_INSTALL_ROOT>\\NET-Detector.exe",
+      "relativePath": "NET-Detector.exe",
+      "bytes": 39424,
+      "fileVersion": "1.0.0.0",
+      "sha256": "9147415ebce52d9cb2c5a1a5ea6e79f533f2d7c7c7765bfa95edda6df06c5d25",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, Requires32Bit"
+    },
+    {
+      "path": "<FMRTE13_INSTALL_ROOT>\\Newtonsoft.Json.dll",
+      "relativePath": "Newtonsoft.Json.dll",
+      "bytes": 374272,
+      "fileVersion": "4.5.4.14825",
+      "sha256": "ade82df14a91958832bbe13017ab3eb9045697628c33c72a285c7319510710d1",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE13_INSTALL_ROOT>\\unins000.exe",
+      "relativePath": "unins000.exe",
+      "bytes": 1063198,
+      "fileVersion": "51.52.0.0",
+      "sha256": "1decd1018218c8d0be322a72f5c4d06adbf925fe11455b7e04aebd06da695f57",
+      "machine": "I386",
+      "hasCliMetadata": false,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE13_INSTALL_ROOT>\\Update.exe",
+      "relativePath": "Update.exe",
+      "bytes": 547328,
+      "fileVersion": "2.6.18.4",
+      "sha256": "8d8950ef648707202d5978d749849d9336540e8ecab30531d072f2fdcd7f5181",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly"
+    },
+    {
+      "path": "<FMRTE13_INSTALL_ROOT>\\WPFToolkit.Extended.dll",
+      "relativePath": "WPFToolkit.Extended.dll",
+      "bytes": 345600,
+      "fileVersion": "1.5.0.0",
+      "sha256": "2c62fa36ba4071ca3ae4f3fad23da407915c3464caf444548ef5b63546835a12",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    }
+  ],
+  "assetCounts": [
+    {
+      "Name": ".dat",
+      "Count": 1
+    },
+    {
+      "Name": ".dll",
+      "Count": 3
+    },
+    {
+      "Name": ".exe",
+      "Count": 5
+    },
+    {
+      "Name": ".ico",
+      "Count": 2
+    },
+    {
+      "Name": ".lnk",
+      "Count": 1
+    },
+    {
+      "Name": ".png",
+      "Count": 1351
+    },
+    {
+      "Name": ".wyc",
+      "Count": 1
+    },
+    {
+      "Name": ".xaml",
+      "Count": 2
+    },
+    {
+      "Name": ".xml",
+      "Count": 45
+    }
+  ]
+}

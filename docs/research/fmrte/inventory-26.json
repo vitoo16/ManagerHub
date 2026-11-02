@@ -1,0 +1,4223 @@
+{
+  "installationRoot": "<FMRTE26_INSTALL_ROOT>",
+  "capturedDate": "2026-10-30",
+  "method": "PowerShell FileVersionInfo + System.Reflection.Metadata PEReader; never target execution",
+  "files": [
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\config.json",
+      "relativePath": "config.json",
+      "bytes": 37058,
+      "fileVersion": null,
+      "sha256": "eac5efdd4bddf9b164f721f1f1a5b9964206d0f3e6c1a75c87d7fe8e7937cf17",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\FMRTE.exe",
+      "relativePath": "FMRTE.exe",
+      "bytes": 628704,
+      "fileVersion": "26.3.2.42",
+      "sha256": "a0e41aabf3466b6609ad45407dc756a9355eb5acdd37175a223694bf28be1097",
+      "machine": "I386",
+      "hasCliMetadata": false,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\unins000.exe",
+      "relativePath": "unins000.exe",
+      "bytes": 3234256,
+      "fileVersion": "51.1052.0.0",
+      "sha256": "52e1ff130b5cce670ee2d3dedadec5c42e0581601f55e5125f0f3e9342108f47",
+      "machine": "I386",
+      "hasCliMetadata": false,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Update.exe",
+      "relativePath": "Update.exe",
+      "bytes": 4204000,
+      "fileVersion": "1.2.158",
+      "sha256": "9040e252237dc616cc1036bc0337a886679b0f19823e0c83ed2e41796c07d89d",
+      "machine": "I386",
+      "hasCliMetadata": false,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\AsyncAwaitBestPractices.dll",
+      "relativePath": "current\\AsyncAwaitBestPractices.dll",
+      "bytes": 35296,
+      "fileVersion": "9.0.0",
+      "sha256": "787cb2d61e4656a497fedfa20bf52cc75fb4f0410ffea725b96d8fb6754723d7",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\AsyncAwaitBestPractices.MVVM.dll",
+      "relativePath": "current\\AsyncAwaitBestPractices.MVVM.dll",
+      "bytes": 27616,
+      "fileVersion": "9.0.0",
+      "sha256": "577eb192fad4abe21187875670ca0605d9033417063d756279fa0548859f5e63",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\av_libglesv2.dll",
+      "relativePath": "current\\av_libglesv2.dll",
+      "bytes": 5440992,
+      "fileVersion": "2.1.25606 git hash: cb8b4e1307a9",
+      "sha256": "85545e090a8e7c519172436cd61f7921f8efd123ec83734c4d76ceade6a070dd",
+      "machine": "Amd64",
+      "hasCliMetadata": false,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Base.dll",
+      "relativePath": "current\\Avalonia.Base.dll",
+      "bytes": 2139616,
+      "fileVersion": "11.3.10.0",
+      "sha256": "1f59c7ec3f6d03e257ee8d61b4ae636f8943dac55f5a392e9e87b62fc2b6ef4e",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Controls.DataGrid.dll",
+      "relativePath": "current\\Avalonia.Controls.DataGrid.dll",
+      "bytes": 382944,
+      "fileVersion": "11.3.10.0",
+      "sha256": "3955de62e2f1b3e804be9b5cfc4a775b642f7af525608dc8a40ace4274ae6615",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Controls.dll",
+      "relativePath": "current\\Avalonia.Controls.dll",
+      "bytes": 1095136,
+      "fileVersion": "11.3.10.0",
+      "sha256": "ba2a588483ee29fcc01492978e1a8858ccdb25ea4463dafae8981d63f6038873",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.DesignerSupport.dll",
+      "relativePath": "current\\Avalonia.DesignerSupport.dll",
+      "bytes": 224736,
+      "fileVersion": "0.7.0.0",
+      "sha256": "b233a0f906efef32f5c24cec23fda36deb54ec6c294c3cfc0defd09760d6cb0e",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Desktop.dll",
+      "relativePath": "current\\Avalonia.Desktop.dll",
+      "bytes": 30176,
+      "fileVersion": "11.3.10.0",
+      "sha256": "b996bd51a8604be3e3e312e9f6c8e4d7ec5e1a6be37a8cc1ded816e15f88b8d7",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Dialogs.dll",
+      "relativePath": "current\\Avalonia.Dialogs.dll",
+      "bytes": 259552,
+      "fileVersion": "11.3.10.0",
+      "sha256": "2c596a0d566de0cd213caa645217308cffac3c544d29c37fed55d949120d9ac3",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.dll",
+      "relativePath": "current\\Avalonia.dll",
+      "bytes": 18912,
+      "fileVersion": "11.3.10.0",
+      "sha256": "480e1098991794b5d99f3276f127a15c9bee8bd97dec9b9166f645f59eb31279",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.FreeDesktop.dll",
+      "relativePath": "current\\Avalonia.FreeDesktop.dll",
+      "bytes": 216032,
+      "fileVersion": "11.3.10.0",
+      "sha256": "dd6ac9b81970d56102b82a763dc5f551b552e05ef40af78f830a1c54348d9d9d",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Markup.dll",
+      "relativePath": "current\\Avalonia.Markup.dll",
+      "bytes": 80352,
+      "fileVersion": "11.3.10.0",
+      "sha256": "9e47f3826d12cdf9c7057c30f278197ec483351682755941b0d13cf3ee5292bc",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Markup.Xaml.dll",
+      "relativePath": "current\\Avalonia.Markup.Xaml.dll",
+      "bytes": 99808,
+      "fileVersion": "11.3.10.0",
+      "sha256": "dac6358a686738a502f44cc50c7b5c6bc13e28db468381687d72f784b170a502",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Markup.Xaml.Loader.dll",
+      "relativePath": "current\\Avalonia.Markup.Xaml.Loader.dll",
+      "bytes": 540640,
+      "fileVersion": "11.3.10.0",
+      "sha256": "57562bf67a7bb08ca2fa6c269be39cce147936c6761b0b2e72fc419fbada1df0",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Metal.dll",
+      "relativePath": "current\\Avalonia.Metal.dll",
+      "bytes": 30176,
+      "fileVersion": "11.3.10.0",
+      "sha256": "4ab7b49b908216823836a34b26acc8f83b33eed6efd8b4aaecb60e3ffcf25621",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.MicroCom.dll",
+      "relativePath": "current\\Avalonia.MicroCom.dll",
+      "bytes": 30688,
+      "fileVersion": "11.3.10.0",
+      "sha256": "a1b36f63aab04b3448631651d9c55d535ef9972fd4771594d2fb0f25d1ebeae9",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Native.dll",
+      "relativePath": "current\\Avalonia.Native.dll",
+      "bytes": 347104,
+      "fileVersion": "11.3.10.0",
+      "sha256": "03a74254f1e99977b4dd25c053756eb502f75ffe621d6bd7fa787b8d7a94ad2f",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.OpenGL.dll",
+      "relativePath": "current\\Avalonia.OpenGL.dll",
+      "bytes": 130528,
+      "fileVersion": "11.3.10.0",
+      "sha256": "6aea65f1e3b7dce4de9a9ee092ae92be70562530275145b15aa5c537a18430fa",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Remote.Protocol.dll",
+      "relativePath": "current\\Avalonia.Remote.Protocol.dll",
+      "bytes": 85472,
+      "fileVersion": "11.3.10.0",
+      "sha256": "20f0319713e9aeedfdc3ba18de634f8c43c05323cb0d3ec3c6bc8132231d53ca",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Skia.dll",
+      "relativePath": "current\\Avalonia.Skia.dll",
+      "bytes": 147424,
+      "fileVersion": "11.3.10.0",
+      "sha256": "2889210df2380111b15a30247ccdcfa5f53f276d3ddfce3fbd4188073a234277",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Themes.Fluent.dll",
+      "relativePath": "current\\Avalonia.Themes.Fluent.dll",
+      "bytes": 601568,
+      "fileVersion": "11.3.10.0",
+      "sha256": "29237f81c977ef7524f21c91199eb927d921adc41d017a4fee8c2f3ffd494682",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Themes.Simple.dll",
+      "relativePath": "current\\Avalonia.Themes.Simple.dll",
+      "bytes": 314336,
+      "fileVersion": "11.3.10.0",
+      "sha256": "b37ce5d21611595db31f8d7e98cc5cd84f46d3348722fe60c026da148413a180",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Vulkan.dll",
+      "relativePath": "current\\Avalonia.Vulkan.dll",
+      "bytes": 205280,
+      "fileVersion": "11.3.10.0",
+      "sha256": "00adc0cb9d3537a1701aa1b1599eb3f6525961fe69b334a3f4e869fd6a3ade5a",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Win32.Automation.dll",
+      "relativePath": "current\\Avalonia.Win32.Automation.dll",
+      "bytes": 128992,
+      "fileVersion": "11.3.10.0",
+      "sha256": "32590fcf7417a6e91de289a7364aa8642074cdc98fdbe3723c88f4534270e9f8",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Win32.dll",
+      "relativePath": "current\\Avalonia.Win32.dll",
+      "bytes": 939488,
+      "fileVersion": "11.3.10.0",
+      "sha256": "8c7a0305e171e07079cbf5e58f253cafc7fc01cdb6213f8c60b959ae34fad187",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.X11.dll",
+      "relativePath": "current\\Avalonia.X11.dll",
+      "bytes": 377312,
+      "fileVersion": "11.3.10.0",
+      "sha256": "b3526d482ca0d9000ca09b2568bea7e5a7ddbd39db71606dd07b5b43e581702b",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Xaml.Interactions.Custom.dll",
+      "relativePath": "current\\Avalonia.Xaml.Interactions.Custom.dll",
+      "bytes": 134624,
+      "fileVersion": "11.3.0.6",
+      "sha256": "8578a55b23284a13239d7042ea60357b717fc1ac69016c3df80caebba40063d6",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Xaml.Interactions.dll",
+      "relativePath": "current\\Avalonia.Xaml.Interactions.dll",
+      "bytes": 90592,
+      "fileVersion": "11.3.0.6",
+      "sha256": "5bb5cc2629db98c513c02c7509d7fc5157e96fa5ecab171fbaeede2e1986dea1",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Xaml.Interactions.DragAndDrop.dll",
+      "relativePath": "current\\Avalonia.Xaml.Interactions.DragAndDrop.dll",
+      "bytes": 52192,
+      "fileVersion": "11.3.0.6",
+      "sha256": "3aee8bdb190b52cf765675d9e6a2f7094291d857afa27a6afe9cfabc73d5e11d",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Xaml.Interactions.Draggable.dll",
+      "relativePath": "current\\Avalonia.Xaml.Interactions.Draggable.dll",
+      "bytes": 60896,
+      "fileVersion": "11.3.0.6",
+      "sha256": "0bee8e4d783b7930801a94c9882b86a5aeb8bb3dabf225de70dce86fcbe753b5",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Xaml.Interactions.Events.dll",
+      "relativePath": "current\\Avalonia.Xaml.Interactions.Events.dll",
+      "bytes": 39904,
+      "fileVersion": "11.3.0.6",
+      "sha256": "4d7f1d179dd74a6618852f191228cb4092cfe2765f2b5224f2f6326e835866b7",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Xaml.Interactions.Responsive.dll",
+      "relativePath": "current\\Avalonia.Xaml.Interactions.Responsive.dll",
+      "bytes": 40416,
+      "fileVersion": "11.3.0.6",
+      "sha256": "464e3fc936a3eae8c0a843f3496b4c8e6b8bac734e18a2b27f2acdbf17673320",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Xaml.Interactivity.dll",
+      "relativePath": "current\\Avalonia.Xaml.Interactivity.dll",
+      "bytes": 70112,
+      "fileVersion": "11.3.0.6",
+      "sha256": "64357fcbf56bc2e26c76f31d75c9f849c3ce568517fcb99a378ef9b1aeffc162",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\AvaloniaUI.DiagnosticsSupport.Avalonia.dll",
+      "relativePath": "current\\AvaloniaUI.DiagnosticsSupport.Avalonia.dll",
+      "bytes": 1133024,
+      "fileVersion": "2.1.1.0",
+      "sha256": "2e5346296b798840c4cfcd99885bc76877fc83b542b23d80cad6cab2b4a94c2c",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\clretwrc.dll",
+      "relativePath": "current\\clretwrc.dll",
+      "bytes": 312584,
+      "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
+      "sha256": "ff9cc4b2715a4755a47d7191c67d144842cf4076b527295f0520339c5399d7a4",
+      "machine": "Amd64",
+      "hasCliMetadata": false,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\clrgc.dll",
+      "relativePath": "current\\clrgc.dll",
+      "bytes": 673032,
+      "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
+      "sha256": "db1430832aca250fa14de87fd01d78b0a41cdafc7df3c7a31d6e63ef0c73348d",
+      "machine": "Amd64",
+      "hasCliMetadata": false,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\clrgcexp.dll",
+      "relativePath": "current\\clrgcexp.dll",
+      "bytes": 709416,
+      "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
+      "sha256": "570d5bd5a257ddc5e09485a948eed0dfd213ed1bd5315fda90cf360a2c2b17f5",
+      "machine": "Amd64",
+      "hasCliMetadata": false,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\clrjit.dll",
+      "relativePath": "current\\clrjit.dll",
+      "bytes": 1945360,
+      "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
+      "sha256": "f835649ea3f5e15e432262bbbcb412ceb590142435c1a565d0aa91d52927dbda",
+      "machine": "Amd64",
+      "hasCliMetadata": false,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\coreclr.dll",
+      "relativePath": "current\\coreclr.dll",
+      "bytes": 4797232,
+      "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
+      "sha256": "e0a32a3b5e45a5024d86a5464fa6eac6be941786b42ad99b15580467900acece",
+      "machine": "Amd64",
+      "hasCliMetadata": false,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\DynamicData.dll",
+      "relativePath": "current\\DynamicData.dll",
+      "bytes": 985056,
+      "fileVersion": "9.4.1.30094",
+      "sha256": "c80fb45548f5ffb1b59b9f024723e771b7d736509b6ad60c4d22372d463c465f",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\FMRTE.deps.json",
+      "relativePath": "current\\FMRTE.deps.json",
+      "bytes": 122047,
+      "fileVersion": null,
+      "sha256": "c9efce21145369a2dd4e20f11badd760fdd8014287ffc2224091e1d8344ec206",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\FMRTE.dll",
+      "relativePath": "current\\FMRTE.dll",
+      "bytes": 12328416,
+      "fileVersion": "26.3.2.42",
+      "sha256": "29122b04bde4d77b5860423544d93f6bbef5b2e9c65b9a5749bd388c2be4b89e",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\FMRTE.exe",
+      "relativePath": "current\\FMRTE.exe",
+      "bytes": 383968,
+      "fileVersion": "26.3.2.42",
+      "sha256": "5513fe1be1179195a90b21c2087175d49e469d68cdf7a290a369105c3ab7a3fd",
+      "machine": "Amd64",
+      "hasCliMetadata": false,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\FMRTE.runtimeconfig.json",
+      "relativePath": "current\\FMRTE.runtimeconfig.json",
+      "bytes": 487,
+      "fileVersion": null,
+      "sha256": "b9d4dcdabc53c531424ef964aca20b08f37ba965ded8c3e73f7f868297ce344a",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\FmrteAvalonia.dll",
+      "relativePath": "current\\FmrteAvalonia.dll",
+      "bytes": 19534816,
+      "fileVersion": "26.3.2.42",
+      "sha256": "c763b9614e98f13a16f1b49b4a14ad191fc585627919fbac165970938d425ecf",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\HarfBuzzSharp.dll",
+      "relativePath": "current\\HarfBuzzSharp.dll",
+      "bytes": 122440,
+      "fileVersion": "8.3.1.1",
+      "sha256": "951fdc1c6db0bad84ae9329297dec0fcd38e1105ee477479ec66b8900e2f3bb5",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\hostfxr.dll",
+      "relativePath": "current\\hostfxr.dll",
+      "bytes": 374568,
+      "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
+      "sha256": "b569dfb48ae024e236be55987bec36f92f7e38cf42b3b62307c0bbedd3798a34",
+      "machine": "Amd64",
+      "hasCliMetadata": false,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\hostpolicy.dll",
+      "relativePath": "current\\hostpolicy.dll",
+      "bytes": 387368,
+      "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
+      "sha256": "8a5fa832f88f3e7bc1a7ebe34343a733e15a359d6642b197e2141dd3652f88d2",
+      "machine": "Amd64",
+      "hasCliMetadata": false,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\libHarfBuzzSharp.dll",
+      "relativePath": "current\\libHarfBuzzSharp.dll",
+      "bytes": 1804872,
+      "fileVersion": null,
+      "sha256": "eb76238c9e8e41d44b5a5b18167c4c5b39ca5db4277af5dbe92d730f0fc14a7d",
+      "machine": "Amd64",
+      "hasCliMetadata": false,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\libSkiaSharp.dll",
+      "relativePath": "current\\libSkiaSharp.dll",
+      "bytes": 9414216,
+      "fileVersion": null,
+      "sha256": "9a0d95e8caaa852c70d085af6a40a744242172ad9ea3fd6bc7599875a8a1dbcd",
+      "machine": "Amd64",
+      "hasCliMetadata": false,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Markdig.dll",
+      "relativePath": "current\\Markdig.dll",
+      "bytes": 493024,
+      "fileVersion": "0.42.0.0",
+      "sha256": "efccb4f673c5dbbfeb12db26a8a8e553729dbefc55b77afaf34c7916fac954c7",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\MicroCom.Runtime.dll",
+      "relativePath": "current\\MicroCom.Runtime.dll",
+      "bytes": 29152,
+      "fileVersion": "0.11.0.0",
+      "sha256": "2b66417262f515eeb2c048daea65705539b116e154f906fb5481ca23c401677a",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.CSharp.dll",
+      "relativePath": "current\\Microsoft.CSharp.dll",
+      "bytes": 993584,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "235a5787d4cb10067c5df6490a0faed1a2bb79982c39d54fda20faa7e49eb649",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.DiaSymReader.Native.amd64.dll",
+      "relativePath": "current\\Microsoft.DiaSymReader.Native.amd64.dll",
+      "bytes": 2195504,
+      "fileVersion": "14.42.34436.0",
+      "sha256": "315a61c47c41b8d4c815f4274bb6584c1d24b4640c7eedc354ed5b03a9a1361e",
+      "machine": "Amd64",
+      "hasCliMetadata": false,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Configuration.Abstractions.dll",
+      "relativePath": "current\\Microsoft.Extensions.Configuration.Abstractions.dll",
+      "bytes": 29480,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "d36225749cf87a4171db39ff28a0da9216575c54912daa14b6d5935b821b7f82",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Configuration.Binder.dll",
+      "relativePath": "current\\Microsoft.Extensions.Configuration.Binder.dll",
+      "bytes": 44816,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "c6bd760f32a759033f24c9961d80c60dce57bd3696a1f0dafa1c0445a520e036",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Configuration.CommandLine.dll",
+      "relativePath": "current\\Microsoft.Extensions.Configuration.CommandLine.dll",
+      "bytes": 26408,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "301be40e721a37b4ab9ace6c7775fa274610de7a8e068d879854094ec4a013e1",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Configuration.dll",
+      "relativePath": "current\\Microsoft.Extensions.Configuration.dll",
+      "bytes": 45344,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "b870b57af097bd531766500a9e4efd4c67510eeaa01346cd42472e48bdc8b2dc",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Configuration.EnvironmentVariables.dll",
+      "relativePath": "current\\Microsoft.Extensions.Configuration.EnvironmentVariables.dll",
+      "bytes": 21264,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "f4035a09ecd12e29d3c4007c261d3d480bdcac265ae11242eae0fd75211ebea7",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Configuration.FileExtensions.dll",
+      "relativePath": "current\\Microsoft.Extensions.Configuration.FileExtensions.dll",
+      "bytes": 29480,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "2784d06aaad46fe8c982719a066640dc28164b5c5da7bea1d43cea30134943e7",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Configuration.Json.dll",
+      "relativePath": "current\\Microsoft.Extensions.Configuration.Json.dll",
+      "bytes": 28424,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "d42791aa235e6769aaeaf751d4cc99af4c6333f24c5edca6fa9e5ef92b7df9ce",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Configuration.UserSecrets.dll",
+      "relativePath": "current\\Microsoft.Extensions.Configuration.UserSecrets.dll",
+      "bytes": 27432,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "f6d1e5eee806cddf311e6e05f5e4c9d6c5a481ee92bec190d1fdd06a07a0b683",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+      "relativePath": "current\\Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+      "bytes": 65824,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "3f733fa41c8b735cf3f7a1a49b43cd41a291bced3953bee46e2b8018be67f44c",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.DependencyInjection.dll",
+      "relativePath": "current\\Microsoft.Extensions.DependencyInjection.dll",
+      "bytes": 93472,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "407137262aee12b0dd588258f9c2bf8c91129f119896f60bd1bcd3b67f4d5916",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Diagnostics.Abstractions.dll",
+      "relativePath": "current\\Microsoft.Extensions.Diagnostics.Abstractions.dll",
+      "bytes": 32016,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "b02609a53666238e932e7d88e0aad098467cda11b84d2bff7cd1b21842be4e2c",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Diagnostics.dll",
+      "relativePath": "current\\Microsoft.Extensions.Diagnostics.dll",
+      "bytes": 37160,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "c539715b3b368fdec9da1e9a2f4cbcf99fd3680c908884ff49abe2c23b8a3d0d",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.FileProviders.Abstractions.dll",
+      "relativePath": "current\\Microsoft.Extensions.FileProviders.Abstractions.dll",
+      "bytes": 23864,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "e1d94ad98e17d02709205db476376037f7510a9ff799ab064e9d97f1d5a1eaeb",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.FileProviders.Physical.dll",
+      "relativePath": "current\\Microsoft.Extensions.FileProviders.Physical.dll",
+      "bytes": 46376,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "53ff1acae97b11e7a47554f945ea6b99249a2133ea2aae406a14714a82b38f90",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.FileSystemGlobbing.dll",
+      "relativePath": "current\\Microsoft.Extensions.FileSystemGlobbing.dll",
+      "bytes": 46880,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "910947003447be670d2fb11600bef1d3a7510905c55612343714c5fc5d5bbf19",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Hosting.Abstractions.dll",
+      "relativePath": "current\\Microsoft.Extensions.Hosting.Abstractions.dll",
+      "bytes": 53536,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "6fb66393099b843fde40c9d1e2d836a7a8d4a5cd7266e91fcd346907ff20c51e",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Hosting.dll",
+      "relativePath": "current\\Microsoft.Extensions.Hosting.dll",
+      "bytes": 72472,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "f9f3cd73cef0cff8ce1f8d5731d968a93f375afa7d95ae2734949c479da6fa90",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Logging.Abstractions.dll",
+      "relativePath": "current\\Microsoft.Extensions.Logging.Abstractions.dll",
+      "bytes": 67344,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "622cf6cafd1d5a402c12574515dfaab8ce99018a8b1d324045487ed7a5dfbb62",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Logging.Configuration.dll",
+      "relativePath": "current\\Microsoft.Extensions.Logging.Configuration.dll",
+      "bytes": 29472,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "e2b7cb59fd63bda10115cc3b917f3a34e6b843be68d30c553878c72773ccf46c",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Logging.Console.dll",
+      "relativePath": "current\\Microsoft.Extensions.Logging.Console.dll",
+      "bytes": 75560,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "dcf79840cd4f5ab215be2b9dd10f983226b0bc6be2f84291029dc360666f2bd3",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Logging.Debug.dll",
+      "relativePath": "current\\Microsoft.Extensions.Logging.Debug.dll",
+      "bytes": 20256,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "eb011f2555549acd93ea33b9254c50a7ef309401e3b1eac66cb65dfa52561395",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Logging.dll",
+      "relativePath": "current\\Microsoft.Extensions.Logging.dll",
+      "bytes": 52488,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "a273665141e349776fcffcdb33bf55ff7baebf1885b0dc5c858f272f8b338524",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Logging.EventLog.dll",
+      "relativePath": "current\\Microsoft.Extensions.Logging.EventLog.dll",
+      "bytes": 25872,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "758fe83679f26075edd6f675482813ea2ff1f23c7234d7e8ef67e831e6acac6b",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Logging.EventSource.dll",
+      "relativePath": "current\\Microsoft.Extensions.Logging.EventSource.dll",
+      "bytes": 35624,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "f3122df9bc3e168750297c795d17b273f46e7185389bbb5b3f17a634c8990cf0",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Options.ConfigurationExtensions.dll",
+      "relativePath": "current\\Microsoft.Extensions.Options.ConfigurationExtensions.dll",
+      "bytes": 22792,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "4322b5e1ce31a1194142a3fab482509b91ac859f780ad84fb83264e71a9871ad",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Options.dll",
+      "relativePath": "current\\Microsoft.Extensions.Options.dll",
+      "bytes": 66320,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "022e30ae3ce6dd2d5b4526f01effae5fc34f642a1a639aa9605590986c751560",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Primitives.dll",
+      "relativePath": "current\\Microsoft.Extensions.Primitives.dll",
+      "bytes": 45344,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "6bf0052e4045d89390960b32741a3f4f47050056c870ad5fe189d3dea70182ca",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.IO.RecyclableMemoryStream.dll",
+      "relativePath": "current\\Microsoft.IO.RecyclableMemoryStream.dll",
+      "bytes": 65968,
+      "fileVersion": "3.0.1.0",
+      "sha256": "631a5fc41df9498d032c0655ebd0e1209430ccffbec55667d89c2566b338ccc0",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.VisualBasic.Core.dll",
+      "relativePath": "current\\Microsoft.VisualBasic.Core.dll",
+      "bytes": 1255728,
+      "fileVersion": "14.0.1125.51716",
+      "sha256": "0b3992488278de0f6b43f2974bc9f418f56cf066844fe9d70f794d1f4e657f2d",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.VisualBasic.dll",
+      "relativePath": "current\\Microsoft.VisualBasic.dll",
+      "bytes": 17680,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "b303fce493e42d03a9a81fe3959aea19169853ee76ea097fd5e47a2c4f6dc2d5",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Win32.Primitives.dll",
+      "relativePath": "current\\Microsoft.Win32.Primitives.dll",
+      "bytes": 15632,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "65201a499ea8746d7f2fed07ffa62385a1a498d19295632b3e60fb763c8beb14",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Win32.Registry.dll",
+      "relativePath": "current\\Microsoft.Win32.Registry.dll",
+      "bytes": 121128,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "7dc7332edc017c150d22cc57955ad4a3bff07b787bbcafce8d43c667d8a9f141",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\mscordaccore_amd64_amd64_9.0.1125.51716.dll",
+      "relativePath": "current\\mscordaccore_amd64_amd64_9.0.1125.51716.dll",
+      "bytes": 1362264,
+      "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
+      "sha256": "6e587a5b4080c42ad5896db5e6008dca45aa8e7798ed15c98b7e112fceb9c025",
+      "machine": "Amd64",
+      "hasCliMetadata": false,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\mscordaccore.dll",
+      "relativePath": "current\\mscordaccore.dll",
+      "bytes": 1362264,
+      "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
+      "sha256": "6e587a5b4080c42ad5896db5e6008dca45aa8e7798ed15c98b7e112fceb9c025",
+      "machine": "Amd64",
+      "hasCliMetadata": false,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\mscordbi.dll",
+      "relativePath": "current\\mscordbi.dll",
+      "bytes": 1240408,
+      "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
+      "sha256": "38230da6d8159c327ff113fac5cd83faa28b02e647f00e4dffb39057e7737236",
+      "machine": "Amd64",
+      "hasCliMetadata": false,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\mscorlib.dll",
+      "relativePath": "current\\mscorlib.dll",
+      "bytes": 60208,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "710a4954eae6085039813f8aae9cd0cf9918e4e747fd5f3e2d54139c0723749d",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\mscorrc.dll",
+      "relativePath": "current\\mscorrc.dll",
+      "bytes": 135952,
+      "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
+      "sha256": "76a15fc2e2eb5c1c254754cd433e87a6aa4514c25bbc80021f15ee3316f7ef63",
+      "machine": "Amd64",
+      "hasCliMetadata": false,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\msquic.dll",
+      "relativePath": "current\\msquic.dll",
+      "bytes": 529480,
+      "fileVersion": "2.4.8.569855",
+      "sha256": "b2b7fd2dc05b0009acd3f0de7ba443c660c87b1308774a5811fdb8873a76de78",
+      "machine": "Amd64",
+      "hasCliMetadata": false,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\netstandard.dll",
+      "relativePath": "current\\netstandard.dll",
+      "bytes": 101160,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "6dd21805f65371b582efda4141082db9c24d0ea9234f8117cc7e5a2c6b181f88",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Newtonsoft.Json.dll",
+      "relativePath": "current\\Newtonsoft.Json.dll",
+      "bytes": 723368,
+      "fileVersion": "13.0.4.30916",
+      "sha256": "a28c251dfe36d881e9e2462e171441b8b0ec156fe3f452602c9149b1b9efe05b",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\NuGet.Versioning.dll",
+      "relativePath": "current\\NuGet.Versioning.dll",
+      "bytes": 64568,
+      "fileVersion": "6.14.0.116",
+      "sha256": "bfcba996b3fc59fbee4d67ae42cc86acae455cbe55119216cda2b84b4457256f",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\plist-cil.dll",
+      "relativePath": "current\\plist-cil.dll",
+      "bytes": 80352,
+      "fileVersion": "2.3.1.23209",
+      "sha256": "27a165f225fc9e81facac3520444df2f978f2b30805feeaeb4f686f47f164764",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Serilog.dll",
+      "relativePath": "current\\Serilog.dll",
+      "bytes": 176608,
+      "fileVersion": "4.3.0.0",
+      "sha256": "48d3ce81d28edc6b8d74f769c900a19a8da341fbb1799dfbca01559b51943c5c",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Serilog.Exceptions.dll",
+      "relativePath": "current\\Serilog.Exceptions.dll",
+      "bytes": 59872,
+      "fileVersion": "8.4.0.0",
+      "sha256": "1c1db6910e77caea1effb77f0d061056851bab78ec8f3599be52174c9e4d584c",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Serilog.Extensions.Logging.dll",
+      "relativePath": "current\\Serilog.Extensions.Logging.dll",
+      "bytes": 42464,
+      "fileVersion": "9.0.2.0",
+      "sha256": "94bef51aa63d6a071664467a77ec7b867f89b9b4f5fe7e163a2d15592b376a7a",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Serilog.Sinks.Console.dll",
+      "relativePath": "current\\Serilog.Sinks.Console.dll",
+      "bytes": 53216,
+      "fileVersion": "6.0.0.0",
+      "sha256": "087a70fbfac271fa02ce30db99c0d08f1edf8807823bf91e56a4d5befafb64c8",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Serilog.Sinks.File.dll",
+      "relativePath": "current\\Serilog.Sinks.File.dll",
+      "bytes": 51680,
+      "fileVersion": "7.0.0.0",
+      "sha256": "37eed34f7de9632a1ecf17f708e27cee0e2a403126572cd81bbcf3870c12f57b",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\SixLabors.ImageSharp.dll",
+      "relativePath": "current\\SixLabors.ImageSharp.dll",
+      "bytes": 2114528,
+      "fileVersion": "3.1.11.0",
+      "sha256": "f5f3fe9c1c7d7c32f3556d5151dfb388e9cb4730892b2330d2e636b007f37cbc",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\SkiaSharp.dll",
+      "relativePath": "current\\SkiaSharp.dll",
+      "bytes": 437808,
+      "fileVersion": "2.88.9.0",
+      "sha256": "17ee1284313749f73a5cf5f309318d831741a8d6d397c998c5fc6485843c28bb",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.AppContext.dll",
+      "relativePath": "current\\System.AppContext.dll",
+      "bytes": 15624,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "e5225f900a1385cb697e7ee7872bd8baaa237af3b32b1150a05800dc27247a69",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Buffers.dll",
+      "relativePath": "current\\System.Buffers.dll",
+      "bytes": 15664,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "6b29f79aff590ed90a3eda450be419dc1e2adf6abeb9d5e8b5f979babed9ed1d",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.CodeDom.dll",
+      "relativePath": "current\\System.CodeDom.dll",
+      "bytes": 185104,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "11c61a08377b12b63886e8c6463457f0715b86c47a106204baf7e1245ab97b0b",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Collections.Concurrent.dll",
+      "relativePath": "current\\System.Collections.Concurrent.dll",
+      "bytes": 293136,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "6459b4d59fa07ad30fbaf6d27c9cacfb55545ef1671d08695061819da58944e8",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Collections.dll",
+      "relativePath": "current\\System.Collections.dll",
+      "bytes": 334136,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "a1678070c2d90d68a65d718f2a715e616e10b308e75730a93b4b005d61711eff",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Collections.Immutable.dll",
+      "relativePath": "current\\System.Collections.Immutable.dll",
+      "bytes": 903464,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "ac53d3db4d4200f6c675a4136ae15ec06d4fb61d063e3ca3cee8cb083e319762",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Collections.NonGeneric.dll",
+      "relativePath": "current\\System.Collections.NonGeneric.dll",
+      "bytes": 108840,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "501be5c4ee99d568e28b595975461f48901ecb97f03c00afa23f75e73de6bf18",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Collections.Specialized.dll",
+      "relativePath": "current\\System.Collections.Specialized.dll",
+      "bytes": 104720,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "4dcc1c521ca236164b5f70e6f658788aa04f058df6fb6063d2b04b0a3ad7f16a",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.ComponentModel.Annotations.dll",
+      "relativePath": "current\\System.ComponentModel.Annotations.dll",
+      "bytes": 198960,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "1c80d4cff8dba3679a4c26c7b26059706401a8e3a8939b7a9be11e138db8417a",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.ComponentModel.DataAnnotations.dll",
+      "relativePath": "current\\System.ComponentModel.DataAnnotations.dll",
+      "bytes": 17200,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "50e56c432ce32085e617eb848be3d628814f7e597fb24c93b7a8830fa829f7e0",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.ComponentModel.dll",
+      "relativePath": "current\\System.ComponentModel.dll",
+      "bytes": 31024,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "487139c20a014bd73c9f86dbafc63ff973cf2ba2cc78017ed62ecab68cd66bec",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.ComponentModel.EventBasedAsync.dll",
+      "relativePath": "current\\System.ComponentModel.EventBasedAsync.dll",
+      "bytes": 47376,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "1c2ceb1f977bd89e18f12ec8916452bb75ab4a0e9060628ebd5ce3ab5fe145ca",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.ComponentModel.Primitives.dll",
+      "relativePath": "current\\System.ComponentModel.Primitives.dll",
+      "bytes": 80160,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "58fff85527912147d2ff13ff68723637f3eee884a3cf4a4d87968e54635cc6da",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.ComponentModel.TypeConverter.dll",
+      "relativePath": "current\\System.ComponentModel.TypeConverter.dll",
+      "bytes": 772368,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "d7cde5d62cc9438a9085f159000f839d0ea4e9ae9a5eaa801f0aaf8407c1df10",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Configuration.dll",
+      "relativePath": "current\\System.Configuration.dll",
+      "bytes": 19768,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "09dcf2a7c11a2a2da684d469a9d4f13bd91bfcb5dba567a813093fda46ca7cfc",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Console.dll",
+      "relativePath": "current\\System.Console.dll",
+      "bytes": 174384,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "403606705d5e0da35f30030d0466b758d40c92e32919406be40292b6bb2741f2",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Core.dll",
+      "relativePath": "current\\System.Core.dll",
+      "bytes": 23864,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "27e0ff54824929fb81dfe4c3ecc0dd6e847f227a791f0266c72a62217300b5e1",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Data.Common.dll",
+      "relativePath": "current\\System.Data.Common.dll",
+      "bytes": 2849072,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "477c8f098a8ce27acce702ad1cd60227a79605e99b16520646f800117b53e0c7",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Data.DataSetExtensions.dll",
+      "relativePath": "current\\System.Data.DataSetExtensions.dll",
+      "bytes": 16176,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "43f06db7097fbbd799d72d424a3a9e66723e4503a131131f2a0ec2547669e332",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Data.dll",
+      "relativePath": "current\\System.Data.dll",
+      "bytes": 25384,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "258c582ee571ee4b35cb653795dcc0e98f10f5548ae613cf532dd24c6a41a2c7",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.Contracts.dll",
+      "relativePath": "current\\System.Diagnostics.Contracts.dll",
+      "bytes": 16656,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "092fb9c862c76498aba612116a93b3739824656ba1fbebf28b403282073a7673",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.Debug.dll",
+      "relativePath": "current\\System.Diagnostics.Debug.dll",
+      "bytes": 16144,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "ce2afb02a0c66f1ae31d7fbd19500b4657021db287b8835d1215c83683c43970",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.DiagnosticSource.dll",
+      "relativePath": "current\\System.Diagnostics.DiagnosticSource.dll",
+      "bytes": 452920,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "20655fd586e5fb97190b21ba8184cae7ed9bc4166b18ed440087d5de00e6d7a4",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.EventLog.dll",
+      "relativePath": "current\\System.Diagnostics.EventLog.dll",
+      "bytes": 174864,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "f35fcff2ae63086283d4e0dabaa9aeaf1a6e695e2cdc6117c0bbb55280a0380b",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.EventLog.Messages.dll",
+      "relativePath": "current\\System.Diagnostics.EventLog.Messages.dll",
+      "bytes": 801064,
+      "fileVersion": null,
+      "sha256": "9da10f4c289e12b9ee12ff9a2dc438d9b61cc3f95373cf864fe8df1165620e76",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.FileVersionInfo.dll",
+      "relativePath": "current\\System.Diagnostics.FileVersionInfo.dll",
+      "bytes": 47400,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "c27260735facea3b0595d23f669fd2e3dc3e16a06faf0ebb68f7c2885ad3a157",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.Process.dll",
+      "relativePath": "current\\System.Diagnostics.Process.dll",
+      "bytes": 338224,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "c015317bcca77a55f80895d4d921eaeedf175193ded1ff698c40e5c0d79ee141",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.StackTrace.dll",
+      "relativePath": "current\\System.Diagnostics.StackTrace.dll",
+      "bytes": 47400,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "a1fe5219938531ff709c9170b8b9b0bd85768b00a32cce2f06ada7eb357374ae",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.TextWriterTraceListener.dll",
+      "relativePath": "current\\System.Diagnostics.TextWriterTraceListener.dll",
+      "bytes": 67896,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "32786e5e989ec440fcd2a3185590dcb1755efbcb77a2d207ef2d3c8e003f4163",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.Tools.dll",
+      "relativePath": "current\\System.Diagnostics.Tools.dll",
+      "bytes": 15664,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "e22a43d230d28827b57e062d6495627833c6d30d35284ea4a209c99062fabd99",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.TraceSource.dll",
+      "relativePath": "current\\System.Diagnostics.TraceSource.dll",
+      "bytes": 145672,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "969e7a3ea18d141d68497ba091f19c1c9a20e37bd41aec60a82976176d1a8295",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.Tracing.dll",
+      "relativePath": "current\\System.Diagnostics.Tracing.dll",
+      "bytes": 16656,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "e2e60d4c30909f2f055142f2a29d4e9ee2699a9919ead263fec1f52cd2853a57",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.dll",
+      "relativePath": "current\\System.dll",
+      "bytes": 50992,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "7b5b0c0931006846cef72fcf366fcc5aecd297a41faafa3698b00bf549d4747d",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Drawing.dll",
+      "relativePath": "current\\System.Drawing.dll",
+      "bytes": 20744,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "eb9000ddd4a9cf0e8cedb28d91322158069953aa0986c8e1d2aff6a4fce18bc8",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Drawing.Primitives.dll",
+      "relativePath": "current\\System.Drawing.Primitives.dll",
+      "bytes": 137528,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "0257de24e0fd8d775537455b2c82133bdce03d498c7ed419847025919796c5f8",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Dynamic.Runtime.dll",
+      "relativePath": "current\\System.Dynamic.Runtime.dll",
+      "bytes": 16680,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "f2fbd13c537c888fb4b0ed378d4319752c68967c33a3b2c7bc8c46a4218030d8",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Formats.Asn1.dll",
+      "relativePath": "current\\System.Formats.Asn1.dll",
+      "bytes": 239912,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "a974e8590717eb6634743119e8b829e3f264c9892d7220289f7b4f94ae439178",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Formats.Tar.dll",
+      "relativePath": "current\\System.Formats.Tar.dll",
+      "bytes": 272680,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "8236436760941afd0edcea5e327b49357c6d3d2a67aedc74a8a812cac9544e42",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Globalization.Calendars.dll",
+      "relativePath": "current\\System.Globalization.Calendars.dll",
+      "bytes": 16184,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "82b27b37cbc92c957b4973c013bc4ee0b1defd96cf3495612fa07ab9e816ae2b",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Globalization.dll",
+      "relativePath": "current\\System.Globalization.dll",
+      "bytes": 16144,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "79c229c7902e2e1d6e06a751f56fe61752c10292330e0e839dd726e97a8fa4c3",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Globalization.Extensions.dll",
+      "relativePath": "current\\System.Globalization.Extensions.dll",
+      "bytes": 15632,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "8424384ccb5704d3b07df01c1124cacd220fd56839ced0fb8ba56b8ebd98dffe",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.Abstractions.dll",
+      "relativePath": "current\\System.IO.Abstractions.dll",
+      "bytes": 19936,
+      "fileVersion": "22.0.16.0",
+      "sha256": "ef4cff04d085bdb595ff30c2d124fa6e622b75be06bb07416f8c664c15e6e0db",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.Compression.Brotli.dll",
+      "relativePath": "current\\System.IO.Compression.Brotli.dll",
+      "bytes": 88336,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "103a72b74a42da1989e595588ae91f110570919ea2460794d2dbccb62160b91b",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.Compression.dll",
+      "relativePath": "current\\System.IO.Compression.dll",
+      "bytes": 268584,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "0ef64d72a7c70dd2ce233957060802e490cccb48fb5719d64aa90b9c66ded1c0",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.Compression.FileSystem.dll",
+      "relativePath": "current\\System.IO.Compression.FileSystem.dll",
+      "bytes": 15624,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "82df6b53ba8bd2039d83574a07d262b763501851ed0d3d872eac13cc1c02cf89",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.Compression.Native.dll",
+      "relativePath": "current\\System.IO.Compression.Native.dll",
+      "bytes": 926000,
+      "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
+      "sha256": "40ff70c31c1687150d48dc8a13789674c3c8170b7c84cd69f2f34eabc146bdd9",
+      "machine": "Amd64",
+      "hasCliMetadata": false,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.Compression.ZipFile.dll",
+      "relativePath": "current\\System.IO.Compression.ZipFile.dll",
+      "bytes": 55600,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "60df46d771d22ec82cecd32c05ee698af3237a256cbb3b887599df0d381c70e6",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.dll",
+      "relativePath": "current\\System.IO.dll",
+      "bytes": 16168,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "a109c78f9e3ab211bea7aa59dc1524ef916153581552762b9432fd6146aa8587",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.FileSystem.AccessControl.dll",
+      "relativePath": "current\\System.IO.FileSystem.AccessControl.dll",
+      "bytes": 104752,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "885a135c7ab8d8b5b4b788db493768819f09b04148f50e30f11d037967657398",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.FileSystem.dll",
+      "relativePath": "current\\System.IO.FileSystem.dll",
+      "bytes": 16184,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "86687014e49ab350b13ab3f5b81b41e513653380cf9375f44cf4c4007e8ee1d1",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.FileSystem.DriveInfo.dll",
+      "relativePath": "current\\System.IO.FileSystem.DriveInfo.dll",
+      "bytes": 55592,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "1802ba42c10ed64b54ef52afaf0dd836f94abe5fd22bb3a317e54212897bfcbd",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.FileSystem.Primitives.dll",
+      "relativePath": "current\\System.IO.FileSystem.Primitives.dll",
+      "bytes": 15672,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "a7e7e321c74fedc41b31a0b5edf2694f5fad248ab9ca0d93bae447c7eba8fcfa",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.FileSystem.Watcher.dll",
+      "relativePath": "current\\System.IO.FileSystem.Watcher.dll",
+      "bytes": 88368,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "7f6d23207756c294b75ae29670d0d263d5dfb461f1739a4a61503cb0f97176e6",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.IsolatedStorage.dll",
+      "relativePath": "current\\System.IO.IsolatedStorage.dll",
+      "bytes": 92424,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "3cbf2a560fb9361c38e4447af852297b622e8f3826dee4a94fc1390dc3153817",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.MemoryMappedFiles.dll",
+      "relativePath": "current\\System.IO.MemoryMappedFiles.dll",
+      "bytes": 84264,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "a3379d7dd24d45cb596b04025df9624f9411376edb6eb7107797871350ce903d",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.Pipelines.dll",
+      "relativePath": "current\\System.IO.Pipelines.dll",
+      "bytes": 194856,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "c7d8465632d63958c21e0a26422692f136df0b36a9de0af85edd6500b4affaa7",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.Pipes.AccessControl.dll",
+      "relativePath": "current\\System.IO.Pipes.AccessControl.dll",
+      "bytes": 16168,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "2f61412e1ea72dffaa7c7147dac0129e1cb14a072ffcaecc93c6a08aa38b311a",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.Pipes.dll",
+      "relativePath": "current\\System.IO.Pipes.dll",
+      "bytes": 170280,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "4d2ad65d3f3898679b7e4471f53492905c78d400adb67973a5741fa7f35e55d0",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.UnmanagedMemoryStream.dll",
+      "relativePath": "current\\System.IO.UnmanagedMemoryStream.dll",
+      "bytes": 15664,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "77f3216caa9d0e9b6dafdaa7a25265a114364bf17421deaadbf356e5b7e86c60",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Linq.dll",
+      "relativePath": "current\\System.Linq.dll",
+      "bytes": 657704,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "9a8d2c808c3e8ccfa06347631a1234b962d3203f640264ec6758989342084a50",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Linq.Expressions.dll",
+      "relativePath": "current\\System.Linq.Expressions.dll",
+      "bytes": 3668272,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "7d35ca6f7fbdb4d4e60c389c416c3307dc8d0065d154e102c861baf7ad220d79",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Linq.Parallel.dll",
+      "relativePath": "current\\System.Linq.Parallel.dll",
+      "bytes": 801064,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "790c272673f483096bf42d08ecee12fb57867f987bce82dd3d477578292b5bab",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Linq.Queryable.dll",
+      "relativePath": "current\\System.Linq.Queryable.dll",
+      "bytes": 178472,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "9f2a335d4f9bb7f223bb106a14951f0322748d2b858b5703e3947759fcc4acb6",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Management.dll",
+      "relativePath": "current\\System.Management.dll",
+      "bytes": 313632,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "f7269f254a22e62a9d6a4f8dcdcb3d89e96b512de760b8d7d49ebad3f38fc3f9",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Memory.dll",
+      "relativePath": "current\\System.Memory.dll",
+      "bytes": 162064,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "f6baf64228681be128cc26aecf9cf9f367425fa380afc2a7a100fad1f1e5da3a",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.dll",
+      "relativePath": "current\\System.Net.dll",
+      "bytes": 17696,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "9f58a14ff8a5ceb4c36d51e222c7a8fcb8eebc4b3ee21d05f1db914334009794",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.Http.dll",
+      "relativePath": "current\\System.Net.Http.dll",
+      "bytes": 1788200,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "c910663b4a9a8490b72998ad917a3433812d76d6695177f41564024e583b6da7",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.Http.Json.dll",
+      "relativePath": "current\\System.Net.Http.Json.dll",
+      "bytes": 133424,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "3e2f40167112d0c3098dbf8e724561c05dc3140e3e53c2a9fe5028b02e1f3262",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.HttpListener.dll",
+      "relativePath": "current\\System.Net.HttpListener.dll",
+      "bytes": 551200,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "49c5e36412a669a97f8bad0460a9bd42bb367866978843a3a465c613ad1cf5e9",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.Mail.dll",
+      "relativePath": "current\\System.Net.Mail.dll",
+      "bytes": 432400,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "d50f6fe97dd8f66e4f5f14457036b20ced523505e8d94a6b254b3797fbc2c149",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.NameResolution.dll",
+      "relativePath": "current\\System.Net.NameResolution.dll",
+      "bytes": 125192,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "9e9d480c80a6f8d5b659c7655518cc93c31a3b4c35de96c1ae57e958da0d4f7e",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.NetworkInformation.dll",
+      "relativePath": "current\\System.Net.NetworkInformation.dll",
+      "bytes": 157992,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "f8fc08080d44efc3da121f64bca8a78bab8321d826b27b154d560c67f059cc6c",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.Ping.dll",
+      "relativePath": "current\\System.Net.Ping.dll",
+      "bytes": 96528,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "4f5841c6d98877c35192547bfe06dc42790dd00550c31119aa3f4199a819ec15",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.Primitives.dll",
+      "relativePath": "current\\System.Net.Primitives.dll",
+      "bytes": 227632,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "ccce978f3702e6129db4c5e03dd57530d3e69881235b2ceccc4829efbe3d983d",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.Quic.dll",
+      "relativePath": "current\\System.Net.Quic.dll",
+      "bytes": 371000,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "3845c7021f1f0718f2ef189c04bcadb3b791a6b46d9cf884a5bbd1a41b8b7b5c",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.Requests.dll",
+      "relativePath": "current\\System.Net.Requests.dll",
+      "bytes": 383248,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "b4a9e634b53ec61dea0b3035fc76219c868f7c1ed12d48395067e7fcfd54eba8",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.Security.dll",
+      "relativePath": "current\\System.Net.Security.dll",
+      "bytes": 678200,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "ec7af21039267a9f962d2b1df7ec46dbf35466195b403b66432598fa530d2044",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.ServicePoint.dll",
+      "relativePath": "current\\System.Net.ServicePoint.dll",
+      "bytes": 15664,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "cf36ec7106dc7ef0b5d4770e2bdcc5dd122f7c425a757b4b9923ad715e74c004",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.Sockets.dll",
+      "relativePath": "current\\System.Net.Sockets.dll",
+      "bytes": 547120,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "0428374fb188e49ce3a46a38c92d0cdf8bd183a0f075893970bc0650c797c6eb",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.WebClient.dll",
+      "relativePath": "current\\System.Net.WebClient.dll",
+      "bytes": 170280,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "6189c5bc505e4a1924e8c6a715f3d4c65b6d413bc2e4529f9f0f41782df4f310",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.WebHeaderCollection.dll",
+      "relativePath": "current\\System.Net.WebHeaderCollection.dll",
+      "bytes": 63784,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "89e3bf47fc414358c68b0c63d951ff59741c4ed71ffdc71ecf561bbf8872f9e8",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.WebProxy.dll",
+      "relativePath": "current\\System.Net.WebProxy.dll",
+      "bytes": 43304,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "e072fd657ac5dbf88a8e3d359cf73322f968e9fa70961da8019f0fa3043f48bf",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.WebSockets.Client.dll",
+      "relativePath": "current\\System.Net.WebSockets.Client.dll",
+      "bytes": 104744,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "a361136d814b89ea866fc4d2ee3b2ca70e012eac054d8de1550d104895131513",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.WebSockets.dll",
+      "relativePath": "current\\System.Net.WebSockets.dll",
+      "bytes": 235784,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "44536317941be165d82cb448dd7ca4243b41ceb86f83116fb3d95cc7d8dc4f07",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Numerics.dll",
+      "relativePath": "current\\System.Numerics.dll",
+      "bytes": 15648,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "562cd07a2228f51f27cf745d5c2daa10e32cb7fdf9c4edc3e2bff3db2a6da7fe",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Numerics.Vectors.dll",
+      "relativePath": "current\\System.Numerics.Vectors.dll",
+      "bytes": 16176,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "0f99fa6d06d3a541ca024874bbdf80ce577728d16ca0e13462195e7034f67c80",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.ObjectModel.dll",
+      "relativePath": "current\\System.ObjectModel.dll",
+      "bytes": 84240,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "79436b55b6a6c0ccc9fbd9898bc63fead3571b88e46b409eb84486e657990218",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Private.CoreLib.dll",
+      "relativePath": "current\\System.Private.CoreLib.dll",
+      "bytes": 15264040,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "102d81ead6043a7f309e134ffe329eaac7bc509a01a4da12a59acc99c5ef7ba3",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Private.DataContractSerialization.dll",
+      "relativePath": "current\\System.Private.DataContractSerialization.dll",
+      "bytes": 2070824,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "a18d58e48a1b1fcd87aa803d364f5b92c04e5e59bfb9afee573ed951dba9a005",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Private.Uri.dll",
+      "relativePath": "current\\System.Private.Uri.dll",
+      "bytes": 260368,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "8e94533bea94805e28882324ac2626ecf7ed05c7516e1388c9994244fd10e164",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Private.Xml.dll",
+      "relativePath": "current\\System.Private.Xml.dll",
+      "bytes": 7919912,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "6933a94b79fb342da26d36db4cc3a5a920191ec80d688f62dd7d7d02a3c4b8ac",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Private.Xml.Linq.dll",
+      "relativePath": "current\\System.Private.Xml.Linq.dll",
+      "bytes": 399624,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "26d179e66f1826b01630e4df715eb4b8e6145a7067a762a126d52bf6076c2cd3",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Reactive.dll",
+      "relativePath": "current\\System.Reactive.dll",
+      "bytes": 1344592,
+      "fileVersion": "6.0.1.7420",
+      "sha256": "626b01d9a0a19edaf345f2fb1cbf549d4f8cb725c06ea7898133f0bcd65449c3",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Reflection.DispatchProxy.dll",
+      "relativePath": "current\\System.Reflection.DispatchProxy.dll",
+      "bytes": 76064,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "4116db5ee628d75cef7b32a31d0813701aa5fa165c04a216db0d16d4a8728a11",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Reflection.dll",
+      "relativePath": "current\\System.Reflection.dll",
+      "bytes": 16696,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "01b3bf4ddcf60af9d7657ea981e1748384bd152c134ce6c46afc9530dcc1677f",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Reflection.Emit.dll",
+      "relativePath": "current\\System.Reflection.Emit.dll",
+      "bytes": 301360,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "26ef0bd104cf198b95687ad01a8e6d98e17b922bc9c3c7e3fe96c33a6b3c0828",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Reflection.Emit.ILGeneration.dll",
+      "relativePath": "current\\System.Reflection.Emit.ILGeneration.dll",
+      "bytes": 16144,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "62b93ce9040c3fd2fa1fc95a2cf4367d6487d5ad41b0b7a9a6dcb6a1dd3721e6",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Reflection.Emit.Lightweight.dll",
+      "relativePath": "current\\System.Reflection.Emit.Lightweight.dll",
+      "bytes": 16168,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "916236b8be45456c2cda012c9b54bba8435bfda74c5af0a16b1eda03e434401b",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Reflection.Extensions.dll",
+      "relativePath": "current\\System.Reflection.Extensions.dll",
+      "bytes": 15656,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "879ba13919b3bcae6fbd42fbc4edf9791b85f1632a3201ac474fe8ae58b6e9b0",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Reflection.Metadata.dll",
+      "relativePath": "current\\System.Reflection.Metadata.dll",
+      "bytes": 1173800,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "dc2e2bbf29bd9f8c41542b6a128b0620d0919e53b68bc928315112ab70bb45a7",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Reflection.Primitives.dll",
+      "relativePath": "current\\System.Reflection.Primitives.dll",
+      "bytes": 16160,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "d8c5a095415f5ff6542720b79d44e978ab6049917e2a92aed57ca4f473611318",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Reflection.TypeExtensions.dll",
+      "relativePath": "current\\System.Reflection.TypeExtensions.dll",
+      "bytes": 43296,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "fb868acc2220de8aec5506cf1059fa9b6d387e5667f5f0a71e703b9ec0a0af8c",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Resources.Reader.dll",
+      "relativePath": "current\\System.Resources.Reader.dll",
+      "bytes": 15664,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "6962254e62a757db83ff1e9d45b560d656f5317fcea9e5d1c6d936814f1078b3",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Resources.ResourceManager.dll",
+      "relativePath": "current\\System.Resources.ResourceManager.dll",
+      "bytes": 16184,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "ab4a81ad9e90f850f88b660ba08a789820d44219126cb163d102bae58bd96cdd",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Resources.Writer.dll",
+      "relativePath": "current\\System.Resources.Writer.dll",
+      "bytes": 51496,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "19de6b9f39a5ffec51a39d16edd7f178150d1d88153862265a0d4787468514d0",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.CompilerServices.Unsafe.dll",
+      "relativePath": "current\\System.Runtime.CompilerServices.Unsafe.dll",
+      "bytes": 15632,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "4305a737ad2a25be6857722e3a08adbe76291ea934c3d50c9e0f8ea56747b18a",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.CompilerServices.VisualC.dll",
+      "relativePath": "current\\System.Runtime.CompilerServices.VisualC.dll",
+      "bytes": 31024,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "fb28a4e393a31d5e2d485f7d965343dd83f230b868ffaa546d88b590b933d16a",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.dll",
+      "relativePath": "current\\System.Runtime.dll",
+      "bytes": 44816,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "ee988b9650e41d3bcc1a51afbe692c726a85198e4f0413afb2cc15e89b593ff6",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.Extensions.dll",
+      "relativePath": "current\\System.Runtime.Extensions.dll",
+      "bytes": 18232,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "205a35a9835bf25179ff3a1a5298ae5a21332544a50dfabbdca100f16c8861e4",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.Handles.dll",
+      "relativePath": "current\\System.Runtime.Handles.dll",
+      "bytes": 15624,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "462d0dbf5c66c1c7882d690c5afd7f9fb34d6285e1eb386e0c225140c6384f32",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.InteropServices.dll",
+      "relativePath": "current\\System.Runtime.InteropServices.dll",
+      "bytes": 112936,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "32f3fea2a41b4d57b592a373824bac90160b7229947b4a594a7bebb8cca8e7e5",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.InteropServices.JavaScript.dll",
+      "relativePath": "current\\System.Runtime.InteropServices.JavaScript.dll",
+      "bytes": 51504,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "14dad5550db073627746e1b5145d98b537a9b2648816af286f837ab1257bda43",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.InteropServices.RuntimeInformation.dll",
+      "relativePath": "current\\System.Runtime.InteropServices.RuntimeInformation.dll",
+      "bytes": 15656,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "1c64dd6fcab7741ade0347e7d7da3a0267ebd84aaa265af976129ea636ba646b",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.Intrinsics.dll",
+      "relativePath": "current\\System.Runtime.Intrinsics.dll",
+      "bytes": 17720,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "743d71f5d8b9ee98abcc32261e82270459d1429da75b57e68d0fc469b2fe6dcd",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.Loader.dll",
+      "relativePath": "current\\System.Runtime.Loader.dll",
+      "bytes": 16176,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "ed879ed4fc6ad01f622894e162c2d1db1d7e90e614fdd097b42dc3740b423e2c",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.Numerics.dll",
+      "relativePath": "current\\System.Runtime.Numerics.dll",
+      "bytes": 354608,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "72c08d8a504a38b214075b0976336de093be3dc54048b6b1043039802fbf64ea",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.Serialization.dll",
+      "relativePath": "current\\System.Runtime.Serialization.dll",
+      "bytes": 17160,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "a6f5dc2df099c41f27bf2300aef3652fc60460717cfeea00e133c97acd008762",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.Serialization.Formatters.dll",
+      "relativePath": "current\\System.Runtime.Serialization.Formatters.dll",
+      "bytes": 125224,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "5bd5425de4301982be7e91172623533baeea32959747403840de21e8b76c12aa",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.Serialization.Json.dll",
+      "relativePath": "current\\System.Runtime.Serialization.Json.dll",
+      "bytes": 16136,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "00dc0a24c6dc53cfa642d7051d55fd5dd6cbc3cd9561da8553b2019cbea31cb5",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.Serialization.Primitives.dll",
+      "relativePath": "current\\System.Runtime.Serialization.Primitives.dll",
+      "bytes": 39208,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "a899b6fca05222da45f0b5a06f47a427979492095934f5467de62d326c1e4dc7",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.Serialization.Xml.dll",
+      "relativePath": "current\\System.Runtime.Serialization.Xml.dll",
+      "bytes": 17192,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "5a492b1a1ff913bf8dc0d2f72990703b2604710cd0f05e83205418a8cf0be82d",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.AccessControl.dll",
+      "relativePath": "current\\System.Security.AccessControl.dll",
+      "bytes": 231696,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "fa36d3c8465125a0feb4fa991c8eefaa3064f10aedbdaddb6fe82f37b11055e0",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Claims.dll",
+      "relativePath": "current\\System.Security.Claims.dll",
+      "bytes": 100648,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "691cae194932f5b327f1437843e22ff512b0e5b8335c92354c8aed412f034155",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Cryptography.Algorithms.dll",
+      "relativePath": "current\\System.Security.Cryptography.Algorithms.dll",
+      "bytes": 17680,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "8e2f8ff7b1b50c9b26812b8277c46da37661477901cbc95d25a20932931743f9",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Cryptography.Cng.dll",
+      "relativePath": "current\\System.Security.Cryptography.Cng.dll",
+      "bytes": 16672,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "ab99c41775145163e88f678dba259fc26d276bbf4775bbd3c7f4e775dce9f472",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Cryptography.Csp.dll",
+      "relativePath": "current\\System.Security.Cryptography.Csp.dll",
+      "bytes": 16144,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "531cbcb53324bea7eeb9d6c59150e32d35f4af1a3c11acdcffae397113515c97",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Cryptography.dll",
+      "relativePath": "current\\System.Security.Cryptography.dll",
+      "bytes": 2128176,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "9b316e126092c8ab4011ff522e215e02327816cde1b32597ffceccb635882325",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Cryptography.Encoding.dll",
+      "relativePath": "current\\System.Security.Cryptography.Encoding.dll",
+      "bytes": 16144,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "425dfc8f0f409956b06e6f8b1c749f2aa0dee4c29b2341b26688feee87fcb3f1",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Cryptography.OpenSsl.dll",
+      "relativePath": "current\\System.Security.Cryptography.OpenSsl.dll",
+      "bytes": 15656,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "3f77220cfcb2067924f50bc82e98fa4d7c00c3c2f32d95f3f2a608597e88468e",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Cryptography.Primitives.dll",
+      "relativePath": "current\\System.Security.Cryptography.Primitives.dll",
+      "bytes": 16144,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "db0b41ff3b6166e0122214ca9836755bce253c04b64a121bfc7b520948e472bf",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Cryptography.X509Certificates.dll",
+      "relativePath": "current\\System.Security.Cryptography.X509Certificates.dll",
+      "bytes": 17168,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "08241376c1da2b303bc0db9eb4bce56e1ef7ef593d75cba11add84eb6622dda4",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.dll",
+      "relativePath": "current\\System.Security.dll",
+      "bytes": 18704,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "11d55d099c95d85bbdfab938e1fa63cfb29940d1c5a3e7bea135379dae831dc4",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Permissions.dll",
+      "relativePath": "current\\System.Security.Permissions.dll",
+      "bytes": 117520,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "7ed7a3d4a82501211165957dbb75e13b55b82f1a3b730ab242d9417b2401b2d5",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Principal.dll",
+      "relativePath": "current\\System.Security.Principal.dll",
+      "bytes": 15632,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "048045dad2019e421657871e191e13cd9ed3dd48cddfae9c36ec690b13ce8f82",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Principal.Windows.dll",
+      "relativePath": "current\\System.Security.Principal.Windows.dll",
+      "bytes": 186664,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "5d907b693f0aaee378c2f132a7a78dddd415325f732619883d728058e669fa68",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.SecureString.dll",
+      "relativePath": "current\\System.Security.SecureString.dll",
+      "bytes": 15664,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "a156e7c3d80d3d7251eef1de03b7625a2486116931f8f4d5775013dc44eef948",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.ServiceModel.Web.dll",
+      "relativePath": "current\\System.ServiceModel.Web.dll",
+      "bytes": 17160,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "93bef1b84cdce689405507dca969ac632ef512310dcd5e3a07d6af5b04ed1a65",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.ServiceProcess.dll",
+      "relativePath": "current\\System.ServiceProcess.dll",
+      "bytes": 16176,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "6e77083e4aa88a430eeded18915059b3a23afc7199e99296b1c4cd63843b12b8",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Text.Encoding.CodePages.dll",
+      "relativePath": "current\\System.Text.Encoding.CodePages.dll",
+      "bytes": 862480,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "a07c6aa6eddfac36701869a033395994514a66c8601c092fd925b60efc3b6818",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Text.Encoding.dll",
+      "relativePath": "current\\System.Text.Encoding.dll",
+      "bytes": 16176,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "4628bc458f71632856922efa85ab7931b61e9dad8140d67a18a4c9aaab3b45c3",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Text.Encoding.Extensions.dll",
+      "relativePath": "current\\System.Text.Encoding.Extensions.dll",
+      "bytes": 16144,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "21d592707b1f5520d8218da1699e6fcbacf90f8d1e54dc6b5ad0dc8bcbe488e4",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Text.Encodings.Web.dll",
+      "relativePath": "current\\System.Text.Encodings.Web.dll",
+      "bytes": 133392,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "6861630b7f5fd268bb47d62402c997c9a5885dba8e57358a1751b2e9a2a79e2d",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Text.Json.dll",
+      "relativePath": "current\\System.Text.Json.dll",
+      "bytes": 1796408,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "4708c1358afe306b4d40f13646b6afb1277b11d0f582bb09532189c9311b01a1",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Text.RegularExpressions.dll",
+      "relativePath": "current\\System.Text.RegularExpressions.dll",
+      "bytes": 1022248,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "b55f694934e5e04c51b3ae601c5d968e17a4f88f7dcb788c4180b2d0d5a1365e",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Threading.Channels.dll",
+      "relativePath": "current\\System.Threading.Channels.dll",
+      "bytes": 141608,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "dc2ecf6283abf0389399a653bb2ce31689f4b3e0166633f3ee213215adfd5d43",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Threading.dll",
+      "relativePath": "current\\System.Threading.dll",
+      "bytes": 84280,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "5968714e9981bd67a04230c3d082620e87e7384994f92facef0a3ca30bbc56fb",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Threading.Overlapped.dll",
+      "relativePath": "current\\System.Threading.Overlapped.dll",
+      "bytes": 16184,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "487bf36e50d5e993cb4fd6aaad0cc85dfa3b01b74c6edb400b0a20a1dc032467",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Threading.Tasks.Dataflow.dll",
+      "relativePath": "current\\System.Threading.Tasks.Dataflow.dll",
+      "bytes": 493840,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "d12b1656863c9ec1b1d3e25af627d0ca218fa3efc45563e45b74c75e0971232a",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Threading.Tasks.dll",
+      "relativePath": "current\\System.Threading.Tasks.dll",
+      "bytes": 17200,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "f354c33a60ca9dee00dffa1b9865a99d45234a6b615d63850644117c33884ff4",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Threading.Tasks.Extensions.dll",
+      "relativePath": "current\\System.Threading.Tasks.Extensions.dll",
+      "bytes": 16176,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "00aef588af213f11b62275650eb3c0d22cce3ee03099288abe0e915576d20e9e",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Threading.Tasks.Parallel.dll",
+      "relativePath": "current\\System.Threading.Tasks.Parallel.dll",
+      "bytes": 133408,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "a0169d10c9760357f8c7315bbf61a0442aa0bbb391cac5fb21974076bcfc2d1d",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Threading.Thread.dll",
+      "relativePath": "current\\System.Threading.Thread.dll",
+      "bytes": 16168,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "11c0fae6fdb731b0a76b7ca983fbc2fdc664f546ac6503e99275a0c089a7b44e",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Threading.ThreadPool.dll",
+      "relativePath": "current\\System.Threading.ThreadPool.dll",
+      "bytes": 16176,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "7d6f018cdbfe517be8aabfe5679038eb31ab2c03af68ca6d93095874b0ea077b",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Threading.Timer.dll",
+      "relativePath": "current\\System.Threading.Timer.dll",
+      "bytes": 15632,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "c2daa90e26cf4f91bd38b1af9141f587538ae34e48b5ce593de87468d3e1504b",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Transactions.dll",
+      "relativePath": "current\\System.Transactions.dll",
+      "bytes": 16688,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "93571b496ba152b475d859b2494c095981480ae167412d1d5a4a39c555aafd90",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Transactions.Local.dll",
+      "relativePath": "current\\System.Transactions.Local.dll",
+      "bytes": 653584,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "0aa8e601690611ca25e103f50db7b2bbe5e506613ae131337f0af495369fd7a6",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.ValueTuple.dll",
+      "relativePath": "current\\System.ValueTuple.dll",
+      "bytes": 15656,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "a54325d3f252d65c560d8b04a62f071d69852cf446789fdc69f3297d381d23a1",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Web.dll",
+      "relativePath": "current\\System.Web.dll",
+      "bytes": 15624,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "8959eea37c8a286609b9862a5a93f810b00613668ecc4790f5a407067f200801",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Web.HttpUtility.dll",
+      "relativePath": "current\\System.Web.HttpUtility.dll",
+      "bytes": 63792,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "056128d37a944f5be096531771232e16bb48c5eabe522b5d93388f6dc8c99060",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Windows.dll",
+      "relativePath": "current\\System.Windows.dll",
+      "bytes": 16176,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "608969c896a57375be3394a5dcabf387fd039663e178bfbf80da7b13fbf0d946",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Windows.Extensions.dll",
+      "relativePath": "current\\System.Windows.Extensions.dll",
+      "bytes": 75536,
+      "fileVersion": "9.0.925.41916",
+      "sha256": "33b64dd097765500616ea3fd14cac3dd814a9a87c96002a057aa4d8ee4e83728",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Xml.dll",
+      "relativePath": "current\\System.Xml.dll",
+      "bytes": 23816,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "8be7d0d8cfe9cd0ffe36ceb39429f7c75a098a8a844cb90f58f7a942d6ce264c",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Xml.Linq.dll",
+      "relativePath": "current\\System.Xml.Linq.dll",
+      "bytes": 16144,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "36ba7808412d71a25a7565179ef970b917a077c558b4f6e3c93ddd3c5893a3a9",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Xml.ReaderWriter.dll",
+      "relativePath": "current\\System.Xml.ReaderWriter.dll",
+      "bytes": 22280,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "cc6028116825a6838a488ff077e066d4ab7da880bbe5db88031b034152ba62c7",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Xml.Serialization.dll",
+      "relativePath": "current\\System.Xml.Serialization.dll",
+      "bytes": 16656,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "b06765ef74f67254c41e7ebbd0ae8fe1b7d9dca9d8d6e3dfc3d459310167fb49",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Xml.XDocument.dll",
+      "relativePath": "current\\System.Xml.XDocument.dll",
+      "bytes": 16144,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "d2fd5caf84079510ccdeefa58351afd91a25793b15b2b1de33caa794617778b4",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Xml.XmlDocument.dll",
+      "relativePath": "current\\System.Xml.XmlDocument.dll",
+      "bytes": 16168,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "134154b97c5d37b444138a01b60cf2259dae96fff3c48593545cc668a3a9e0a0",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Xml.XmlSerializer.dll",
+      "relativePath": "current\\System.Xml.XmlSerializer.dll",
+      "bytes": 18192,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "84f58497581f6ad263d3be0c527a487b3d55439c752fbac601cd2497d1fedf09",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Xml.XPath.dll",
+      "relativePath": "current\\System.Xml.XPath.dll",
+      "bytes": 16176,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "b223606111581e4800554c07f18f9722b879f38ecf7f13340d6862a29a6f33e5",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Xml.XPath.XDocument.dll",
+      "relativePath": "current\\System.Xml.XPath.XDocument.dll",
+      "bytes": 30992,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "04f7ce12b94df167952c6aa13b562da63ac03af4b60f5693c1f2b3a705f9f483",
+      "machine": "Amd64",
+      "hasCliMetadata": true,
+      "corFlags": "ILLibrary, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\TestableIO.System.IO.Abstractions.dll",
+      "relativePath": "current\\TestableIO.System.IO.Abstractions.dll",
+      "bytes": 20960,
+      "fileVersion": "22.0.16.0",
+      "sha256": "a1100ea7b56d4a080e922d56b905e779f2a4ea9339043343ffb504435703e956",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\TestableIO.System.IO.Abstractions.Wrappers.dll",
+      "relativePath": "current\\TestableIO.System.IO.Abstractions.Wrappers.dll",
+      "bytes": 69600,
+      "fileVersion": "22.0.16.0",
+      "sha256": "4dcaecf25e9620ecd5d2f89edfb7160a71b08fb267666fe46bcad0b910dbd7fe",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Testably.Abstractions.FileSystem.Interface.dll",
+      "relativePath": "current\\Testably.Abstractions.FileSystem.Interface.dll",
+      "bytes": 42976,
+      "fileVersion": "9.0.0.0",
+      "sha256": "5947a68aa47b5a34046d755cb8def23b994226affa9711cc36a56958b8cb7358",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\ThemeEditor.Controls.ColorPicker.dll",
+      "relativePath": "current\\ThemeEditor.Controls.ColorPicker.dll",
+      "bytes": 93664,
+      "fileVersion": "11.3.0.0",
+      "sha256": "254222d47186617d7a041e22cf85f2514dc2c9eb0c28661ee230225be6dd8baa",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Tmds.DBus.Protocol.dll",
+      "relativePath": "current\\Tmds.DBus.Protocol.dll",
+      "bytes": 215520,
+      "fileVersion": "0.21.2.0",
+      "sha256": "768e698c324c2d73953cf53ed3b24ea3f9e524e108ce85cab70b9cc9b166689d",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Velopack.dll",
+      "relativePath": "current\\Velopack.dll",
+      "bytes": 289760,
+      "fileVersion": "0.0.1298.60806",
+      "sha256": "3769103bda3fbb70f9fc6f933ffb98a7a7a80a6baa277e0f242c300925e11f87",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\WindowsBase.dll",
+      "relativePath": "current\\WindowsBase.dll",
+      "bytes": 16680,
+      "fileVersion": "9.0.1125.51716",
+      "sha256": "7a41b603fd44a6574883d404787761c4cbb848ca8d8b0f27a486548fff7a02f3",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\ZstdSharp.dll",
+      "relativePath": "current\\ZstdSharp.dll",
+      "bytes": 411104,
+      "fileVersion": "0.8.6.0",
+      "sha256": "cae8212805e054c7564f948de75d999d4a51a88dc4fa8e405389d99eca020c96",
+      "machine": "I386",
+      "hasCliMetadata": true,
+      "corFlags": "ILOnly, StrongNameSigned"
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Assets\\Facepack\\ngRegens.json",
+      "relativePath": "current\\Assets\\Facepack\\ngRegens.json",
+      "bytes": 95970,
+      "fileVersion": null,
+      "sha256": "78ebfe6e5ec82c8dde7c45d1bd692cd53553f63ad26ceda26d5704984eed5608",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\106708.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\106708.json",
+      "bytes": 2470,
+      "fileVersion": null,
+      "sha256": "f45b0e9ad84cfe5fd0264f7f7702bcec1b8f9f7ff8f336d7554f71d649cc54e2",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\108251.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\108251.json",
+      "bytes": 2472,
+      "fileVersion": null,
+      "sha256": "70ac6a93425b0a8cf368c777cf6a3fddaff55ee329006c14146ed05688b1b8b4",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\126256.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\126256.json",
+      "bytes": 2469,
+      "fileVersion": null,
+      "sha256": "831bedd9980d236f663aeadd70d8ba2ff585ac95eaca952f7327fcad7cf32a71",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\127973.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\127973.json",
+      "bytes": 2471,
+      "fileVersion": null,
+      "sha256": "9599191d3bee088cb7c8326f07578e42e2e0efb7d163c919c26743bf3bfb463d",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\134468.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\134468.json",
+      "bytes": 2469,
+      "fileVersion": null,
+      "sha256": "401962838b067098a0a0df2b7b69d00691bec70b81146b39b82249f299e63f8a",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\14147806.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\14147806.json",
+      "bytes": 2471,
+      "fileVersion": null,
+      "sha256": "046561428f59a46b973bfc77283743a1525994166e19ed4fdbd54c62ff6f05ca",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\15064513.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\15064513.json",
+      "bytes": 2460,
+      "fileVersion": null,
+      "sha256": "0e1a242ee54a636564fa10c1c0d83000221d10dc9649b712eeded351d78f3b50",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\15085675.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\15085675.json",
+      "bytes": 2454,
+      "fileVersion": null,
+      "sha256": "62f31ea98dfe08009ae3a3bbb2e0cc6eae12cfdd35ed189c97559c5452828418",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000048907.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000048907.json",
+      "bytes": 2463,
+      "fileVersion": null,
+      "sha256": "d3975cc03b607c4cabed748ca5078ec74d9386645f153ff43db9a8f8aaef2062",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000059537.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000059537.json",
+      "bytes": 2469,
+      "fileVersion": null,
+      "sha256": "ea433e79d20c59b7ac1f7f471aeaeaabeba1201b185d796b73aad5e547b469a1",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000059789.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000059789.json",
+      "bytes": 2462,
+      "fileVersion": null,
+      "sha256": "4f85d1b7e2eb1d084df7cf522f06a5123c9e0046e4de977be6cb8d31aedb58c9",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000063018.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000063018.json",
+      "bytes": 2461,
+      "fileVersion": null,
+      "sha256": "a1f996bd15cbb05ef0a34477553c87722dffe06711aab2279c457a5da571c970",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000141139.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000141139.json",
+      "bytes": 2461,
+      "fileVersion": null,
+      "sha256": "7657c1b96c3c90fe130dc4b1f98fabf172e8eb6d8cb1418dfdc55c222769f757",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000145059.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000145059.json",
+      "bytes": 2470,
+      "fileVersion": null,
+      "sha256": "c75159b978d1c3f63cbd2c9e34429a6ecdbe2ec418dd33e31f983051efb66327",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000163942.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000163942.json",
+      "bytes": 2462,
+      "fileVersion": null,
+      "sha256": "514783412c4fc545d88d27d8b6eb6f4512d764973df3dcdeab2c252eab8d167d",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000165965.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000165965.json",
+      "bytes": 2460,
+      "fileVersion": null,
+      "sha256": "e2e8a8041dac13cdffb3c93309fc0b6d751fd112a01c7546d15af887daaac937",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000231150.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000231150.json",
+      "bytes": 2461,
+      "fileVersion": null,
+      "sha256": "cc26d842c8ba26e9be89315ae21df3f48de94f06386e29b440e0d40a686664f9",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000276185.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000276185.json",
+      "bytes": 2464,
+      "fileVersion": null,
+      "sha256": "f57f385cdb9cafd072cf8594d34a3b700a1b1e27bca1afe416df387ee2feb816",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000278197.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000278197.json",
+      "bytes": 2470,
+      "fileVersion": null,
+      "sha256": "878d2789393d5bc0954978af364236877012ad9db981ba8b0a30188813873a39",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000298606.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000298606.json",
+      "bytes": 2462,
+      "fileVersion": null,
+      "sha256": "311b3c4a6f5bdbeae089e959f0ef37d598d09587bf50baa0465feef1b532efc9",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000298640.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000298640.json",
+      "bytes": 2462,
+      "fileVersion": null,
+      "sha256": "54989609878446f9e8daf1910aadd018c80c6d3df70432941e3c63e189e1c1fb",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000300943.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000300943.json",
+      "bytes": 2460,
+      "fileVersion": null,
+      "sha256": "40b907d1c54dfe812e9c97de342a6e628729b16daa530668a8656a4d89925e5e",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000303912.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000303912.json",
+      "bytes": 2461,
+      "fileVersion": null,
+      "sha256": "d8dc5b0aaeaef20949c54645f59147c3e84c5a29852aa5cf3c6536eded737bac",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000336892.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000336892.json",
+      "bytes": 2462,
+      "fileVersion": null,
+      "sha256": "0698f714d29fbc66432f5eed181316685cd37eba52831cb3a763e6b711864f6f",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000337087.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000337087.json",
+      "bytes": 2459,
+      "fileVersion": null,
+      "sha256": "2cf552eed48b5dc849b2bae7881fb2f02da7627a750eff602990d77460a874ba",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000337151.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000337151.json",
+      "bytes": 2460,
+      "fileVersion": null,
+      "sha256": "bc4c1b77f8741eff96936a53346f4375ce1cf07c4e9c9ca58ebf1c8896941711",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000404517.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000404517.json",
+      "bytes": 2470,
+      "fileVersion": null,
+      "sha256": "86e564d86d4c6cd07ee7d46ad2207baf62ad86b92320ca74f6a6ea4fbbbfe07d",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000412830.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000412830.json",
+      "bytes": 2473,
+      "fileVersion": null,
+      "sha256": "089b11f75f0b66c92cbef692d620bde360bf0b3839eecf461bace6406de3a912",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000503058.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000503058.json",
+      "bytes": 2472,
+      "fileVersion": null,
+      "sha256": "4663baed49847fe12c3f020af192f7e4a4e79549ec61e6a4690d6903d8e60ed4",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000503204.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000503204.json",
+      "bytes": 2460,
+      "fileVersion": null,
+      "sha256": "a04305c16a6b4de1896252ab0b6d8ee1f14f38e0a94bcf6f89e8f55fb2d71171",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000507447.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000507447.json",
+      "bytes": 2459,
+      "fileVersion": null,
+      "sha256": "7eb3f593ec951b39ccdf22f8b90bf0aa41b9b1e415f4a6b14377eb9e9f471e02",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000507454.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000507454.json",
+      "bytes": 2461,
+      "fileVersion": null,
+      "sha256": "3c7d308236f2c668d17a0521cdb5e561ed187209967c5f8031d371e992a64adf",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000531511.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2000531511.json",
+      "bytes": 2459,
+      "fileVersion": null,
+      "sha256": "1c6adfbefe476a9c629311984947bccd828cf73f2f988ed85e7b179f38bdea30",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2002080734.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2002080734.json",
+      "bytes": 2477,
+      "fileVersion": null,
+      "sha256": "ffc667c39583ce334b05ec772a602ef369f1c28823ac7380a0664a9099cd12da",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2003768.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2003768.json",
+      "bytes": 2467,
+      "fileVersion": null,
+      "sha256": "3ee4ac44c46dfe261435ea77591319dea40141dca9a6a75dd83a186ed71a7676",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2004750.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2004750.json",
+      "bytes": 2471,
+      "fileVersion": null,
+      "sha256": "b47aad2bfce6a347b9a027afcfcda5bdaac6d0fda4ef134d5dd67941fc905a8e",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2005930.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2005930.json",
+      "bytes": 2469,
+      "fileVersion": null,
+      "sha256": "8db1530d883c50296e961fdc1954d28ab27c09979f8339bbe6cf7989790f25e6",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2006027.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\2006027.json",
+      "bytes": 2467,
+      "fileVersion": null,
+      "sha256": "928f505faa2679cd974b3dea64b37b515a5930b07cffc85ae61db02a2317e6fa",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\211632.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\211632.json",
+      "bytes": 2462,
+      "fileVersion": null,
+      "sha256": "64e72242a01ea52c890324a867729062feb89569d69b7ac7a8d76c9099ab314f",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28002953.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\28002953.json",
+      "bytes": 2454,
+      "fileVersion": null,
+      "sha256": "3077fd82ab5a34cfc5c421f4aa4f48574085a3d0613b5f07a5faa249f92e93e5",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28002954.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\28002954.json",
+      "bytes": 2458,
+      "fileVersion": null,
+      "sha256": "05dc2307956b47dfe8550f95ea3b880771020e4e0e8f6b066d81075955360172",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28002955.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\28002955.json",
+      "bytes": 2457,
+      "fileVersion": null,
+      "sha256": "6cb8239938dffdd48bdc175995555bb27f23cdd3043a29ad8e1c968a862eb270",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28002956.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\28002956.json",
+      "bytes": 2458,
+      "fileVersion": null,
+      "sha256": "1bdaf69030c92c6745e83968ccefbe799b06247fd3542dd1100cf03165104468",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28070762.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\28070762.json",
+      "bytes": 2459,
+      "fileVersion": null,
+      "sha256": "e8c23749d261f7c88b1d4963e752a1660a0fb1791e21605ac01bf3f746efbc56",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28070763.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\28070763.json",
+      "bytes": 2470,
+      "fileVersion": null,
+      "sha256": "81464afe5021ebfd2c79b56a0516694677785edfc6caea616e4c545d12fc6f82",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28111315.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\28111315.json",
+      "bytes": 2457,
+      "fileVersion": null,
+      "sha256": "4da92c90ca3355726cb7ac3e0003b41ee57ec13be578e07270f18a184b99a5ed",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28111434.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\28111434.json",
+      "bytes": 2457,
+      "fileVersion": null,
+      "sha256": "6a95ad4e4bc8748a6faa5cb6dcc0f8e18f8f0358288910f9dc3aeba603ca0008",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28111497.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\28111497.json",
+      "bytes": 2455,
+      "fileVersion": null,
+      "sha256": "a8b63fe271cc3b7abd97fc4fc3bd737f67a63c704039fc13fe5975f437a86e46",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28111732.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\28111732.json",
+      "bytes": 2457,
+      "fileVersion": null,
+      "sha256": "6ba5bc5144357cee59cff5c0f81054755e603018d323834bb2fa3ede81d6a684",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28111833.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\28111833.json",
+      "bytes": 2461,
+      "fileVersion": null,
+      "sha256": "3a669b5959f88500a9ccaee0f376749a51911edd50016460485a853114b36b6c",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28116564.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\28116564.json",
+      "bytes": 2459,
+      "fileVersion": null,
+      "sha256": "9502805edf9b6227932ed7430b3ebd4d1397185d1b7701991c7adcc9e3f475b9",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28118097.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\28118097.json",
+      "bytes": 2458,
+      "fileVersion": null,
+      "sha256": "6ce1989a8bac3ef1ca9877d30ebf55fdf9c13bef9ff231fea7124a6436bcb3ec",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28118099.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\28118099.json",
+      "bytes": 2456,
+      "fileVersion": null,
+      "sha256": "3c2cfb352654429a02ddcfa1cdba30a0f08b6e09b42a5d9f47a676b903823639",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28118100.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\28118100.json",
+      "bytes": 2459,
+      "fileVersion": null,
+      "sha256": "2b5bf696aa939e2652825b633c13a6b41f3b302ee0730f06f8e8ed593a965a92",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28121576.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\28121576.json",
+      "bytes": 2468,
+      "fileVersion": null,
+      "sha256": "d555de5db071f2903528da38181198d6cedb0cc5b529998dae8e668850ec45f3",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28123186.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\28123186.json",
+      "bytes": 2463,
+      "fileVersion": null,
+      "sha256": "39a22fa2b523116996f98736a3a074dc30bb2a4ff74047f7404b1ce511e798d8",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29006725.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\29006725.json",
+      "bytes": 2468,
+      "fileVersion": null,
+      "sha256": "cd708925d848761b1da5563cdf42440609800a7f29f728e6413c56221ce24026",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29084509.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\29084509.json",
+      "bytes": 2457,
+      "fileVersion": null,
+      "sha256": "2fa6940cd5229abe6693b213774da0c669e9d812cff0bea979beb63348b5bdbe",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29114731.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\29114731.json",
+      "bytes": 2460,
+      "fileVersion": null,
+      "sha256": "ff38673229d3394707e1a5b711503bfbaa9955cb5ce1c8d702349f331f24a9e5",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29150859.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\29150859.json",
+      "bytes": 2456,
+      "fileVersion": null,
+      "sha256": "f44ab066afc1819c9a8cc3ebed25ed7f844132b5574909108ba9f5302ccf0796",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29153231.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\29153231.json",
+      "bytes": 2467,
+      "fileVersion": null,
+      "sha256": "bd7af4ec57b7dcce22db017c9088ef41bca05995600eb254049638d0ef699227",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29171733.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\29171733.json",
+      "bytes": 2463,
+      "fileVersion": null,
+      "sha256": "2342537eed836769bba33ae9b2a34cae4fa657f8d5c370c0bbede9da013107e9",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29173653.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\29173653.json",
+      "bytes": 2461,
+      "fileVersion": null,
+      "sha256": "141d23ce120d4012739f4295e0d9221bd0f0646996e5879c8fba258025a0a18e",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29176253.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\29176253.json",
+      "bytes": 2459,
+      "fileVersion": null,
+      "sha256": "db688366378551026bf9019e774c2e07a6f3592424436fe691eb80f5683b17be",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29181206.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\29181206.json",
+      "bytes": 2465,
+      "fileVersion": null,
+      "sha256": "c5141cd42fe41b626fad42b07a6855444a6136e89ab8c60eea1093f991a8d211",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29195336.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\29195336.json",
+      "bytes": 2473,
+      "fileVersion": null,
+      "sha256": "1921db7511aa83c094c5cf7b5e61dc4b14371b29faa51b00e3800f3a9e18c922",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29222566.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\29222566.json",
+      "bytes": 2472,
+      "fileVersion": null,
+      "sha256": "3deecd803a22a3c194a6fdabaf987b8395cad6d7993cfcf254e1ce179455435e",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29223102.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\29223102.json",
+      "bytes": 2464,
+      "fileVersion": null,
+      "sha256": "e9e29f358898226f75561ea0ab10e15901b855a05d7adbde9e3d38c938efd47b",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29226562.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\29226562.json",
+      "bytes": 2457,
+      "fileVersion": null,
+      "sha256": "f8f7002cf1da68194f9f221108115758cc26d08c3994f4695e2134947bb389c0",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29241239.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\29241239.json",
+      "bytes": 2458,
+      "fileVersion": null,
+      "sha256": "58a20b8d468c85004e36fb6b65bef6b70d4852781762711c32a3e74bfb3926f2",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29244717.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\29244717.json",
+      "bytes": 2461,
+      "fileVersion": null,
+      "sha256": "1a8616065e6e66bf084cf33e2bbd41143902c6349ede3492234dbe5469d17f5b",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\34005310.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\34005310.json",
+      "bytes": 2457,
+      "fileVersion": null,
+      "sha256": "3364dd073d652353b30e040cc8fe45535183daf2fab9e05bfe9ccd4999ae2a9c",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\3802677.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\3802677.json",
+      "bytes": 2454,
+      "fileVersion": null,
+      "sha256": "a793e63c93634757b65419a6e56ec20158dc9dbe4bcd9677a51a20b18a82ea68",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\4000828.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\4000828.json",
+      "bytes": 2467,
+      "fileVersion": null,
+      "sha256": "b668fd9178392652c495effa6fe160607bfebd8461baa57b2579b42fa6239518",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\4002130.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\4002130.json",
+      "bytes": 2461,
+      "fileVersion": null,
+      "sha256": "47062b0434dc70b7513234ae415dbe49c2e5d36d3e65267038331b6fa3a11b48",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\5005078.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\5005078.json",
+      "bytes": 2473,
+      "fileVersion": null,
+      "sha256": "0f1c2cb499613bc4da3dae286996c7793dd5634928222485050fa8bd4c4682f4",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\5112073.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\5112073.json",
+      "bytes": 2479,
+      "fileVersion": null,
+      "sha256": "59ace7a0ef883b4935fdc453d9ab7ed46d0dffa28ac24b5f1aee03648d629e6d",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\5118694.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\5118694.json",
+      "bytes": 2468,
+      "fileVersion": null,
+      "sha256": "d31129fc5a760392fa5afd2743875f641405f73bd2fd02cc9da587c990224f1f",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\5131430.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\5131430.json",
+      "bytes": 2454,
+      "fileVersion": null,
+      "sha256": "b0bcad5b35be78e3490f77278e4e48e72dc6a384856ee74b96cd7451b8684b96",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\5131431.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\5131431.json",
+      "bytes": 2456,
+      "fileVersion": null,
+      "sha256": "061ab014f5ab8b31fb7da81ba36651c2139bb95d5f9f731f730269c3c8a5d9ca",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\5131432.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\5131432.json",
+      "bytes": 2455,
+      "fileVersion": null,
+      "sha256": "48621c0a2e9dc10dc1f1922ba301079294ee0b10a15808c12c477152da64ff8c",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\61078172.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\61078172.json",
+      "bytes": 2458,
+      "fileVersion": null,
+      "sha256": "6d62c52b719964c1f951357fe17775cda48b48991656c52ea42303a4cd761fde",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\67041178.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\67041178.json",
+      "bytes": 2458,
+      "fileVersion": null,
+      "sha256": "ef9ad07f81e84aa220f1547cb2c823076f4d73a19f1d0655e0af978a6bf25b0f",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\83259144.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\83259144.json",
+      "bytes": 2457,
+      "fileVersion": null,
+      "sha256": "bf8cb35779e88a50f918122332fdcec2f7e3cc534f1104f2b4966d0008685813",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\89000479.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\89000479.json",
+      "bytes": 2470,
+      "fileVersion": null,
+      "sha256": "f0cd4720b802b2bcd7d1e19b66c79aec5ac5e08dca281e9738e9269aee041822",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\89069552.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\89069552.json",
+      "bytes": 2457,
+      "fileVersion": null,
+      "sha256": "d99f9df2817b92fd0db372cf1198cc8b40639961a01aac31d2f434fc9e2cf33f",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\92070530.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\92070530.json",
+      "bytes": 2471,
+      "fileVersion": null,
+      "sha256": "19181439360cb3bed2c9038ae250f1b7626c53cc73147d766ccc3b2c41ce2d15",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\93054676.json",
+      "relativePath": "Freezer\\8119225\\StaffMembers\\93054676.json",
+      "bytes": 2461,
+      "fileVersion": null,
+      "sha256": "1611f2f074d8d8eed974e9c2efe0e948b1fb321d56808476415ed2ca1228b21d",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Presets\\CreateHistoryPoint.json",
+      "relativePath": "Presets\\CreateHistoryPoint.json",
+      "bytes": 299,
+      "fileVersion": null,
+      "sha256": "8e8d0c4e4aa66d5803d71a6ead650493b493a28c058f04d88054b5d7215a0723",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Presets\\Destroy.json",
+      "relativePath": "Presets\\Destroy.json",
+      "bytes": 2057,
+      "fileVersion": null,
+      "sha256": "a8a06c975f77cdc694cc6325a67af136165b5866616895b7d83a59f422699b49",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Presets\\Heal.json",
+      "relativePath": "Presets\\Heal.json",
+      "bytes": 1274,
+      "fileVersion": null,
+      "sha256": "f130380644f34f5f18113c2e9a0494d41403fc0fafa64aa5d6c1b9623c6a2480",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Presets\\ImproveTeamCohesion.json",
+      "relativePath": "Presets\\ImproveTeamCohesion.json",
+      "bytes": 301,
+      "fileVersion": null,
+      "sha256": "6c214648d35c06986fae869b9012e99b53e17ad696f618672c4ecee36687343b",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Presets\\Inspire.json",
+      "relativePath": "Presets\\Inspire.json",
+      "bytes": 1786,
+      "fileVersion": null,
+      "sha256": "4468a25a0a71d48c0b42119f4bac341953a63f662035ef4a9ad8c1fe10d771e4",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Presets\\RegisterForUefa.json",
+      "relativePath": "Presets\\RegisterForUefa.json",
+      "bytes": 294,
+      "fileVersion": null,
+      "sha256": "046d51d88c08d0d867257bd0f153692e32969043a3faf0be87d9eda164bfb1c1",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Presets\\RemoveBans.json",
+      "relativePath": "Presets\\RemoveBans.json",
+      "bytes": 402,
+      "fileVersion": null,
+      "sha256": "6db397a57db8a61467ff1fc2cd997a4962c79d4efeb255e25b7856a622836dc8",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Presets\\RemoveIntWithdrawal.json",
+      "relativePath": "Presets\\RemoveIntWithdrawal.json",
+      "bytes": 311,
+      "fileVersion": null,
+      "sha256": "9ad0fd4439ecbf8fb19b776bdfe17f502c3f36ba0387e5fa06dd0b5769013bc3",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Presets\\STAFF_FULL_20.json",
+      "relativePath": "Presets\\STAFF_FULL_20.json",
+      "bytes": 16774,
+      "fileVersion": null,
+      "sha256": "a3f36e23476ca4849b93b398eb7ad14468217975f0d98084e696076aa790c3f0",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Presets\\TrainedAtCurrentClub.json",
+      "relativePath": "Presets\\TrainedAtCurrentClub.json",
+      "bytes": 303,
+      "fileVersion": null,
+      "sha256": "fd4fa843864f9e815830b0e432c0f4648c48ba260610ac776aabbce42ce8bd81",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Presets\\TrainedInCurrentNation.json",
+      "relativePath": "Presets\\TrainedInCurrentNation.json",
+      "bytes": 307,
+      "fileVersion": null,
+      "sha256": "af1c6106e49c3af2a5f0b898f4a6565bd2ac71cb890a489af2cc229db3534572",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Ratings\\positions.json",
+      "relativePath": "Ratings\\positions.json",
+      "bytes": 54958,
+      "fileVersion": null,
+      "sha256": "c1ee11733e8d76715a3d157f76e1742b8f4b6f2e22a11b9b54ada9891c7de675",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Ratings\\rca.json",
+      "relativePath": "Ratings\\rca.json",
+      "bytes": 41537,
+      "fileVersion": null,
+      "sha256": "a378c8e0be5e268dc7ed2a2b932ed9d478f135976c0bf45788f77294b63d4ffa",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Ratings\\rolesAndDuties.json",
+      "relativePath": "Ratings\\rolesAndDuties.json",
+      "bytes": 127578,
+      "fileVersion": null,
+      "sha256": "3652da78662d8f0da91e67a6d396f1b47ef6c76c306d20ec7cc2538c7f3fffbc",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Ratings\\wonderkidGenerator.json",
+      "relativePath": "Ratings\\wonderkidGenerator.json",
+      "bytes": 1804,
+      "fileVersion": null,
+      "sha256": "81a948d7513a8d64159b7555b8eef06a8daa1e0a5a5df171111ee84ebe03d263",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\3-4-1-2.json",
+      "relativePath": "Tactics\\3-4-1-2.json",
+      "bytes": 305,
+      "fileVersion": null,
+      "sha256": "c2c39bd4fff4800defdd2ddf1b43906f9a4d570fc010eb9cbec40e90974b14e7",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\3-4-2-1.json",
+      "relativePath": "Tactics\\3-4-2-1.json",
+      "bytes": 324,
+      "fileVersion": null,
+      "sha256": "a839e5d30dbf3c785b4f4567b61fa7636007d138ce3aac8b66ae344d0faa683e",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\3-4-3.json",
+      "relativePath": "Tactics\\3-4-3.json",
+      "bytes": 284,
+      "fileVersion": null,
+      "sha256": "82480d106112b9dbd10068295b094341e3e76104442c6076e5b981104d0e38f2",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\3-5-2 Defensive.json",
+      "relativePath": "Tactics\\3-5-2 Defensive.json",
+      "bytes": 300,
+      "fileVersion": null,
+      "sha256": "bbe3240b1fbdc686d45561986dfd9d11d1935bafb44d1bd6be0e3bed8efe8be2",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\3-5-2 Standard.json",
+      "relativePath": "Tactics\\3-5-2 Standard.json",
+      "bytes": 303,
+      "fileVersion": null,
+      "sha256": "780186f74a537e8c661345b3d4ebf9d57480346c910fc246fa59df28f6154cdd",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\3-6-1.json",
+      "relativePath": "Tactics\\3-6-1.json",
+      "bytes": 311,
+      "fileVersion": null,
+      "sha256": "03e21aae820ea0458923cab46ef7ba64788fd3ce4aaa6c691530ed2d7b38e844",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-1-2-3 DM WB.json",
+      "relativePath": "Tactics\\4-1-2-3 DM WB.json",
+      "bytes": 292,
+      "fileVersion": null,
+      "sha256": "b21081760795210bf3bdd92731dbc2d9fff2f7d17f673f45c7669e17cc2d467b",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-1-3-1-1.json",
+      "relativePath": "Tactics\\4-1-3-1-1.json",
+      "bytes": 317,
+      "fileVersion": null,
+      "sha256": "903c42b194bfad39ef8e23de9d47b8025603f7bd935879c0be09e1bacc9a4b29",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-1-3-2-Attack.json",
+      "relativePath": "Tactics\\4-1-3-2-Attack.json",
+      "bytes": 316,
+      "fileVersion": null,
+      "sha256": "ee8a6bf7fab94645b28e86bb0a83baabc5a8216f161e048b3b5dec6fa52a2908",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-2-3-1.json",
+      "relativePath": "Tactics\\4-2-3-1.json",
+      "bytes": 330,
+      "fileVersion": null,
+      "sha256": "7a969ba6ee81ed6abc5670bb2ed6bd49deb3757606e3f31b6797fe1730641d0c",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-3-2-1 Tree.json",
+      "relativePath": "Tactics\\4-3-2-1 Tree.json",
+      "bytes": 327,
+      "fileVersion": null,
+      "sha256": "31ed3d5336735bfc241c9d29627528d7a5b085c179beb0e55e393811f6044e8b",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-3-3 Attacking.json",
+      "relativePath": "Tactics\\4-3-3 Attacking.json",
+      "bytes": 292,
+      "fileVersion": null,
+      "sha256": "c0f00a83692d8018ad380d33c2a92c50ec700a6313f7beb9e06108f243148de6",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-3-3 Defensive.json",
+      "relativePath": "Tactics\\4-3-3 Defensive.json",
+      "bytes": 329,
+      "fileVersion": null,
+      "sha256": "04f6245387f1e5010da96560d885d6176409fd3aa6f4efca446249a50b620eb0",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-3-3 Standard.json",
+      "relativePath": "Tactics\\4-3-3 Standard.json",
+      "bytes": 326,
+      "fileVersion": null,
+      "sha256": "c8e314511b2cb4851ed9efe2c1feae069dc662a13e4626595b0f0acd3c38c84e",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-4-1-1.json",
+      "relativePath": "Tactics\\4-4-1-1.json",
+      "bytes": 308,
+      "fileVersion": null,
+      "sha256": "24b94ef80fe528da2eafdf55c4ae4e3039256ce0a67f1e4e23906e8200f9363f",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-4-2 Defensive.json",
+      "relativePath": "Tactics\\4-4-2 Defensive.json",
+      "bytes": 301,
+      "fileVersion": null,
+      "sha256": "2e840223d9f774c0e0c2aacab0cd860681e6c8882c517eea07937f2c412661ea",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-4-2 Diamond.json",
+      "relativePath": "Tactics\\4-4-2 Diamond.json",
+      "bytes": 311,
+      "fileVersion": null,
+      "sha256": "0a157bf2c1372791a9a394f73b4a20fca56f1b8a5bf1d3da47e1caac87b20134",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-4-2 Standard.json",
+      "relativePath": "Tactics\\4-4-2 Standard.json",
+      "bytes": 296,
+      "fileVersion": null,
+      "sha256": "28b6ca3ce1633e9c05ff8ba33b47f5824cc26107610393f4b231efbcf9baeeba",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-5-1.json",
+      "relativePath": "Tactics\\4-5-1.json",
+      "bytes": 297,
+      "fileVersion": null,
+      "sha256": "ff23a46fd00548e35f4823e2f11541be71aebb6424ec3708c1772fc50c875b6c",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\5-2-3 WB.json",
+      "relativePath": "Tactics\\5-2-3 WB.json",
+      "bytes": 283,
+      "fileVersion": null,
+      "sha256": "ccc92ed59190332860e4d1ddc944b62372a682c2432a56fcade5157fdd917142",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\5-3-2 Attacking.json",
+      "relativePath": "Tactics\\5-3-2 Attacking.json",
+      "bytes": 309,
+      "fileVersion": null,
+      "sha256": "2f8f7054654fc93c60a8ac919ff0312e1db1b947ae44fc8e41ecbc2a104bac51",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\5-3-2 Counter.json",
+      "relativePath": "Tactics\\5-3-2 Counter.json",
+      "bytes": 298,
+      "fileVersion": null,
+      "sha256": "8b5c99c709a22921057fccb565d293b7cbfe73470ccb70adaa6b5fcb9fc2c128",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\5-3-2 Standard.json",
+      "relativePath": "Tactics\\5-3-2 Standard.json",
+      "bytes": 299,
+      "fileVersion": null,
+      "sha256": "a4307c816eb2f236bb1e945ff9b793eeb9ab583aca184bcfa231b0126935e0e3",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\5-4-1 Attacking.json",
+      "relativePath": "Tactics\\5-4-1 Attacking.json",
+      "bytes": 323,
+      "fileVersion": null,
+      "sha256": "40e4c4e402a5eb97886d92653ddb4eadee7dae96a56e7200700e3ed1cc4e0005",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\5-4-1 Defensive.json",
+      "relativePath": "Tactics\\5-4-1 Defensive.json",
+      "bytes": 305,
+      "fileVersion": null,
+      "sha256": "73a4f1f8f75a4b276eb5e5b947ded419801f3e871670690b2624b70b7b2252aa",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    },
+    {
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\5-4-1 Standard.json",
+      "relativePath": "Tactics\\5-4-1 Standard.json",
+      "bytes": 304,
+      "fileVersion": null,
+      "sha256": "50757d7a74178b16436e357b7e852cb3d79adbc54964a8f17c307da1c6633d23",
+      "machine": null,
+      "hasCliMetadata": null,
+      "corFlags": null
+    }
+  ],
+  "assetCounts": [
+    {
+      "Name": ".betaId",
+      "Count": 1
+    },
+    {
+      "Name": ".dat",
+      "Count": 1
+    },
+    {
+      "Name": ".dll",
+      "Count": 278
+    },
+    {
+      "Name": ".dylib",
+      "Count": 1
+    },
+    {
+      "Name": ".exe",
+      "Count": 4
+    },
+    {
+      "Name": ".fmf",
+      "Count": 1
+    },
+    {
+      "Name": ".json",
+      "Count": 133
+    },
+    {
+      "Name": ".log",
+      "Count": 2
+    },
+    {
+      "Name": ".msg",
+      "Count": 1
+    },
+    {
+      "Name": ".nupkg",
+      "Count": 1
+    },
+    {
+      "Name": ".png",
+      "Count": 402
+    },
+    {
+      "Name": ".portable",
+      "Count": 1
+    },
+    {
+      "Name": ".ttf",
+      "Count": 4
+    },
+    {
+      "Name": ".velopack_lock",
+      "Count": 1
+    },
+    {
+      "Name": ".version",
+      "Count": 1
+    },
+    {
+      "Name": ".xml",
+      "Count": 16
+    }
+  ]
+}

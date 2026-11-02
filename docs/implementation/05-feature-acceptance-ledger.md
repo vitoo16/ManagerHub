@@ -1,6 +1,10 @@
 # ManagerHub — 27-module implementation and acceptance ledger
 
-**Status as of 2026-10-29:** some modules have **partial production code**, while the full 27-module scope remains incomplete. Do not change to Complete unless integrated code, tests, UI and an acceptance review are evidenced. This is a planning tracker, not claims of available features.
+2026-11-01: [local session lifecycle research](../research/fmrte/24-fm2013-local-session-lifecycle.md) connects actual host process identity, generated read-only script, REA capture and fresh Editor/Realism normalization for4,058 observed records. Historical-only output, opaque creation-time checks, expiry/token/script consistency and synthetic failure tests pass; full checks pass226 tests/build. Product watcher/IPC, trusted current availability, career identity, full source coverage and writer certification remain unfinished. No module or delivery phase is marked complete.
+
+**Status as of 2026-11-01:** some modules have **partial production code** plus isolated live-reader research; the full 27-module scope remains incomplete. Do not change to Complete without integrated code, tests, UI and acceptance evidence. This is a planning tracker, not claims of available features.
+
+[Dated-cohort research](../research/fmrte/23-fm2013-game-date-calendar-age.md) adds repeat-bracketed native game date and4,058 explicitly derived calendar ages in Editor, with Realism age redaction. One fresh FM date screenshot and three earlier FMRTE age headers match selected results. Four computed cohort formula/model disagreements are not four UI comparisons. Full checks pass208 tests/build; no module/phase or production capability is marked complete. Manager visibility, atomic career identity, lifecycle coverage and reviewed local product ingestion remain open.
 
 **Do not build an MVP:** all modules are in full-product scope. Each is assigned to the earliest phase where it becomes fully integrated; foundational work in earlier phases can be reused. Canonical [7-phase plan](01-full-delivery-plan.md), [agent prompts](02-agent-prompts.md).
 
@@ -58,6 +62,25 @@ A format-specific capability may be **Blocked by compatibility** even while othe
 **Skill routing:** [skills research](04-motion-skills-and-references.md), [master execution prompt](02-agent-prompts.md), [charter](00-execution-charter.md).
 
 ## Actual implementation proof
+
+2026-11-01: [the live snapshot contract](../research/fmrte/20-fm2013-live-snapshot-contract.md) adds a shared exact-build profile, guarded position/club reads, complete compact transport, strict immutable domain parser and fresh-output local Node CLI. The real capture normalizes 4,058 provisional players, 49 ordinary / 15 familiarity fields per row and 3,730 qualified club links. Realism redacts all exact ratings while manager/scouting knowledge remains unknown; CA/PA and contracts stay null. `npm.cmd run check` passes TypeScript, 106 Vitest / 81 Node tests (187 total), build and bundle budgets. MH-01/02/05 gain demonstrated research foundations, not product native support; MH-03 remains unimplemented. Product IPC/storage/projection/UI, broader career/build validation, offline decoding and writing remain unfinished. No module is promoted to Complete.
+
+Initial 2026-10-30 stage: [FMRTE REA investigation](../research/fmrte/README.md) added source-identified static read/write evidence, separate13/26 inventories and read-only metadata/CIL tooling. No product native player-data, Actual CA/PA or writer support was enabled. Later live research narrows the read-validation gap; game-save write/roundtrip remains open. Module statuses remain unchanged.
+
+The early user-path follow-up identified [local executable metadata/hash](../research/fmrte/10-local-fm2013-executable.md) as `13.3.3f359652`. [Real save samples](../research/fmrte/11-fm2013-save-samples.md) verified experimental AFE indexing, not member/player decoding. Later reports add runtime/known-player research; offline decoding and write roundtrip remain open. No native product capability is promoted.
+
+Deep REA follow-up adds [isolated field arithmetic](../research/fmrte/14-fmrte13-field-transforms.md): 99,328 comparisons against a separate file-backed CIL interpreter and 6,291,456 exhaustive word round trips pass. Mutable profile slots and read-only alternate stream semantics are traced. This fulfills a research implementation step; MH-01/03/05 native reader/Actual CA/PA/editor acceptance remains open pending real entity/build validation.
+
+[A subsequent REA live experiment](../research/fmrte/16-fm2013-live-readonly-record.md) reads a user-named player candidate repeatedly and executes the new identity/stale-checking read-only research probe. Independent displayed-field and hidden-ability comparisons remain pending. No native reader/editor module is marked complete or supported.
+
+The user's later in-game text confirmation matches ID, Passing and Pace for that record. This establishes a three-field acceptance subset on one named player; hidden CA/PA, broader record/profile coverage and all writer acceptance remain open. No full module or future phase is marked complete.
+
+[Bounded REA discovery](../research/fmrte/17-fm2013-bounded-player-discovery.md) adds a second three-field user-text comparison and two identical4,036-candidate scans from different anchors in the same process. Shared research code now has byte/time/record/match ceilings and explicit partial/fault handling;10 focused tests pass, alongside the standard155-test check/build. This advances research acceptance only: MH-01/03/05 remain incomplete, with hidden abilities, restart-safe discovery, full database coverage and writing unresolved.
+
+2026-10-31: [file-derived RTTI discovery](../research/fmrte/18-fm2013-file-relative-discovery.md) removes supplied player addresses and passes one actual restart comparison across4,036 relocated records. Exact local-version profile strings/mode assignments are reproduced statically. Standard TypeScript/tests/build pass (162 tests); independent source review and 17 focused tests pass. This resolves a research restart requirement, not MH-01/03/05 completion: hidden-ability ground truth, full field/type coverage, offline parsing and certified writing remain open.
+
+[Authorized reference comparison](../research/fmrte/19-fm2013-reference-comparison.md) extends live research to 4,058 unique Player/PlayerStaff records matching FMRTE's displayed count, 198,842 ordinary cells read/repeated, and 153 numeric values matching three UI reference records. The shared reader gains typed dual-class support and an opt-in49-field source-era catalogue. Full check passes 164 tests/build;19 focused tests and independent review pass. This resolves the lack of any running-reference CA/PA comparison. MH-01/03/05 remain incomplete pending broader coverage, remaining domain contracts, reviewed ingestion, offline decoding and writing certification; no full module/phase is marked complete.
+
 [Player Lab HTML/CSV/TSV import, attributes, roles and limitations](07-player-lab-and-export-import.md). Real import data remains local and user-supplied. Full CA/PA save decoding, role/position fit calibration and recruitment financial assessment remain open requirements.
 
 Additional integration evidence: [opt-in local storage + role-fit lineup planner](08-local-library-and-squad-planner.md).
@@ -75,3 +98,7 @@ Additional integration evidence: [opt-in local storage + role-fit lineup planner
 | Bundle regression guard | Implemented; CI passed (run #125) | Production build emits a Vite manifest and checks initial static asset and per-JS-chunk size budgets. |
 | Measured runtime improvement | **Needs verification** | Do not claim a percentage improvement until CI passes and representative browser profiles are recorded. |
 
+
+Initial2026-11-01 biography research: three guarded DOB reads matched earlier FMRTE receipts, while primary-nation layout was static-only. Original conservative date decoder passed3 focused tests; full check passed190 tests/build. See docs/research/fmrte/21-fm2013-biography-fields.md.
+
+The [subsequent biography cohort](../research/fmrte/22-fm2013-biography-cohort.md) admits DOB/primary-nation evidence for all4,058 observed records through complete transport and fresh local Editor/Realism normalization. Three date/three nation-name values match previous UI receipts; native objects and broader career coverage remain uncertified. Realism redacts supplied biography; Editor fields stay provisional, no age/eligibility is derived and CA/PA/contracts stay null. Optional input preserves legacy captures; product IPC/storage/UI integration remains unfinished. Full check passes113 Vitest/84 Node tests (197), TypeScript, build and bundle budgets. No module or full phase is marked complete.
