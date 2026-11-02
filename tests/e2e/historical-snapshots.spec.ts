@@ -81,7 +81,7 @@ test('imports, browses, saves, reloads and switches safely between Editor and Re
   await expect(page.getByRole('list', { name: 'Saved historical snapshots' }).getByText('Synthetic FM2013 career')).toBeVisible();
 
   const persistedPrivacy = await page.evaluate(async () => {
-    const request = indexedDB.open('managerhub-local', 3);
+    const request = indexedDB.open('managerhub-local', 4);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
@@ -141,7 +141,7 @@ test('imports, browses, saves, reloads and switches safely between Editor and Re
   await page.getByRole('button', { name: 'Confirm delete', exact: true }).click();
   await expect(page.getByText('No historical snapshots saved')).toBeVisible();
   const remaining = await page.evaluate(async () => {
-    const request = indexedDB.open('managerhub-local', 3);
+    const request = indexedDB.open('managerhub-local', 4);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
@@ -205,7 +205,7 @@ test('detects duplicate source captures without creating a second saved snapshot
 test('enforces the historical snapshot count limit without overwriting existing records', async ({ page }) => {
   await page.goto('/#/history');
   await page.evaluate(async () => {
-    const request = indexedDB.open('managerhub-local', 3);
+    const request = indexedDB.open('managerhub-local', 4);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
@@ -249,7 +249,7 @@ test('enforces the historical snapshot count limit without overwriting existing 
 test('clears corrupt historical metadata without deleting the existing player library', async ({ page }) => {
   await page.goto('/#/history');
   await page.evaluate(async () => {
-    const request = indexedDB.open('managerhub-local', 3);
+    const request = indexedDB.open('managerhub-local', 4);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
@@ -277,7 +277,7 @@ test('clears corrupt historical metadata without deleting the existing player li
   await page.getByRole('button', { name: 'Clear incompatible historical library' }).click();
   await expect(page.getByRole('alert')).toHaveCount(0);
   const remaining = await page.evaluate(async () => {
-    const request = indexedDB.open('managerhub-local', 3);
+    const request = indexedDB.open('managerhub-local', 4);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
