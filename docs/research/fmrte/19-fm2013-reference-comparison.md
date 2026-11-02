@@ -4,7 +4,7 @@
 
 ## Authorized reference operation
 
-After the user explicitly approved opening the installed FMRTE13 for read-only comparison, Computer Use launched `C:\BraCa Soft\FMRTE 13\FMRTE.exe`, version13.3.3.62. The file remains SHA-256 `c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae`. The main-window screenshot/accessibility state reports the current FM2013 build as13.3.3 359652 and4,058 players.
+After the user explicitly approved opening the installed FMRTE13 for read-only comparison, Computer Use launched `<FMRTE13_INSTALL_ROOT>\FMRTE.exe`, version13.3.3.62. The file remains SHA-256 `c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae`. The main-window screenshot/accessibility state reports the current FM2013 build as13.3.3 359652 and4,058 players.
 
 Only Load Game, local player-name search, profile-tab navigation, window maximization and a goalkeeper-display toggle were requested. No player-value field, preset, freeze, Save Changes or activation control was used. Some UI calls reported geometry, changed-bounds or timeout errors; state was re-observed before further input, and resulting text/screenshot evidence was captured. The reference app remains open for review. This is a controlled reference-tool operation, not a trace of every internal action the vendor application might perform.
 
