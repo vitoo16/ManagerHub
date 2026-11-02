@@ -188,3 +188,111 @@ test('rejects malformed and unsupported captures without saving a snapshot', asy
   await expect(page.getByRole('alert')).toContainText('Unsupported capture profile.');
   await expect(page.getByText('No historical snapshots saved')).toBeVisible();
 });
+
+
+test('detects duplicate source captures without creating a second saved snapshot', async ({ page }) => {
+  await page.goto('/#/history');
+  await importSynthetic(page, 'Editor');
+  await page.getByRole('button', { name: 'Save snapshot locally' }).click();
+  await expect(page.getByRole('button', { name: 'Saved on this browser' })).toBeDisabled();
+
+  await importSynthetic(page, 'Editor');
+  await page.getByRole('button', { name: 'Save snapshot locally' }).click();
+  await expect(page.getByRole('status').filter({ hasText: 'This source capture is already saved in the local library' })).toBeVisible();
+  await expect(page.getByRole('list', { name: 'Saved historical snapshots' }).getByRole('listitem')).toHaveCount(1);
+});
+
+test('enforces the historical snapshot count limit without overwriting existing records', async ({ page }) => {
+  await page.goto('/#/history');
+  await page.evaluate(async () => {
+    const request = indexedDB.open('managerhub-local', 3);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    try {
+      await new Promise<void>((resolve, reject) => {
+        const tx = db.transaction('historical-realism-summaries', 'readwrite');
+        const store = tx.objectStore('historical-realism-summaries');
+        for (let index = 0; index < 10; index++) {
+          store.add({
+            schema: 'managerhub.fm2013-historical-snapshot',
+            schemaVersion: 1,
+            id: 'seed-' + index,
+            mode: 'realism',
+            fileName: 'synthetic-seed-' + index + '.json',
+            sourceSize: 100,
+            sourceSha256: String(index).padStart(64, '0'),
+            importedAt: '2026-10-31T09:05:00.000Z',
+            capturedAt: '2026-10-31T09:00:00.000Z',
+            careerLabel: 'Synthetic seed ' + index,
+            edition: 'FM2013',
+            build: '13.3.3f359652',
+            status: 'ready',
+            playerCount: 1,
+            coverageCount: 2
+          });
+        }
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
+      });
+    } finally { db.close(); }
+  });
+  await page.reload();
+  await importSynthetic(page, 'Realism');
+  await page.getByRole('button', { name: 'Save snapshot locally' }).click();
+  await expect(page.getByRole('alert')).toContainText('This browser already holds 10 historical snapshots in this mode.');
+  await expect(page.getByRole('list', { name: 'Saved historical snapshots' }).getByRole('listitem')).toHaveCount(10);
+});
+
+test('clears corrupt historical metadata without deleting the existing player library', async ({ page }) => {
+  await page.goto('/#/history');
+  await page.evaluate(async () => {
+    const request = indexedDB.open('managerhub-local', 3);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    try {
+      await new Promise<void>((resolve, reject) => {
+        const tx = db.transaction(['historical-realism-summaries', 'player-export-summaries'], 'readwrite');
+        tx.objectStore('historical-realism-summaries').put({ id: 'corrupt', mode: 'realism', sourceSha256: 'bad' });
+        tx.objectStore('player-export-summaries').put({
+          id: 'preserved-player-summary',
+          savedAt: '2026-10-31T09:05:00.000Z',
+          fileName: 'preserved.csv',
+          importedAt: '2026-10-31T09:00:00.000Z',
+          playerCount: 1,
+          attributeCount: 2
+        });
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
+      });
+    } finally { db.close(); }
+  });
+  await page.reload();
+  await expect(page.getByRole('alert')).toContainText('Saved historical snapshot metadata is incompatible with this version.');
+  await page.getByRole('button', { name: 'Clear incompatible historical library' }).click();
+  await expect(page.getByRole('alert')).toHaveCount(0);
+  const remaining = await page.evaluate(async () => {
+    const request = indexedDB.open('managerhub-local', 3);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    try {
+      const count = (name: string) => new Promise<number>((resolve, reject) => {
+        const query = db.transaction(name, 'readonly').objectStore(name).count();
+        query.onsuccess = () => resolve(query.result);
+        query.onerror = () => reject(query.error);
+      });
+      return {
+        historical: await count('historical-realism-summaries'),
+        playerSummaries: await count('player-export-summaries')
+      };
+    } finally { db.close(); }
+  });
+  expect(remaining).toEqual({ historical: 0, playerSummaries: 1 });
+});
