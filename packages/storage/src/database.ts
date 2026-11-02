@@ -9,16 +9,6 @@ export const HISTORICAL_EDITOR_SUMMARIES = 'historical-editor-summaries';
 export const HISTORICAL_REALISM_SNAPSHOTS = 'historical-realism-snapshots';
 export const HISTORICAL_REALISM_SUMMARIES = 'historical-realism-summaries';
 
-function ensureHistoricalStore(db: IDBDatabase, name: string): void {
-  const store = db.objectStoreNames.contains(name)
-    ? undefined
-    : db.createObjectStore(name, { keyPath: 'id' });
-  const target = store ?? (db as IDBDatabase).transaction?.objectStore(name);
-  if (target && !target.indexNames.contains('bySourceSha256')) {
-    target.createIndex('bySourceSha256', 'sourceSha256', { unique: false });
-  }
-}
-
 /** Shared IndexedDB opener owns schema migrations for all local libraries. */
 export function openDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
@@ -27,7 +17,7 @@ export function openDatabase(): Promise<IDBDatabase> {
       return;
     }
     const request = indexedDB.open(DATABASE_NAME, DATABASE_VERSION);
-    request.onupgradeneeded = event => {
+    request.onupgradeneeded = () => {
       const db = request.result;
       if (!db.objectStoreNames.contains(EXPORTS)) db.createObjectStore(EXPORTS, { keyPath: 'id' });
       if (!db.objectStoreNames.contains(SUMMARIES)) db.createObjectStore(SUMMARIES, { keyPath: 'id' });
