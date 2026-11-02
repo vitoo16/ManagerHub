@@ -2,6 +2,7 @@
 // This layout is a candidate from one exact-build session, not a certified adapter.
 import { FM2013_ORDINARY_ATTRIBUTES } from './fm2013-ordinary-attributes.mjs';
 import profile from '../packages/domain/src/fm2013-live-profile.json' with { type: 'json' };
+import { isSupportedFm2013ImagePath } from '../packages/domain/src/live-session.ts';
 export const FM2013_RESEARCH_BINARY_SHA256 = profile.binarySha256;
 const nativeKinds = profile.nativeKinds;
 
@@ -210,7 +211,7 @@ function observeRecord(config) {
 
 /** Caller must hash the selected on-disk image before building a same-session probe. */
 function checkedTarget(config) {
-  if (config?.binarySha256 !== FM2013_RESEARCH_BINARY_SHA256) throw new RangeError('Unsupported research artifact');
+  if (config?.binarySha256 !== FM2013_RESEARCH_BINARY_SHA256 || !isSupportedFm2013ImagePath(config.imagePath)) throw new RangeError('Unsupported research artifact');
   if (!Number.isInteger(config.pid) || config.pid < 1 || config.pid > 0x7fffffff) throw new RangeError('Invalid PID');
   const nativeKind = config.nativeKind ?? 'player', attributeSet = config.attributeSet ?? 'passing_pace';
   if (!Object.hasOwn(nativeKinds, nativeKind) || !['passing_pace', 'ordinary49'].includes(attributeSet)) throw new RangeError('Unsupported research field selection');
@@ -225,7 +226,7 @@ function checkedTarget(config) {
     })) : null;
   const selected = attributeSet === 'ordinary49' ? FM2013_ORDINARY_ATTRIBUTES :
     FM2013_ORDINARY_ATTRIBUTES.filter(attribute => ['passing', 'pace'].includes(attribute.key));
-  return { binarySha256: config.binarySha256, imagePath: profile.imagePath, pid: config.pid, nativeKind, personOffset: nativeKinds[nativeKind].personOffset,
+  return { binarySha256: config.binarySha256, imagePath: config.imagePath, pid: config.pid, nativeKind, personOffset: nativeKinds[nativeKind].personOffset,
     attributeSet, attributeLayout: selected.map(({ key, offset }) => ({ key, offset })),
     includeClubLinks: config.includeClubLinks === true,
     biographyLayout,
