@@ -4,7 +4,7 @@
 
 ## Exact source and evidence
 
-Source: `C:\BraCa Soft\FMRTE 13\FMRTE.exe`, version/assembly `13.3.3.62`, x86 .NET4, SHA-256 `c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae`, MVID `3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6`. Every token below belongs only to this artifact. RVAs locate FMRTE code, not game fields.
+Source: `<FMRTE13_INSTALL_ROOT>\FMRTE.exe`, version/assembly `13.3.3.62`, x86 .NET4, SHA-256 `c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae`, MVID `3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6`. Every token below belongs only to this artifact. RVAs locate FMRTE code, not game fields.
 
 | Behavior | Method token | RVA (decimal) | Canonical REA evidence alias |
 |---|---|---:|---|
