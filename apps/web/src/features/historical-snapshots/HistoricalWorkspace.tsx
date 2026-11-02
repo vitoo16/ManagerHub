@@ -384,7 +384,7 @@ export default function HistoricalWorkspace() {
         <label className="historical-file-picker">
           <span>{t('Address-free wire JSON')}</span>
           <input ref={inputRef} type="file" accept=".json,application/json" onChange={event => setFile(event.currentTarget.files?.[0] ?? null)} disabled={importing}/>
-          <small>{file ? file.name + ' · ' + formatBytes(file.size) : t('Choose the complete fm2013-live-capture-v1 JSON file.')}</small>
+          <small>{file ? file.name + ' · ' + formatBytes(file.size) : t('Choose an address-free fm2013-live-capture-v1 JSON capture.')}</small>
         </label>
         <label>
           <span>{t('Career label (user-declared)')}</span>
@@ -416,7 +416,7 @@ export default function HistoricalWorkspace() {
         <Button variant="quiet" onClick={library.clearError}>{t('Dismiss')}</Button>
       </div>}
       {notice && <p className="historical-notice" role="status">{notice}</p>}
-      <p className="historical-footnote">{t('Only complete address-free wire JSON is accepted. The source file is hashed and parsed in a Web Worker; raw wire data is never persisted. Unsupported builds, truncated transport and unrecognized fields are rejected.')}</p>
+      <p className="historical-footnote">{t('Only valid address-free wire JSON for the supported FM2013 build is accepted. Optional biography and position fields may remain unknown. The source file is hashed and parsed in a Web Worker; raw wire data is never persisted. Unsupported builds, truncated transport and unrecognized fields are rejected.')}</p>
     </section>
 
     <div className="historical-library-layout">
