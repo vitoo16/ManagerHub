@@ -32,6 +32,14 @@ export type Fm2013CaptureAdmission =
   | { readonly status: 'rejected'; readonly reason: Fm2013CaptureRejectionReason };
 export const FM2013_CAPTURE_WINDOW_MS = 10 * 60 * 1000;
 
+/** Only local Windows fm.exe paths are accepted; the exact binary hash identifies the supported build. */
+export function isSupportedFm2013ImagePath(value: unknown): value is string {
+  if (typeof value !== 'string' || value.length < 9 || value.length > 1024 ||
+      !/^[a-z]:\\(?:[^\\/:*?"<>|\\u0000-\\u001f]+\\)*fm\\.exe$/iu.test(value)) return false;
+  const segments = value.slice(3).split('\\\\');
+  return segments.length > 0 && segments.every(segment => segment.length > 0 && segment !== '.' && segment !== '..');
+}
+
 function object(value: unknown, keys: readonly string[]): Record<string, unknown> {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) throw new TypeError('Expected a session object');
   const result = value as Record<string, unknown>;
@@ -55,10 +63,10 @@ function timestamp(value: unknown): { readonly iso: string; readonly millisecond
 function processIdentity(value: unknown): Fm2013ProcessIdentity {
   const source = object(value, ['pid', 'startedAtFileTime', 'imagePath', 'binarySha256']);
   if (typeof source.startedAtFileTime !== 'string' || !/^[1-9]\d{17,19}$/u.test(source.startedAtFileTime) ||
-      BigInt(source.startedAtFileTime) > 18446744073709551615n || source.imagePath !== profile.imagePath || source.binarySha256 !== profile.binarySha256) {
+      BigInt(source.startedAtFileTime) > 18446744073709551615n || !isSupportedFm2013ImagePath(source.imagePath) || source.binarySha256 !== profile.binarySha256) {
     throw new TypeError('Invalid exact-build process identity');
   }
-  return Object.freeze({ pid: pid(source.pid), startedAtFileTime: source.startedAtFileTime, imagePath: profile.imagePath, binarySha256: profile.binarySha256 });
+  return Object.freeze({ pid: pid(source.pid), startedAtFileTime: source.startedAtFileTime, imagePath: source.imagePath, binarySha256: profile.binarySha256 });
 }
 function ticket(value: unknown): Fm2013CaptureTicket {
   const source = object(value, ['schema', 'captureId', 'process', 'issuedAt', 'expiresAt', 'profileVersion']);
