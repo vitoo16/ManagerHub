@@ -23,7 +23,7 @@ Nếu checkout đã có thay đổi người dùng, giữ nguyên và đánh gi�
 
 | Hạng mục | Evidence hiện tại | Không được suy diễn |
 |---|---|---|
-| Target chính | FMRTE13 `C:\BraCa Soft\FMRTE 13\FMRTE.exe`,13.3.3.62; FM2013 `C:\Program Files (x86)\Football Manager 2013\fm.exe`,13.3.3f359652 | Không hỗ trợ mọi build hoặc phiên bản FM. SHA/MVID cụ thể nằm trong profile/manifest. |
+| Target chính | FMRTE13 `<FMRTE13_INSTALL_ROOT>\FMRTE.exe`,13.3.3.62; FM2013 `<FM2013_INSTALL_ROOT>\fm.exe`,13.3.3f359652 | Không hỗ trợ mọi build hoặc phiên bản FM. SHA/MVID cụ thể nằm trong profile/manifest. |
 | Cohort | 4,036 Player +22 PlayerStaff =4,058 ID;49 ordinary attrs,15 position bytes; ngày sinh/quốc tịch chính và ngày game đã capture | Không phải chứng minh toàn database/career/field đều đúng. Native Nation/Team RTTI chưa kiểm chứng rộng. |
 | Reference |147 ordinary values +6 CA/PA trên3 record;15 vị trí trên1 record;3 DOB/3 tên quốc tịch;1 ngày game trên ảnh FM mới | FMRTE không phải oracle engine cho mọi field; nhiều receipt là lịch sử, không phải ảnh mới. Không cộng các lượt so sánh thành số cầu thủ độc lập. |
 | CA/PA | Có static decoder và6 reference matches | Canonical batch snapshot vẫn null; không bật ActualCA/PA hoặc suy ra PA. |
@@ -32,7 +32,7 @@ Nếu checkout đã có thay đổi người dùng, giữ nguyên và đánh gi�
 | Privacy | Realism redacts49 attrs,15 familiarity, supplied DOB/nation và derived age trước return/serialize | Chưa giải mã scouting knowledge; không tự mở exact values vì gắn nhãn ordinary. |
 | Lifecycle | Ticket10 phút; UUID +PID +creation FILETIME +path/hash +script SHA; real prepare→REA→finalize cả2 mode qua4,058 record | Không có watcher/IPC, signed attestation, one-use tokens, atomic career hay identity của save. Output luôn historical, currentness unverified. |
 | Offline/writer | AFE directory inspection, static write boundaries | `.fm` player decoder và writer chưa hoạt động/chứng nhận. Không chạy thử ghi. |
-| FMRTE26 | So sánh static riêng,26.3.2.42 tại `C:\BraCa Soft\FMRTE 26\current\FMRTE.dll` | Không chuyển offset/roles/engine semantics sang13 hoặc ngược lại. Delegate implementation còn thiếu. |
+| FMRTE26 | So sánh static riêng,26.3.2.42 tại `<FMRTE26_INSTALL_ROOT>\current\FMRTE.dll` | Không chuyển offset/roles/engine semantics sang13 hoặc ngược lại. Delegate implementation còn thiếu. |
 
 Audit baseline:283 method coordinates,2 artifact observations,201 canonical records,19 bundle hashes;424 installation files và3 save samples giữ hash. Chi tiết source SHA, MVID, token/RVA và private artifact references nằm trong manifest; không xem bảng này là certificate.
 
@@ -84,7 +84,7 @@ Runtime workflow: discover PID hiện tại; `prepare` tạo request/script mớ
 
 Không nằm trong Git:
 
-`C:\Users\viett\.codex\visualizations\2026\10\30\01a18c2c-5b30-7ac2-841d-290449543b12`
+`<LOCAL_USER_PROFILE>\.codex\visualizations\2026\10\30\01a18c2c-5b30-7ac2-841d-290449543b12`
 
 Manifest tham chiếu nhiều file ở đây. Một clone trên máy khác **không có raw evidence** chỉ vì có manifest. Không tải lên Git/cloud để chữa thiếu fixture. Trên máy hiện tại có thể dùng raw wire `fm13-dated-wire.json` hoặc `fm13-biography-wire.json` cho import lịch sử; đây là dữ liệu thật/private, không phải test fixture công khai. Session request/script/Evidence và `fm13-session-editor.json`/`fm13-session-realism.json` là thí nghiệm lifecycle; ticket đã hết hạn, output vẫn là lịch sử.
 
