@@ -179,5 +179,20 @@ export default {
   "Local capture import": "NHẬP CAPTURE CỤC BỘ",
   "Historical snapshot": "SNAPSHOT LỊCH SỬ",
   "Source diagnostics": "CHẨN ĐOÁN NGUỒN",
-  "Historical player records": "Bản ghi cầu thủ lịch sử"
+  "Historical player records": "Bản ghi cầu thủ lịch sử",
+  "FM2013 research captures": "Capture nghiên cứu FM2013",
+  "The capture metadata or normalized snapshot did not pass the historical schema checks.": "Metadata capture hoặc snapshot đã chuẩn hóa không vượt qua kiểm tra schema lịch sử.",
+  "The separately redacted Realism projection could not be created.": "Không thể tạo bản Realism đã che dữ liệu riêng biệt.",
+  "Background workers are unavailable in this browser. The capture was not parsed on the main thread.": "Trình duyệt không hỗ trợ Web Worker. Capture không được chuyển sang phân tích trên luồng giao diện chính.",
+  "The historical snapshot failed schema validation.": "Snapshot lịch sử không vượt qua kiểm tra schema.",
+  "The requested historical snapshot mode is missing.": "Thiếu bản snapshot cho chế độ được yêu cầu.",
+  "A duplicate capture was found but its summary is unavailable.": "Đã phát hiện capture trùng nhưng không thể đọc thông tin tóm tắt.",
+  "Only a Realism projection can be saved through this operation.": "Thao tác này chỉ được phép lưu bản Realism.",
+  "The paired historical snapshots must contain Editor and Realism projections.": "Cặp snapshot phải gồm bản Editor và bản Realism.",
+  "A historical snapshot ID is required.": "Cần có ID snapshot lịch sử.",
+  "Local storage read failed.": "Đọc bộ nhớ cục bộ thất bại.",
+  "Local storage transaction failed.": "Giao dịch bộ nhớ cục bộ thất bại.",
+  "Local storage transaction aborted.": "Giao dịch bộ nhớ cục bộ đã bị hủy.",
+  "Database migration transaction is unavailable.": "Không thể truy cập giao dịch nâng cấp cơ sở dữ liệu.",
+  "The browser could not access the historical snapshot library.": "Trình duyệt không thể truy cập thư viện snapshot lịch sử."
 } as const;
