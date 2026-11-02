@@ -35,8 +35,8 @@ export const FM2013_CAPTURE_WINDOW_MS = 10 * 60 * 1000;
 /** Only local Windows fm.exe paths are accepted; the exact binary hash identifies the supported build. */
 export function isSupportedFm2013ImagePath(value: unknown): value is string {
   if (typeof value !== 'string' || value.length < 9 || value.length > 1024 ||
-      !/^[a-z]:\\(?:[^\\/:*?"<>|\\u0000-\\u001f]+\\)*fm\\.exe$/iu.test(value)) return false;
-  const segments = value.slice(3).split('\\\\');
+      !/^[a-z]:\\(?:[^\\/:*?"<>|\u0000-\u001f]+\\)*fm\.exe$/iu.test(value)) return false;
+  const segments = value.slice(3).split('\\');
   return segments.length > 0 && segments.every(segment => segment.length > 0 && segment !== '.' && segment !== '..');
 }
 
