@@ -6,6 +6,7 @@ import { inspectLocalArchive } from './afe-batch-codec.mjs';
 
 const MAX_INPUT_BYTES = 256 * 1024 * 1024;
 const MAX_COMPARE_MEMBERS = 32;
+const MAX_INDEXED_MEMBERS = 4096;
 const SAMPLE_BYTES = 64;
 const HASH_CHUNK_BYTES = 64 * 1024;
 const MAX_HASH_MEMBER_BYTES = 8 * 1024 * 1024;
@@ -60,7 +61,8 @@ export function compareMemberSamples(a, b) {
  */
 export function selectComparableMembers(left, right, limit = MAX_COMPARE_MEMBERS) {
   if (!Array.isArray(left) || !Array.isArray(right) ||
-      !Number.isSafeInteger(limit) || limit < 1 || limit > MAX_COMPARE_MEMBERS) {
+      left.length > MAX_INDEXED_MEMBERS || right.length > MAX_INDEXED_MEMBERS ||
+      !Number.isSafeInteger(limit) || limit < 1 || limit > MAX_INDEXED_MEMBERS) {
     throw new RangeError('Invalid bounded cross-save selection.');
   }
   const names = new Set();
@@ -91,7 +93,8 @@ export function selectComparableMembers(left, right, limit = MAX_COMPARE_MEMBERS
   };
 }
 
-export async function compareLocalAfeSaves(pathA, pathB) {
+export async function compareLocalAfeSaves(pathA, pathB, { allMembers = false } = {}) {
+  if (typeof allMembers !== 'boolean') throw new TypeError('allMembers must be boolean.');
   const [fingerprintA, fingerprintB] = await Promise.all([
     fingerprint(pathA), fingerprint(pathB)
   ]);
@@ -108,7 +111,9 @@ export async function compareLocalAfeSaves(pathA, pathB) {
     return { status: 'unsupported_or_invalid_container', identicalFiles: false,
       comparedMembers: 0, comparisons: [] };
   }
-  const selection = selectComparableMembers(a.memberIndex, b.memberIndex);
+  const selection = selectComparableMembers(
+    a.memberIndex, b.memberIndex, allMembers ? MAX_INDEXED_MEMBERS : MAX_COMPARE_MEMBERS
+  );
   const { available, paired, coverage } = selection;
   const [handleA, handleB] = await Promise.all([open(pathA, 'r'), open(pathB, 'r')]);
   try {
@@ -152,8 +157,8 @@ export async function compareLocalAfeSaves(pathA, pathB) {
     const comparisons = [];
     for (const memberA of paired) {
       const memberB = available.get(memberA.filename);
-      const windowsA = sampleWindows(memberA.storedBytes);
-      const windowsB = sampleWindows(memberB.storedBytes);
+      const windowsA = allMembers ? [] : sampleWindows(memberA.storedBytes);
+      const windowsB = allMembers ? [] : sampleWindows(memberB.storedBytes);
       const windowResults = [];
       for (let i = 0; i < Math.min(windowsA.length, windowsB.length); i++) {
         const [sampleA, sampleB] = await Promise.all([
@@ -178,18 +183,36 @@ export async function compareLocalAfeSaves(pathA, pathB) {
         fullMemberHashAlgorithm: completeMemberHashMatch === null ? null : 'SHA-256',
         sameStoredLength: memberA.storedBytes === memberB.storedBytes,
         sameReportedLength: memberA.reportedUncompressedBytes === memberB.reportedUncompressedBytes,
-        evidence: 'sample_only',
-        sampledRegions: windowResults,
-        allComparedSamplesIdentical: windowsA.length === windowsB.length &&
-          windowResults.every(region => region.identicalSample)
+        evidence: allMembers ?
+          (completeMemberHashMatch === null ? 'not_hashed' : 'full_payload_sha256') :
+          'sample_only',
+        ...(allMembers ? {} : {
+          sampledRegions: windowResults,
+          allComparedSamplesIdentical: windowsA.length === windowsB.length &&
+            windowResults.every(region => region.identicalSample)
+        })
       });
     }
+    const hashedMembers = comparisons.filter(item => item.completeMemberHashMatch !== null).length;
+    const changedMembers = comparisons.filter(item => item.completeMemberHashMatch === false).length;
     return {
       status: 'different_files',
       identicalFiles: false,
       indexedMembersA: a.totalIndexedMembers,
       indexedMembersB: b.totalIndexedMembers,
       ...coverage,
+      ...(allMembers ? {
+        comparisonMode: 'full_catalogue',
+        hashedMembers,
+        changedMembers,
+        unchangedMembers: hashedMembers - changedMembers,
+        unverifiedOversizedMembers: comparisons.length - hashedMembers,
+        // These are structural changes independent of matching-size hashes.
+        sizeChangedMembers: a.memberIndex
+          .filter(member => available.has(member.filename) &&
+            member.storedBytes !== available.get(member.filename).storedBytes)
+          .map(member => member.filename).sort()
+      } : {}),
       comparedMembers: comparisons.length,
       comparisons
     };
@@ -199,12 +222,12 @@ export async function compareLocalAfeSaves(pathA, pathB) {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  const [first, second] = process.argv.slice(2);
-  if (!first || !second) {
-    console.error('Usage: node scripts/afe-cross-save.mjs <first-local.fm> <second-local.fm>');
+  const [first, second, flag] = process.argv.slice(2);
+  if (!first || !second || (flag && flag !== '--all-members') || process.argv.length > 5) {
+    console.error('Usage: node scripts/afe-cross-save.mjs <first-local.fm> <second-local.fm> [--all-members]');
     process.exitCode = 2;
   } else {
-    compareLocalAfeSaves(first, second)
+    compareLocalAfeSaves(first, second, { allMembers: flag === '--all-members' })
       .then(result => console.log(JSON.stringify(result, null, 2)))
       .catch(error => { console.error(error.message); process.exitCode = 1; });
   }

@@ -178,3 +178,43 @@ In synthetic AFE archive regression fixtures, the decoder correctly returns the 
 ### AFE decoder acceptance and decompression budget (2026-10-30)
 
 The experimental member decoder now requires the **observed eight-byte AFE member envelope** (`10 00 00 00 10 00 00 00`) before trying any codec. A valid standalone zlib/gzip stream without that envelope is not misclassified as a compatible AFE member; it returns `invalid_envelope`. This is a scoped observation from the available save family, **not** a general AFE specification. The decompressor's `maxOutputLength` is now the member's declared decoded byte count, not the broad global 2 MiB limit, so tiny members fail promptly when candidate output exceeds the declared limit. Full input consumption, exact output length, single candidate and a matching envelope remain prerequisites for any `validated_stream` result. None of this claims decoding success on the private authentic AFE fixture; the unknown codec remains the primary blocker.
+
+### Raw LZ4 block hypothesis tested (2026-10-30)
+
+A new read-only `scripts/afe-raw-lz4.mjs` tests **unframed/raw LZ4 blocks**, which would not be found by the existing LZ4 *frame* signature census. It validates the observed 8-byte envelope and attempts offsets 8, 16, 24 and 32 with an exact output budget (maximum 2 MiB) and input budget (256 KiB). A pure JavaScript block decoder checks literal extents, match offset validity, overlapping back-references, complete input consumption and declared output length. The inspector reports only `size_consistent_candidate`, `ambiguous_candidates` or `unsupported_codec` and offsets; no decoded bytes enter its JSON output.
+
+On the local private sample, a separate Python `lz4.block` experiment checked **783 bounded indexed members** at these four offsets with the catalogue-reported decoded size. **Zero candidates** yielded the expected output length. This is negative evidence for *direct raw LZ4 at those offsets*, not a proof the save uses encryption or that an additional transform is absent. The JavaScript test suite includes synthetic literal-only, overlapping match, malformed offset and length cases. The private `.fm` save remains outside the repository.
+
+### Authentic AFE header-to-directory pointer relationship (2026-10-30)
+
+The private AFE sample (29,319,864 bytes) yielded a **new exact structural relationship**, checked directly against the real file:
+
+- LE u32 at absolute header offset **9** = **29,310,362**.
+- Trailing `02 01 fmf. 04 00 00` directory marker starts at absolute byte **29,310,371**.
+- The offset difference is **exactly +9**, and the compressed zlib directory begins another 9 bytes later.
+- The final indexed member ends at relative offset **29,310,353** (base 18), precisely where the directory marker begins.
+
+`observedAfeDirectoryMarkerOffset(header, fileSize)` now offers **candidate** marker location `readU32LE(header,9) + 9` with range checks. The local inspector first attempts a bounded header-directed read and requires the correct marker, complete zlib input consumption and a fully validated catalogue. If the candidate is absent, invalid or incompatible with a different AFE version, it falls back to its earlier bounded tail scan. Results distinguish `directoryLocator: 'header_pointer' | 'tail_scan'`. Both locator paths are regression-tested on synthetic AFE archives. This relationship is currently established for **one independent save** only (a second available file is byte-identical). It is not a blanket AFE-format specification and does not decode any member payload or CA/PA.
+
+### AFE header carries a marker-length field (2026-10-30)
+
+A closer byte-level inspection of the authentic 29,319,864-byte AFE save identified **two consecutive LE u32 fields** in the 18-byte header:
+
+| Absolute header field offset | Observed value | Structural relationship |
+| --- | ---: | --- |
+| 9 | 29,310,362 | Candidate catalogue pointer |
+| 13 | 9 | Exactly equals the trailing FMF directory marker's 9-byte length |
+
+In this one independent sample, `29,310,362 + 9 = 29,310,371`, the exact marker offset, and bytes at that offset equal `02 01 66 6d 66 2e 04 00 00`. This lends more specific support to the earlier PR #54 locator than a hard-coded +9, but remains an **empirical hypothesis, not an established format specification**. The header-driven locator now requires the second field to equal the observed FMF marker length, computes `pointer + markerLength` and still validates the actual directory. A mismatched marker-length field causes the bounded tail-scan fallback. Synthetic tests cover matching and conflicting header values without requiring private save fixtures in the repository.
+
+### Complete AFE cross-save catalogue difference experiment (2026-10-31)
+
+For genuine controlled experiments, comparing only the first **32** same-sized members can miss differences in the other indexed entries (the private sample contains **793**). The research CLI now supports an **explicit opt-in**:
+
+```bash
+node scripts/afe-cross-save.mjs "same-state-A.fm" "same-state-B.fm" --all-members
+```
+
+The default 32-pair diagnostic with start/middle/end samples remains unchanged. With `--all-members`, it compares every shared-name, **same-stored-size** member in the validated AFE catalogue (at most **4096** entries), using full SHA-256 hashes computed in 64 KiB chunks for members up to **8 MiB**. It does not sample extra member bytes or emit digests; it reports only per-member equality status and aggregated changed/unchanged counts. Same-name members with unequal stored sizes are listed separately under `sizeChangedMembers`. Large members that exceed the per-member digest limit are counted as `unverifiedOversizedMembers`, **not** called equal. Full-file identity still exits early with `duplicate_input`. Input file-size limit remains 256 MiB.
+
+The status is **stored-byte-level equality evidence only**: a different member does not establish semantic game changes, a cipher, nonce, IV or checksum. For randomization evidence, two distinct files should be independently saved from the same game state, with no time advance or state changes between saves.

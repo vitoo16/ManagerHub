@@ -4,7 +4,7 @@ import { mkdtemp, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { deflateSync } from 'node:zlib';
-import { inspectLocalArchive, parseObservedDirectory, parseObservedDirectoryDetails, selectCodecProbeMembers } from './afe-batch-codec.mjs';
+import { inspectLocalArchive, parseObservedDirectory, parseObservedDirectoryDetails, selectCodecProbeMembers, observedAfeDirectoryMarkerOffset } from './afe-batch-codec.mjs';
 
 const prefix = Buffer.from([16, 0, 0, 0, 16, 0, 0, 0]);
 const trailer = Buffer.from([2, 1, 102, 109, 102, 46, 4, 0, 0]);
@@ -51,6 +51,9 @@ test('bounded batch discovers one synthetic catalogue and reports metadata only'
     assert.equal(result.unparsedDirectoryBytes, 0);
     assert.ok(result.parsedDirectoryBytes > 0);
     assert.equal(result.inspectedMembers, 1);
+    assert.equal(result.rawLz4Probes.length, 1);
+    assert.equal(result.rawLz4Probes[0].status, 'unsupported_codec');
+    assert.equal(Object.hasOwn(result.rawLz4Probes[0], 'payload'), false);
     assert.equal(result.validatedDecodes.length, 1);
     assert.equal(result.validatedDecodes[0].status, 'validated_stream');
     assert.equal(result.validatedDecodes[0].codec, 'zlib');
@@ -90,6 +93,69 @@ test('index-only mode returns validated member locations without probing payload
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
+});
+
+test('resolves genuine AFE header pointer relationship and verifies catalogue', async () => {
+  const member = Buffer.concat([prefix, deflateSync(Buffer.alloc(100, 0x44))]);
+  const markerOffset = 18 + member.length;
+  const header = Buffer.concat([
+    Buffer.from([2, 1, 97, 102, 101, 46]), Buffer.alloc(12)
+  ]);
+  header.writeUInt32LE(markerOffset - trailer.length, 9);
+  header.writeUInt32LE(trailer.length, 13);
+  const file = Buffer.concat([header, member, trailer, deflateSync(makeDirectory(member))]);
+  assert.equal(observedAfeDirectoryMarkerOffset(header, file.length), markerOffset);
+  const dir = await mkdtemp(join(tmpdir(), 'afe-direct-pointer-'));
+  const path = join(dir, 'direct.fm');
+  try {
+    await writeFile(path, file);
+    const index = await inspectLocalArchive(path, { indexOnly: true });
+    assert.equal(index.status, 'experimental_index');
+    assert.equal(index.directoryLocator, 'header_pointer');
+    assert.equal(index.directoryOffset, markerOffset);
+    assert.equal(index.totalIndexedMembers, 1);
+
+    // A pointer is only an untrusted hint, not sufficient to accept a file.
+    const badHeader = Buffer.from(header);
+    badHeader.writeUInt32LE(markerOffset - 8, 9);
+    await writeFile(path, Buffer.concat([badHeader, member, trailer, deflateSync(makeDirectory(member))]));
+    const fallback = await inspectLocalArchive(path, { indexOnly: true });
+    assert.equal(fallback.status, 'experimental_index');
+    assert.equal(fallback.directoryLocator, 'tail_scan');
+    assert.equal(fallback.directoryOffset, markerOffset);
+
+    // Even if pointer is numerically correct, a mismatched marker-length
+    // field must not select the header-directed path.
+    const wrongLength = Buffer.from(header);
+    wrongLength.writeUInt32LE(trailer.length - 1, 13);
+    await writeFile(path, Buffer.concat([
+      wrongLength, member, trailer, deflateSync(makeDirectory(member))
+    ]));
+    const fallbackLength = await inspectLocalArchive(path, { indexOnly: true });
+    assert.equal(fallbackLength.status, 'experimental_index');
+    assert.equal(fallbackLength.directoryLocator, 'tail_scan');
+    assert.equal(fallbackLength.directoryOffset, markerOffset);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test('rejects malformed header pointer candidates', () => {
+  const header = Buffer.concat([Buffer.from([2, 1, 97, 102, 101, 46]), Buffer.alloc(12)]);
+  assert.equal(observedAfeDirectoryMarkerOffset(header, 100), null);
+  header.writeUInt32LE(1000, 9);
+  assert.equal(observedAfeDirectoryMarkerOffset(header, 100), null);
+  header.writeUInt32LE(9, 13);
+  assert.equal(observedAfeDirectoryMarkerOffset(header, 100), null);
+  header.writeUInt32LE(0, 9);
+  assert.equal(observedAfeDirectoryMarkerOffset(header, 100), null);
+  header.writeUInt32LE(50, 9);
+  header.writeUInt32LE(8, 13);
+  assert.equal(observedAfeDirectoryMarkerOffset(header, 100), null);
+  header.writeUInt32LE(9, 13);
+  assert.equal(observedAfeDirectoryMarkerOffset(header, 100), 59);
+  assert.equal(observedAfeDirectoryMarkerOffset(Buffer.alloc(18), 100), null);
+  assert.equal(observedAfeDirectoryMarkerOffset(header.subarray(0, 10), 100), null);
 });
 
 test('decodes a nested named catalogue and accounts for its last four zero bytes', () => {
