@@ -731,24 +731,35 @@ test('upgrades an existing v2 database to v4 without losing save or player metad
 });
 
 test('repairs a partially initialized v3 database and preserves existing historical records', async ({ page }) => {
-  await page.addInitScript(() => {
-    const request = indexedDB.open('managerhub-local', 3);
-    request.onupgradeneeded = () => {
-      const db = request.result;
-      db.createObjectStore('player-exports', { keyPath: 'id' });
-      db.createObjectStore('player-export-summaries', { keyPath: 'id' });
-      db.createObjectStore('save-inspections', { keyPath: 'id' });
-      const editorRecords = db.createObjectStore('historical-editor-snapshots', { keyPath: 'id' });
-      editorRecords.add({ id: 'preserved-editor-record' });
-      const editorSummaries = db.createObjectStore('historical-editor-summaries', { keyPath: 'id' });
-      editorSummaries.add({ id: 'preserved-editor-summary' });
-      // Simulate a v3 database where the Realism stores and summary indexes were never created.
-    };
-    request.onsuccess = () => request.result.close();
-    request.onerror = () => { /* The app will surface a storage error if migration setup fails. */ };
+  await page.route('**/*', async route => {
+    if (route.request().isNavigationRequest()) {
+      await route.fulfill({ status: 200, contentType: 'text/html', body: '<!doctype html><html><head></head><body></body></html>' });
+    } else {
+      await route.abort();
+    }
   });
-
-  await page.goto('/#/history');
+  await page.goto('/');
+  await page.evaluate(async () => {
+    const request = indexedDB.open('managerhub-local', 3);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      request.onupgradeneeded = () => {
+        const upgradeDb = request.result;
+        upgradeDb.createObjectStore('player-exports', { keyPath: 'id' });
+        upgradeDb.createObjectStore('player-export-summaries', { keyPath: 'id' });
+        upgradeDb.createObjectStore('save-inspections', { keyPath: 'id' });
+        const editorRecords = upgradeDb.createObjectStore('historical-editor-snapshots', { keyPath: 'id' });
+        editorRecords.add({ id: 'preserved-editor-record' });
+        const editorSummaries = upgradeDb.createObjectStore('historical-editor-summaries', { keyPath: 'id' });
+        editorSummaries.add({ id: 'preserved-editor-summary' });
+        // Simulate a v3 database where the Realism stores and summary indexes were never created.
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    db.close();
+  });
+  await page.unroute('**/*');
+  await page.goto('/?load-app=1#/history');
   await expect(page.getByRole('heading', { name: 'Historical snapshots' })).toBeVisible();
   await expect(page.getByText('No historical snapshots saved')).toBeVisible();
 
