@@ -168,7 +168,7 @@ export default {
   "Calendar age is derived using a Gregorian month/day policy; it does not assert game-engine or FMRTE reference age.": "Tuổi lịch được tính theo quy tắc tháng/ngày Gregorian; không khẳng định tương đương tuổi trong game engine hoặc FMRTE.",
   "Research Realism redacts exact numeric ratings because manager scouting and visibility knowledge have not been decoded.": "Chế độ Realism che các chỉ số số học chính xác vì chưa giải mã được kiến thức scouting và quyền hiển thị của manager.",
   "Research Realism also redacts supplied birth dates and primary-nation links pending manager visibility evidence.": "Chế độ Realism cũng che ngày sinh và liên kết quốc gia chính được cung cấp cho đến khi có bằng chứng về quyền hiển thị của manager.",
-  "playerStaff": "PlayerStaff",
+  "playerStaff": "Nhân sự cầu thủ",
   "Local historical library": "THƯ VIỆN DỮ LIỆU LỊCH SỬ",
   "Capture evidence": "BẰNG CHỨNG CAPTURE",
   "Snapshot-local player ID": "ID CẦU THỦ TRONG SNAPSHOT",
