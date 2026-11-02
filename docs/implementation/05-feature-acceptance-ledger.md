@@ -1,5 +1,7 @@
 # ManagerHub — 27-module implementation and acceptance ledger
 
+2026-11-02: the FMRTE/FM2013 research baseline was merged into main. The historical snapshot consumer is being implemented on feat/fm2013-historical-consumer: bounded worker import, strict historical schema, separate Editor/Realism stores, local search/browse and persistence. Full checks and browser acceptance are pending. This work does not complete MH-01/03/05 or any delivery phase; no native reader, offline decoder, CA/PA or writer capability is certified.
+
 2026-11-01: [local session lifecycle research](../research/fmrte/24-fm2013-local-session-lifecycle.md) connects actual host process identity, generated read-only script, REA capture and fresh Editor/Realism normalization for4,058 observed records. Historical-only output, opaque creation-time checks, expiry/token/script consistency and synthetic failure tests pass; full checks pass226 tests/build. Product watcher/IPC, trusted current availability, career identity, full source coverage and writer certification remain unfinished. No module or delivery phase is marked complete.
 
 **Status as of 2026-11-01:** some modules have **partial production code** plus isolated live-reader research; the full 27-module scope remains incomplete. Do not change to Complete without integrated code, tests, UI and acceptance evidence. This is a planning tracker, not claims of available features.
