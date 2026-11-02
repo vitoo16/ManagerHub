@@ -58,7 +58,7 @@ const SnapshotList = memo(function SnapshotList({ items, loading, selectedId, pe
     onOpen: (id: string) => void; onDelete: (id: string) => void }) {
   const { t } = useTranslation();
   return <section className="historical-panel historical-library" aria-labelledby="historical-library-title">
-    <SectionHeading eyebrow={t('Local historical library')} title={t('Saved snapshots')}/>
+    <SectionHeading id="historical-library-title" eyebrow={t('Local historical library')} title={t('Saved snapshots')}/>
     {loading ? <p className="historical-muted" role="status">{t('Loading saved snapshots…')}</p> :
       items.length === 0 ? <div className="historical-empty">
         <Icon name="database" size={22}/>
@@ -91,7 +91,7 @@ const SnapshotList = memo(function SnapshotList({ items, loading, selectedId, pe
 const CoveragePanel = memo(function CoveragePanel({ record }: { record: HistoricalSnapshotRecord }) {
   const { t } = useTranslation();
   return <section className="historical-panel" aria-labelledby="historical-coverage-title">
-    <SectionHeading eyebrow={t('Capture evidence')} title={t('Scan coverage')}/>
+    <SectionHeading id="historical-coverage-title" eyebrow={t('Capture evidence')} title={t('Scan coverage')}/>
     <div className="historical-coverage-grid">
       {record.snapshot.captureCoverage.map(item => <div className="historical-coverage-item" key={item.nativeKind}>
         <div className="historical-coverage-heading">
@@ -365,7 +365,7 @@ export default function HistoricalWorkspace() {
     </div>
 
     <section className="historical-panel historical-import-panel" aria-labelledby="historical-import-title">
-      <SectionHeading eyebrow={t('Local capture import')} title={t('Import a historical capture')}>
+      <SectionHeading id="historical-import-title" eyebrow={t('Local capture import')} title={t('Import a historical capture')}>
         <Status tone="info">{t('Read-only')}</Status>
       </SectionHeading>
       <form onSubmit={event => void onImport(event)} className="historical-import-form">
