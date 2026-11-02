@@ -360,8 +360,8 @@ export default function HistoricalWorkspace() {
   }, [players, deferredSearch]);
   const visiblePlayers = filteredPlayers.slice(0, visibleLimit);
   const selectedPlayer = useMemo(() =>
-    players.find(player => player.id === selectedPlayerId) ?? visiblePlayers[0] ?? null,
-  [players, selectedPlayerId, visiblePlayers]);
+    filteredPlayers.find(player => player.id === selectedPlayerId) ?? filteredPlayers[0] ?? null,
+  [filteredPlayers, selectedPlayerId]);
 
   return <div className="view-flow historical-workspace" aria-busy={importing || library.activity !== null}>
     <div className="page-title">
