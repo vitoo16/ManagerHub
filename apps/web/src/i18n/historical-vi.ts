@@ -120,12 +120,9 @@ export default {
   "Observed position familiarity is not tactical eligibility.": "Mức độ quen vị trí được quan sát không phải điều kiện thi đấu chiến thuật.",
   "No native save writer, live process watcher or desktop IPC is active.": "Chưa có chức năng ghi save native, theo dõi tiến trình game hoặc desktop IPC.",
   "Not present in this capture": "Không có trong capture này",
-  "Not decoded": "Chưa giải mã",
-  "Not verified": "Chưa xác minh",
   "Incompatible build": "Build không tương thích",
   "Hidden in Realism mode": "Được che trong chế độ Realism",
   "Not applicable": "Không áp dụng",
-  "ready": "Đã tiếp nhận",
   "partial": "Một phần",
   "empty": "Không có bản ghi",
   "byte_limit": "Đạt giới hạn byte",
@@ -146,7 +143,5 @@ export default {
   "attackingMidRight": "Tiền vệ tấn công phải",
   "attackerCentral": "Tiền đạo trung tâm",
   "wingBackLeft": "Hậu vệ biên trái",
-  "wingBackRight": "Hậu vệ biên phải",
-  "years": "tuổi",
-  "Actual CA": "CA thực tế"
+  "wingBackRight": "Hậu vệ biên phải"
 } as const;
