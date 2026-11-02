@@ -4,7 +4,7 @@
 
 ## Target and acquisition
 
-The user opened FM2013, loaded the career and selected Wayne Rooney. REA MCP6.7.0 remained connected. `list_frida_devices` and `list_frida_processes(device_id:local)` found `fm.exe`; a direct shell process query did not expose it. REA attached to that returned PID, without spawning or pausing the game. Frida17.23.2 reported Windows/ia32, pointer size4, and main-module path `C:\Program Files (x86)\Football Manager 2013\fm.exe`.
+The user opened FM2013, loaded the career and selected Wayne Rooney. REA MCP6.7.0 remained connected. `list_frida_devices` and `list_frida_processes(device_id:local)` found `fm.exe`; a direct shell process query did not expose it. REA attached to that returned PID, without spawning or pausing the game. Frida17.23.2 reported Windows/ia32, pointer size4, and main-module path `<FM2013_INSTALL_ROOT>\fm.exe`.
 
 The on-disk executable still hashes to `df45cde67cb7361867e7afc9808dacab8bf53bd972f48145f6f881ff55d08871` (metadata build `13.3.3f359652`). Runtime path/architecture and on-disk hash were correlated; **loaded runtime image bytes were not authenticated against the complete file**. REA labels Frida observations as external-service runtime evidence with no automatic artifact binding. This limitation is retained explicitly in the probe output.
 
