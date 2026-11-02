@@ -58,7 +58,7 @@ const SnapshotList = memo(function SnapshotList({ items, loading, selectedId, pe
     onOpen: (id: string) => void; onDelete: (id: string) => void }) {
   const { t } = useTranslation();
   return <section className="historical-panel historical-library" aria-labelledby="historical-library-title">
-    <SectionHeading eyebrow={t('LOCAL HISTORICAL LIBRARY')} title={t('Saved snapshots')}/>
+    <SectionHeading eyebrow={t('Local historical library')} title={t('Saved snapshots')}/>
     {loading ? <p className="historical-muted" role="status">{t('Loading saved snapshots…')}</p> :
       items.length === 0 ? <div className="historical-empty">
         <Icon name="database" size={22}/>
@@ -91,7 +91,7 @@ const SnapshotList = memo(function SnapshotList({ items, loading, selectedId, pe
 const CoveragePanel = memo(function CoveragePanel({ record }: { record: HistoricalSnapshotRecord }) {
   const { t } = useTranslation();
   return <section className="historical-panel" aria-labelledby="historical-coverage-title">
-    <SectionHeading eyebrow={t('CAPTURE EVIDENCE')} title={t('Scan coverage')}/>
+    <SectionHeading eyebrow={t('Capture evidence')} title={t('Scan coverage')}/>
     <div className="historical-coverage-grid">
       {record.snapshot.captureCoverage.map(item => <div className="historical-coverage-item" key={item.nativeKind}>
         <div className="historical-coverage-heading">
@@ -125,7 +125,7 @@ const PlayerDetail = memo(function PlayerDetail({ player }: { player: LivePlayer
     <section className="historical-panel">
       <div className="historical-player-heading">
         <div>
-          <span className="mh-eyebrow">{t('SNAPSHOT-LOCAL PLAYER ID')} · {player.nativeKind}</span>
+          <span className="mh-eyebrow">{t('Snapshot-local player ID')} · {player.nativeKind}</span>
           <h3>{fieldText(player.name, t)}</h3>
           <p>{t('Native ID')} {player.nativeId} · {t('This identity is scoped to this snapshot only.')}</p>
         </div>
@@ -143,7 +143,7 @@ const PlayerDetail = memo(function PlayerDetail({ player }: { player: LivePlayer
     </section>
 
     <section className="historical-panel">
-      <SectionHeading eyebrow={t('49 ORDINARY ATTRIBUTES')} title={t('Attribute evidence')}/>
+      <SectionHeading eyebrow={t('49 ordinary attributes')} title={t('Attribute evidence')}/>
       <div className="historical-value-grid">
         {attributes.map(([key, field]) => <div className="historical-value-row" key={key}>
           <span>{field.sourceName}</span>
@@ -154,7 +154,7 @@ const PlayerDetail = memo(function PlayerDetail({ player }: { player: LivePlayer
     </section>
 
     <section className="historical-panel">
-      <SectionHeading eyebrow={t('15 POSITION FAMILIARITY VALUES')} title={t('Position evidence')}/>
+      <SectionHeading eyebrow={t('15 position familiarity values')} title={t('Position evidence')}/>
       <div className="historical-value-grid historical-value-grid--positions">
         {positions.map(([key, field]) => <div className="historical-value-row" key={key}>
           <span>{field.nativeCode} · {t(key)}</span>
@@ -165,7 +165,7 @@ const PlayerDetail = memo(function PlayerDetail({ player }: { player: LivePlayer
     </section>
 
     <section className="historical-panel">
-      <SectionHeading eyebrow={t('UNVERIFIED FIELDS')} title={t('Ability and contract data')}/>
+      <SectionHeading eyebrow={t('Unverified fields')} title={t('Ability and contract data')}/>
       <dl className="historical-facts historical-facts--compact">
         <div><dt>{t('Actual CA')}</dt><dd>{fieldText(player.actualCa, t)}</dd></div>
         <div><dt>{t('Potential ability')}</dt><dd>{fieldText(player.potentialAbility, t)}</dd></div>
@@ -226,6 +226,8 @@ export default function HistoricalWorkspace() {
       }, mode, setStage, controller.signal);
       setRecord(result.record);
       setPairedRecord(result.pairedRecord);
+      setFile(null);
+      if (inputRef.current) inputRef.current.value = '';
       setActiveId(result.record.id);
       setActiveSaved(false);
       setSelectedPlayerId(result.record.snapshot.players[0]?.id ?? null);
@@ -357,13 +359,13 @@ export default function HistoricalWorkspace() {
 
   return <div className="view-flow historical-workspace" aria-busy={importing || library.activity !== null}>
     <div className="page-title">
-      <span className="mh-eyebrow">{t('FM2013 / HISTORICAL CAPTURE / READ-ONLY')}</span>
+      <span className="mh-eyebrow">{t('FM2013 · Historical capture · Read-only')}</span>
       <h1>{t('Historical snapshots')}</h1>
       <p>{t('Import an address-free FM2013 capture, inspect its evidence and keep a local historical record. This workspace does not connect to a running game or modify a save.')}</p>
     </div>
 
     <section className="historical-panel historical-import-panel" aria-labelledby="historical-import-title">
-      <SectionHeading eyebrow={t('LOCAL CAPTURE IMPORT')} title={t('Import a historical capture')}>
+      <SectionHeading eyebrow={t('Local capture import')} title={t('Import a historical capture')}>
         <Status tone="info">{t('Read-only')}</Status>
       </SectionHeading>
       <form onSubmit={event => void onImport(event)} className="historical-import-form">
@@ -395,7 +397,7 @@ export default function HistoricalWorkspace() {
           {importing && <Button variant="quiet" type="button" onClick={onCancel}>{t('Cancel import')}</Button>}
         </div>
       </form>
-      {importing && <p className="historical-progress" role="status" aria-live="polite"><span className="workspace-loading__spinner" aria-hidden="true"/>{progressCopy(stage, t)}</p>}
+      {importing && <p className="historical-progress" role="status" aria-live="polite">{progressCopy(stage, t)}</p>}
       {importError && <div className="inline-alert" role="alert"><Icon name="warning" size={16}/>{t(importError)}</div>}
       {library.error && <div className="inline-alert" role="alert"><Icon name="warning" size={16}/>{t(library.error)}
         {library.canClearIncompatible && <Button variant="quiet" onClick={() => void library.clearIncompatible()}>{t('Clear incompatible historical library')}</Button>}
@@ -417,7 +419,7 @@ export default function HistoricalWorkspace() {
           <section className="historical-panel historical-snapshot-overview">
             <div className="historical-overview-heading">
               <div>
-                <span className="mh-eyebrow">{t('HISTORICAL SNAPSHOT')} · {record.snapshot.edition} {record.snapshot.build}</span>
+                <span className="mh-eyebrow">{t('Historical snapshot')} · {record.snapshot.edition} {record.snapshot.build}</span>
                 <h2>{record.snapshot.careerId.value}</h2>
                 <p>{record.fileName} · {record.snapshot.players.length.toLocaleString()} {t('observed players')}</p>
               </div>
@@ -446,7 +448,7 @@ export default function HistoricalWorkspace() {
           <CoveragePanel record={record}/>
 
           <section className="historical-panel">
-            <SectionHeading eyebrow={t('PLAYER RECORDS')} title={t('Browse captured players')}>
+            <SectionHeading eyebrow={t('Player records')} title={t('Browse captured players')}>
               <span className="historical-count">{filteredPlayers.length.toLocaleString()} / {players.length.toLocaleString()}</span>
             </SectionHeading>
             <label className="historical-search">
@@ -456,7 +458,7 @@ export default function HistoricalWorkspace() {
             </label>
             <div className="historical-player-browser">
               <div className="historical-player-table-wrap">
-                <table className="historical-player-table">
+                <table className="historical-player-table" aria-label={t("Historical player records")}>
                   <thead><tr><th>{t('Player')}</th><th>{t('Kind')}</th><th>{t('Observed club link')}</th><th>{t('Derived age')}</th></tr></thead>
                   <tbody>
                     {visiblePlayers.map(player => <tr key={player.id}>
@@ -477,7 +479,7 @@ export default function HistoricalWorkspace() {
 
           {selectedPlayer && <PlayerDetail player={selectedPlayer}/>}
           <section className="historical-panel">
-            <SectionHeading eyebrow={t('SOURCE DIAGNOSTICS')} title={t('What this capture does not prove')}/>
+            <SectionHeading eyebrow={t('Source diagnostics')} title={t('What this capture does not prove')}/>
             <ul className="historical-diagnostics">
               {record.diagnostics.map((item, index) => <li key={index}>{t(item)}</li>)}
               <li>{t('CA and PA remain unknown; no contract values are decoded.')}</li>
