@@ -216,5 +216,6 @@ export default {
   "Unknown visibility mode.": "Không nhận diện được chế độ hiển thị.",
   "Malformed capture JSON.": "Capture JSON bị lỗi định dạng.",
   "Unknown scan stop reason.": "Không nhận diện được lý do dừng quét.",
-  "No accepted player records; this does not establish whether a career is loaded.": "Không có bản ghi cầu thủ hợp lệ; điều này không xác nhận career có đang được nạp hay không."
+  "No accepted player records; this does not establish whether a career is loaded.": "Không có bản ghi cầu thủ hợp lệ; điều này không xác nhận career có đang được nạp hay không.",
+  "The historical capture worker returned a snapshot that failed schema or privacy validation.": "Web Worker trả về snapshot không vượt qua kiểm tra schema hoặc quyền riêng tư."
 } as const;
