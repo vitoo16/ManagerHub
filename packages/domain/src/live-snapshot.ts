@@ -1,6 +1,7 @@
 import profile from './fm2013-live-profile.json' with { type: 'json' };
 import { decodeFm2013Date } from './fm2013-date.ts';
 import { calculateCalendarAge, CALENDAR_AGE_MODEL_VERSION } from './fm2013-calendar-age.ts';
+import { isSupportedFm2013ImagePath } from './live-session.ts';
 import type { EvidenceField, MissingReason } from './types';
 
 export type LiveNativeKind = 'player' | 'playerStaff';
@@ -173,7 +174,7 @@ export function parseFm2013LiveCapture(text: string, context: LiveSnapshotContex
     if (capture.schema !== profile.schema || capture.profileVersion !== profile.profileVersion) throw new Error('Unsupported capture profile.');
     const target = record(capture.target, ['pid', 'arch', 'pointerSize', 'imagePath', 'binarySha256']);
     const targetPid = integer(target.pid, 1, 4_294_967_295);
-    if (target.arch !== 'ia32' || target.pointerSize !== 4 || target.imagePath !== profile.imagePath || target.binarySha256 !== profile.binarySha256) {
+    if (target.arch !== 'ia32' || target.pointerSize !== 4 || !isSupportedFm2013ImagePath(target.imagePath) || target.binarySha256 !== profile.binarySha256) {
       throw new Error('Capture target does not match the exact FM2013 build.');
     }
     let gameDate: EvidenceField<string> = missing('not_decoded');
