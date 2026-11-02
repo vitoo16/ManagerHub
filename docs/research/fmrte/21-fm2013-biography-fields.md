@@ -4,7 +4,7 @@ Three guarded live date-of-birth observations match the three previously retaine
 
 ## Exact-artifact findings
 
-Source is `C:\BraCa Soft\FMRTE 13\FMRTE.exe`, version13.3.3.62, SHA-256 `c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae`, MVID `3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6`. Method coordinates and canonical evidence are in the [manifest](evidence-manifest.json).
+Source is `<FMRTE13_INSTALL_ROOT>\FMRTE.exe`, version13.3.3.62, SHA-256 `c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae`, MVID `3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6`. Method coordinates and canonical evidence are in the [manifest](evidence-manifest.json).
 
 | Finding | Source | Established scope |
 |---|---|---|
