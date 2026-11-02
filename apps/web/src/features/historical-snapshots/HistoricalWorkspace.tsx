@@ -6,8 +6,8 @@ import {
 } from '@managerhub/domain';
 import { Button, Icon, SectionHeading, Status } from '@managerhub/ui';
 import { getHistoricalSnapshot } from '@managerhub/storage/historical-live-snapshots';
-import { importHistoricalCapture, type HistoricalImportStage } from '../import-historical-capture';
-import { useHistoricalSnapshotLibrary } from '../useHistoricalSnapshotLibrary';
+import { importHistoricalCapture, type HistoricalImportStage } from '../../import-historical-capture';
+import { useHistoricalSnapshotLibrary } from '../../useHistoricalSnapshotLibrary';
 import './historical-workspace.css';
 
 const PAGE_SIZE = 80;
