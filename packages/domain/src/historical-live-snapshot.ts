@@ -318,16 +318,19 @@ export function toHistoricalSnapshotSummary(record: HistoricalSnapshotRecord): H
 }
 
 export function isHistoricalSnapshotSummary(value: unknown): value is HistoricalSnapshotSummary {
-  return exactKeys(value, ['schema', 'schemaVersion', 'id', 'mode', 'fileName', 'sourceSize', 'sourceSha256', 'importedAt',
-    'capturedAt', 'careerLabel', 'edition', 'build', 'status', 'playerCount', 'coverageCount']) &&
-    value.schema === HISTORICAL_SNAPSHOT_SCHEMA && value.schemaVersion === HISTORICAL_SNAPSHOT_SCHEMA_VERSION &&
-    safeText(value.id, 128) && (value.mode === 'editor' || value.mode === 'realism') &&
-    safeText(value.fileName, 255) && !value.fileName.includes('/') && !value.fileName.includes('\\') &&
-    finiteInteger(value.sourceSize, 1, MAX_HISTORICAL_CAPTURE_BYTES) &&
-    typeof value.sourceSha256 === 'string' && /^[a-f0-9]{64}$/u.test(value.sourceSha256) &&
-    validTimestamp(value.importedAt) && validTimestamp(value.capturedAt) &&
-    safeText(value.careerLabel, 128) && value.edition === profile.edition && value.build === profile.build &&
-    (value.status === 'ready' || value.status === 'partial' || value.status === 'empty') &&
-    finiteInteger(value.playerCount, 0, profile.limits.maxRecords) &&
-    finiteInteger(value.coverageCount, 0, 2);
+  if (!exactKeys(value, ['schema', 'schemaVersion', 'id', 'mode', 'fileName', 'sourceSize', 'sourceSha256', 'importedAt',
+    'capturedAt', 'careerLabel', 'edition', 'build', 'status', 'playerCount', 'coverageCount']) ||
+    value.schema !== HISTORICAL_SNAPSHOT_SCHEMA || value.schemaVersion !== HISTORICAL_SNAPSHOT_SCHEMA_VERSION ||
+    !safeText(value.id, 128) || (value.mode !== 'editor' && value.mode !== 'realism') ||
+    !safeText(value.fileName, 255) || value.fileName.includes('/') || value.fileName.includes('\\') ||
+    !finiteInteger(value.sourceSize, 1, MAX_HISTORICAL_CAPTURE_BYTES) ||
+    typeof value.sourceSha256 !== 'string' || !/^[a-f0-9]{64}$/u.test(value.sourceSha256) ||
+    !validTimestamp(value.importedAt) || !validTimestamp(value.capturedAt) ||
+    !safeText(value.careerLabel, 128) || value.edition !== profile.edition || value.build !== profile.build ||
+    (value.status !== 'ready' && value.status !== 'partial' && value.status !== 'empty') ||
+    !finiteInteger(value.playerCount, 0, profile.limits.maxRecords) ||
+    !finiteInteger(value.coverageCount, 0, 2)) return false;
+  if (value.status === 'empty') return value.playerCount === 0;
+  if (value.playerCount === 0) return false;
+  return value.status !== 'ready' || value.coverageCount === 2;
 }
