@@ -25,10 +25,11 @@ export async function listHistoricalSnapshotSummaries(mode: HistoricalSnapshotMo
   try {
     const tx = db.transaction(names.summaries, 'readonly');
     const rows = await readRequest<unknown[]>(tx.objectStore(names.summaries).getAll());
-    if (!rows.every(isHistoricalSnapshotSummary) || rows.some(row => row.mode !== mode)) {
+    const validRows = rows.filter(isHistoricalSnapshotSummary);
+    if (validRows.length !== rows.length || validRows.some(row => row.mode !== mode)) {
       throw new Error('Saved historical snapshot metadata is incompatible with this version.');
     }
-    return [...rows].sort((a, b) => b.importedAt.localeCompare(a.importedAt));
+    return validRows.sort((a, b) => b.importedAt.localeCompare(a.importedAt));
   } finally { db.close(); }
 }
 
