@@ -45,8 +45,9 @@ describe('historical capture worker client', () => {
     vi.stubGlobal('window', { setTimeout: globalThis.setTimeout, clearTimeout: globalThis.clearTimeout });
     const pending = importHistoricalCapture(file, context, 'realism', vi.fn(), new AbortController().signal);
     const worker = FakeWorker.latest;
+    const rejection = expect(pending).rejects.toThrow('45 seconds');
     await vi.advanceTimersByTimeAsync(45_000);
-    await expect(pending).rejects.toThrow('45 seconds');
+    await rejection;
     expect(worker?.terminated).toBe(true);
   });
 
