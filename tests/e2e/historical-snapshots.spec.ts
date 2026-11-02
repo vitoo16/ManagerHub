@@ -185,7 +185,7 @@ test('rejects malformed and unsupported captures without saving a snapshot', asy
     buffer: Buffer.from('{"schema":"wrong"}', 'utf8')
   });
   await page.getByRole('button', { name: 'Validate and import' }).click();
-  await expect(page.getByRole('alert')).toContainText('Unsupported capture profile.');
+  await expect(page.getByRole('alert')).toContainText('Unexpected or missing capture fields.');
   await expect(page.getByText('No historical snapshots saved')).toBeVisible();
 });
 
