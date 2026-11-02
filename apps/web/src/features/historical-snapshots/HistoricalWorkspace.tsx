@@ -6,8 +6,8 @@ import {
 } from '@managerhub/domain';
 import { Button, Icon, SectionHeading, Status } from '@managerhub/ui';
 import { getHistoricalSnapshot } from '@managerhub/storage/historical-live-snapshots';
-import { importHistoricalCapture, type HistoricalImportStage } from './import-historical-capture';
-import { useHistoricalSnapshotLibrary } from './useHistoricalSnapshotLibrary';
+import { importHistoricalCapture, type HistoricalImportStage } from '../import-historical-capture';
+import { useHistoricalSnapshotLibrary } from '../useHistoricalSnapshotLibrary';
 import './historical-workspace.css';
 
 const PAGE_SIZE = 80;
@@ -50,7 +50,7 @@ function progressCopy(stage: HistoricalImportStage, t: (key: string) => string):
     parsing: 'Validating the FM2013 capture and building projections…',
     validating: 'Checking snapshot provenance and privacy…'
   };
-  return t(labels[stage]);
+  return t(labels[stage] ?? 'Checking snapshot provenance and privacy…');
 }
 
 const SnapshotList = memo(function SnapshotList({ items, loading, selectedId, pendingDelete, onOpen, onDelete }:
