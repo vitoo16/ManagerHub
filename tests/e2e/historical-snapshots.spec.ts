@@ -84,7 +84,7 @@ test('imports, browses, saves, reloads and switches safely between Editor and Re
   const hiddenPassing = page.locator('.historical-value-row').filter({ hasText: 'Passing' });
   await expect(hiddenPassing.locator('strong')).toHaveText('Hidden in Realism mode');
   await expect(page.getByText('Synthetic Nation')).toHaveCount(0);
-  await expect(page.getByText('Saved on this browser')).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Saved on this browser' })).toBeDisabled();
 
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Historical snapshots' })).toBeVisible();
