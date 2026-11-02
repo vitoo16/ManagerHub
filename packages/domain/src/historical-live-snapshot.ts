@@ -73,9 +73,15 @@ function safeText(value: unknown, max: number, allowEmpty = false): value is str
 
 function validTimestamp(value: unknown): value is string {
   if (!safeText(value, 40)) return false;
-  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})$/u.test(value)) return false;
-  const parsed = Date.parse(value);
-  return Number.isFinite(parsed);
+  const parts = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d{1,3})?(Z|[+-](\d{2}):(\d{2}))$/u.exec(value);
+  if (!parts || !Number.isFinite(Date.parse(value))) return false;
+  const year = Number(parts[1]), month = Number(parts[2]), day = Number(parts[3]);
+  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const days = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1];
+  if (days === undefined || day < 1 || day > days || Number(parts[4]) > 23 ||
+      Number(parts[5]) > 59 || Number(parts[6]) > 59) return false;
+  if (parts[8] !== undefined && (Number(parts[8]) > 23 || Number(parts[9]) > 59)) return false;
+  return true;
 }
 
 function validDate(value: unknown): value is string {
@@ -146,10 +152,11 @@ function isPlayer(value: unknown, snapshotId: string, mode: HistoricalSnapshotMo
   if (!exactKeys(value, keys) || value.id !== snapshotId + ':' + String(value.nativeId) ||
       !finiteInteger(value.nativeId, 1, 2_147_483_647) ||
       (value.nativeKind !== 'player' && value.nativeKind !== 'playerStaff')) return false;
-  const textField = (item: unknown) => safeText(item, 128, true);
-  if (!isEvidenceField(value.firstName, 'live_game', textField) ||
-      !isEvidenceField(value.lastName, 'live_game', textField) ||
-      !isEvidenceField(value.name, 'live_game', textField) ||
+  const shortName = (item: unknown) => safeText(item, 64, true);
+  const fullName = (item: unknown) => safeText(item, 129);
+  if (!isEvidenceField(value.firstName, 'live_game', shortName) ||
+      !isEvidenceField(value.lastName, 'live_game', shortName) ||
+      !isEvidenceField(value.name, 'live_game', fullName) ||
       !isModeField(value.birthDate, mode, 'live_game', validDate, ['redacted', 'not_decoded'])) return false;
 
   const age = value.calendarAge;
