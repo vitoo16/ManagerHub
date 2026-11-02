@@ -296,3 +296,30 @@ test('clears corrupt historical metadata without deleting the existing player li
   });
   expect(remaining).toEqual({ historical: 0, playerSummaries: 1 });
 });
+
+
+test('keeps the workspace keyboard-accessible, reduced-motion friendly and usable at narrow 200%-zoom width', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  const viewport = page.viewportSize();
+  if (viewport && viewport.width > 760) await page.setViewportSize({ width: 640, height: 900 });
+  await page.goto('/#/history');
+  await expect(page.getByRole('heading', { name: 'Historical snapshots' })).toBeVisible();
+
+  const dimensions = await page.evaluate(() => ({
+    viewport: document.documentElement.clientWidth,
+    content: document.documentElement.scrollWidth
+  }));
+  expect(dimensions.content).toBeLessThanOrEqual(dimensions.viewport + 1);
+
+  const careerInput = page.getByLabel('Career label (user-declared)');
+  await careerInput.focus();
+  await page.keyboard.press('Tab');
+  await expect(page.getByLabel('Capture time (declared by source workflow)')).toBeFocused();
+
+  const motion = await page.locator('.historical-workspace button').first().evaluate(element => ({
+    transition: getComputedStyle(element).transitionDuration,
+    animation: getComputedStyle(element).animationDuration
+  }));
+  expect(motion.transition).toBe('0s');
+  expect(motion.animation).toBe('0s');
+});
