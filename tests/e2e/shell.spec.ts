@@ -451,7 +451,7 @@ test('save inspection metadata is opt-in, survives reload, and never stores the 
 });
 
 
-test('upgrades the v1 IndexedDB schema to v3 without dropping existing libraries', async ({ page }) => {
+test('upgrades the v1 IndexedDB schema to v4 without dropping existing libraries', async ({ page }) => {
   await page.addInitScript(() => {
     const request = indexedDB.open('managerhub-local', 1);
     request.onupgradeneeded = () => {
@@ -497,7 +497,7 @@ test('upgrades the v1 IndexedDB schema to v3 without dropping existing libraries
       db.close();
     }
   });
-  expect(migration.version).toBe(3);
+  expect(migration.version).toBe(4);
   expect(migration.stores).toContain('player-exports');
   expect(migration.stores).toContain('player-export-summaries');
   expect(migration.stores).toContain('save-inspections');
@@ -701,7 +701,7 @@ test('upgrades an existing v2 database to v4 without losing save or player metad
     } finally { db.close(); }
   });
   await page.unroute('**/*');
-  await page.goto('/#/history');
+  await page.goto('/?load-app=1#/history');
   await expect(page.getByRole('heading', { name: 'Historical snapshots' })).toBeVisible();
   const result = await page.evaluate(async () => {
     const request = indexedDB.open('managerhub-local', 4);
@@ -723,7 +723,7 @@ test('upgrades an existing v2 database to v4 without losing save or player metad
       };
     } finally { db.close(); }
   });
-  expect(result.version).toBe(3);
+  expect(result.version).toBe(4);
   expect(result.stores).toContain('historical-editor-snapshots');
   expect(result.stores).toContain('historical-realism-snapshots');
   expect(result.player).toMatchObject({ id: 'v2-player-summary', fileName: 'v2-export.csv' });
