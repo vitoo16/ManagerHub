@@ -1,10 +1,10 @@
 {
-  "installationRoot": "C:\\BraCa Soft\\FMRTE 13",
+  "installationRoot": "<FMRTE13_INSTALL_ROOT>",
   "capturedDate": "2026-10-30",
   "method": "PowerShell FileVersionInfo + System.Reflection.Metadata PEReader; never target execution",
   "files": [
     {
-      "path": "C:\\BraCa Soft\\FMRTE 13\\BouncyCastle.Crypto.dll",
+      "path": "<FMRTE13_INSTALL_ROOT>\\BouncyCastle.Crypto.dll",
       "relativePath": "BouncyCastle.Crypto.dll",
       "bytes": 1503232,
       "fileVersion": "1.7.4114.6375",
@@ -14,7 +14,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 13\\FMRTE.exe",
+      "path": "<FMRTE13_INSTALL_ROOT>\\FMRTE.exe",
       "relativePath": "FMRTE.exe",
       "bytes": 3233792,
       "fileVersion": "13.3.3.62",
@@ -24,7 +24,7 @@
       "corFlags": "ILOnly, Requires32Bit"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 13\\miniFMRTE.exe",
+      "path": "<FMRTE13_INSTALL_ROOT>\\miniFMRTE.exe",
       "relativePath": "miniFMRTE.exe",
       "bytes": 360960,
       "fileVersion": "13.3.3.62",
@@ -34,7 +34,7 @@
       "corFlags": "ILOnly"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 13\\NET-Detector.exe",
+      "path": "<FMRTE13_INSTALL_ROOT>\\NET-Detector.exe",
       "relativePath": "NET-Detector.exe",
       "bytes": 39424,
       "fileVersion": "1.0.0.0",
@@ -44,7 +44,7 @@
       "corFlags": "ILOnly, Requires32Bit"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 13\\Newtonsoft.Json.dll",
+      "path": "<FMRTE13_INSTALL_ROOT>\\Newtonsoft.Json.dll",
       "relativePath": "Newtonsoft.Json.dll",
       "bytes": 374272,
       "fileVersion": "4.5.4.14825",
@@ -54,7 +54,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 13\\unins000.exe",
+      "path": "<FMRTE13_INSTALL_ROOT>\\unins000.exe",
       "relativePath": "unins000.exe",
       "bytes": 1063198,
       "fileVersion": "51.52.0.0",
@@ -64,7 +64,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 13\\Update.exe",
+      "path": "<FMRTE13_INSTALL_ROOT>\\Update.exe",
       "relativePath": "Update.exe",
       "bytes": 547328,
       "fileVersion": "2.6.18.4",
@@ -74,7 +74,7 @@
       "corFlags": "ILOnly"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 13\\WPFToolkit.Extended.dll",
+      "path": "<FMRTE13_INSTALL_ROOT>\\WPFToolkit.Extended.dll",
       "relativePath": "WPFToolkit.Extended.dll",
       "bytes": 345600,
       "fileVersion": "1.5.0.0",
