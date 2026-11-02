@@ -190,6 +190,7 @@ export default function HistoricalWorkspace() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeSaved, setActiveSaved] = useState(false);
   const [importing, setImporting] = useState(false);
+  const [switchingMode, setSwitchingMode] = useState(false);
   const [stage, setStage] = useState<HistoricalImportStage>('reading');
   const [importError, setImportError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -304,48 +305,53 @@ export default function HistoricalWorkspace() {
   }, [pendingDelete, library.remove, activeId]);
 
   const onModeChange = useCallback(async (next: HistoricalSnapshotMode) => {
-    if (next === mode) return;
-    const pendingImport = abortRef.current;
-    abortRef.current = null;
-    pendingImport?.abort();
-    setImporting(false);
-    setSearch('');
-    setSelectedPlayerId(null);
-    setNotice(null);
-    setImportError(null);
-    const current = record;
-    const currentPair = pairedRecord;
-    const currentId = activeId;
-    const wasSaved = activeSaved;
-    setMode(next);
-    setRecord(null);
-    setPairedRecord(null);
-    setActiveSaved(false);
+    if (next === mode || switchingMode) return;
+    setSwitchingMode(true);
+    try {
+      const pendingImport = abortRef.current;
+      abortRef.current = null;
+      pendingImport?.abort();
+      setImporting(false);
+      setSearch('');
+      setSelectedPlayerId(null);
+      setNotice(null);
+      setImportError(null);
+      const current = record;
+      const currentPair = pairedRecord;
+      const currentId = activeId;
+      const wasSaved = activeSaved;
+      setMode(next);
+      setRecord(null);
+      setPairedRecord(null);
+      setActiveSaved(false);
 
-    if (!wasSaved && current?.mode === 'editor' && next === 'realism' && currentPair) {
-      setRecord(currentPair);
-      setActiveId(currentPair.id);
-      setSelectedPlayerId(currentPair.snapshot.players[0]?.id ?? null);
-      setNotice(t('Showing the separately redacted Realism projection. Save it to keep this mode after reload.'));
-      return;
-    }
-    if (currentId && wasSaved) {
-      try {
-        const counterpart = await getHistoricalSnapshot(currentId, next);
-        setRecord(counterpart);
-        setActiveId(counterpart.id);
-        setActiveSaved(true);
-        setSelectedPlayerId(counterpart.snapshot.players[0]?.id ?? null);
-        return;
-      } catch {
-        setActiveId(null);
-        setNotice(t('No saved projection exists in this mode. Reimport the source capture in this mode, or save an Editor import to keep both projections.'));
+      if (!wasSaved && current?.mode === 'editor' && next === 'realism' && currentPair) {
+        setRecord(currentPair);
+        setActiveId(currentPair.id);
+        setSelectedPlayerId(currentPair.snapshot.players[0]?.id ?? null);
+        setNotice(t('Showing the separately redacted Realism projection. Save it to keep this mode after reload.'));
         return;
       }
+      if (currentId && wasSaved) {
+        try {
+          const counterpart = await getHistoricalSnapshot(currentId, next);
+          setRecord(counterpart);
+          setActiveId(counterpart.id);
+          setActiveSaved(true);
+          setSelectedPlayerId(counterpart.snapshot.players[0]?.id ?? null);
+          return;
+        } catch {
+          setActiveId(null);
+          setNotice(t('No saved projection exists in this mode. Reimport the source capture in this mode, or save an Editor import to keep both projections.'));
+          return;
+        }
+      }
+      setActiveId(null);
+      setNotice(t('The unsaved snapshot was cleared when the display mode changed. Reimport the source capture in the selected mode.'));
+    } finally {
+      setSwitchingMode(false);
     }
-    setActiveId(null);
-    setNotice(t('The unsaved snapshot was cleared when the display mode changed. Reimport the source capture in the selected mode.'));
-  }, [mode, record, pairedRecord, activeId, activeSaved, t]);
+  }, [mode, switchingMode, record, pairedRecord, activeId, activeSaved, t]);
 
   const normalizedSearch = search.trim().toLocaleLowerCase();
   const deferredSearch = useDeferredValue(normalizedSearch);
@@ -391,8 +397,8 @@ export default function HistoricalWorkspace() {
         <fieldset className="historical-mode-fieldset">
           <legend>{t('Visibility mode')}</legend>
           <div className="historical-mode-switch">
-            <button type="button" aria-pressed={mode === 'realism'} onClick={() => void onModeChange('realism')} disabled={importing || library.activity !== null}>{t('Realism')}</button>
-            <button type="button" aria-pressed={mode === 'editor'} onClick={() => void onModeChange('editor')} disabled={importing || library.activity !== null}>{t('Editor')}</button>
+            <button type="button" aria-pressed={mode === 'realism'} onClick={() => void onModeChange('realism')} disabled={importing || switchingMode || library.activity !== null}>{t('Realism')}</button>
+            <button type="button" aria-pressed={mode === 'editor'} onClick={() => void onModeChange('editor')} disabled={importing || switchingMode || library.activity !== null}>{t('Editor')}</button>
           </div>
           <small>{mode === 'realism'
             ? t('Hidden ratings, birth date, primary-nation link and derived age stay redacted before display and persistence.')
