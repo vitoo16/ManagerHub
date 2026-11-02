@@ -1,6 +1,6 @@
 # FM2013 historical snapshot consumer
 
-**Implementation status:** integrated on feat/fm2013-historical-consumer; CI run #41489241321 passed TypeScript, unit tests, production build/bundle budgets and Playwright desktop/mobile acceptance. Awaiting PR #58 merge. The FMRTE/FM2013 research baseline was merged into main in merge commit 1cd994c.
+**Implementation status:** integrated on feat/fm2013-historical-consumer; CI run #41490068166 passed TypeScript, unit tests, production build/bundle budgets and Playwright desktop/mobile acceptance. Awaiting PR #58 merge. The FMRTE/FM2013 research baseline was merged into main in merge commit 1cd994c.
 
 ## Scope
 
@@ -55,4 +55,4 @@ The branch adds:
 - Playwright coverage for import → browse → save → reload → mode switch, Realism-only privacy, malformed input, v1/v2-to-v4 IndexedDB migration and v3 partial-schema repair.
 - Existing AFE and FM2013 test suites remain in the root npm run test command.
 
-Acceptance passed in CI run #41489241321 (TypeScript, unit tests, build/bundle budget, desktop/mobile E2E). Do not mark MH-01, MH-03, MH-05 or the 27-module delivery phase complete from this consumer alone.
+Acceptance passed in CI run #41490068166 (TypeScript, unit tests, build/bundle budget, desktop/mobile E2E). Do not mark MH-01, MH-03, MH-05 or the 27-module delivery phase complete from this consumer alone.
