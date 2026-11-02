@@ -1,5 +1,7 @@
 import { memo, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import { i18n } from '../../i18n';
+import historicalVi from '../../i18n/historical-vi';
 import {
   type EvidenceField, type HistoricalSnapshotMode, type HistoricalSnapshotRecord,
   type HistoricalSnapshotSummary, type LivePlayer, type MissingReason
@@ -9,6 +11,8 @@ import { getHistoricalSnapshot } from '@managerhub/storage/historical-live-snaps
 import { importHistoricalCapture, type HistoricalImportStage } from '../../import-historical-capture';
 import { useHistoricalSnapshotLibrary } from '../../useHistoricalSnapshotLibrary';
 import './historical-workspace.css';
+
+i18n.addResourceBundle('vi', 'translation', historicalVi, true, true);
 
 const PAGE_SIZE = 80;
 const MISSING_COPY: Record<MissingReason, string> = {
