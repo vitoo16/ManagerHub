@@ -45,7 +45,7 @@
 .historical-facts dt {font-size:11px;color:var(--text-faint);margin-bottom:4px}
 .historical-facts dd {margin:0;font-size:11px;font-weight:650;color:var(--text);overflow-wrap:anywhere}
 .historical-facts--compact {gap:10px 16px}
-.historical-hash {font:10px/1.5 ui-monospace,Consolas,monospace;word-break:break-all}
+.historical-hash {font:11px/1.5 ui-monospace,Consolas,monospace;word-break:break-all}
 .historical-overview-actions {display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:17px;padding-top:13px;border-top:1px solid var(--line)}
 .historical-coverage-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
 .historical-coverage-item {min-width:0;padding:13px;border:1px solid var(--line);border-radius:10px}
@@ -63,7 +63,7 @@
 .historical-player-table th {position:sticky;top:0;z-index:1;padding:9px 8px;background:var(--surface-up);color:var(--text-faint);font-size:11px;font-weight:800;white-space:nowrap}
 .historical-player-table td {padding:7px 8px;border-top:1px solid var(--line);color:var(--text-sub);font-variant-numeric:tabular-nums}
 .historical-player-table tbody tr:hover {background:var(--surface-up)}
-.historical-player-select {display:grid;gap:2px;max-width:230px;padding:0;border:0;background:transparent;text-align:left;color:var(--text);font:700 10px Manrope,sans-serif}
+.historical-player-select {display:grid;gap:2px;max-width:230px;padding:0;border:0;background:transparent;text-align:left;color:var(--text);font:700 11px Manrope,sans-serif}
 .historical-player-select[aria-current="true"] {color:var(--accent-strong)}
 .historical-player-select small {font:11px ui-monospace,Consolas,monospace;color:var(--text-faint)}
 .historical-table-empty {padding:20px!important;text-align:center;color:var(--text-faint)!important}
