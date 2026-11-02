@@ -1,6 +1,6 @@
 # FMRTE 13 — Save Changes and deepest recovered write boundary
 
-**Target identity:** FMRTE.exe 13.3.3.62, x86 .NET Framework 4 Client, C:\BraCa Soft\FMRTE 13\FMRTE.exe, SHA-256 c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae, MVID 3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6. **No write or game launch was performed.**
+**Target identity:** FMRTE.exe 13.3.3.62, x86 .NET Framework 4 Client, <FMRTE13_INSTALL_ROOT>\FMRTE.exe, SHA-256 c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae, MVID 3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6. **No write or game launch was performed.**
 
 Use UI13, P13, CA13, M13, A13 and B13 aliases from the [load report](01-fmrte13-load-pipeline.md). PG13 is ev_3158299bfb3444ec8d3dc061cfe303cbd5eb84eaf52a288a7611024088db2aa4, exact basePage + player_information selection.
 
