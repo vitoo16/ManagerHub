@@ -3,7 +3,7 @@ import profile from './fm2013-live-profile.json' with { type: 'json' };
 import { parseFm2013LiveCapture, type LiveSnapshotContext } from './live-snapshot';
 import {
   createHistoricalSnapshotRecord, isHistoricalSnapshotRecord, isHistoricalSnapshotSummary,
-  toHistoricalSnapshotSummary
+  parseHistoricalSnapshotRecord, toHistoricalSnapshotSummary
 } from './historical-live-snapshot';
 
 const context: LiveSnapshotContext = {
@@ -92,6 +92,10 @@ describe('historical FM2013 snapshot persistence schema', () => {
     expect(summary).toMatchObject({ mode: 'editor', playerCount: 2, edition: 'FM2013', build: '13.3.3f359652' });
     expect(Object.isFrozen(record)).toBe(true);
     expect(Object.isFrozen(record.snapshot.players[0]?.attributes)).toBe(true);
+    const reloaded = parseHistoricalSnapshotRecord(JSON.parse(JSON.stringify(record)));
+    expect(isHistoricalSnapshotRecord(reloaded)).toBe(true);
+    expect(Object.isFrozen(reloaded.snapshot.players[0]?.attributes)).toBe(true);
+    expect(isHistoricalSnapshotSummary({ ...summary, playerCount: 0 })).toBe(false);
   });
 
   it('stores Realism as a separately redacted projection with no exact ratings or biography', () => {
