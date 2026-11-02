@@ -1,10 +1,10 @@
 {
-  "installationRoot": "C:\\BraCa Soft\\FMRTE 26",
+  "installationRoot": "<FMRTE26_INSTALL_ROOT>",
   "capturedDate": "2026-10-30",
   "method": "PowerShell FileVersionInfo + System.Reflection.Metadata PEReader; never target execution",
   "files": [
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\config.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\config.json",
       "relativePath": "config.json",
       "bytes": 37058,
       "fileVersion": null,
@@ -14,7 +14,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\FMRTE.exe",
+      "path": "<FMRTE26_INSTALL_ROOT>\\FMRTE.exe",
       "relativePath": "FMRTE.exe",
       "bytes": 628704,
       "fileVersion": "26.3.2.42",
@@ -24,7 +24,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\unins000.exe",
+      "path": "<FMRTE26_INSTALL_ROOT>\\unins000.exe",
       "relativePath": "unins000.exe",
       "bytes": 3234256,
       "fileVersion": "51.1052.0.0",
@@ -34,7 +34,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Update.exe",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Update.exe",
       "relativePath": "Update.exe",
       "bytes": 4204000,
       "fileVersion": "1.2.158",
@@ -44,7 +44,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\AsyncAwaitBestPractices.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\AsyncAwaitBestPractices.dll",
       "relativePath": "current\\AsyncAwaitBestPractices.dll",
       "bytes": 35296,
       "fileVersion": "9.0.0",
@@ -54,7 +54,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\AsyncAwaitBestPractices.MVVM.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\AsyncAwaitBestPractices.MVVM.dll",
       "relativePath": "current\\AsyncAwaitBestPractices.MVVM.dll",
       "bytes": 27616,
       "fileVersion": "9.0.0",
@@ -64,7 +64,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\av_libglesv2.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\av_libglesv2.dll",
       "relativePath": "current\\av_libglesv2.dll",
       "bytes": 5440992,
       "fileVersion": "2.1.25606 git hash: cb8b4e1307a9",
@@ -74,7 +74,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Base.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Base.dll",
       "relativePath": "current\\Avalonia.Base.dll",
       "bytes": 2139616,
       "fileVersion": "11.3.10.0",
@@ -84,7 +84,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Controls.DataGrid.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Controls.DataGrid.dll",
       "relativePath": "current\\Avalonia.Controls.DataGrid.dll",
       "bytes": 382944,
       "fileVersion": "11.3.10.0",
@@ -94,7 +94,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Controls.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Controls.dll",
       "relativePath": "current\\Avalonia.Controls.dll",
       "bytes": 1095136,
       "fileVersion": "11.3.10.0",
@@ -104,7 +104,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.DesignerSupport.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.DesignerSupport.dll",
       "relativePath": "current\\Avalonia.DesignerSupport.dll",
       "bytes": 224736,
       "fileVersion": "0.7.0.0",
@@ -114,7 +114,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Desktop.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Desktop.dll",
       "relativePath": "current\\Avalonia.Desktop.dll",
       "bytes": 30176,
       "fileVersion": "11.3.10.0",
@@ -124,7 +124,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Dialogs.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Dialogs.dll",
       "relativePath": "current\\Avalonia.Dialogs.dll",
       "bytes": 259552,
       "fileVersion": "11.3.10.0",
@@ -134,7 +134,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.dll",
       "relativePath": "current\\Avalonia.dll",
       "bytes": 18912,
       "fileVersion": "11.3.10.0",
@@ -144,7 +144,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.FreeDesktop.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.FreeDesktop.dll",
       "relativePath": "current\\Avalonia.FreeDesktop.dll",
       "bytes": 216032,
       "fileVersion": "11.3.10.0",
@@ -154,7 +154,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Markup.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Markup.dll",
       "relativePath": "current\\Avalonia.Markup.dll",
       "bytes": 80352,
       "fileVersion": "11.3.10.0",
@@ -164,7 +164,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Markup.Xaml.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Markup.Xaml.dll",
       "relativePath": "current\\Avalonia.Markup.Xaml.dll",
       "bytes": 99808,
       "fileVersion": "11.3.10.0",
@@ -174,7 +174,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Markup.Xaml.Loader.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Markup.Xaml.Loader.dll",
       "relativePath": "current\\Avalonia.Markup.Xaml.Loader.dll",
       "bytes": 540640,
       "fileVersion": "11.3.10.0",
@@ -184,7 +184,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Metal.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Metal.dll",
       "relativePath": "current\\Avalonia.Metal.dll",
       "bytes": 30176,
       "fileVersion": "11.3.10.0",
@@ -194,7 +194,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.MicroCom.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.MicroCom.dll",
       "relativePath": "current\\Avalonia.MicroCom.dll",
       "bytes": 30688,
       "fileVersion": "11.3.10.0",
@@ -204,7 +204,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Native.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Native.dll",
       "relativePath": "current\\Avalonia.Native.dll",
       "bytes": 347104,
       "fileVersion": "11.3.10.0",
@@ -214,7 +214,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.OpenGL.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.OpenGL.dll",
       "relativePath": "current\\Avalonia.OpenGL.dll",
       "bytes": 130528,
       "fileVersion": "11.3.10.0",
@@ -224,7 +224,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Remote.Protocol.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Remote.Protocol.dll",
       "relativePath": "current\\Avalonia.Remote.Protocol.dll",
       "bytes": 85472,
       "fileVersion": "11.3.10.0",
@@ -234,7 +234,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Skia.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Skia.dll",
       "relativePath": "current\\Avalonia.Skia.dll",
       "bytes": 147424,
       "fileVersion": "11.3.10.0",
@@ -244,7 +244,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Themes.Fluent.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Themes.Fluent.dll",
       "relativePath": "current\\Avalonia.Themes.Fluent.dll",
       "bytes": 601568,
       "fileVersion": "11.3.10.0",
@@ -254,7 +254,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Themes.Simple.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Themes.Simple.dll",
       "relativePath": "current\\Avalonia.Themes.Simple.dll",
       "bytes": 314336,
       "fileVersion": "11.3.10.0",
@@ -264,7 +264,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Vulkan.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Vulkan.dll",
       "relativePath": "current\\Avalonia.Vulkan.dll",
       "bytes": 205280,
       "fileVersion": "11.3.10.0",
@@ -274,7 +274,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Win32.Automation.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Win32.Automation.dll",
       "relativePath": "current\\Avalonia.Win32.Automation.dll",
       "bytes": 128992,
       "fileVersion": "11.3.10.0",
@@ -284,7 +284,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Win32.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Win32.dll",
       "relativePath": "current\\Avalonia.Win32.dll",
       "bytes": 939488,
       "fileVersion": "11.3.10.0",
@@ -294,7 +294,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.X11.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.X11.dll",
       "relativePath": "current\\Avalonia.X11.dll",
       "bytes": 377312,
       "fileVersion": "11.3.10.0",
@@ -304,7 +304,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Xaml.Interactions.Custom.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Xaml.Interactions.Custom.dll",
       "relativePath": "current\\Avalonia.Xaml.Interactions.Custom.dll",
       "bytes": 134624,
       "fileVersion": "11.3.0.6",
@@ -314,7 +314,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Xaml.Interactions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Xaml.Interactions.dll",
       "relativePath": "current\\Avalonia.Xaml.Interactions.dll",
       "bytes": 90592,
       "fileVersion": "11.3.0.6",
@@ -324,7 +324,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Xaml.Interactions.DragAndDrop.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Xaml.Interactions.DragAndDrop.dll",
       "relativePath": "current\\Avalonia.Xaml.Interactions.DragAndDrop.dll",
       "bytes": 52192,
       "fileVersion": "11.3.0.6",
@@ -334,7 +334,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Xaml.Interactions.Draggable.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Xaml.Interactions.Draggable.dll",
       "relativePath": "current\\Avalonia.Xaml.Interactions.Draggable.dll",
       "bytes": 60896,
       "fileVersion": "11.3.0.6",
@@ -344,7 +344,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Xaml.Interactions.Events.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Xaml.Interactions.Events.dll",
       "relativePath": "current\\Avalonia.Xaml.Interactions.Events.dll",
       "bytes": 39904,
       "fileVersion": "11.3.0.6",
@@ -354,7 +354,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Xaml.Interactions.Responsive.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Xaml.Interactions.Responsive.dll",
       "relativePath": "current\\Avalonia.Xaml.Interactions.Responsive.dll",
       "bytes": 40416,
       "fileVersion": "11.3.0.6",
@@ -364,7 +364,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Avalonia.Xaml.Interactivity.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Avalonia.Xaml.Interactivity.dll",
       "relativePath": "current\\Avalonia.Xaml.Interactivity.dll",
       "bytes": 70112,
       "fileVersion": "11.3.0.6",
@@ -374,7 +374,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\AvaloniaUI.DiagnosticsSupport.Avalonia.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\AvaloniaUI.DiagnosticsSupport.Avalonia.dll",
       "relativePath": "current\\AvaloniaUI.DiagnosticsSupport.Avalonia.dll",
       "bytes": 1133024,
       "fileVersion": "2.1.1.0",
@@ -384,7 +384,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\clretwrc.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\clretwrc.dll",
       "relativePath": "current\\clretwrc.dll",
       "bytes": 312584,
       "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
@@ -394,7 +394,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\clrgc.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\clrgc.dll",
       "relativePath": "current\\clrgc.dll",
       "bytes": 673032,
       "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
@@ -404,7 +404,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\clrgcexp.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\clrgcexp.dll",
       "relativePath": "current\\clrgcexp.dll",
       "bytes": 709416,
       "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
@@ -414,7 +414,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\clrjit.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\clrjit.dll",
       "relativePath": "current\\clrjit.dll",
       "bytes": 1945360,
       "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
@@ -424,7 +424,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\coreclr.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\coreclr.dll",
       "relativePath": "current\\coreclr.dll",
       "bytes": 4797232,
       "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
@@ -434,7 +434,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\DynamicData.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\DynamicData.dll",
       "relativePath": "current\\DynamicData.dll",
       "bytes": 985056,
       "fileVersion": "9.4.1.30094",
@@ -444,7 +444,7 @@
       "corFlags": "ILOnly"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\FMRTE.deps.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\FMRTE.deps.json",
       "relativePath": "current\\FMRTE.deps.json",
       "bytes": 122047,
       "fileVersion": null,
@@ -454,7 +454,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\FMRTE.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\FMRTE.dll",
       "relativePath": "current\\FMRTE.dll",
       "bytes": 12328416,
       "fileVersion": "26.3.2.42",
@@ -464,7 +464,7 @@
       "corFlags": "ILOnly"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\FMRTE.exe",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\FMRTE.exe",
       "relativePath": "current\\FMRTE.exe",
       "bytes": 383968,
       "fileVersion": "26.3.2.42",
@@ -474,7 +474,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\FMRTE.runtimeconfig.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\FMRTE.runtimeconfig.json",
       "relativePath": "current\\FMRTE.runtimeconfig.json",
       "bytes": 487,
       "fileVersion": null,
@@ -484,7 +484,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\FmrteAvalonia.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\FmrteAvalonia.dll",
       "relativePath": "current\\FmrteAvalonia.dll",
       "bytes": 19534816,
       "fileVersion": "26.3.2.42",
@@ -494,7 +494,7 @@
       "corFlags": "ILOnly"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\HarfBuzzSharp.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\HarfBuzzSharp.dll",
       "relativePath": "current\\HarfBuzzSharp.dll",
       "bytes": 122440,
       "fileVersion": "8.3.1.1",
@@ -504,7 +504,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\hostfxr.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\hostfxr.dll",
       "relativePath": "current\\hostfxr.dll",
       "bytes": 374568,
       "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
@@ -514,7 +514,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\hostpolicy.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\hostpolicy.dll",
       "relativePath": "current\\hostpolicy.dll",
       "bytes": 387368,
       "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
@@ -524,7 +524,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\libHarfBuzzSharp.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\libHarfBuzzSharp.dll",
       "relativePath": "current\\libHarfBuzzSharp.dll",
       "bytes": 1804872,
       "fileVersion": null,
@@ -534,7 +534,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\libSkiaSharp.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\libSkiaSharp.dll",
       "relativePath": "current\\libSkiaSharp.dll",
       "bytes": 9414216,
       "fileVersion": null,
@@ -544,7 +544,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Markdig.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Markdig.dll",
       "relativePath": "current\\Markdig.dll",
       "bytes": 493024,
       "fileVersion": "0.42.0.0",
@@ -554,7 +554,7 @@
       "corFlags": "ILOnly"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\MicroCom.Runtime.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\MicroCom.Runtime.dll",
       "relativePath": "current\\MicroCom.Runtime.dll",
       "bytes": 29152,
       "fileVersion": "0.11.0.0",
@@ -564,7 +564,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.CSharp.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.CSharp.dll",
       "relativePath": "current\\Microsoft.CSharp.dll",
       "bytes": 993584,
       "fileVersion": "9.0.1125.51716",
@@ -574,7 +574,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.DiaSymReader.Native.amd64.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.DiaSymReader.Native.amd64.dll",
       "relativePath": "current\\Microsoft.DiaSymReader.Native.amd64.dll",
       "bytes": 2195504,
       "fileVersion": "14.42.34436.0",
@@ -584,7 +584,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.Configuration.Abstractions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Configuration.Abstractions.dll",
       "relativePath": "current\\Microsoft.Extensions.Configuration.Abstractions.dll",
       "bytes": 29480,
       "fileVersion": "9.0.925.41916",
@@ -594,7 +594,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.Configuration.Binder.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Configuration.Binder.dll",
       "relativePath": "current\\Microsoft.Extensions.Configuration.Binder.dll",
       "bytes": 44816,
       "fileVersion": "9.0.925.41916",
@@ -604,7 +604,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.Configuration.CommandLine.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Configuration.CommandLine.dll",
       "relativePath": "current\\Microsoft.Extensions.Configuration.CommandLine.dll",
       "bytes": 26408,
       "fileVersion": "9.0.925.41916",
@@ -614,7 +614,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.Configuration.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Configuration.dll",
       "relativePath": "current\\Microsoft.Extensions.Configuration.dll",
       "bytes": 45344,
       "fileVersion": "9.0.925.41916",
@@ -624,7 +624,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.Configuration.EnvironmentVariables.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Configuration.EnvironmentVariables.dll",
       "relativePath": "current\\Microsoft.Extensions.Configuration.EnvironmentVariables.dll",
       "bytes": 21264,
       "fileVersion": "9.0.925.41916",
@@ -634,7 +634,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.Configuration.FileExtensions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Configuration.FileExtensions.dll",
       "relativePath": "current\\Microsoft.Extensions.Configuration.FileExtensions.dll",
       "bytes": 29480,
       "fileVersion": "9.0.925.41916",
@@ -644,7 +644,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.Configuration.Json.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Configuration.Json.dll",
       "relativePath": "current\\Microsoft.Extensions.Configuration.Json.dll",
       "bytes": 28424,
       "fileVersion": "9.0.925.41916",
@@ -654,7 +654,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.Configuration.UserSecrets.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Configuration.UserSecrets.dll",
       "relativePath": "current\\Microsoft.Extensions.Configuration.UserSecrets.dll",
       "bytes": 27432,
       "fileVersion": "9.0.925.41916",
@@ -664,7 +664,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.DependencyInjection.Abstractions.dll",
       "relativePath": "current\\Microsoft.Extensions.DependencyInjection.Abstractions.dll",
       "bytes": 65824,
       "fileVersion": "9.0.925.41916",
@@ -674,7 +674,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.DependencyInjection.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.DependencyInjection.dll",
       "relativePath": "current\\Microsoft.Extensions.DependencyInjection.dll",
       "bytes": 93472,
       "fileVersion": "9.0.925.41916",
@@ -684,7 +684,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.Diagnostics.Abstractions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Diagnostics.Abstractions.dll",
       "relativePath": "current\\Microsoft.Extensions.Diagnostics.Abstractions.dll",
       "bytes": 32016,
       "fileVersion": "9.0.925.41916",
@@ -694,7 +694,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.Diagnostics.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Diagnostics.dll",
       "relativePath": "current\\Microsoft.Extensions.Diagnostics.dll",
       "bytes": 37160,
       "fileVersion": "9.0.925.41916",
@@ -704,7 +704,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.FileProviders.Abstractions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.FileProviders.Abstractions.dll",
       "relativePath": "current\\Microsoft.Extensions.FileProviders.Abstractions.dll",
       "bytes": 23864,
       "fileVersion": "9.0.925.41916",
@@ -714,7 +714,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.FileProviders.Physical.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.FileProviders.Physical.dll",
       "relativePath": "current\\Microsoft.Extensions.FileProviders.Physical.dll",
       "bytes": 46376,
       "fileVersion": "9.0.925.41916",
@@ -724,7 +724,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.FileSystemGlobbing.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.FileSystemGlobbing.dll",
       "relativePath": "current\\Microsoft.Extensions.FileSystemGlobbing.dll",
       "bytes": 46880,
       "fileVersion": "9.0.925.41916",
@@ -734,7 +734,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.Hosting.Abstractions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Hosting.Abstractions.dll",
       "relativePath": "current\\Microsoft.Extensions.Hosting.Abstractions.dll",
       "bytes": 53536,
       "fileVersion": "9.0.925.41916",
@@ -744,7 +744,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.Hosting.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Hosting.dll",
       "relativePath": "current\\Microsoft.Extensions.Hosting.dll",
       "bytes": 72472,
       "fileVersion": "9.0.925.41916",
@@ -754,7 +754,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.Logging.Abstractions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Logging.Abstractions.dll",
       "relativePath": "current\\Microsoft.Extensions.Logging.Abstractions.dll",
       "bytes": 67344,
       "fileVersion": "9.0.925.41916",
@@ -764,7 +764,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.Logging.Configuration.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Logging.Configuration.dll",
       "relativePath": "current\\Microsoft.Extensions.Logging.Configuration.dll",
       "bytes": 29472,
       "fileVersion": "9.0.925.41916",
@@ -774,7 +774,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.Logging.Console.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Logging.Console.dll",
       "relativePath": "current\\Microsoft.Extensions.Logging.Console.dll",
       "bytes": 75560,
       "fileVersion": "9.0.925.41916",
@@ -784,7 +784,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.Logging.Debug.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Logging.Debug.dll",
       "relativePath": "current\\Microsoft.Extensions.Logging.Debug.dll",
       "bytes": 20256,
       "fileVersion": "9.0.925.41916",
@@ -794,7 +794,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.Logging.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Logging.dll",
       "relativePath": "current\\Microsoft.Extensions.Logging.dll",
       "bytes": 52488,
       "fileVersion": "9.0.925.41916",
@@ -804,7 +804,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.Logging.EventLog.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Logging.EventLog.dll",
       "relativePath": "current\\Microsoft.Extensions.Logging.EventLog.dll",
       "bytes": 25872,
       "fileVersion": "9.0.925.41916",
@@ -814,7 +814,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.Logging.EventSource.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Logging.EventSource.dll",
       "relativePath": "current\\Microsoft.Extensions.Logging.EventSource.dll",
       "bytes": 35624,
       "fileVersion": "9.0.925.41916",
@@ -824,7 +824,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.Options.ConfigurationExtensions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Options.ConfigurationExtensions.dll",
       "relativePath": "current\\Microsoft.Extensions.Options.ConfigurationExtensions.dll",
       "bytes": 22792,
       "fileVersion": "9.0.925.41916",
@@ -834,7 +834,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.Options.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Options.dll",
       "relativePath": "current\\Microsoft.Extensions.Options.dll",
       "bytes": 66320,
       "fileVersion": "9.0.925.41916",
@@ -844,7 +844,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Extensions.Primitives.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Extensions.Primitives.dll",
       "relativePath": "current\\Microsoft.Extensions.Primitives.dll",
       "bytes": 45344,
       "fileVersion": "9.0.925.41916",
@@ -854,7 +854,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.IO.RecyclableMemoryStream.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.IO.RecyclableMemoryStream.dll",
       "relativePath": "current\\Microsoft.IO.RecyclableMemoryStream.dll",
       "bytes": 65968,
       "fileVersion": "3.0.1.0",
@@ -864,7 +864,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.VisualBasic.Core.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.VisualBasic.Core.dll",
       "relativePath": "current\\Microsoft.VisualBasic.Core.dll",
       "bytes": 1255728,
       "fileVersion": "14.0.1125.51716",
@@ -874,7 +874,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.VisualBasic.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.VisualBasic.dll",
       "relativePath": "current\\Microsoft.VisualBasic.dll",
       "bytes": 17680,
       "fileVersion": "9.0.1125.51716",
@@ -884,7 +884,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Win32.Primitives.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Win32.Primitives.dll",
       "relativePath": "current\\Microsoft.Win32.Primitives.dll",
       "bytes": 15632,
       "fileVersion": "9.0.1125.51716",
@@ -894,7 +894,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Microsoft.Win32.Registry.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Microsoft.Win32.Registry.dll",
       "relativePath": "current\\Microsoft.Win32.Registry.dll",
       "bytes": 121128,
       "fileVersion": "9.0.1125.51716",
@@ -904,7 +904,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\mscordaccore_amd64_amd64_9.0.1125.51716.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\mscordaccore_amd64_amd64_9.0.1125.51716.dll",
       "relativePath": "current\\mscordaccore_amd64_amd64_9.0.1125.51716.dll",
       "bytes": 1362264,
       "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
@@ -914,7 +914,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\mscordaccore.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\mscordaccore.dll",
       "relativePath": "current\\mscordaccore.dll",
       "bytes": 1362264,
       "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
@@ -924,7 +924,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\mscordbi.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\mscordbi.dll",
       "relativePath": "current\\mscordbi.dll",
       "bytes": 1240408,
       "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
@@ -934,7 +934,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\mscorlib.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\mscorlib.dll",
       "relativePath": "current\\mscorlib.dll",
       "bytes": 60208,
       "fileVersion": "9.0.1125.51716",
@@ -944,7 +944,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\mscorrc.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\mscorrc.dll",
       "relativePath": "current\\mscorrc.dll",
       "bytes": 135952,
       "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
@@ -954,7 +954,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\msquic.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\msquic.dll",
       "relativePath": "current\\msquic.dll",
       "bytes": 529480,
       "fileVersion": "2.4.8.569855",
@@ -964,7 +964,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\netstandard.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\netstandard.dll",
       "relativePath": "current\\netstandard.dll",
       "bytes": 101160,
       "fileVersion": "9.0.1125.51716",
@@ -974,7 +974,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Newtonsoft.Json.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Newtonsoft.Json.dll",
       "relativePath": "current\\Newtonsoft.Json.dll",
       "bytes": 723368,
       "fileVersion": "13.0.4.30916",
@@ -984,7 +984,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\NuGet.Versioning.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\NuGet.Versioning.dll",
       "relativePath": "current\\NuGet.Versioning.dll",
       "bytes": 64568,
       "fileVersion": "6.14.0.116",
@@ -994,7 +994,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\plist-cil.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\plist-cil.dll",
       "relativePath": "current\\plist-cil.dll",
       "bytes": 80352,
       "fileVersion": "2.3.1.23209",
@@ -1004,7 +1004,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Serilog.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Serilog.dll",
       "relativePath": "current\\Serilog.dll",
       "bytes": 176608,
       "fileVersion": "4.3.0.0",
@@ -1014,7 +1014,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Serilog.Exceptions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Serilog.Exceptions.dll",
       "relativePath": "current\\Serilog.Exceptions.dll",
       "bytes": 59872,
       "fileVersion": "8.4.0.0",
@@ -1024,7 +1024,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Serilog.Extensions.Logging.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Serilog.Extensions.Logging.dll",
       "relativePath": "current\\Serilog.Extensions.Logging.dll",
       "bytes": 42464,
       "fileVersion": "9.0.2.0",
@@ -1034,7 +1034,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Serilog.Sinks.Console.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Serilog.Sinks.Console.dll",
       "relativePath": "current\\Serilog.Sinks.Console.dll",
       "bytes": 53216,
       "fileVersion": "6.0.0.0",
@@ -1044,7 +1044,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Serilog.Sinks.File.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Serilog.Sinks.File.dll",
       "relativePath": "current\\Serilog.Sinks.File.dll",
       "bytes": 51680,
       "fileVersion": "7.0.0.0",
@@ -1054,7 +1054,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\SixLabors.ImageSharp.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\SixLabors.ImageSharp.dll",
       "relativePath": "current\\SixLabors.ImageSharp.dll",
       "bytes": 2114528,
       "fileVersion": "3.1.11.0",
@@ -1064,7 +1064,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\SkiaSharp.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\SkiaSharp.dll",
       "relativePath": "current\\SkiaSharp.dll",
       "bytes": 437808,
       "fileVersion": "2.88.9.0",
@@ -1074,7 +1074,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.AppContext.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.AppContext.dll",
       "relativePath": "current\\System.AppContext.dll",
       "bytes": 15624,
       "fileVersion": "9.0.1125.51716",
@@ -1084,7 +1084,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Buffers.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Buffers.dll",
       "relativePath": "current\\System.Buffers.dll",
       "bytes": 15664,
       "fileVersion": "9.0.1125.51716",
@@ -1094,7 +1094,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.CodeDom.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.CodeDom.dll",
       "relativePath": "current\\System.CodeDom.dll",
       "bytes": 185104,
       "fileVersion": "9.0.925.41916",
@@ -1104,7 +1104,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Collections.Concurrent.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Collections.Concurrent.dll",
       "relativePath": "current\\System.Collections.Concurrent.dll",
       "bytes": 293136,
       "fileVersion": "9.0.1125.51716",
@@ -1114,7 +1114,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Collections.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Collections.dll",
       "relativePath": "current\\System.Collections.dll",
       "bytes": 334136,
       "fileVersion": "9.0.1125.51716",
@@ -1124,7 +1124,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Collections.Immutable.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Collections.Immutable.dll",
       "relativePath": "current\\System.Collections.Immutable.dll",
       "bytes": 903464,
       "fileVersion": "9.0.1125.51716",
@@ -1134,7 +1134,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Collections.NonGeneric.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Collections.NonGeneric.dll",
       "relativePath": "current\\System.Collections.NonGeneric.dll",
       "bytes": 108840,
       "fileVersion": "9.0.1125.51716",
@@ -1144,7 +1144,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Collections.Specialized.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Collections.Specialized.dll",
       "relativePath": "current\\System.Collections.Specialized.dll",
       "bytes": 104720,
       "fileVersion": "9.0.1125.51716",
@@ -1154,7 +1154,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.ComponentModel.Annotations.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.ComponentModel.Annotations.dll",
       "relativePath": "current\\System.ComponentModel.Annotations.dll",
       "bytes": 198960,
       "fileVersion": "9.0.1125.51716",
@@ -1164,7 +1164,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.ComponentModel.DataAnnotations.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.ComponentModel.DataAnnotations.dll",
       "relativePath": "current\\System.ComponentModel.DataAnnotations.dll",
       "bytes": 17200,
       "fileVersion": "9.0.1125.51716",
@@ -1174,7 +1174,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.ComponentModel.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.ComponentModel.dll",
       "relativePath": "current\\System.ComponentModel.dll",
       "bytes": 31024,
       "fileVersion": "9.0.1125.51716",
@@ -1184,7 +1184,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.ComponentModel.EventBasedAsync.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.ComponentModel.EventBasedAsync.dll",
       "relativePath": "current\\System.ComponentModel.EventBasedAsync.dll",
       "bytes": 47376,
       "fileVersion": "9.0.1125.51716",
@@ -1194,7 +1194,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.ComponentModel.Primitives.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.ComponentModel.Primitives.dll",
       "relativePath": "current\\System.ComponentModel.Primitives.dll",
       "bytes": 80160,
       "fileVersion": "9.0.1125.51716",
@@ -1204,7 +1204,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.ComponentModel.TypeConverter.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.ComponentModel.TypeConverter.dll",
       "relativePath": "current\\System.ComponentModel.TypeConverter.dll",
       "bytes": 772368,
       "fileVersion": "9.0.1125.51716",
@@ -1214,7 +1214,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Configuration.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Configuration.dll",
       "relativePath": "current\\System.Configuration.dll",
       "bytes": 19768,
       "fileVersion": "9.0.1125.51716",
@@ -1224,7 +1224,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Console.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Console.dll",
       "relativePath": "current\\System.Console.dll",
       "bytes": 174384,
       "fileVersion": "9.0.1125.51716",
@@ -1234,7 +1234,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Core.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Core.dll",
       "relativePath": "current\\System.Core.dll",
       "bytes": 23864,
       "fileVersion": "9.0.1125.51716",
@@ -1244,7 +1244,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Data.Common.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Data.Common.dll",
       "relativePath": "current\\System.Data.Common.dll",
       "bytes": 2849072,
       "fileVersion": "9.0.1125.51716",
@@ -1254,7 +1254,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Data.DataSetExtensions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Data.DataSetExtensions.dll",
       "relativePath": "current\\System.Data.DataSetExtensions.dll",
       "bytes": 16176,
       "fileVersion": "9.0.1125.51716",
@@ -1264,7 +1264,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Data.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Data.dll",
       "relativePath": "current\\System.Data.dll",
       "bytes": 25384,
       "fileVersion": "9.0.1125.51716",
@@ -1274,7 +1274,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Diagnostics.Contracts.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.Contracts.dll",
       "relativePath": "current\\System.Diagnostics.Contracts.dll",
       "bytes": 16656,
       "fileVersion": "9.0.1125.51716",
@@ -1284,7 +1284,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Diagnostics.Debug.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.Debug.dll",
       "relativePath": "current\\System.Diagnostics.Debug.dll",
       "bytes": 16144,
       "fileVersion": "9.0.1125.51716",
@@ -1294,7 +1294,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Diagnostics.DiagnosticSource.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.DiagnosticSource.dll",
       "relativePath": "current\\System.Diagnostics.DiagnosticSource.dll",
       "bytes": 452920,
       "fileVersion": "9.0.1125.51716",
@@ -1304,7 +1304,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Diagnostics.EventLog.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.EventLog.dll",
       "relativePath": "current\\System.Diagnostics.EventLog.dll",
       "bytes": 174864,
       "fileVersion": "9.0.925.41916",
@@ -1314,7 +1314,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Diagnostics.EventLog.Messages.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.EventLog.Messages.dll",
       "relativePath": "current\\System.Diagnostics.EventLog.Messages.dll",
       "bytes": 801064,
       "fileVersion": null,
@@ -1324,7 +1324,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Diagnostics.FileVersionInfo.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.FileVersionInfo.dll",
       "relativePath": "current\\System.Diagnostics.FileVersionInfo.dll",
       "bytes": 47400,
       "fileVersion": "9.0.1125.51716",
@@ -1334,7 +1334,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Diagnostics.Process.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.Process.dll",
       "relativePath": "current\\System.Diagnostics.Process.dll",
       "bytes": 338224,
       "fileVersion": "9.0.1125.51716",
@@ -1344,7 +1344,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Diagnostics.StackTrace.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.StackTrace.dll",
       "relativePath": "current\\System.Diagnostics.StackTrace.dll",
       "bytes": 47400,
       "fileVersion": "9.0.1125.51716",
@@ -1354,7 +1354,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Diagnostics.TextWriterTraceListener.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.TextWriterTraceListener.dll",
       "relativePath": "current\\System.Diagnostics.TextWriterTraceListener.dll",
       "bytes": 67896,
       "fileVersion": "9.0.1125.51716",
@@ -1364,7 +1364,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Diagnostics.Tools.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.Tools.dll",
       "relativePath": "current\\System.Diagnostics.Tools.dll",
       "bytes": 15664,
       "fileVersion": "9.0.1125.51716",
@@ -1374,7 +1374,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Diagnostics.TraceSource.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.TraceSource.dll",
       "relativePath": "current\\System.Diagnostics.TraceSource.dll",
       "bytes": 145672,
       "fileVersion": "9.0.1125.51716",
@@ -1384,7 +1384,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Diagnostics.Tracing.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Diagnostics.Tracing.dll",
       "relativePath": "current\\System.Diagnostics.Tracing.dll",
       "bytes": 16656,
       "fileVersion": "9.0.1125.51716",
@@ -1394,7 +1394,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.dll",
       "relativePath": "current\\System.dll",
       "bytes": 50992,
       "fileVersion": "9.0.1125.51716",
@@ -1404,7 +1404,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Drawing.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Drawing.dll",
       "relativePath": "current\\System.Drawing.dll",
       "bytes": 20744,
       "fileVersion": "9.0.1125.51716",
@@ -1414,7 +1414,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Drawing.Primitives.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Drawing.Primitives.dll",
       "relativePath": "current\\System.Drawing.Primitives.dll",
       "bytes": 137528,
       "fileVersion": "9.0.1125.51716",
@@ -1424,7 +1424,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Dynamic.Runtime.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Dynamic.Runtime.dll",
       "relativePath": "current\\System.Dynamic.Runtime.dll",
       "bytes": 16680,
       "fileVersion": "9.0.1125.51716",
@@ -1434,7 +1434,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Formats.Asn1.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Formats.Asn1.dll",
       "relativePath": "current\\System.Formats.Asn1.dll",
       "bytes": 239912,
       "fileVersion": "9.0.1125.51716",
@@ -1444,7 +1444,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Formats.Tar.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Formats.Tar.dll",
       "relativePath": "current\\System.Formats.Tar.dll",
       "bytes": 272680,
       "fileVersion": "9.0.1125.51716",
@@ -1454,7 +1454,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Globalization.Calendars.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Globalization.Calendars.dll",
       "relativePath": "current\\System.Globalization.Calendars.dll",
       "bytes": 16184,
       "fileVersion": "9.0.1125.51716",
@@ -1464,7 +1464,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Globalization.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Globalization.dll",
       "relativePath": "current\\System.Globalization.dll",
       "bytes": 16144,
       "fileVersion": "9.0.1125.51716",
@@ -1474,7 +1474,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Globalization.Extensions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Globalization.Extensions.dll",
       "relativePath": "current\\System.Globalization.Extensions.dll",
       "bytes": 15632,
       "fileVersion": "9.0.1125.51716",
@@ -1484,7 +1484,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.IO.Abstractions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.Abstractions.dll",
       "relativePath": "current\\System.IO.Abstractions.dll",
       "bytes": 19936,
       "fileVersion": "22.0.16.0",
@@ -1494,7 +1494,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.IO.Compression.Brotli.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.Compression.Brotli.dll",
       "relativePath": "current\\System.IO.Compression.Brotli.dll",
       "bytes": 88336,
       "fileVersion": "9.0.1125.51716",
@@ -1504,7 +1504,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.IO.Compression.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.Compression.dll",
       "relativePath": "current\\System.IO.Compression.dll",
       "bytes": 268584,
       "fileVersion": "9.0.1125.51716",
@@ -1514,7 +1514,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.IO.Compression.FileSystem.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.Compression.FileSystem.dll",
       "relativePath": "current\\System.IO.Compression.FileSystem.dll",
       "bytes": 15624,
       "fileVersion": "9.0.1125.51716",
@@ -1524,7 +1524,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.IO.Compression.Native.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.Compression.Native.dll",
       "relativePath": "current\\System.IO.Compression.Native.dll",
       "bytes": 926000,
       "fileVersion": "9,0,1125,51716 @Commit: fa7cdded37981a97cec9a3e233c4a6af58a91c57",
@@ -1534,7 +1534,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.IO.Compression.ZipFile.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.Compression.ZipFile.dll",
       "relativePath": "current\\System.IO.Compression.ZipFile.dll",
       "bytes": 55600,
       "fileVersion": "9.0.1125.51716",
@@ -1544,7 +1544,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.IO.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.dll",
       "relativePath": "current\\System.IO.dll",
       "bytes": 16168,
       "fileVersion": "9.0.1125.51716",
@@ -1554,7 +1554,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.IO.FileSystem.AccessControl.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.FileSystem.AccessControl.dll",
       "relativePath": "current\\System.IO.FileSystem.AccessControl.dll",
       "bytes": 104752,
       "fileVersion": "9.0.1125.51716",
@@ -1564,7 +1564,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.IO.FileSystem.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.FileSystem.dll",
       "relativePath": "current\\System.IO.FileSystem.dll",
       "bytes": 16184,
       "fileVersion": "9.0.1125.51716",
@@ -1574,7 +1574,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.IO.FileSystem.DriveInfo.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.FileSystem.DriveInfo.dll",
       "relativePath": "current\\System.IO.FileSystem.DriveInfo.dll",
       "bytes": 55592,
       "fileVersion": "9.0.1125.51716",
@@ -1584,7 +1584,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.IO.FileSystem.Primitives.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.FileSystem.Primitives.dll",
       "relativePath": "current\\System.IO.FileSystem.Primitives.dll",
       "bytes": 15672,
       "fileVersion": "9.0.1125.51716",
@@ -1594,7 +1594,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.IO.FileSystem.Watcher.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.FileSystem.Watcher.dll",
       "relativePath": "current\\System.IO.FileSystem.Watcher.dll",
       "bytes": 88368,
       "fileVersion": "9.0.1125.51716",
@@ -1604,7 +1604,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.IO.IsolatedStorage.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.IsolatedStorage.dll",
       "relativePath": "current\\System.IO.IsolatedStorage.dll",
       "bytes": 92424,
       "fileVersion": "9.0.1125.51716",
@@ -1614,7 +1614,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.IO.MemoryMappedFiles.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.MemoryMappedFiles.dll",
       "relativePath": "current\\System.IO.MemoryMappedFiles.dll",
       "bytes": 84264,
       "fileVersion": "9.0.1125.51716",
@@ -1624,7 +1624,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.IO.Pipelines.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.Pipelines.dll",
       "relativePath": "current\\System.IO.Pipelines.dll",
       "bytes": 194856,
       "fileVersion": "9.0.1125.51716",
@@ -1634,7 +1634,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.IO.Pipes.AccessControl.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.Pipes.AccessControl.dll",
       "relativePath": "current\\System.IO.Pipes.AccessControl.dll",
       "bytes": 16168,
       "fileVersion": "9.0.1125.51716",
@@ -1644,7 +1644,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.IO.Pipes.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.Pipes.dll",
       "relativePath": "current\\System.IO.Pipes.dll",
       "bytes": 170280,
       "fileVersion": "9.0.1125.51716",
@@ -1654,7 +1654,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.IO.UnmanagedMemoryStream.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.IO.UnmanagedMemoryStream.dll",
       "relativePath": "current\\System.IO.UnmanagedMemoryStream.dll",
       "bytes": 15664,
       "fileVersion": "9.0.1125.51716",
@@ -1664,7 +1664,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Linq.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Linq.dll",
       "relativePath": "current\\System.Linq.dll",
       "bytes": 657704,
       "fileVersion": "9.0.1125.51716",
@@ -1674,7 +1674,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Linq.Expressions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Linq.Expressions.dll",
       "relativePath": "current\\System.Linq.Expressions.dll",
       "bytes": 3668272,
       "fileVersion": "9.0.1125.51716",
@@ -1684,7 +1684,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Linq.Parallel.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Linq.Parallel.dll",
       "relativePath": "current\\System.Linq.Parallel.dll",
       "bytes": 801064,
       "fileVersion": "9.0.1125.51716",
@@ -1694,7 +1694,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Linq.Queryable.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Linq.Queryable.dll",
       "relativePath": "current\\System.Linq.Queryable.dll",
       "bytes": 178472,
       "fileVersion": "9.0.1125.51716",
@@ -1704,7 +1704,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Management.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Management.dll",
       "relativePath": "current\\System.Management.dll",
       "bytes": 313632,
       "fileVersion": "9.0.925.41916",
@@ -1714,7 +1714,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Memory.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Memory.dll",
       "relativePath": "current\\System.Memory.dll",
       "bytes": 162064,
       "fileVersion": "9.0.1125.51716",
@@ -1724,7 +1724,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Net.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.dll",
       "relativePath": "current\\System.Net.dll",
       "bytes": 17696,
       "fileVersion": "9.0.1125.51716",
@@ -1734,7 +1734,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Net.Http.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.Http.dll",
       "relativePath": "current\\System.Net.Http.dll",
       "bytes": 1788200,
       "fileVersion": "9.0.1125.51716",
@@ -1744,7 +1744,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Net.Http.Json.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.Http.Json.dll",
       "relativePath": "current\\System.Net.Http.Json.dll",
       "bytes": 133424,
       "fileVersion": "9.0.1125.51716",
@@ -1754,7 +1754,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Net.HttpListener.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.HttpListener.dll",
       "relativePath": "current\\System.Net.HttpListener.dll",
       "bytes": 551200,
       "fileVersion": "9.0.1125.51716",
@@ -1764,7 +1764,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Net.Mail.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.Mail.dll",
       "relativePath": "current\\System.Net.Mail.dll",
       "bytes": 432400,
       "fileVersion": "9.0.1125.51716",
@@ -1774,7 +1774,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Net.NameResolution.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.NameResolution.dll",
       "relativePath": "current\\System.Net.NameResolution.dll",
       "bytes": 125192,
       "fileVersion": "9.0.1125.51716",
@@ -1784,7 +1784,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Net.NetworkInformation.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.NetworkInformation.dll",
       "relativePath": "current\\System.Net.NetworkInformation.dll",
       "bytes": 157992,
       "fileVersion": "9.0.1125.51716",
@@ -1794,7 +1794,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Net.Ping.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.Ping.dll",
       "relativePath": "current\\System.Net.Ping.dll",
       "bytes": 96528,
       "fileVersion": "9.0.1125.51716",
@@ -1804,7 +1804,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Net.Primitives.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.Primitives.dll",
       "relativePath": "current\\System.Net.Primitives.dll",
       "bytes": 227632,
       "fileVersion": "9.0.1125.51716",
@@ -1814,7 +1814,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Net.Quic.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.Quic.dll",
       "relativePath": "current\\System.Net.Quic.dll",
       "bytes": 371000,
       "fileVersion": "9.0.1125.51716",
@@ -1824,7 +1824,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Net.Requests.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.Requests.dll",
       "relativePath": "current\\System.Net.Requests.dll",
       "bytes": 383248,
       "fileVersion": "9.0.1125.51716",
@@ -1834,7 +1834,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Net.Security.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.Security.dll",
       "relativePath": "current\\System.Net.Security.dll",
       "bytes": 678200,
       "fileVersion": "9.0.1125.51716",
@@ -1844,7 +1844,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Net.ServicePoint.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.ServicePoint.dll",
       "relativePath": "current\\System.Net.ServicePoint.dll",
       "bytes": 15664,
       "fileVersion": "9.0.1125.51716",
@@ -1854,7 +1854,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Net.Sockets.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.Sockets.dll",
       "relativePath": "current\\System.Net.Sockets.dll",
       "bytes": 547120,
       "fileVersion": "9.0.1125.51716",
@@ -1864,7 +1864,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Net.WebClient.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.WebClient.dll",
       "relativePath": "current\\System.Net.WebClient.dll",
       "bytes": 170280,
       "fileVersion": "9.0.1125.51716",
@@ -1874,7 +1874,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Net.WebHeaderCollection.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.WebHeaderCollection.dll",
       "relativePath": "current\\System.Net.WebHeaderCollection.dll",
       "bytes": 63784,
       "fileVersion": "9.0.1125.51716",
@@ -1884,7 +1884,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Net.WebProxy.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.WebProxy.dll",
       "relativePath": "current\\System.Net.WebProxy.dll",
       "bytes": 43304,
       "fileVersion": "9.0.1125.51716",
@@ -1894,7 +1894,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Net.WebSockets.Client.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.WebSockets.Client.dll",
       "relativePath": "current\\System.Net.WebSockets.Client.dll",
       "bytes": 104744,
       "fileVersion": "9.0.1125.51716",
@@ -1904,7 +1904,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Net.WebSockets.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Net.WebSockets.dll",
       "relativePath": "current\\System.Net.WebSockets.dll",
       "bytes": 235784,
       "fileVersion": "9.0.1125.51716",
@@ -1914,7 +1914,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Numerics.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Numerics.dll",
       "relativePath": "current\\System.Numerics.dll",
       "bytes": 15648,
       "fileVersion": "9.0.1125.51716",
@@ -1924,7 +1924,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Numerics.Vectors.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Numerics.Vectors.dll",
       "relativePath": "current\\System.Numerics.Vectors.dll",
       "bytes": 16176,
       "fileVersion": "9.0.1125.51716",
@@ -1934,7 +1934,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.ObjectModel.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.ObjectModel.dll",
       "relativePath": "current\\System.ObjectModel.dll",
       "bytes": 84240,
       "fileVersion": "9.0.1125.51716",
@@ -1944,7 +1944,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Private.CoreLib.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Private.CoreLib.dll",
       "relativePath": "current\\System.Private.CoreLib.dll",
       "bytes": 15264040,
       "fileVersion": "9.0.1125.51716",
@@ -1954,7 +1954,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Private.DataContractSerialization.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Private.DataContractSerialization.dll",
       "relativePath": "current\\System.Private.DataContractSerialization.dll",
       "bytes": 2070824,
       "fileVersion": "9.0.1125.51716",
@@ -1964,7 +1964,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Private.Uri.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Private.Uri.dll",
       "relativePath": "current\\System.Private.Uri.dll",
       "bytes": 260368,
       "fileVersion": "9.0.1125.51716",
@@ -1974,7 +1974,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Private.Xml.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Private.Xml.dll",
       "relativePath": "current\\System.Private.Xml.dll",
       "bytes": 7919912,
       "fileVersion": "9.0.1125.51716",
@@ -1984,7 +1984,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Private.Xml.Linq.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Private.Xml.Linq.dll",
       "relativePath": "current\\System.Private.Xml.Linq.dll",
       "bytes": 399624,
       "fileVersion": "9.0.1125.51716",
@@ -1994,7 +1994,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Reactive.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Reactive.dll",
       "relativePath": "current\\System.Reactive.dll",
       "bytes": 1344592,
       "fileVersion": "6.0.1.7420",
@@ -2004,7 +2004,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Reflection.DispatchProxy.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Reflection.DispatchProxy.dll",
       "relativePath": "current\\System.Reflection.DispatchProxy.dll",
       "bytes": 76064,
       "fileVersion": "9.0.1125.51716",
@@ -2014,7 +2014,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Reflection.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Reflection.dll",
       "relativePath": "current\\System.Reflection.dll",
       "bytes": 16696,
       "fileVersion": "9.0.1125.51716",
@@ -2024,7 +2024,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Reflection.Emit.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Reflection.Emit.dll",
       "relativePath": "current\\System.Reflection.Emit.dll",
       "bytes": 301360,
       "fileVersion": "9.0.1125.51716",
@@ -2034,7 +2034,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Reflection.Emit.ILGeneration.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Reflection.Emit.ILGeneration.dll",
       "relativePath": "current\\System.Reflection.Emit.ILGeneration.dll",
       "bytes": 16144,
       "fileVersion": "9.0.1125.51716",
@@ -2044,7 +2044,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Reflection.Emit.Lightweight.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Reflection.Emit.Lightweight.dll",
       "relativePath": "current\\System.Reflection.Emit.Lightweight.dll",
       "bytes": 16168,
       "fileVersion": "9.0.1125.51716",
@@ -2054,7 +2054,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Reflection.Extensions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Reflection.Extensions.dll",
       "relativePath": "current\\System.Reflection.Extensions.dll",
       "bytes": 15656,
       "fileVersion": "9.0.1125.51716",
@@ -2064,7 +2064,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Reflection.Metadata.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Reflection.Metadata.dll",
       "relativePath": "current\\System.Reflection.Metadata.dll",
       "bytes": 1173800,
       "fileVersion": "9.0.1125.51716",
@@ -2074,7 +2074,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Reflection.Primitives.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Reflection.Primitives.dll",
       "relativePath": "current\\System.Reflection.Primitives.dll",
       "bytes": 16160,
       "fileVersion": "9.0.1125.51716",
@@ -2084,7 +2084,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Reflection.TypeExtensions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Reflection.TypeExtensions.dll",
       "relativePath": "current\\System.Reflection.TypeExtensions.dll",
       "bytes": 43296,
       "fileVersion": "9.0.1125.51716",
@@ -2094,7 +2094,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Resources.Reader.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Resources.Reader.dll",
       "relativePath": "current\\System.Resources.Reader.dll",
       "bytes": 15664,
       "fileVersion": "9.0.1125.51716",
@@ -2104,7 +2104,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Resources.ResourceManager.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Resources.ResourceManager.dll",
       "relativePath": "current\\System.Resources.ResourceManager.dll",
       "bytes": 16184,
       "fileVersion": "9.0.1125.51716",
@@ -2114,7 +2114,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Resources.Writer.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Resources.Writer.dll",
       "relativePath": "current\\System.Resources.Writer.dll",
       "bytes": 51496,
       "fileVersion": "9.0.1125.51716",
@@ -2124,7 +2124,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Runtime.CompilerServices.Unsafe.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.CompilerServices.Unsafe.dll",
       "relativePath": "current\\System.Runtime.CompilerServices.Unsafe.dll",
       "bytes": 15632,
       "fileVersion": "9.0.1125.51716",
@@ -2134,7 +2134,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Runtime.CompilerServices.VisualC.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.CompilerServices.VisualC.dll",
       "relativePath": "current\\System.Runtime.CompilerServices.VisualC.dll",
       "bytes": 31024,
       "fileVersion": "9.0.1125.51716",
@@ -2144,7 +2144,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Runtime.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.dll",
       "relativePath": "current\\System.Runtime.dll",
       "bytes": 44816,
       "fileVersion": "9.0.1125.51716",
@@ -2154,7 +2154,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Runtime.Extensions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.Extensions.dll",
       "relativePath": "current\\System.Runtime.Extensions.dll",
       "bytes": 18232,
       "fileVersion": "9.0.1125.51716",
@@ -2164,7 +2164,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Runtime.Handles.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.Handles.dll",
       "relativePath": "current\\System.Runtime.Handles.dll",
       "bytes": 15624,
       "fileVersion": "9.0.1125.51716",
@@ -2174,7 +2174,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Runtime.InteropServices.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.InteropServices.dll",
       "relativePath": "current\\System.Runtime.InteropServices.dll",
       "bytes": 112936,
       "fileVersion": "9.0.1125.51716",
@@ -2184,7 +2184,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Runtime.InteropServices.JavaScript.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.InteropServices.JavaScript.dll",
       "relativePath": "current\\System.Runtime.InteropServices.JavaScript.dll",
       "bytes": 51504,
       "fileVersion": "9.0.1125.51716",
@@ -2194,7 +2194,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Runtime.InteropServices.RuntimeInformation.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.InteropServices.RuntimeInformation.dll",
       "relativePath": "current\\System.Runtime.InteropServices.RuntimeInformation.dll",
       "bytes": 15656,
       "fileVersion": "9.0.1125.51716",
@@ -2204,7 +2204,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Runtime.Intrinsics.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.Intrinsics.dll",
       "relativePath": "current\\System.Runtime.Intrinsics.dll",
       "bytes": 17720,
       "fileVersion": "9.0.1125.51716",
@@ -2214,7 +2214,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Runtime.Loader.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.Loader.dll",
       "relativePath": "current\\System.Runtime.Loader.dll",
       "bytes": 16176,
       "fileVersion": "9.0.1125.51716",
@@ -2224,7 +2224,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Runtime.Numerics.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.Numerics.dll",
       "relativePath": "current\\System.Runtime.Numerics.dll",
       "bytes": 354608,
       "fileVersion": "9.0.1125.51716",
@@ -2234,7 +2234,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Runtime.Serialization.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.Serialization.dll",
       "relativePath": "current\\System.Runtime.Serialization.dll",
       "bytes": 17160,
       "fileVersion": "9.0.1125.51716",
@@ -2244,7 +2244,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Runtime.Serialization.Formatters.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.Serialization.Formatters.dll",
       "relativePath": "current\\System.Runtime.Serialization.Formatters.dll",
       "bytes": 125224,
       "fileVersion": "9.0.1125.51716",
@@ -2254,7 +2254,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Runtime.Serialization.Json.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.Serialization.Json.dll",
       "relativePath": "current\\System.Runtime.Serialization.Json.dll",
       "bytes": 16136,
       "fileVersion": "9.0.1125.51716",
@@ -2264,7 +2264,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Runtime.Serialization.Primitives.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.Serialization.Primitives.dll",
       "relativePath": "current\\System.Runtime.Serialization.Primitives.dll",
       "bytes": 39208,
       "fileVersion": "9.0.1125.51716",
@@ -2274,7 +2274,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Runtime.Serialization.Xml.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Runtime.Serialization.Xml.dll",
       "relativePath": "current\\System.Runtime.Serialization.Xml.dll",
       "bytes": 17192,
       "fileVersion": "9.0.1125.51716",
@@ -2284,7 +2284,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Security.AccessControl.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.AccessControl.dll",
       "relativePath": "current\\System.Security.AccessControl.dll",
       "bytes": 231696,
       "fileVersion": "9.0.1125.51716",
@@ -2294,7 +2294,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Security.Claims.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Claims.dll",
       "relativePath": "current\\System.Security.Claims.dll",
       "bytes": 100648,
       "fileVersion": "9.0.1125.51716",
@@ -2304,7 +2304,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Security.Cryptography.Algorithms.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Cryptography.Algorithms.dll",
       "relativePath": "current\\System.Security.Cryptography.Algorithms.dll",
       "bytes": 17680,
       "fileVersion": "9.0.1125.51716",
@@ -2314,7 +2314,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Security.Cryptography.Cng.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Cryptography.Cng.dll",
       "relativePath": "current\\System.Security.Cryptography.Cng.dll",
       "bytes": 16672,
       "fileVersion": "9.0.1125.51716",
@@ -2324,7 +2324,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Security.Cryptography.Csp.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Cryptography.Csp.dll",
       "relativePath": "current\\System.Security.Cryptography.Csp.dll",
       "bytes": 16144,
       "fileVersion": "9.0.1125.51716",
@@ -2334,7 +2334,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Security.Cryptography.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Cryptography.dll",
       "relativePath": "current\\System.Security.Cryptography.dll",
       "bytes": 2128176,
       "fileVersion": "9.0.1125.51716",
@@ -2344,7 +2344,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Security.Cryptography.Encoding.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Cryptography.Encoding.dll",
       "relativePath": "current\\System.Security.Cryptography.Encoding.dll",
       "bytes": 16144,
       "fileVersion": "9.0.1125.51716",
@@ -2354,7 +2354,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Security.Cryptography.OpenSsl.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Cryptography.OpenSsl.dll",
       "relativePath": "current\\System.Security.Cryptography.OpenSsl.dll",
       "bytes": 15656,
       "fileVersion": "9.0.1125.51716",
@@ -2364,7 +2364,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Security.Cryptography.Primitives.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Cryptography.Primitives.dll",
       "relativePath": "current\\System.Security.Cryptography.Primitives.dll",
       "bytes": 16144,
       "fileVersion": "9.0.1125.51716",
@@ -2374,7 +2374,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Security.Cryptography.X509Certificates.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Cryptography.X509Certificates.dll",
       "relativePath": "current\\System.Security.Cryptography.X509Certificates.dll",
       "bytes": 17168,
       "fileVersion": "9.0.1125.51716",
@@ -2384,7 +2384,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Security.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.dll",
       "relativePath": "current\\System.Security.dll",
       "bytes": 18704,
       "fileVersion": "9.0.1125.51716",
@@ -2394,7 +2394,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Security.Permissions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Permissions.dll",
       "relativePath": "current\\System.Security.Permissions.dll",
       "bytes": 117520,
       "fileVersion": "9.0.925.41916",
@@ -2404,7 +2404,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Security.Principal.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Principal.dll",
       "relativePath": "current\\System.Security.Principal.dll",
       "bytes": 15632,
       "fileVersion": "9.0.1125.51716",
@@ -2414,7 +2414,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Security.Principal.Windows.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.Principal.Windows.dll",
       "relativePath": "current\\System.Security.Principal.Windows.dll",
       "bytes": 186664,
       "fileVersion": "9.0.1125.51716",
@@ -2424,7 +2424,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Security.SecureString.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Security.SecureString.dll",
       "relativePath": "current\\System.Security.SecureString.dll",
       "bytes": 15664,
       "fileVersion": "9.0.1125.51716",
@@ -2434,7 +2434,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.ServiceModel.Web.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.ServiceModel.Web.dll",
       "relativePath": "current\\System.ServiceModel.Web.dll",
       "bytes": 17160,
       "fileVersion": "9.0.1125.51716",
@@ -2444,7 +2444,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.ServiceProcess.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.ServiceProcess.dll",
       "relativePath": "current\\System.ServiceProcess.dll",
       "bytes": 16176,
       "fileVersion": "9.0.1125.51716",
@@ -2454,7 +2454,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Text.Encoding.CodePages.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Text.Encoding.CodePages.dll",
       "relativePath": "current\\System.Text.Encoding.CodePages.dll",
       "bytes": 862480,
       "fileVersion": "9.0.1125.51716",
@@ -2464,7 +2464,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Text.Encoding.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Text.Encoding.dll",
       "relativePath": "current\\System.Text.Encoding.dll",
       "bytes": 16176,
       "fileVersion": "9.0.1125.51716",
@@ -2474,7 +2474,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Text.Encoding.Extensions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Text.Encoding.Extensions.dll",
       "relativePath": "current\\System.Text.Encoding.Extensions.dll",
       "bytes": 16144,
       "fileVersion": "9.0.1125.51716",
@@ -2484,7 +2484,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Text.Encodings.Web.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Text.Encodings.Web.dll",
       "relativePath": "current\\System.Text.Encodings.Web.dll",
       "bytes": 133392,
       "fileVersion": "9.0.1125.51716",
@@ -2494,7 +2494,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Text.Json.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Text.Json.dll",
       "relativePath": "current\\System.Text.Json.dll",
       "bytes": 1796408,
       "fileVersion": "9.0.1125.51716",
@@ -2504,7 +2504,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Text.RegularExpressions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Text.RegularExpressions.dll",
       "relativePath": "current\\System.Text.RegularExpressions.dll",
       "bytes": 1022248,
       "fileVersion": "9.0.1125.51716",
@@ -2514,7 +2514,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Threading.Channels.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Threading.Channels.dll",
       "relativePath": "current\\System.Threading.Channels.dll",
       "bytes": 141608,
       "fileVersion": "9.0.1125.51716",
@@ -2524,7 +2524,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Threading.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Threading.dll",
       "relativePath": "current\\System.Threading.dll",
       "bytes": 84280,
       "fileVersion": "9.0.1125.51716",
@@ -2534,7 +2534,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Threading.Overlapped.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Threading.Overlapped.dll",
       "relativePath": "current\\System.Threading.Overlapped.dll",
       "bytes": 16184,
       "fileVersion": "9.0.1125.51716",
@@ -2544,7 +2544,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Threading.Tasks.Dataflow.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Threading.Tasks.Dataflow.dll",
       "relativePath": "current\\System.Threading.Tasks.Dataflow.dll",
       "bytes": 493840,
       "fileVersion": "9.0.1125.51716",
@@ -2554,7 +2554,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Threading.Tasks.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Threading.Tasks.dll",
       "relativePath": "current\\System.Threading.Tasks.dll",
       "bytes": 17200,
       "fileVersion": "9.0.1125.51716",
@@ -2564,7 +2564,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Threading.Tasks.Extensions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Threading.Tasks.Extensions.dll",
       "relativePath": "current\\System.Threading.Tasks.Extensions.dll",
       "bytes": 16176,
       "fileVersion": "9.0.1125.51716",
@@ -2574,7 +2574,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Threading.Tasks.Parallel.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Threading.Tasks.Parallel.dll",
       "relativePath": "current\\System.Threading.Tasks.Parallel.dll",
       "bytes": 133408,
       "fileVersion": "9.0.1125.51716",
@@ -2584,7 +2584,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Threading.Thread.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Threading.Thread.dll",
       "relativePath": "current\\System.Threading.Thread.dll",
       "bytes": 16168,
       "fileVersion": "9.0.1125.51716",
@@ -2594,7 +2594,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Threading.ThreadPool.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Threading.ThreadPool.dll",
       "relativePath": "current\\System.Threading.ThreadPool.dll",
       "bytes": 16176,
       "fileVersion": "9.0.1125.51716",
@@ -2604,7 +2604,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Threading.Timer.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Threading.Timer.dll",
       "relativePath": "current\\System.Threading.Timer.dll",
       "bytes": 15632,
       "fileVersion": "9.0.1125.51716",
@@ -2614,7 +2614,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Transactions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Transactions.dll",
       "relativePath": "current\\System.Transactions.dll",
       "bytes": 16688,
       "fileVersion": "9.0.1125.51716",
@@ -2624,7 +2624,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Transactions.Local.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Transactions.Local.dll",
       "relativePath": "current\\System.Transactions.Local.dll",
       "bytes": 653584,
       "fileVersion": "9.0.1125.51716",
@@ -2634,7 +2634,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.ValueTuple.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.ValueTuple.dll",
       "relativePath": "current\\System.ValueTuple.dll",
       "bytes": 15656,
       "fileVersion": "9.0.1125.51716",
@@ -2644,7 +2644,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Web.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Web.dll",
       "relativePath": "current\\System.Web.dll",
       "bytes": 15624,
       "fileVersion": "9.0.1125.51716",
@@ -2654,7 +2654,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Web.HttpUtility.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Web.HttpUtility.dll",
       "relativePath": "current\\System.Web.HttpUtility.dll",
       "bytes": 63792,
       "fileVersion": "9.0.1125.51716",
@@ -2664,7 +2664,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Windows.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Windows.dll",
       "relativePath": "current\\System.Windows.dll",
       "bytes": 16176,
       "fileVersion": "9.0.1125.51716",
@@ -2674,7 +2674,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Windows.Extensions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Windows.Extensions.dll",
       "relativePath": "current\\System.Windows.Extensions.dll",
       "bytes": 75536,
       "fileVersion": "9.0.925.41916",
@@ -2684,7 +2684,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Xml.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Xml.dll",
       "relativePath": "current\\System.Xml.dll",
       "bytes": 23816,
       "fileVersion": "9.0.1125.51716",
@@ -2694,7 +2694,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Xml.Linq.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Xml.Linq.dll",
       "relativePath": "current\\System.Xml.Linq.dll",
       "bytes": 16144,
       "fileVersion": "9.0.1125.51716",
@@ -2704,7 +2704,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Xml.ReaderWriter.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Xml.ReaderWriter.dll",
       "relativePath": "current\\System.Xml.ReaderWriter.dll",
       "bytes": 22280,
       "fileVersion": "9.0.1125.51716",
@@ -2714,7 +2714,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Xml.Serialization.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Xml.Serialization.dll",
       "relativePath": "current\\System.Xml.Serialization.dll",
       "bytes": 16656,
       "fileVersion": "9.0.1125.51716",
@@ -2724,7 +2724,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Xml.XDocument.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Xml.XDocument.dll",
       "relativePath": "current\\System.Xml.XDocument.dll",
       "bytes": 16144,
       "fileVersion": "9.0.1125.51716",
@@ -2734,7 +2734,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Xml.XmlDocument.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Xml.XmlDocument.dll",
       "relativePath": "current\\System.Xml.XmlDocument.dll",
       "bytes": 16168,
       "fileVersion": "9.0.1125.51716",
@@ -2744,7 +2744,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Xml.XmlSerializer.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Xml.XmlSerializer.dll",
       "relativePath": "current\\System.Xml.XmlSerializer.dll",
       "bytes": 18192,
       "fileVersion": "9.0.1125.51716",
@@ -2754,7 +2754,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Xml.XPath.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Xml.XPath.dll",
       "relativePath": "current\\System.Xml.XPath.dll",
       "bytes": 16176,
       "fileVersion": "9.0.1125.51716",
@@ -2764,7 +2764,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\System.Xml.XPath.XDocument.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\System.Xml.XPath.XDocument.dll",
       "relativePath": "current\\System.Xml.XPath.XDocument.dll",
       "bytes": 30992,
       "fileVersion": "9.0.1125.51716",
@@ -2774,7 +2774,7 @@
       "corFlags": "ILLibrary, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\TestableIO.System.IO.Abstractions.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\TestableIO.System.IO.Abstractions.dll",
       "relativePath": "current\\TestableIO.System.IO.Abstractions.dll",
       "bytes": 20960,
       "fileVersion": "22.0.16.0",
@@ -2784,7 +2784,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\TestableIO.System.IO.Abstractions.Wrappers.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\TestableIO.System.IO.Abstractions.Wrappers.dll",
       "relativePath": "current\\TestableIO.System.IO.Abstractions.Wrappers.dll",
       "bytes": 69600,
       "fileVersion": "22.0.16.0",
@@ -2794,7 +2794,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Testably.Abstractions.FileSystem.Interface.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Testably.Abstractions.FileSystem.Interface.dll",
       "relativePath": "current\\Testably.Abstractions.FileSystem.Interface.dll",
       "bytes": 42976,
       "fileVersion": "9.0.0.0",
@@ -2804,7 +2804,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\ThemeEditor.Controls.ColorPicker.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\ThemeEditor.Controls.ColorPicker.dll",
       "relativePath": "current\\ThemeEditor.Controls.ColorPicker.dll",
       "bytes": 93664,
       "fileVersion": "11.3.0.0",
@@ -2814,7 +2814,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Tmds.DBus.Protocol.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Tmds.DBus.Protocol.dll",
       "relativePath": "current\\Tmds.DBus.Protocol.dll",
       "bytes": 215520,
       "fileVersion": "0.21.2.0",
@@ -2824,7 +2824,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Velopack.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Velopack.dll",
       "relativePath": "current\\Velopack.dll",
       "bytes": 289760,
       "fileVersion": "0.0.1298.60806",
@@ -2834,7 +2834,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\WindowsBase.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\WindowsBase.dll",
       "relativePath": "current\\WindowsBase.dll",
       "bytes": 16680,
       "fileVersion": "9.0.1125.51716",
@@ -2844,7 +2844,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\ZstdSharp.dll",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\ZstdSharp.dll",
       "relativePath": "current\\ZstdSharp.dll",
       "bytes": 411104,
       "fileVersion": "0.8.6.0",
@@ -2854,7 +2854,7 @@
       "corFlags": "ILOnly, StrongNameSigned"
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\current\\Assets\\Facepack\\ngRegens.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\current\\Assets\\Facepack\\ngRegens.json",
       "relativePath": "current\\Assets\\Facepack\\ngRegens.json",
       "bytes": 95970,
       "fileVersion": null,
@@ -2864,7 +2864,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\106708.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\106708.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\106708.json",
       "bytes": 2470,
       "fileVersion": null,
@@ -2874,7 +2874,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\108251.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\108251.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\108251.json",
       "bytes": 2472,
       "fileVersion": null,
@@ -2884,7 +2884,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\126256.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\126256.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\126256.json",
       "bytes": 2469,
       "fileVersion": null,
@@ -2894,7 +2894,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\127973.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\127973.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\127973.json",
       "bytes": 2471,
       "fileVersion": null,
@@ -2904,7 +2904,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\134468.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\134468.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\134468.json",
       "bytes": 2469,
       "fileVersion": null,
@@ -2914,7 +2914,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\14147806.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\14147806.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\14147806.json",
       "bytes": 2471,
       "fileVersion": null,
@@ -2924,7 +2924,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\15064513.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\15064513.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\15064513.json",
       "bytes": 2460,
       "fileVersion": null,
@@ -2934,7 +2934,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\15085675.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\15085675.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\15085675.json",
       "bytes": 2454,
       "fileVersion": null,
@@ -2944,7 +2944,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000048907.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000048907.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000048907.json",
       "bytes": 2463,
       "fileVersion": null,
@@ -2954,7 +2954,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000059537.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000059537.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000059537.json",
       "bytes": 2469,
       "fileVersion": null,
@@ -2964,7 +2964,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000059789.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000059789.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000059789.json",
       "bytes": 2462,
       "fileVersion": null,
@@ -2974,7 +2974,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000063018.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000063018.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000063018.json",
       "bytes": 2461,
       "fileVersion": null,
@@ -2984,7 +2984,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000141139.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000141139.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000141139.json",
       "bytes": 2461,
       "fileVersion": null,
@@ -2994,7 +2994,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000145059.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000145059.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000145059.json",
       "bytes": 2470,
       "fileVersion": null,
@@ -3004,7 +3004,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000163942.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000163942.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000163942.json",
       "bytes": 2462,
       "fileVersion": null,
@@ -3014,7 +3014,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000165965.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000165965.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000165965.json",
       "bytes": 2460,
       "fileVersion": null,
@@ -3024,7 +3024,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000231150.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000231150.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000231150.json",
       "bytes": 2461,
       "fileVersion": null,
@@ -3034,7 +3034,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000276185.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000276185.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000276185.json",
       "bytes": 2464,
       "fileVersion": null,
@@ -3044,7 +3044,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000278197.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000278197.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000278197.json",
       "bytes": 2470,
       "fileVersion": null,
@@ -3054,7 +3054,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000298606.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000298606.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000298606.json",
       "bytes": 2462,
       "fileVersion": null,
@@ -3064,7 +3064,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000298640.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000298640.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000298640.json",
       "bytes": 2462,
       "fileVersion": null,
@@ -3074,7 +3074,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000300943.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000300943.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000300943.json",
       "bytes": 2460,
       "fileVersion": null,
@@ -3084,7 +3084,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000303912.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000303912.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000303912.json",
       "bytes": 2461,
       "fileVersion": null,
@@ -3094,7 +3094,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000336892.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000336892.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000336892.json",
       "bytes": 2462,
       "fileVersion": null,
@@ -3104,7 +3104,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000337087.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000337087.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000337087.json",
       "bytes": 2459,
       "fileVersion": null,
@@ -3114,7 +3114,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000337151.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000337151.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000337151.json",
       "bytes": 2460,
       "fileVersion": null,
@@ -3124,7 +3124,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000404517.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000404517.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000404517.json",
       "bytes": 2470,
       "fileVersion": null,
@@ -3134,7 +3134,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000412830.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000412830.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000412830.json",
       "bytes": 2473,
       "fileVersion": null,
@@ -3144,7 +3144,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000503058.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000503058.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000503058.json",
       "bytes": 2472,
       "fileVersion": null,
@@ -3154,7 +3154,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000503204.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000503204.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000503204.json",
       "bytes": 2460,
       "fileVersion": null,
@@ -3164,7 +3164,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000507447.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000507447.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000507447.json",
       "bytes": 2459,
       "fileVersion": null,
@@ -3174,7 +3174,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000507454.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000507454.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000507454.json",
       "bytes": 2461,
       "fileVersion": null,
@@ -3184,7 +3184,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2000531511.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2000531511.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2000531511.json",
       "bytes": 2459,
       "fileVersion": null,
@@ -3194,7 +3194,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2002080734.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2002080734.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2002080734.json",
       "bytes": 2477,
       "fileVersion": null,
@@ -3204,7 +3204,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2003768.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2003768.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2003768.json",
       "bytes": 2467,
       "fileVersion": null,
@@ -3214,7 +3214,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2004750.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2004750.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2004750.json",
       "bytes": 2471,
       "fileVersion": null,
@@ -3224,7 +3224,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2005930.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2005930.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2005930.json",
       "bytes": 2469,
       "fileVersion": null,
@@ -3234,7 +3234,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\2006027.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\2006027.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\2006027.json",
       "bytes": 2467,
       "fileVersion": null,
@@ -3244,7 +3244,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\211632.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\211632.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\211632.json",
       "bytes": 2462,
       "fileVersion": null,
@@ -3254,7 +3254,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\28002953.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28002953.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\28002953.json",
       "bytes": 2454,
       "fileVersion": null,
@@ -3264,7 +3264,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\28002954.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28002954.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\28002954.json",
       "bytes": 2458,
       "fileVersion": null,
@@ -3274,7 +3274,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\28002955.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28002955.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\28002955.json",
       "bytes": 2457,
       "fileVersion": null,
@@ -3284,7 +3284,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\28002956.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28002956.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\28002956.json",
       "bytes": 2458,
       "fileVersion": null,
@@ -3294,7 +3294,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\28070762.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28070762.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\28070762.json",
       "bytes": 2459,
       "fileVersion": null,
@@ -3304,7 +3304,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\28070763.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28070763.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\28070763.json",
       "bytes": 2470,
       "fileVersion": null,
@@ -3314,7 +3314,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\28111315.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28111315.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\28111315.json",
       "bytes": 2457,
       "fileVersion": null,
@@ -3324,7 +3324,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\28111434.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28111434.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\28111434.json",
       "bytes": 2457,
       "fileVersion": null,
@@ -3334,7 +3334,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\28111497.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28111497.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\28111497.json",
       "bytes": 2455,
       "fileVersion": null,
@@ -3344,7 +3344,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\28111732.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28111732.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\28111732.json",
       "bytes": 2457,
       "fileVersion": null,
@@ -3354,7 +3354,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\28111833.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28111833.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\28111833.json",
       "bytes": 2461,
       "fileVersion": null,
@@ -3364,7 +3364,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\28116564.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28116564.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\28116564.json",
       "bytes": 2459,
       "fileVersion": null,
@@ -3374,7 +3374,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\28118097.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28118097.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\28118097.json",
       "bytes": 2458,
       "fileVersion": null,
@@ -3384,7 +3384,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\28118099.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28118099.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\28118099.json",
       "bytes": 2456,
       "fileVersion": null,
@@ -3394,7 +3394,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\28118100.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28118100.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\28118100.json",
       "bytes": 2459,
       "fileVersion": null,
@@ -3404,7 +3404,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\28121576.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28121576.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\28121576.json",
       "bytes": 2468,
       "fileVersion": null,
@@ -3414,7 +3414,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\28123186.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\28123186.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\28123186.json",
       "bytes": 2463,
       "fileVersion": null,
@@ -3424,7 +3424,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\29006725.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29006725.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\29006725.json",
       "bytes": 2468,
       "fileVersion": null,
@@ -3434,7 +3434,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\29084509.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29084509.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\29084509.json",
       "bytes": 2457,
       "fileVersion": null,
@@ -3444,7 +3444,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\29114731.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29114731.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\29114731.json",
       "bytes": 2460,
       "fileVersion": null,
@@ -3454,7 +3454,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\29150859.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29150859.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\29150859.json",
       "bytes": 2456,
       "fileVersion": null,
@@ -3464,7 +3464,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\29153231.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29153231.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\29153231.json",
       "bytes": 2467,
       "fileVersion": null,
@@ -3474,7 +3474,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\29171733.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29171733.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\29171733.json",
       "bytes": 2463,
       "fileVersion": null,
@@ -3484,7 +3484,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\29173653.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29173653.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\29173653.json",
       "bytes": 2461,
       "fileVersion": null,
@@ -3494,7 +3494,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\29176253.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29176253.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\29176253.json",
       "bytes": 2459,
       "fileVersion": null,
@@ -3504,7 +3504,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\29181206.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29181206.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\29181206.json",
       "bytes": 2465,
       "fileVersion": null,
@@ -3514,7 +3514,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\29195336.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29195336.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\29195336.json",
       "bytes": 2473,
       "fileVersion": null,
@@ -3524,7 +3524,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\29222566.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29222566.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\29222566.json",
       "bytes": 2472,
       "fileVersion": null,
@@ -3534,7 +3534,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\29223102.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29223102.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\29223102.json",
       "bytes": 2464,
       "fileVersion": null,
@@ -3544,7 +3544,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\29226562.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29226562.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\29226562.json",
       "bytes": 2457,
       "fileVersion": null,
@@ -3554,7 +3554,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\29241239.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29241239.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\29241239.json",
       "bytes": 2458,
       "fileVersion": null,
@@ -3564,7 +3564,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\29244717.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\29244717.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\29244717.json",
       "bytes": 2461,
       "fileVersion": null,
@@ -3574,7 +3574,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\34005310.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\34005310.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\34005310.json",
       "bytes": 2457,
       "fileVersion": null,
@@ -3584,7 +3584,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\3802677.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\3802677.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\3802677.json",
       "bytes": 2454,
       "fileVersion": null,
@@ -3594,7 +3594,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\4000828.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\4000828.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\4000828.json",
       "bytes": 2467,
       "fileVersion": null,
@@ -3604,7 +3604,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\4002130.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\4002130.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\4002130.json",
       "bytes": 2461,
       "fileVersion": null,
@@ -3614,7 +3614,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\5005078.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\5005078.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\5005078.json",
       "bytes": 2473,
       "fileVersion": null,
@@ -3624,7 +3624,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\5112073.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\5112073.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\5112073.json",
       "bytes": 2479,
       "fileVersion": null,
@@ -3634,7 +3634,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\5118694.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\5118694.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\5118694.json",
       "bytes": 2468,
       "fileVersion": null,
@@ -3644,7 +3644,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\5131430.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\5131430.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\5131430.json",
       "bytes": 2454,
       "fileVersion": null,
@@ -3654,7 +3654,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\5131431.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\5131431.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\5131431.json",
       "bytes": 2456,
       "fileVersion": null,
@@ -3664,7 +3664,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\5131432.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\5131432.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\5131432.json",
       "bytes": 2455,
       "fileVersion": null,
@@ -3674,7 +3674,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\61078172.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\61078172.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\61078172.json",
       "bytes": 2458,
       "fileVersion": null,
@@ -3684,7 +3684,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\67041178.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\67041178.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\67041178.json",
       "bytes": 2458,
       "fileVersion": null,
@@ -3694,7 +3694,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\83259144.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\83259144.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\83259144.json",
       "bytes": 2457,
       "fileVersion": null,
@@ -3704,7 +3704,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\89000479.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\89000479.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\89000479.json",
       "bytes": 2470,
       "fileVersion": null,
@@ -3714,7 +3714,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\89069552.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\89069552.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\89069552.json",
       "bytes": 2457,
       "fileVersion": null,
@@ -3724,7 +3724,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\92070530.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\92070530.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\92070530.json",
       "bytes": 2471,
       "fileVersion": null,
@@ -3734,7 +3734,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Freezer\\8119225\\StaffMembers\\93054676.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Freezer\\8119225\\StaffMembers\\93054676.json",
       "relativePath": "Freezer\\8119225\\StaffMembers\\93054676.json",
       "bytes": 2461,
       "fileVersion": null,
@@ -3744,7 +3744,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Presets\\CreateHistoryPoint.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Presets\\CreateHistoryPoint.json",
       "relativePath": "Presets\\CreateHistoryPoint.json",
       "bytes": 299,
       "fileVersion": null,
@@ -3754,7 +3754,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Presets\\Destroy.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Presets\\Destroy.json",
       "relativePath": "Presets\\Destroy.json",
       "bytes": 2057,
       "fileVersion": null,
@@ -3764,7 +3764,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Presets\\Heal.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Presets\\Heal.json",
       "relativePath": "Presets\\Heal.json",
       "bytes": 1274,
       "fileVersion": null,
@@ -3774,7 +3774,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Presets\\ImproveTeamCohesion.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Presets\\ImproveTeamCohesion.json",
       "relativePath": "Presets\\ImproveTeamCohesion.json",
       "bytes": 301,
       "fileVersion": null,
@@ -3784,7 +3784,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Presets\\Inspire.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Presets\\Inspire.json",
       "relativePath": "Presets\\Inspire.json",
       "bytes": 1786,
       "fileVersion": null,
@@ -3794,7 +3794,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Presets\\RegisterForUefa.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Presets\\RegisterForUefa.json",
       "relativePath": "Presets\\RegisterForUefa.json",
       "bytes": 294,
       "fileVersion": null,
@@ -3804,7 +3804,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Presets\\RemoveBans.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Presets\\RemoveBans.json",
       "relativePath": "Presets\\RemoveBans.json",
       "bytes": 402,
       "fileVersion": null,
@@ -3814,7 +3814,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Presets\\RemoveIntWithdrawal.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Presets\\RemoveIntWithdrawal.json",
       "relativePath": "Presets\\RemoveIntWithdrawal.json",
       "bytes": 311,
       "fileVersion": null,
@@ -3824,7 +3824,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Presets\\STAFF_FULL_20.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Presets\\STAFF_FULL_20.json",
       "relativePath": "Presets\\STAFF_FULL_20.json",
       "bytes": 16774,
       "fileVersion": null,
@@ -3834,7 +3834,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Presets\\TrainedAtCurrentClub.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Presets\\TrainedAtCurrentClub.json",
       "relativePath": "Presets\\TrainedAtCurrentClub.json",
       "bytes": 303,
       "fileVersion": null,
@@ -3844,7 +3844,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Presets\\TrainedInCurrentNation.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Presets\\TrainedInCurrentNation.json",
       "relativePath": "Presets\\TrainedInCurrentNation.json",
       "bytes": 307,
       "fileVersion": null,
@@ -3854,7 +3854,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Ratings\\positions.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Ratings\\positions.json",
       "relativePath": "Ratings\\positions.json",
       "bytes": 54958,
       "fileVersion": null,
@@ -3864,7 +3864,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Ratings\\rca.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Ratings\\rca.json",
       "relativePath": "Ratings\\rca.json",
       "bytes": 41537,
       "fileVersion": null,
@@ -3874,7 +3874,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Ratings\\rolesAndDuties.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Ratings\\rolesAndDuties.json",
       "relativePath": "Ratings\\rolesAndDuties.json",
       "bytes": 127578,
       "fileVersion": null,
@@ -3884,7 +3884,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Ratings\\wonderkidGenerator.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Ratings\\wonderkidGenerator.json",
       "relativePath": "Ratings\\wonderkidGenerator.json",
       "bytes": 1804,
       "fileVersion": null,
@@ -3894,7 +3894,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\3-4-1-2.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\3-4-1-2.json",
       "relativePath": "Tactics\\3-4-1-2.json",
       "bytes": 305,
       "fileVersion": null,
@@ -3904,7 +3904,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\3-4-2-1.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\3-4-2-1.json",
       "relativePath": "Tactics\\3-4-2-1.json",
       "bytes": 324,
       "fileVersion": null,
@@ -3914,7 +3914,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\3-4-3.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\3-4-3.json",
       "relativePath": "Tactics\\3-4-3.json",
       "bytes": 284,
       "fileVersion": null,
@@ -3924,7 +3924,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\3-5-2 Defensive.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\3-5-2 Defensive.json",
       "relativePath": "Tactics\\3-5-2 Defensive.json",
       "bytes": 300,
       "fileVersion": null,
@@ -3934,7 +3934,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\3-5-2 Standard.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\3-5-2 Standard.json",
       "relativePath": "Tactics\\3-5-2 Standard.json",
       "bytes": 303,
       "fileVersion": null,
@@ -3944,7 +3944,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\3-6-1.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\3-6-1.json",
       "relativePath": "Tactics\\3-6-1.json",
       "bytes": 311,
       "fileVersion": null,
@@ -3954,7 +3954,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\4-1-2-3 DM WB.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-1-2-3 DM WB.json",
       "relativePath": "Tactics\\4-1-2-3 DM WB.json",
       "bytes": 292,
       "fileVersion": null,
@@ -3964,7 +3964,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\4-1-3-1-1.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-1-3-1-1.json",
       "relativePath": "Tactics\\4-1-3-1-1.json",
       "bytes": 317,
       "fileVersion": null,
@@ -3974,7 +3974,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\4-1-3-2-Attack.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-1-3-2-Attack.json",
       "relativePath": "Tactics\\4-1-3-2-Attack.json",
       "bytes": 316,
       "fileVersion": null,
@@ -3984,7 +3984,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\4-2-3-1.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-2-3-1.json",
       "relativePath": "Tactics\\4-2-3-1.json",
       "bytes": 330,
       "fileVersion": null,
@@ -3994,7 +3994,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\4-3-2-1 Tree.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-3-2-1 Tree.json",
       "relativePath": "Tactics\\4-3-2-1 Tree.json",
       "bytes": 327,
       "fileVersion": null,
@@ -4004,7 +4004,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\4-3-3 Attacking.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-3-3 Attacking.json",
       "relativePath": "Tactics\\4-3-3 Attacking.json",
       "bytes": 292,
       "fileVersion": null,
@@ -4014,7 +4014,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\4-3-3 Defensive.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-3-3 Defensive.json",
       "relativePath": "Tactics\\4-3-3 Defensive.json",
       "bytes": 329,
       "fileVersion": null,
@@ -4024,7 +4024,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\4-3-3 Standard.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-3-3 Standard.json",
       "relativePath": "Tactics\\4-3-3 Standard.json",
       "bytes": 326,
       "fileVersion": null,
@@ -4034,7 +4034,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\4-4-1-1.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-4-1-1.json",
       "relativePath": "Tactics\\4-4-1-1.json",
       "bytes": 308,
       "fileVersion": null,
@@ -4044,7 +4044,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\4-4-2 Defensive.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-4-2 Defensive.json",
       "relativePath": "Tactics\\4-4-2 Defensive.json",
       "bytes": 301,
       "fileVersion": null,
@@ -4054,7 +4054,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\4-4-2 Diamond.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-4-2 Diamond.json",
       "relativePath": "Tactics\\4-4-2 Diamond.json",
       "bytes": 311,
       "fileVersion": null,
@@ -4064,7 +4064,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\4-4-2 Standard.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-4-2 Standard.json",
       "relativePath": "Tactics\\4-4-2 Standard.json",
       "bytes": 296,
       "fileVersion": null,
@@ -4074,7 +4074,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\4-5-1.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\4-5-1.json",
       "relativePath": "Tactics\\4-5-1.json",
       "bytes": 297,
       "fileVersion": null,
@@ -4084,7 +4084,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\5-2-3 WB.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\5-2-3 WB.json",
       "relativePath": "Tactics\\5-2-3 WB.json",
       "bytes": 283,
       "fileVersion": null,
@@ -4094,7 +4094,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\5-3-2 Attacking.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\5-3-2 Attacking.json",
       "relativePath": "Tactics\\5-3-2 Attacking.json",
       "bytes": 309,
       "fileVersion": null,
@@ -4104,7 +4104,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\5-3-2 Counter.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\5-3-2 Counter.json",
       "relativePath": "Tactics\\5-3-2 Counter.json",
       "bytes": 298,
       "fileVersion": null,
@@ -4114,7 +4114,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\5-3-2 Standard.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\5-3-2 Standard.json",
       "relativePath": "Tactics\\5-3-2 Standard.json",
       "bytes": 299,
       "fileVersion": null,
@@ -4124,7 +4124,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\5-4-1 Attacking.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\5-4-1 Attacking.json",
       "relativePath": "Tactics\\5-4-1 Attacking.json",
       "bytes": 323,
       "fileVersion": null,
@@ -4134,7 +4134,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\5-4-1 Defensive.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\5-4-1 Defensive.json",
       "relativePath": "Tactics\\5-4-1 Defensive.json",
       "bytes": 305,
       "fileVersion": null,
@@ -4144,7 +4144,7 @@
       "corFlags": null
     },
     {
-      "path": "C:\\BraCa Soft\\FMRTE 26\\Tactics\\5-4-1 Standard.json",
+      "path": "<FMRTE26_INSTALL_ROOT>\\Tactics\\5-4-1 Standard.json",
       "relativePath": "Tactics\\5-4-1 Standard.json",
       "bytes": 304,
       "fileVersion": null,
