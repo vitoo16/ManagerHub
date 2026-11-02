@@ -1,3 +1,5 @@
+import historicalVi from './historical-vi';
+
 export default {
   "Overview": "Tổng quan",
   "Command center": "Trung tâm quản lý",
@@ -567,4 +569,5 @@ export default {
   "We couldn't inspect this save file. Check that it is a valid .fm file and try again.": "Không thể kiểm tra tệp save này. Hãy kiểm tra tệp .fm hợp lệ rồi thử lại.",
   "Background player import failed. Please try the export again.": "Không thể nhập danh sách cầu thủ ở chế độ nền. Vui lòng thử lại.",
   "Unable to start background player import.": "Không thể khởi chạy tiến trình nhập cầu thủ ở chế độ nền."
+  ...historicalVi,
 } as const;
