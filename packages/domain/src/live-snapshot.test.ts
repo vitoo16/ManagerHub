@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import profile from './fm2013-live-profile.json' with { type: 'json' };
 import { parseFm2013LiveCapture, type LiveSnapshotContext } from './live-snapshot';
 
+const imagePath = 'C:\\Games\\Football Manager 2013\\fm.exe';
 const context: LiveSnapshotContext = { snapshotId: 'snapshot-a', careerId: 'declared-career-a', capturedAt: '2026-10-31T09:00:00.000Z', mode: 'editor' };
 function player(nativeId = 42) {
   return { nativeId, firstName: 'Synthetic', lastName: 'Example', attributeBytes: profile.attributes.map(() => 75), positionBytes: profile.positions.map(() => 0), club: { nativeId: 77, name: 'Synthetic Club', relation: 'player_team_pointer' } };
@@ -12,7 +13,7 @@ function pass(nativeKind: 'player' | 'playerStaff' = 'player', records = [player
 }
 function capture() {
   return { schema: profile.schema, profileVersion: profile.profileVersion,
-    target: { pid: 101, arch: 'ia32', pointerSize: 4, imagePath: profile.imagePath, binarySha256: profile.binarySha256 },
+    target: { pid: 101, arch: 'ia32', pointerSize: 4, imagePath: imagePath, binarySha256: profile.binarySha256 },
     passes: [pass(), pass('playerStaff', [player(43)])] };
 }
 const parse = (value: unknown, declared = context) => parseFm2013LiveCapture(JSON.stringify(value), declared);
@@ -81,7 +82,7 @@ describe('FM2013 live capture admission', () => {
       (value: ReturnType<typeof capture>) => { value.target.binarySha256 = '0'.repeat(64); },
       (value: ReturnType<typeof capture>) => { value.target.arch = 'x64'; },
       (value: ReturnType<typeof capture>) => { value.target.pointerSize = 8; },
-      (value: ReturnType<typeof capture>) => { value.target.imagePath = 'C:\\Other\\fm.exe'; },
+      (value: ReturnType<typeof capture>) => { value.target.imagePath = '\\\\server\\share\\fm.exe'; },
       (value: ReturnType<typeof capture>) => { value.profileVersion = 'fm2013-live-research-0'; },
     ]) { const input = capture(); mutate(input); expect(parse(input).status).toBe('rejected'); }
   });
