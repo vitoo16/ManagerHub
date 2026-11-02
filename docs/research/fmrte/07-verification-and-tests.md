@@ -34,7 +34,7 @@ Updated 2026-11-01. **This chronological record starts with static-only research
 
 Node26.7.0/npm11.19.0. First sandbox dependency installation was interrupted after no progress. Authorized retry with lifecycle scripts disabled completed: npm.cmd install --package-lock=false --ignore-scripts --fetch-retries=0 --fetch-timeout=20000. No dependency manifest/lockfile was changed. npm run check emitted an experimental localStorage warning but exited0; no failed test was suppressed.
 
-The fixture test's hardlink creation was denied by the execution sandbox. Running the test with the authorized sandbox override passed, using only our generated DLL and links in a new temporary directory. A further guard-only regression checks the installation's8.3 alias without writing it. No FMRTE/game binary was executed. The final successful test retained its own fixture at C:\Users\viett\AppData\Local\Temp\managerhub-static-test-dd6987a6d2b949cab0836f1b9ef51bad.
+The fixture test's hardlink creation was denied by the execution sandbox. Running the test with the authorized sandbox override passed, using only our generated DLL and links in a new temporary directory. A further guard-only regression checks the installation's8.3 alias without writing it. No FMRTE/game binary was executed. The final successful test retained its own fixture at <LOCAL_USER_PROFILE>\AppData\Local\Temp\managerhub-static-test-dd6987a6d2b949cab0836f1b9ef51bad.
 
 No UI changed, so Playwright/visual tests were not run. No Cargo/native backend exists here; Rust checks are not applicable. Existing synthetic save tests do not establish Football Manager compatibility.
 
@@ -45,10 +45,10 @@ PowerShell7/.NET with System.Reflection.Metadata, from ManagerHub. Choose fresh 
 ```powershell
 & ./scripts/fmrte-static-tools.test.ps1
 & ./scripts/fmrte-pe-inventory.ps1 `
-  -Paths 'C:\BraCa Soft\FMRTE 13\FMRTE.exe' `
+  -Paths '<FMRTE13_INSTALL_ROOT>\FMRTE.exe' `
   -OutputPath "$env:TEMP\managerhub-fmrte13-metadata-new.json"
 & ./scripts/fmrte-cil-xrefs.ps1 `
-  -Path 'C:\BraCa Soft\FMRTE 13\FMRTE.exe' `
+  -Path '<FMRTE13_INSTALL_ROOT>\FMRTE.exe' `
   -Tokens '0x06000986','0x06000987','0x06000988' `
   -OutputPath "$env:TEMP\managerhub-fmrte13-references-new.json"
 npm.cmd run check
@@ -56,7 +56,7 @@ npm.cmd run check
 
 Utilities use PEReader/MetadataReader, never Assembly.Load. Output is created atomically with FileMode.CreateNew, so existing hardlinks are not replaced. They report CIL decoding issues/partial coverage explicitly; they are research tools, not FM adapters. Reparse checks are ordinary local output safeguards, not isolation against a hostile concurrent filesystem attacker.
 
-Independent review found and corrected output-path alias risks (existing hardlinks/junctions and the local installation's8.3 name). Final audit command: `node C:\Users\viett\.codex\visualizations\2026\10\30\01a18c2c-5b30-7ac2-841d-290449543b12\check-fmrte-evidence.cjs`. It verified47 discoveries against 62 unique canonical records, both bundle digests, 423 unchanged binary/configuration files and all report links/Evidence IDs. This audit script stays with the local evidence artifacts.
+Independent review found and corrected output-path alias risks (existing hardlinks/junctions and the local installation's8.3 name). Final audit command: `node <LOCAL_USER_PROFILE>\.codex\visualizations\2026\10\30\01a18c2c-5b30-7ac2-841d-290449543b12\check-fmrte-evidence.cjs`. It verified47 discoveries against 62 unique canonical records, both bundle digests, 423 unchanged binary/configuration files and all report links/Evidence IDs. This audit script stays with the local evidence artifacts.
 
 For REA, select exact type names, request inspect_managed_members(detail:summary), then inspect_analysis_view on the returned canonical parent Evidence ID. Retain signature, SHA/MVID/token/RVA/IL and coverage. Do not repeat the full-assembly request that exceeded its budget. Root and comparative agents exported separate session ledgers; Evidence IDs alone are insufficient without those bundles.
 
