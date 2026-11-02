@@ -4,7 +4,7 @@ Date: 2026-10-30. Each substantive table cell carries its confidence. **CONFIRME
 
 | Dimension | FMRTE 13 — primary/FM2013 | FMRTE 26 — comparison/FM2026 |
 |---|---|---|
-| Installed root/version | CONFIRMED C:\BraCa Soft\FMRTE 13; file/assembly13.3.3.62 | CONFIRMED C:\BraCa Soft\FMRTE 26; managed files26.3.2.42, assemblies26.3.2.0 |
+| Installed root/version | CONFIRMED <FMRTE13_INSTALL_ROOT>; file/assembly13.3.3.62 | CONFIRMED <FMRTE26_INSTALL_ROOT>; managed files26.3.2.42, assemblies26.3.2.0 |
 | Main binaries | CONFIRMED FMRTE.exe; miniFMRTE.exe | CONFIRMED current\FMRTE.dll and FmrteAvalonia.dll; launcher/apphost inventoried separately |
 | Architecture | CONFIRMED main x86-required CIL, .NET4 Client, WPF | CONFIRMED startup x64 CIL + AnyCPU Avalonia CIL, .NET9 |
 | Local game executable | CONFIRMED static metadata/hash of [native fm.exe](10-local-fm2013-executable.md), ProductVersion13.3.3f359652; runtime compatibility UNKNOWN | UNKNOWN exact local FM2026 executable/build in this investigation |
