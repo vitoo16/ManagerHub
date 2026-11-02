@@ -729,3 +729,60 @@ test('upgrades an existing v2 database to v4 without losing save or player metad
   expect(result.player).toMatchObject({ id: 'v2-player-summary', fileName: 'v2-export.csv' });
   expect(result.save).toMatchObject({ id: 'v2-save-summary', name: 'v2-career.fm' });
 });
+
+test('repairs a partially initialized v3 database and preserves existing historical records', async ({ page }) => {
+  await page.addInitScript(() => {
+    const request = indexedDB.open('managerhub-local', 3);
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      db.createObjectStore('player-exports', { keyPath: 'id' });
+      db.createObjectStore('player-export-summaries', { keyPath: 'id' });
+      db.createObjectStore('save-inspections', { keyPath: 'id' });
+      const editorRecords = db.createObjectStore('historical-editor-snapshots', { keyPath: 'id' });
+      editorRecords.add({ id: 'preserved-editor-record' });
+      const editorSummaries = db.createObjectStore('historical-editor-summaries', { keyPath: 'id' });
+      editorSummaries.add({ id: 'preserved-editor-summary' });
+      // Simulate a v3 database where the Realism stores and summary indexes were never created.
+    };
+    request.onsuccess = () => request.result.close();
+    request.onerror = () => { /* The app will surface a storage error if migration setup fails. */ };
+  });
+
+  await page.goto('/#/history');
+  await expect(page.getByRole('heading', { name: 'Historical snapshots' })).toBeVisible();
+  await expect(page.getByText('No historical snapshots saved')).toBeVisible();
+
+  const result = await page.evaluate(async () => {
+    const request = indexedDB.open('managerhub-local', 4);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    try {
+      const editorIndexNames = Array.from(db.transaction('historical-editor-summaries', 'readonly')
+        .objectStore('historical-editor-summaries').indexNames);
+      const realismIndexNames = Array.from(db.transaction('historical-realism-summaries', 'readonly')
+        .objectStore('historical-realism-summaries').indexNames);
+      const preserved = await new Promise<unknown>((resolve, reject) => {
+        const get = db.transaction('historical-editor-snapshots', 'readonly')
+          .objectStore('historical-editor-snapshots').get('preserved-editor-record');
+        get.onsuccess = () => resolve(get.result);
+        get.onerror = () => reject(get.error);
+      });
+      return {
+        version: db.version,
+        stores: Array.from(db.objectStoreNames),
+        editorIndexNames,
+        realismIndexNames,
+        preserved
+      };
+    } finally { db.close(); }
+  });
+
+  expect(result.version).toBe(4);
+  expect(result.stores).toContain('historical-realism-snapshots');
+  expect(result.stores).toContain('historical-realism-summaries');
+  expect(result.editorIndexNames).toContain('bySourceSha256');
+  expect(result.realismIndexNames).toContain('bySourceSha256');
+  expect(result.preserved).toEqual({ id: 'preserved-editor-record' });
+});
