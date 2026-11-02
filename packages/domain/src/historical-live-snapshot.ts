@@ -98,9 +98,9 @@ function isEvidenceField(value: unknown, expectedSource: 'live_game' | 'manual' 
 }
 
 function isModeField(value: unknown, mode: HistoricalSnapshotMode, expectedSource: 'live_game' | 'derived_model',
-  accepts: (item: unknown) => boolean): boolean {
-  if (!isEvidenceField(value, expectedSource, accepts)) return false;
-  if (mode === 'realism') return value.value === null && value.missingReason === 'redacted';
+  accepts: (item: unknown) => boolean, realismMissingReasons: readonly string[] = ['redacted']): boolean {
+  if (!plainRecord(value) || !isEvidenceField(value, expectedSource, accepts)) return false;
+  if (mode === 'realism') return value.value === null && realismMissingReasons.includes(String(value.missingReason));
   return true;
 }
 
@@ -137,7 +137,7 @@ function isPosition(value: unknown, key: string, mode: HistoricalSnapshotMode): 
   if (!definition || value.nativeCode !== definition.nativeCode) return false;
   const field = { value: value.value, source: value.source, verification: value.verification,
     edition: value.edition, build: value.build, missingReason: value.missingReason };
-  return isModeField(field, mode, 'live_game', item => finiteInteger(item, 0, 20));
+  return isModeField(field, mode, 'live_game', item => finiteInteger(item, 0, 20), ['redacted', 'not_decoded']);
 }
 
 function isPlayer(value: unknown, snapshotId: string, mode: HistoricalSnapshotMode): boolean {
@@ -150,7 +150,7 @@ function isPlayer(value: unknown, snapshotId: string, mode: HistoricalSnapshotMo
   if (!isEvidenceField(value.firstName, 'live_game', textField) ||
       !isEvidenceField(value.lastName, 'live_game', textField) ||
       !isEvidenceField(value.name, 'live_game', textField) ||
-      !isModeField(value.birthDate, mode, 'live_game', validDate)) return false;
+      !isModeField(value.birthDate, mode, 'live_game', validDate, ['redacted', 'not_decoded'])) return false;
 
   const age = value.calendarAge;
   if (!exactKeys(age, ['value', 'source', 'verification', 'edition', 'build', 'missingReason', 'modelVersion', 'asOf']) ||
@@ -210,12 +210,14 @@ function isGameSnapshot(value: unknown, mode: HistoricalSnapshotMode, id: string
 
   if (!Array.isArray(value.captureCoverage) || value.captureCoverage.length > 2 ||
       !value.captureCoverage.every(isCoverage)) return false;
-  const kinds = new Set(value.captureCoverage.map(item => (item as UnknownRecord).nativeKind));
-  if (kinds.size !== value.captureCoverage.length) return false;
+  const coverage = value.captureCoverage;
+  const kinds = new Set(coverage.map(item => plainRecord(item) ? item.nativeKind : null));
+  if (kinds.size !== coverage.length) return false;
   if (!Array.isArray(value.players) || value.players.length > profile.limits.maxRecords ||
       !value.players.every(player => isPlayer(player, id, mode))) return false;
-  const ids = new Set(value.players.map(player => (player as UnknownRecord).nativeId));
-  if (ids.size !== value.players.length) return false;
+  const players = value.players;
+  const ids = new Set(players.map(player => plainRecord(player) ? player.nativeId : null));
+  if (ids.size !== players.length) return false;
   return true;
 }
 
@@ -264,9 +266,10 @@ export function isHistoricalSnapshotRecord(value: unknown): value is HistoricalS
       !validTimestamp(value.importedAt) ||
       (value.status !== 'ready' && value.status !== 'partial' && value.status !== 'empty') ||
       !Array.isArray(value.diagnostics) || value.diagnostics.length > 20 ||
-      !value.diagnostics.every(item => safeText(item, 300, true)) ||
-      !isGameSnapshot(value.snapshot, value.mode, value.id)) return false;
-  const snapshot = value.snapshot;
+      !value.diagnostics.every(item => safeText(item, 300, true))) return false;
+  const snapshotValue = value.snapshot;
+  if (!isGameSnapshot(snapshotValue, value.mode, value.id)) return false;
+  const snapshot = snapshotValue;
   if (value.status === 'empty') return snapshot.players.length === 0;
   if (snapshot.players.length === 0) return false;
   if (value.status === 'ready') {
