@@ -75,7 +75,7 @@ const SnapshotList = memo(function SnapshotList({ items, loading, selectedId, pe
               <span>{formatDate(item.capturedAt)}</span>
             </span>
             <span className="historical-snapshot-status">
-              <Status tone={item.status === 'ready' ? 'positive' : item.status === 'partial' ? 'warning' : 'neutral'}>{t(item.status)}</Status>
+              <Status tone={item.status === 'ready' ? 'info' : item.status === 'partial' ? 'warning' : 'neutral'}>{t(item.status)}</Status>
               <span>{item.mode === 'editor' ? t('Editor projection') : t('Realism projection')}</span>
             </span>
           </button>
@@ -200,7 +200,7 @@ export default function HistoricalWorkspace() {
   const abortRef = useRef<AbortController | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => () => abortRef.current?.abort(), []);
+  useEffect(() => () => { const active = abortRef.current; abortRef.current = null; active?.abort(); }, []);
 
   const onImport = useCallback(async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -235,14 +235,18 @@ export default function HistoricalWorkspace() {
       setVisibleLimit(PAGE_SIZE);
       setNotice(t('Capture parsed. Review its source, coverage and unknown fields before saving.'));
     } catch (cause) {
-      if (cause instanceof Error && cause.name === 'AbortError') {
-        setNotice(t('Import cancelled. No source data was saved.'));
-      } else {
-        setImportError(cause instanceof Error ? cause.message : t('The selected capture could not be imported.'));
+      if (abortRef.current === controller) {
+        if (cause instanceof Error && cause.name === 'AbortError') {
+          setNotice(t('Import cancelled. No source data was saved.'));
+        } else {
+          setImportError(cause instanceof Error ? cause.message : t('The selected capture could not be imported.'));
+        }
       }
     } finally {
-      if (abortRef.current === controller) abortRef.current = null;
-      setImporting(false);
+      if (abortRef.current === controller) {
+        abortRef.current = null;
+        setImporting(false);
+      }
     }
   }, [file, careerLabel, capturedAtInput, mode, t]);
 
@@ -301,7 +305,9 @@ export default function HistoricalWorkspace() {
 
   const onModeChange = useCallback(async (next: HistoricalSnapshotMode) => {
     if (next === mode) return;
-    abortRef.current?.abort();
+    const pendingImport = abortRef.current;
+    abortRef.current = null;
+    pendingImport?.abort();
     setImporting(false);
     setSearch('');
     setSelectedPlayerId(null);
@@ -423,7 +429,7 @@ export default function HistoricalWorkspace() {
                 <h2>{record.snapshot.careerId.value}</h2>
                 <p>{record.fileName} · {record.snapshot.players.length.toLocaleString()} {t('observed players')}</p>
               </div>
-              <Status tone={record.status === 'ready' ? 'positive' : record.status === 'partial' ? 'warning' : 'neutral'}>{t(record.status)}</Status>
+              <Status tone={record.status === 'ready' ? 'info' : record.status === 'partial' ? 'warning' : 'neutral'}>{t(record.status)}</Status>
             </div>
             <p className="historical-status-copy">{statusCopy(record.status, t)}</p>
             <dl className="historical-facts historical-facts--compact">
