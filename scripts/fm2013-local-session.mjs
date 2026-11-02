@@ -40,9 +40,11 @@ export async function prepareFm2013Session(options, dependencies={}) {
   const before=await observe(pid);
   if(before.status!=='observed')throw Error(observation(before).status);
   const ticket=createFm2013CaptureTicket(before.process,randomUUID(),clock());
-  const binary=await readBoundedRegularFile(before.process.imagePath,64*1024*1024);
-  if(digest(binary)!==before.process.binarySha256)throw Error('image_changed_before_prepare');
-  const proofs=Object.values(profile.nativeKinds).map(k=>findPe32RttiVtables(binary,{decoratedName:k.decoratedName,subobjectOffset:k.personOffset}));
+  const readBinary=dependencies.readBinary??(file=>readBoundedRegularFile(file,64*1024*1024));
+  const binary=await readBinary(before.process.imagePath);
+  if(!Buffer.isBuffer(binary)||digest(binary)!==before.process.binarySha256)throw Error('image_changed_before_prepare');
+  const findProof=dependencies.findPe32RttiVtables??findPe32RttiVtables;
+  const proofs=Object.values(profile.nativeKinds).map(k=>findProof(binary,{decoratedName:k.decoratedName,subobjectOffset:k.personOffset}));
   const source=buildFm2013LiveWireCapture({pid,imagePath:before.process.imagePath,binarySha256:before.process.binarySha256},proofs,{},ticket.captureId);
   admit(ticket,await observe(pid),{captureId:ticket.captureId,pid},clock());
   const request={schema:'managerhub-local-capture-request-v1',ticket,script:{path:scriptPath,sha256:digest(source)},authority:'local_process_query',captureAuthenticated:false};
