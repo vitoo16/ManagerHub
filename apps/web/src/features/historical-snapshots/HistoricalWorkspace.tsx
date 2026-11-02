@@ -391,8 +391,8 @@ export default function HistoricalWorkspace() {
         <fieldset className="historical-mode-fieldset">
           <legend>{t('Visibility mode')}</legend>
           <div className="historical-mode-switch">
-            <button type="button" aria-pressed={mode === 'realism'} onClick={() => void onModeChange('realism')} disabled={importing}>{t('Realism')}</button>
-            <button type="button" aria-pressed={mode === 'editor'} onClick={() => void onModeChange('editor')} disabled={importing}>{t('Editor')}</button>
+            <button type="button" aria-pressed={mode === 'realism'} onClick={() => void onModeChange('realism')} disabled={importing || library.activity !== null}>{t('Realism')}</button>
+            <button type="button" aria-pressed={mode === 'editor'} onClick={() => void onModeChange('editor')} disabled={importing || library.activity !== null}>{t('Editor')}</button>
           </div>
           <small>{mode === 'realism'
             ? t('Hidden ratings, birth date, primary-nation link and derived age stay redacted before display and persistence.')
