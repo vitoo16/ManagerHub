@@ -49,6 +49,6 @@ export function Status({ tone = 'neutral', children }: { tone?: 'positive' | 'wa
   return <span className={'mh-status mh-status--' + tone}><span aria-hidden="true" className="mh-status__dot"/>{children}</span>;
 }
 
-export function SectionHeading({ eyebrow, title, children }: { eyebrow: string; title: string; children?: ReactNode }) {
-  return <div className="mh-section-heading"><div><span className="mh-eyebrow">{eyebrow}</span><h2>{title}</h2></div>{children}</div>;
+export function SectionHeading({ eyebrow, title, children, id }: { eyebrow: string; title: string; children?: ReactNode; id?: string }) {
+  return <div className="mh-section-heading"><div><span className="mh-eyebrow">{eyebrow}</span><h2 id={id}>{title}</h2></div>{children}</div>;
 }
