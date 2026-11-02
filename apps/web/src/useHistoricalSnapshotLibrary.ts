@@ -51,7 +51,7 @@ export function useHistoricalSnapshotLibrary(mode: HistoricalSnapshotMode) {
           ? await saveEditorHistoricalSnapshotPair(record, pairedRecord)
           : (() => { throw new Error('The separately redacted Realism projection is missing. Reimport this capture before saving.'); })()
         : await saveRealismHistoricalSnapshot(record);
-      await reload();
+      try { await reload(); } catch (cause) { setError(message(cause)); }
       return result;
     } catch (cause) {
       setError(message(cause));
