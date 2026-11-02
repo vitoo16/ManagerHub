@@ -1,5 +1,5 @@
 import {
-  MAX_HISTORICAL_SNAPSHOTS, isHistoricalSnapshotRecord, isHistoricalSnapshotSummary,
+  MAX_HISTORICAL_SNAPSHOTS, isHistoricalSnapshotRecord, isHistoricalSnapshotSummary, parseHistoricalSnapshotRecord,
   toHistoricalSnapshotSummary, type HistoricalSnapshotMode, type HistoricalSnapshotRecord,
   type HistoricalSnapshotSummary
 } from '@managerhub/domain';
@@ -40,10 +40,11 @@ export async function getHistoricalSnapshot(id: string, mode: HistoricalSnapshot
   try {
     const tx = db.transaction(names.data, 'readonly');
     const value: unknown = await readRequest(tx.objectStore(names.data).get(id));
-    if (!isHistoricalSnapshotRecord(value) || value.mode !== mode || value.id !== id) {
+    const record = parseHistoricalSnapshotRecord(value);
+    if (record.mode !== mode || record.id !== id) {
       throw new Error('This historical snapshot is missing, damaged or incompatible. Reimport the source capture.');
     }
-    return value;
+    return record;
   } finally { db.close(); }
 }
 
