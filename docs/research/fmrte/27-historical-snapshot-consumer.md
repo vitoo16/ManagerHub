@@ -1,6 +1,6 @@
 # FM2013 historical snapshot consumer
 
-**Implementation status:** integrated on feat/fm2013-historical-consumer; CI run #41490068166 passed TypeScript, unit tests, production build/bundle budgets and Playwright desktop/mobile acceptance. Awaiting PR #58 merge. The FMRTE/FM2013 research baseline was merged into main in merge commit 1cd994c.
+**Implementation status:** historical consumer merged into main in PR #58 (merge commit d918a68); CI passed TypeScript, unit tests, production build/bundle budgets and desktop/mobile Playwright. The local capture-to-wire handoff is being added on feat/fm2013-local-capture-handoff. This remains a historical, read-only path; no product IPC or live-session capability is enabled.
 
 ## Scope
 
@@ -15,6 +15,28 @@ This workspace consumes the already-defined address-free fm2013-live-capture-v1 
 5. The workspace shows source/build, declared capture time, import time, source hash, pass coverage, diagnostics, unknown reasons and a snapshot-local searchable player list.
 6. Saving is an explicit user action. Raw wire JSON is never stored.
 7. A saved snapshot can be opened after reload and explicitly removed.
+
+## Local capture to browser-import handoff
+
+The Windows research CLI now supports a direct address-free wire export for this workspace. The exact FM2013 build is identified by SHA-256, not by one machine-specific install path. The process observer accepts only an absolute local Windows path ending in `fm.exe`, hashes the executable found from the selected PID, and requires the exact profile hash. The prepare step reads that observed path again and rechecks the bytes before generating RTTI proofs and the read-only script. UNC/network, relative, traversal and non-`fm.exe` paths are rejected.
+
+On the Windows host, from a clean ManagerHub checkout:
+
+```powershell
+npm run research:fm2013:session -- prepare --pid 1234 --ticket "$env:TEMP\fm2013-ticket.json" --script "$env:TEMP\fm2013-capture.js"
+```
+
+Load the generated script through the explicitly selected REA process and export the **complete** evidence bundle locally. Then produce the file consumed by the browser:
+
+```powershell
+npm run research:fm2013:session -- export-wire --ticket "$env:TEMP\fm2013-ticket.json" --evidence "$env:TEMP\rea-evidence.json" --evidence-id ev_REPLACE_WITH_64_HEX --output "$env:TEMP\fm2013-wire.json"
+```
+
+The CLI requires one exact evidence ID, an unchanged prepared script, a valid unexpired ticket, matching capture/PID bindings and successful process observations at both endpoints. It rejects truncated/ambiguous evidence and writes a fresh JSON file with create-new semantics. The output is the unprojected `fm2013-live-capture-v1` source wire; its SHA-256 is printed for comparison with the browser import hash. `finalize` remains the normalized research-document output and is not the browser import format.
+
+**Privacy:** wire export is address-free, not value-redacted. It can contain exact observed ratings and biography. Keep the source file and REA evidence local/private; do not commit or share them. The Historical Snapshots workspace applies Editor/Realism projection before display and persistence. Choosing Realism in the browser does not sanitize the original wire file on disk. The CLI's internal parser validation uses a discarded Editor document only to validate the source schema; its summary is labelled `unprojected_source` and does not claim a Realism projection.
+
+This closes the file handoff only. REA remains an explicit manual step; there is no desktop IPC, automatic process discovery, watcher, loaded-image authentication, currentness proof or career-lineage proof. Captures remain historical and provisional.
 
 ## Privacy boundary
 
