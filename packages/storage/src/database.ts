@@ -12,6 +12,7 @@ export const HISTORICAL_REALISM_SUMMARIES = 'historical-realism-summaries';
 /** Shared IndexedDB opener owns schema migrations for all local libraries. */
 export function openDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
+    let blocked = false;
     if (typeof indexedDB === 'undefined') {
       reject(new Error('Local browser storage is unavailable. Your import is still usable in this tab.'));
       return;
@@ -37,11 +38,18 @@ export function openDatabase(): Promise<IDBDatabase> {
       }
     };
     request.onsuccess = () => {
+      if (blocked) {
+        request.result.close();
+        return;
+      }
       request.result.onversionchange = () => request.result.close();
       resolve(request.result);
     };
     request.onerror = () => reject(new Error('Could not open this browser’s local library.'));
-    request.onblocked = () => reject(new Error('Local library upgrade is blocked by another ManagerHub tab. Close other tabs and retry.'));
+    request.onblocked = () => {
+      blocked = true;
+      reject(new Error('Local library upgrade is blocked by another ManagerHub tab. Close other tabs and retry.'));
+    };
   });
 }
 
