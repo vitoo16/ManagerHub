@@ -1,5 +1,7 @@
 # S04 — Save Reader and FM compatibility research
 
+**2026-11-02 consumer work:** the FM2013 historical snapshot workspace is now implemented on a feature branch with worker-based wire import, separate versioned Editor/Realism IndexedDB stores, schema validation on reload and a snapshot-local player browser. It remains a historical read-only consumer, not an offline .fm decoder, native live reader, process watcher or writer. Acceptance is pending full CI/E2E; no product reader capability is certified.
+
 [Local capture-session admission](../research/fmrte/24-fm2013-local-session-lifecycle.md) now succeeds with actual host process queries, prepared-script/UUID binding, complete REA capture and fresh historical Editor/Realism outputs on4,058 records. The initial sandbox observation failed despite REA visibility and was preserved; no identity fallback was fabricated. PID/creation time/path/hash consistency and expiry checks do not certify loaded image bytes, currentness, career lineage or atomicity. No offline decoder, product watcher/IPC or writer capability is enabled.
 
 **Status: no validated format decoder committed.** The earlier sample `Untitled Game (v03).fm` was 29,319,864 bytes; header began `02 01 61 66 65 2e` (ASCII segment `afe.`). These observations **do not prove which edition generated it, or that player CA/PA was extracted**. Do not commit sample save data or speculate on fields.
