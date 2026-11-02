@@ -36,9 +36,9 @@ function formatBytes(bytes: number): string {
   return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
 }
 
-function formatDate(value: string): string {
+function formatDate(value: string, language = 'en'): string {
   const date = new Date(value);
-  return Number.isFinite(date.getTime()) ? new Intl.DateTimeFormat(undefined, {
+  return Number.isFinite(date.getTime()) ? new Intl.DateTimeFormat(language.startsWith('vi') ? 'vi-VN' : 'en-US', {
     dateStyle: 'medium', timeStyle: 'short'
   }).format(date) : value;
 }
@@ -56,7 +56,7 @@ function progressCopy(stage: HistoricalImportStage, t: (key: string) => string):
 const SnapshotList = memo(function SnapshotList({ items, loading, selectedId, pendingDelete, onOpen, onDelete }:
   { items: readonly HistoricalSnapshotSummary[]; loading: boolean; selectedId: string | null; pendingDelete: string | null;
     onOpen: (id: string) => void; onDelete: (id: string) => void }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   return <section className="historical-panel historical-library" aria-labelledby="historical-library-title">
     <SectionHeading id="historical-library-title" eyebrow={t('Local historical library')} title={t('Saved snapshots')}/>
     {loading ? <p className="historical-muted" role="status">{t('Loading saved snapshots…')}</p> :
@@ -72,7 +72,7 @@ const SnapshotList = memo(function SnapshotList({ items, loading, selectedId, pe
             <span className="historical-snapshot-file">{item.fileName}</span>
             <span className="historical-snapshot-meta">
               <span>{item.playerCount.toLocaleString()} {t('observed records')}</span>
-              <span>{formatDate(item.capturedAt)}</span>
+              <span>{formatDate(item.capturedAt, i18n.language)}</span>
             </span>
             <span className="historical-snapshot-status">
               <Status tone={item.status === 'ready' ? 'info' : item.status === 'partial' ? 'warning' : 'neutral'}>{t(item.status)}</Status>
@@ -179,7 +179,7 @@ const PlayerDetail = memo(function PlayerDetail({ player }: { player: LivePlayer
 });
 
 export default function HistoricalWorkspace() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [mode, setMode] = useState<HistoricalSnapshotMode>('realism');
   const library = useHistoricalSnapshotLibrary(mode);
   const [file, setFile] = useState<File | null>(null);
@@ -440,9 +440,9 @@ export default function HistoricalWorkspace() {
             <p className="historical-status-copy">{statusCopy(record.status, t)}</p>
             <dl className="historical-facts historical-facts--compact">
               <div><dt>{t('Source')}</dt><dd>{t('Live game capture · provisional')}</dd></div>
-              <div><dt>{t('Capture time')}</dt><dd>{formatDate(record.snapshot.capturedAt)} · {t('caller-declared')}</dd></div>
+              <div><dt>{t('Capture time')}</dt><dd>{formatDate(record.snapshot.capturedAt, i18n.language)} · {t('caller-declared')}</dd></div>
               <div><dt>{t('Game date')}</dt><dd>{fieldText(record.snapshot.gameDate, t)}</dd></div>
-              <div><dt>{t('Imported locally')}</dt><dd>{formatDate(record.importedAt)}</dd></div>
+              <div><dt>{t('Imported locally')}</dt><dd>{formatDate(record.importedAt, i18n.language)}</dd></div>
               <div><dt>{t('Source file size')}</dt><dd>{formatBytes(record.sourceSize)}</dd></div>
               <div><dt>{t('Source SHA-256')}</dt><dd className="historical-hash">{record.sourceSha256}</dd></div>
               <div><dt>{t('Career identity')}</dt><dd>{t('User-declared · not verified')}</dd></div>
