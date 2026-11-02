@@ -4,7 +4,7 @@ The exact-build research capture now carries a native game date, read and repeat
 
 ## Static source and image-relative date
 
-Source is `C:\BraCa Soft\FMRTE 13\FMRTE.exe`, version13.3.3.62, SHA-256 `c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae`, MVID `3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6`. The native target remains FM2013 build13.3.3f359652. [The manifest](evidence-manifest.json) pins source coordinates and private evidence.
+Source is `<FMRTE13_INSTALL_ROOT>\FMRTE.exe`, version13.3.3.62, SHA-256 `c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae`, MVID `3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6`. The native target remains FM2013 build13.3.3f359652. [The manifest](evidence-manifest.json) pins source coordinates and private evidence.
 
 | Link | File-backed observation | Limit |
 |---|---|---|
