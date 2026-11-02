@@ -17,11 +17,13 @@ const Systems = lazy(() => import('./features/systems/Systems'));
 const Architecture = lazy(() => import('./features/architecture/Architecture'));
 const PlayerWorkspace = lazy(() => import('./PlayerWorkspace').then(module => ({ default: module.PlayerWorkspace })));
 const SquadWorkspace = lazy(() => import('./SquadWorkspace').then(module => ({ default: module.SquadWorkspace })));
+const HistoricalWorkspace = lazy(() => import('./features/historical-snapshots/HistoricalWorkspace'));
 
-const NAV: { key: WorkspaceKey; title: string; detail: string; icon: 'grid' | 'database' | 'layers' | 'shield' | 'compass' }[] = [
+const NAV: { key: WorkspaceKey; title: string; detail: string; icon: 'grid' | 'database' | 'layers' | 'shield' | 'compass' | 'history' }[] = [
   { key: 'overview', title: 'Overview', detail: 'Command center', icon: 'grid' },
   { key: 'saves', title: 'Save Library', detail: 'Local inspection', icon: 'database' },
   { key: 'players', title: 'Player Lab', detail: 'Exported player scouting', icon: 'compass' },
+  { key: 'history', title: 'Historical snapshots', detail: 'FM2013 research captures', icon: 'history' },
   { key: 'squad', title: 'Squad Planner', detail: 'Verified position assignments', icon: 'layers' },
   { key: 'modules', title: 'Football Systems', detail: 'All 27 workstreams', icon: 'layers' },
   { key: 'architecture', title: 'Data & Trust', detail: 'How it works', icon: 'shield' }
@@ -210,6 +212,7 @@ export default function App() {
           <Suspense fallback={<WorkspaceLoading/>}>
             {view === 'overview' && <Overview imports={imports} go={navigate}/>}
             {view === 'players' && <PlayerWorkspace dataset={playerDataset} onDataset={onPlayerDatasetChange} onOpenSquad={openSquad}/>}
+            {view === 'history' && <HistoricalWorkspace/>}
             {view === 'squad' && <SquadWorkspace dataset={playerDataset} onImport={openPlayers}
               plans={squadPlans} setPlans={setSquadPlans} active={activeSquadPlan} setActive={setActiveSquadPlan}/>}
             {view === 'saves' && <SaveInspector imports={imports} selected={selected} onInspect={onInspect} onRemove={remove} busy={busy} error={error} select={setSelectedId} onRestoreSaved={onRestoreSaved}/>}
