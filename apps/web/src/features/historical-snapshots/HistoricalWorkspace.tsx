@@ -369,7 +369,7 @@ export default function HistoricalWorkspace() {
     filteredPlayers.find(player => player.id === selectedPlayerId) ?? filteredPlayers[0] ?? null,
   [filteredPlayers, selectedPlayerId]);
 
-  return <div className="view-flow historical-workspace" aria-busy={importing || library.activity !== null}>
+  return <div className="view-flow historical-workspace" aria-busy={importing || switchingMode || library.loading || library.activity !== null}>
     <div className="page-title">
       <span className="mh-eyebrow">{t('FM2013 · Historical capture · Read-only')}</span>
       <h1>{t('Historical snapshots')}</h1>
