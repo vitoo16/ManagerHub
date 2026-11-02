@@ -139,14 +139,16 @@ describe('historical FM2013 snapshot persistence schema', () => {
   });
 
   it('accepts legacy captures whose optional biography and position fields were not transported', () => {
-    const input = capture();
-    input.passes = input.passes.map(scan => ({
-      ...scan,
-      records: scan.records.map(item => {
-        const { birthDateBytes: _birthDateBytes, primaryNation: _primaryNation, positionBytes: _positionBytes, ...legacy } = item;
-        return legacy;
-      })
-    }));
+    const input = JSON.parse(JSON.stringify(capture())) as {
+      passes: Array<{ records: Array<Record<string, unknown>> }>;
+    };
+    for (const scan of input.passes) {
+      for (const item of scan.records) {
+        delete item.birthDateBytes;
+        delete item.primaryNation;
+        delete item.positionBytes;
+      }
+    }
     const parsed = parseFm2013LiveCapture(JSON.stringify(input), { ...context, mode: 'realism' });
     expect(parsed.status).toBe('ready');
     if (parsed.status === 'rejected') throw new Error('Expected a legacy capture to be admitted.');
