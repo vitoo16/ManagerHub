@@ -73,7 +73,7 @@ Yêu cầu triển khai:
    commit chức năng nối thật, không dừng ở plan hoặc stub.
 
 Private artifacts không ởGit. Localroot hiện tại:
-C:\Users\viett\.codex\visualizations\2026\10\30\01a18c2c-5b30-7ac2-841d-290449543b12
+<LOCAL_USER_PROFILE>\.codex\visualizations\2026\10\30\01a18c2c-5b30-7ac2-841d-290449543b12
 Có wire thật fm13-dated-wire.json/fm13-biography-wire.json cho local manual
 validation nếu máy này còn file. Không commit/upload chúng, screenshots thật,
 CIL, memory data, binaries, save hoặc license. Clone máy khác có thể thiếu
