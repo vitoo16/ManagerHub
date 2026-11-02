@@ -105,17 +105,17 @@ export async function exportFm2013WireCapture(options, dependencies={}) {
   if(output===ticketPath||output===evidencePath||extname(output).toLowerCase()!=='.json'||ticketPath===evidencePath||
      !/^ev_[0-9a-f]{64}$/u.test(options.evidenceId??''))throw Error('invalid_export_arguments');
   await fresh(output);
-  const {wire,document}=await validateSessionEvidence(options,dependencies);
+  const {wire,document}=await validateSessionEvidence({...options,snapshotId:'wire-export-validation',careerId:'wire-export-validation',capturedAt:'2000-01-01T00:00:00.000Z',mode:'editor'},dependencies);
   const bytes=Buffer.from(JSON.stringify(wire)+'\n');
   if(bytes.length>24_000_000)throw Error('Wire capture exceeds the browser import bound.');
   await writeFile(output,bytes,{flag:'wx'});
-  return {status:document.result.status,playerCount:document.result.snapshot.players.length,mode:document.result.snapshot.mode,
-    availability:'historical_capture',captureAuthenticated:false,output,outputSha256:digest(bytes)};
+  return {status:document.result.status,playerCount:document.result.snapshot.players.length,format:profile.schema,
+    projection:'unprojected_source',availability:'historical_capture',captureAuthenticated:false,output,outputSha256:digest(bytes)};
 }
 
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
  try{
-  const action=process.argv[2],keys=action==='prepare'?['pid','ticket','script']:['finalize','export-wire'].includes(action)?['ticket','evidence','evidence-id','output','snapshot-id','career-id','captured-at','mode']:[];
+  const action=process.argv[2],keys=action==='prepare'?['pid','ticket','script']:action==='finalize'?['ticket','evidence','evidence-id','output','snapshot-id','career-id','captured-at','mode']:action==='export-wire'?['ticket','evidence','evidence-id','output']:[];
   if(!keys.length)throw Error('Use prepare, finalize or export-wire');
   const options={};for(let i=3;i<process.argv.length;i+=2){const key=process.argv[i]?.slice(2),value=process.argv[i+1];if(!process.argv[i]?.startsWith('--')||!keys.includes(key)||!value||Object.hasOwn(options,key))throw Error('invalid_named_arguments');options[key]=value;}
   if(Object.keys(options).length!==keys.length)throw Error('missing_named_arguments');
