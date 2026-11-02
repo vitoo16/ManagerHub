@@ -1,4 +1,4 @@
-import type { HistoricalSnapshotMode, HistoricalSnapshotRecord } from '@managerhub/domain';
+import { parseHistoricalSnapshotRecord, type HistoricalSnapshotMode, type HistoricalSnapshotRecord } from '@managerhub/domain';
 
 export type HistoricalImportStage = 'reading' | 'hashing' | 'parsing' | 'validating';
 export interface HistoricalImportContext {
@@ -12,7 +12,7 @@ interface WorkerRequest extends HistoricalImportContext {
 }
 type WorkerResponse =
   | { readonly type: 'progress'; readonly stage: HistoricalImportStage }
-  | { readonly type: 'success'; readonly record: HistoricalSnapshotRecord; readonly pairedRecord: HistoricalSnapshotRecord | null }
+  | { readonly type: 'success'; readonly record: unknown; readonly pairedRecord: unknown }
   | { readonly type: 'error'; readonly message: string };
 
 export interface HistoricalImportResult {
@@ -63,7 +63,27 @@ export function importHistoricalCapture(
       } else if (response.type === 'error') {
         finish(new Error(response.message));
       } else {
-        finish(undefined, { record: response.record, pairedRecord: response.pairedRecord });
+        try {
+          const record = parseHistoricalSnapshotRecord(response.record);
+          if (record.mode !== mode) throw new Error('The worker returned a snapshot for a different visibility mode.');
+          let pairedRecord: HistoricalSnapshotRecord | null = null;
+          if (response.pairedRecord !== null) {
+            pairedRecord = parseHistoricalSnapshotRecord(response.pairedRecord);
+            if (mode !== 'editor' || pairedRecord.mode !== 'realism' || pairedRecord.id !== record.id ||
+                pairedRecord.sourceSha256 !== record.sourceSha256) {
+              throw new Error('The worker returned an invalid Editor/Realism projection pair.');
+            }
+          }
+          if (mode === 'editor' && pairedRecord === null) {
+            throw new Error('The separately redacted Realism projection is missing.');
+          }
+          if (mode === 'realism' && pairedRecord !== null) {
+            throw new Error('A Realism-only import must not include an Editor projection.');
+          }
+          finish(undefined, { record, pairedRecord });
+        } catch {
+          finish(new Error('The historical capture worker returned a snapshot that failed schema or privacy validation.'));
+        }
       }
     };
     worker.onerror = () => finish(new Error('The historical capture worker failed. The source file was not changed.'));
