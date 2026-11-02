@@ -1,8 +1,9 @@
 import profile from '../packages/domain/src/fm2013-live-profile.json' with { type: 'json' };
+import { isSupportedFm2013ImagePath } from '../packages/domain/src/live-session.ts';
 
 export function createFm2013GameDateConfig(target) {
-  if (target?.binarySha256 !== profile.binarySha256 || !Number.isInteger(target.pid) || target.pid < 1 || target.pid > 0x7fffffff) throw new RangeError('Invalid exact-build game-date target');
-  return { pid: target.pid, binarySha256: profile.binarySha256, imagePath: profile.imagePath, ...profile.gameDate };
+  if (target?.binarySha256 !== profile.binarySha256 || !Number.isInteger(target.pid) || target.pid < 1 || target.pid > 0x7fffffff || !isSupportedFm2013ImagePath(target.imagePath)) throw new RangeError('Invalid exact-build game-date target');
+  return { pid: target.pid, binarySha256: profile.binarySha256, imagePath: target.imagePath, ...profile.gameDate };
 }
 
 /** Runs only inside an explicitly attached research process; reads no host clock. */
