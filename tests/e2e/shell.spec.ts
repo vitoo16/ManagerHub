@@ -417,7 +417,7 @@ test('save inspection metadata is opt-in, survives reload, and never stores the 
   await expect(page.getByText('Đã lưu thông tin trên trình duyệt này')).toBeVisible();
 
   const stored = await page.evaluate(async () => {
-    const open = indexedDB.open('managerhub-local', 3);
+    const open = indexedDB.open('managerhub-local', 4);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       open.onsuccess = () => resolve(open.result);
       open.onerror = () => reject(open.error);
@@ -480,7 +480,7 @@ test('upgrades the v1 IndexedDB schema to v3 without dropping existing libraries
   await expect(page.getByText('No files inspected yet')).toBeVisible();
 
   const migration = await page.evaluate(async () => {
-    const request = indexedDB.open('managerhub-local', 3);
+    const request = indexedDB.open('managerhub-local', 4);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
@@ -515,7 +515,7 @@ test('save inspection metadata library enforces its 50-record limit', async ({ p
   // Wait for the lazy Save Library hook to finish opening/upgrading IndexedDB.
   await expect(page.getByText('Session only')).toBeVisible();
   await page.evaluate(async () => {
-    const request = indexedDB.open('managerhub-local', 3);
+    const request = indexedDB.open('managerhub-local', 4);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
@@ -569,7 +569,7 @@ test('incompatible save metadata can be cleared without deleting the player libr
   await expect(page.getByText('Session only')).toBeVisible();
 
   await page.evaluate(async () => {
-    const request = indexedDB.open('managerhub-local', 3);
+    const request = indexedDB.open('managerhub-local', 4);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
@@ -620,7 +620,7 @@ test('incompatible save metadata can be cleared without deleting the player libr
   await expect(page.getByText('No files inspected yet')).toBeVisible();
 
   const stores = await page.evaluate(async () => {
-    const request = indexedDB.open('managerhub-local', 3);
+    const request = indexedDB.open('managerhub-local', 4);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
@@ -646,7 +646,7 @@ test('incompatible save metadata can be cleared without deleting the player libr
 });
 
 
-test('upgrades an existing v2 database to v3 without losing save or player metadata', async ({ page }) => {
+test('upgrades an existing v2 database to v4 without losing save or player metadata', async ({ page }) => {
   await page.route('**/*', async route => {
     if (route.request().isNavigationRequest()) {
       await route.fulfill({ status: 200, contentType: 'text/html', body: '<!doctype html><html><head></head><body></body></html>' });
@@ -704,7 +704,7 @@ test('upgrades an existing v2 database to v3 without losing save or player metad
   await page.goto('/#/history');
   await expect(page.getByRole('heading', { name: 'Historical snapshots' })).toBeVisible();
   const result = await page.evaluate(async () => {
-    const request = indexedDB.open('managerhub-local', 3);
+    const request = indexedDB.open('managerhub-local', 4);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
