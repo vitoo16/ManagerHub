@@ -1,6 +1,6 @@
 # ManagerHub — 27-module implementation and acceptance ledger
 
-2026-11-03: the FMRTE/FM2013 research baseline is in main; the historical snapshot consumer is implemented on feat/fm2013-historical-consumer (PR #58). Bounded worker import, strict historical schema, separate Editor/Realism projections, local search/browse and persistence are covered by CI run #41489241321: TypeScript, unit tests, production build/bundle budget and desktop/mobile Playwright all passed. IndexedDB schema v4 also repairs incomplete v3 stores/indexes. This does not complete MH-01/03/05 or any delivery phase; no native reader, offline decoder, CA/PA or writer capability is certified.
+2026-11-03: the FMRTE/FM2013 research baseline is in main; the historical snapshot consumer is implemented on feat/fm2013-historical-consumer (PR #58). Bounded worker import, strict historical schema, separate Editor/Realism projections, local search/browse and persistence are covered by CI run #41490068166: TypeScript, unit tests, production build/bundle budget and desktop/mobile Playwright all passed. IndexedDB schema v4 also repairs incomplete v3 stores/indexes. This does not complete MH-01/03/05 or any delivery phase; no native reader, offline decoder, CA/PA or writer capability is certified.
 
 2026-11-01: [local session lifecycle research](../research/fmrte/24-fm2013-local-session-lifecycle.md) connects actual host process identity, generated read-only script, REA capture and fresh Editor/Realism normalization for4,058 observed records. Historical-only output, opaque creation-time checks, expiry/token/script consistency and synthetic failure tests pass; full checks pass226 tests/build. Product watcher/IPC, trusted current availability, career identity, full source coverage and writer certification remain unfinished. No module or delivery phase is marked complete.
 
@@ -92,7 +92,7 @@ Additional integration evidence: [opt-in local storage + role-fit lineup planner
 
 | Area | Status | Evidence / acceptance |
 |---|---|---|
-| Workspace code splitting | Implemented; CI passed (run #125, #41489241321) | Overview, Save Library, Player Lab, Historical snapshots, Squad Planner, Systems and Data & Trust use lazy imports with a translated loading fallback. Historical Vietnamese copy loads with its lazy workspace. |
+| Workspace code splitting | Implemented; CI passed (run #125, #41490068166) | Overview, Save Library, Player Lab, Historical snapshots, Squad Planner, Systems and Data & Trust use lazy imports with a translated loading fallback. Historical Vietnamese copy loads with its lazy workspace. |
 | Feature component boundaries | Implemented; CI passed (run #125) | Player report/recruitment and Squad Planner presentation/editor components live in feature-scoped files. |
 | Bounded large-roster rendering | Implemented; CI passed (run #125) | Player Lab uses a fixed-height virtual window and incremental loading; Playwright includes a 511-player regression case. |
 | Main-thread workload | Implemented; CI passed (run #125) | CSV/TSV parsing and save inspection run in Web Workers. HTML import stays on the main thread because the current hardened parser relies on DOMParser. |
