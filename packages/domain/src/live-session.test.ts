@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import profile from './fm2013-live-profile.json' with { type: 'json' };
 import { createFm2013CaptureTicket, validateFm2013CaptureAdmission, type Fm2013ProcessIdentity, type Fm2013CaptureBinding, type Fm2013ProcessObservation } from './live-session';
-const identity: Fm2013ProcessIdentity = { pid: 1234, startedAtFileTime: '134064000000000001', imagePath: profile.imagePath, binarySha256: profile.binarySha256 };
+const imagePath = 'C:\\Games\\Football Manager 2013\\fm.exe';
+const identity: Fm2013ProcessIdentity = { pid: 1234, startedAtFileTime: '134064000000000001', imagePath: imagePath, binarySha256: profile.binarySha256 };
 const id = 'b6541e7f-489d-4df4-a922-836a1a805492', issued = '2026-11-01T00:00:00.000Z', now = '2026-11-01T00:00:30.000Z';
 const make = () => createFm2013CaptureTicket(identity, id, issued);
 const binding = { captureId: id, pid: identity.pid };
@@ -47,7 +48,7 @@ describe('FM2013 local capture ticket admission', () => {
     for (const expiresAt of [issued, '2026-11-01T00:10:00.001Z']) expect(validate({ ...make(), expiresAt }).reason).toBe('invalid_ticket');
   });
   it('rejects foreign builds, malformed creation times and unknown ticket claims', () => {
-    for (const change of [{ binarySha256: '0'.repeat(64) }, { imagePath: 'C:\\Other\\fm.exe' }, { startedAtFileTime: '134064000000000001.0' },
+    for (const change of [{ binarySha256: '0'.repeat(64) }, { imagePath: '\\\\server\\share\\fm.exe' }, { startedAtFileTime: '134064000000000001.0' },
       { startedAtFileTime: '000000000000000001' }, { startedAtFileTime: '99999999999999999999' }, { startedAtFileTime: 134064000000000001 }, { pid: 0 }]) {
       const altered = { ...identity, ...change };
       expect(() => createFm2013CaptureTicket(altered as Fm2013ProcessIdentity, id, issued)).toThrow(TypeError);
