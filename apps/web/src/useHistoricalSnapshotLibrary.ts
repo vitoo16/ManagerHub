@@ -13,6 +13,7 @@ type Activity = 'opening' | 'saving' | 'deleting' | 'clearing' | null;
 export function useHistoricalSnapshotLibrary(mode: HistoricalSnapshotMode) {
   const [items, setItems] = useState<HistoricalSnapshotSummary[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadedMode, setLoadedMode] = useState<HistoricalSnapshotMode | null>(null);
   const [activity, setActivity] = useState<Activity>(null);
   const [error, setError] = useState<string | null>(null);
   const [canClearIncompatible, setCanClearIncompatible] = useState(false);
@@ -20,18 +21,25 @@ export function useHistoricalSnapshotLibrary(mode: HistoricalSnapshotMode) {
   const reload = useCallback(async () => {
     const rows = await listHistoricalSnapshotSummaries(mode);
     setItems(rows);
+    setLoadedMode(mode);
   }, [mode]);
 
   useEffect(() => {
     let active = true;
     setLoading(true);
+    setLoadedMode(null);
     setError(null);
+    setCanClearIncompatible(false);
     listHistoricalSnapshotSummaries(mode).then(rows => {
-      if (active) setItems(rows);
+      if (active) {
+        setItems(rows);
+        setLoadedMode(mode);
+      }
     }).catch(cause => {
       if (active) {
         setError(message(cause));
         setCanClearIncompatible(cause instanceof Error && /incompatible|schema validation|damaged/u.test(cause.message));
+        setLoadedMode(mode);
       }
     }).finally(() => {
       if (active) setLoading(false);
@@ -114,9 +122,13 @@ export function useHistoricalSnapshotLibrary(mode: HistoricalSnapshotMode) {
   }, []);
 
   return useMemo(() => ({
-    items, loading, activity, error, canClearIncompatible, reload,
-    save, open, remove, clearIncompatible, clearError
-  }), [items, loading, activity, error, canClearIncompatible, reload, save, open, remove, clearIncompatible, clearError]);
+    items: loadedMode === mode ? items : [],
+    loading: loading || loadedMode !== mode,
+    activity,
+    error: loadedMode === mode ? error : null,
+    canClearIncompatible: loadedMode === mode && canClearIncompatible,
+    reload, save, open, remove, clearIncompatible, clearError
+  }), [items, loading, loadedMode, mode, activity, error, canClearIncompatible, reload, save, open, remove, clearIncompatible, clearError]);
 }
 
 function message(cause: unknown): string {
