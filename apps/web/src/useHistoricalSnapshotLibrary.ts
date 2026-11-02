@@ -31,7 +31,7 @@ export function useHistoricalSnapshotLibrary(mode: HistoricalSnapshotMode) {
     }).catch(cause => {
       if (active) {
         setError(message(cause));
-        setCanClearIncompatible(cause instanceof Error && /incompatible with this version/u.test(cause.message));
+        setCanClearIncompatible(cause instanceof Error && /incompatible|schema validation|damaged/u.test(cause.message));
       }
     }).finally(() => {
       if (active) setLoading(false);
@@ -81,7 +81,7 @@ export function useHistoricalSnapshotLibrary(mode: HistoricalSnapshotMode) {
     setError(null);
     try {
       await deleteHistoricalSnapshot(id);
-      await reload();
+      try { await reload(); } catch (cause) { setError(message(cause)); }
       return true;
     } catch (cause) {
       setError(message(cause));
