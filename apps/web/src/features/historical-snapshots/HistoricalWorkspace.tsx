@@ -71,7 +71,7 @@ const SnapshotList = memo(function SnapshotList({ items, loading, selectedId, pe
             <span className="historical-snapshot-name">{item.careerLabel}</span>
             <span className="historical-snapshot-file">{item.fileName}</span>
             <span className="historical-snapshot-meta">
-              <span>{item.playerCount.toLocaleString()} {t('observed players')}</span>
+              <span>{item.playerCount.toLocaleString()} {t('observed records')}</span>
               <span>{formatDate(item.capturedAt)}</span>
             </span>
             <span className="historical-snapshot-status">
@@ -125,7 +125,7 @@ const PlayerDetail = memo(function PlayerDetail({ player }: { player: LivePlayer
     <section className="historical-panel">
       <div className="historical-player-heading">
         <div>
-          <span className="mh-eyebrow">{t('Snapshot-local player ID')} · {player.nativeKind}</span>
+          <span className="mh-eyebrow">{t('Snapshot-local player ID')} · {t(player.nativeKind)}</span>
           <h3>{fieldText(player.name, t)}</h3>
           <p>{t('Native ID')} {player.nativeId} · {t('This identity is scoped to this snapshot only.')}</p>
         </div>
@@ -433,7 +433,7 @@ export default function HistoricalWorkspace() {
               <div>
                 <span className="mh-eyebrow">{t('Historical snapshot')} · {record.snapshot.edition} {record.snapshot.build}</span>
                 <h2>{record.snapshot.careerId.value}</h2>
-                <p>{record.fileName} · {record.snapshot.players.length.toLocaleString()} {t('observed players')}</p>
+                <p>{record.fileName} · {record.snapshot.players.length.toLocaleString()} {t('observed records')}</p>
               </div>
               <Status tone={record.status === 'ready' ? 'info' : record.status === 'partial' ? 'warning' : 'neutral'}>{t(record.status)}</Status>
             </div>
@@ -476,7 +476,7 @@ export default function HistoricalWorkspace() {
                     {visiblePlayers.map(player => <tr key={player.id}>
                       <td><button className="historical-player-select" aria-current={selectedPlayer?.id === player.id ? 'true' : undefined}
                         onClick={() => setSelectedPlayerId(player.id)}>{fieldText(player.name, t)}<small>#{player.nativeId}</small></button></td>
-                      <td>{player.nativeKind}</td>
+                      <td>{t(player.nativeKind)}</td>
                       <td>{player.club.value?.name ?? fieldText(player.club, t)}</td>
                       <td>{fieldText(player.calendarAge, t, value => String(value))}</td>
                     </tr>)}
