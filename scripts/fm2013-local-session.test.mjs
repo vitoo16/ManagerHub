@@ -7,8 +7,9 @@ import { createHash } from 'node:crypto';
 import profile from '../packages/domain/src/fm2013-live-profile.json' with { type:'json' };
 import { createFm2013CaptureTicket } from '../packages/domain/src/live-session.ts';
 import { finalizeFm2013Session, prepareFm2013Session } from './fm2013-local-session.mjs';
+const imagePath = 'C:\\Games\\Football Manager 2013\\fm.exe';
 const id='12345678-1234-4234-8234-123456789abc',evidenceId='ev_'+'1'.repeat(64),issued='2030-01-01T00:00:00.000Z';
-const processIdentity={pid:100,startedAtFileTime:'134000000000000001',imagePath:profile.imagePath,binarySha256:profile.binarySha256};
+const processIdentity={pid:100,startedAtFileTime:'134000000000000001',imagePath:imagePath,binarySha256:profile.binarySha256};
 const observed=()=>({status:'observed',process:{...processIdentity}});
 async function fixture(run){
  const dir=await mkdtemp(join(tmpdir(),'mh-session-flow-'));
@@ -17,7 +18,7 @@ async function fixture(run){
   const source='// Synthetic read-only fixture\n',sha=createHash('sha256').update(source).digest('hex');await writeFile(script,source);
   const request={schema:'managerhub-local-capture-request-v1',ticket:createFm2013CaptureTicket(processIdentity,id,issued),script:{path:script,sha256:sha},authority:'local_process_query',captureAuthenticated:false};
   await writeFile(ticket,JSON.stringify(request));
-  const capture={schema:profile.schema,profileVersion:profile.profileVersion,target:{pid:100,arch:'ia32',pointerSize:4,imagePath:profile.imagePath,binarySha256:profile.binarySha256},
+  const capture={schema:profile.schema,profileVersion:profile.profileVersion,target:{pid:100,arch:'ia32',pointerSize:4,imagePath:imagePath,binarySha256:profile.binarySha256},
    gameDateBytes:[198,0,220,7],passes:['player','playerStaff'].map((nativeKind,i)=>({nativeKind,imageTypeMetadataVerified:true,
     coverage:{bytesScanned:4096,matches:1,rejected:0,duplicates:0,faultCount:0,stopReason:null,selectedMappingsExhausted:true,elapsedMs:1},
     records:[{nativeId:i+1,firstName:'Synthetic',lastName:'Fixture',attributeBytes:Array(49).fill(75),positionBytes:Array(15).fill(1),birthDateBytes:[0,0,208,7]}]}))};
