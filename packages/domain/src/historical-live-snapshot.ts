@@ -184,11 +184,14 @@ function isPlayer(value: unknown, snapshotId: string, mode: HistoricalSnapshotMo
 
   const abilityReason = mode === 'realism' ? 'redacted' : 'not_verified';
   for (const ability of [value.actualCa, value.potentialAbility]) {
-    if (!isEvidenceField(ability, 'live_game', () => false) || ability.value !== null || ability.missingReason !== abilityReason) return false;
+    if (!plainRecord(ability) || !isEvidenceField(ability, 'live_game', () => false) ||
+        ability.value !== null || ability.missingReason !== abilityReason) return false;
   }
-  if (!exactKeys(value.contract, ['weeklyWage', 'wageFrequency', 'currency', 'expiresAt'])) return false;
-  for (const contractField of Object.values(value.contract)) {
-    if (!isEvidenceField(contractField, 'live_game', () => false) || contractField.value !== null || contractField.missingReason !== 'not_decoded') return false;
+  const contract = value.contract;
+  if (!exactKeys(contract, ['weeklyWage', 'wageFrequency', 'currency', 'expiresAt'])) return false;
+  for (const contractField of Object.values(contract)) {
+    if (!plainRecord(contractField) || !isEvidenceField(contractField, 'live_game', () => false) ||
+        contractField.value !== null || contractField.missingReason !== 'not_decoded') return false;
   }
   return true;
 }
