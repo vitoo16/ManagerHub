@@ -1,6 +1,6 @@
 # FMRTE 13 — recovered load and read paths
 
-**Primary target:** C:\BraCa Soft\FMRTE 13\FMRTE.exe, file/assembly 13.3.3.62, SHA-256 c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae, MVID 3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6, x86 .NET Framework 4 Client. All observations below are static CIL/metadata from REA, not an executed game load.
+**Primary target:** <FMRTE13_INSTALL_ROOT>\FMRTE.exe, file/assembly 13.3.3.62, SHA-256 c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae, MVID 3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6, x86 .NET Framework 4 Client. All observations below are static CIL/metadata from REA, not an executed game load.
 
 ## Evidence aliases and scope
 
