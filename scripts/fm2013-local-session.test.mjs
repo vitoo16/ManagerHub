@@ -40,7 +40,8 @@ test('session finalization publishes only explicit historical snapshots and pres
 test('wire export creates the exact address-free JSON accepted by Historical Snapshots',async()=>fixture(async({options,dependencies})=>{
  const beforeTicket=await readFile(options.ticket),beforeEvidence=await readFile(options.evidence);
  const summary=await exportFm2013WireCapture(options,dependencies);
- assert.equal(summary.status,'ready');assert.equal(summary.playerCount,2);assert.equal(summary.mode,'editor');
+ assert.equal(summary.status,'ready');assert.equal(summary.playerCount,2);assert.equal(summary.format,profile.schema);
+ assert.equal(summary.projection,'unprojected_source');assert.equal(Object.hasOwn(summary,'mode'),false);
  assert.equal(summary.availability,'historical_capture');assert.equal(summary.captureAuthenticated,false);
  const bytes=await readFile(options.output),wire=JSON.parse(bytes.toString('utf8'));
  assert.equal(wire.schema,profile.schema);assert.equal(wire.profileVersion,profile.profileVersion);
