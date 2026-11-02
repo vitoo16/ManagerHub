@@ -1,5 +1,5 @@
 const DATABASE_NAME = 'managerhub-local';
-const DATABASE_VERSION = 3;
+const DATABASE_VERSION = 4;
 
 export const EXPORTS = 'player-exports';
 export const SUMMARIES = 'player-export-summaries';
