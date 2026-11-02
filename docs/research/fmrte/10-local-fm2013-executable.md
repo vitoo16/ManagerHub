@@ -28,7 +28,7 @@ MCP REA6.7.0 remained responsive. A fresh binary_session reports Ghidra unconfig
 
 ## Save and runtime discovery
 
-**CONFIRMED updated discovery:** after the user's message that a save now exists, `Untitled Game.fm` was identified in the default FM2013 games folder. Windows MyDocuments resolves to `C:\Users\viett\OneDrive\Documents`. Explicit JSON inventory also establishes 63 shipped tutorial `.fm` files inside the installation; the earlier negative installation claim resulted from a mixed-object display error and is corrected in the [sample report](11-fm2013-save-samples.md). No `fm` or `FMRTE` process was observed in the process-name check; that is a point-in-time observation only.
+**CONFIRMED updated discovery:** after the user's message that a save now exists, `Untitled Game.fm` was identified in the default FM2013 games folder. Windows MyDocuments resolves to `<LOCAL_USER_PROFILE>\OneDrive\Documents`. Explicit JSON inventory also establishes 63 shipped tutorial `.fm` files inside the installation; the earlier negative installation claim resulted from a mixed-object display error and is corrected in the [sample report](11-fm2013-save-samples.md). No `fm` or `FMRTE` process was observed in the process-name check; that is a point-in-time observation only.
 
 The installation's `special folders.xml` describes relative application/data resource folders; it did not identify a user save path. It is not evidence of a save format. License/configuration credentials were not read, no executable was launched, and no file/process/save was modified.
 
