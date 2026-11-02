@@ -1,11 +1,11 @@
 {
-  "installationRoot": "C:\\Program Files (x86)\\Football Manager 2013",
+  "installationRoot": "<FM2013_INSTALL_ROOT>",
   "capturedDate": "2026-10-30",
   "selection": "User-supplied installation directory; fm.exe only. Not an inventory of every bundled library.",
   "method": "REA PE artifact/resource inventory + PowerShell FileVersionInfo/SHA256/PEReader; target never executed",
   "files": [
     {
-      "path": "C:\\Program Files (x86)\\Football Manager 2013\\fm.exe",
+      "path": "<FM2013_INSTALL_ROOT>\\fm.exe",
       "relativePath": "fm.exe",
       "bytes": 40848024,
       "fileVersion": "13.3.3",
