@@ -1,5 +1,3 @@
-import historicalVi from './historical-vi';
-
 export default {
   "Overview": "Tổng quan",
   "Command center": "Trung tâm quản lý",
@@ -572,5 +570,4 @@ export default {
   "not_decoded": "Chưa giải mã",
   "Observed player-team pointer": "Con trỏ liên kết cầu thủ–đội bóng được quan sát",
   "Observed primary-contract team": "Đội bóng trong hợp đồng chính được quan sát",
-  ...historicalVi,
 } as const;
