@@ -168,7 +168,7 @@ function isPlayer(value: unknown, snapshotId: string, mode: HistoricalSnapshotMo
   const nationValid = isModeField(value.primaryNation, mode, 'live_game', item =>
     exactKeys(item, ['nativeId', 'name', 'relation']) &&
     finiteInteger(item.nativeId, 1, 2_147_483_647) && safeText(item.name, 128) &&
-    item.relation === 'person_primary_nation');
+    item.relation === 'person_primary_nation', ['redacted', 'not_decoded']);
   if (!nationValid) return false;
 
   const attributes = value.attributes;
