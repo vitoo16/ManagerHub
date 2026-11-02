@@ -2,7 +2,7 @@
 
 **CONFIRMED:** an alternate loader opens a read-only FileStream and presents it to the common address-read helpers. **INFERRED:** this is an address-indexed file source. **UNKNOWN:** which file format and profile are intended. No AFE `.fm` decoder is demonstrated by these methods.
 
-Source: `C:\BraCa Soft\FMRTE 13\FMRTE.exe`, version/assembly `13.3.3.62`, x86/.NET4; SHA-256 `c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae`, MVID `3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6`. Canonical source evidence `ev_cd0cfcfea5622bc352c978da5c834b6caefe70f65195afe8a4f9fbb5c411ec7d`; build-bound method coordinates and prior P/Invoke evidence are in [the manifest](evidence-manifest.json).
+Source: `<FMRTE13_INSTALL_ROOT>\FMRTE.exe`, version/assembly `13.3.3.62`, x86/.NET4; SHA-256 `c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae`, MVID `3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6`. Canonical source evidence `ev_cd0cfcfea5622bc352c978da5c834b6caefe70f65195afe8a4f9fbb5c411ec7d`; build-bound method coordinates and prior P/Invoke evidence are in [the manifest](evidence-manifest.json).
 
 ## File loader
 
