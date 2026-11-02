@@ -6,12 +6,12 @@ Research date: 2026-10-30. Secondary comparison only; these findings do not esta
 
 | Binary | Resolved installed path | Assembly / file version | Architecture / framework | SHA-256 |
 |---|---|---|---|---|
-| Startup assembly | `C:\BraCa Soft\FMRTE 26\current\FMRTE.dll` | `26.3.2.0` / `26.3.2.42` | x64 managed CIL / .NET 9 | `29122b04bde4d77b5860423544d93f6bbef5b2e9c65b9a5749bd388c2be4b89e` |
-| Avalonia application | `C:\BraCa Soft\FMRTE 26\current\FmrteAvalonia.dll` | `26.3.2.0` / `26.3.2.42` | AnyCPU managed CIL / .NET 9 | `c763b9614e98f13a16f1b49b4a14ad191fc585627919fbac165970938d425ecf` |
+| Startup assembly | `<FMRTE26_INSTALL_ROOT>\current\FMRTE.dll` | `26.3.2.0` / `26.3.2.42` | x64 managed CIL / .NET 9 | `29122b04bde4d77b5860423544d93f6bbef5b2e9c65b9a5749bd388c2be4b89e` |
+| Avalonia application | `<FMRTE26_INSTALL_ROOT>\current\FmrteAvalonia.dll` | `26.3.2.0` / `26.3.2.42` | AnyCPU managed CIL / .NET 9 | `c763b9614e98f13a16f1b49b4a14ad191fc585627919fbac165970938d425ecf` |
 
 The Avalonia module MVID is `ae81bf4d-f887-2214-dad5-9a575848146b`; startup MVID is `c1d1bd13-5fbc-417d-40ad-2d18cd8973c8`. All tokens below are build-local to their stated binary.
 
-REA 6.7.0 `inspect_managed_artifact`, `inspect_managed_members`, `inspect_analysis_view`, and `inspect_managed_native_boundaries` produced the observations. Provider: `rea-dotnet-static` v1; projected pages use `rea-analysis-view` v1. Ghidra/IDA are not configured in this environment. The separate agent evidence bundle is outside the repository at `C:\Users\viett\.codex\visualizations\2026\10\30\01a18c2c-5b30-7ac2-841d-290449543b12\fmrte26-rea-evidence.json`; its final digest is recorded in the shared manifest.
+REA 6.7.0 `inspect_managed_artifact`, `inspect_managed_members`, `inspect_analysis_view`, and `inspect_managed_native_boundaries` produced the observations. Provider: `rea-dotnet-static` v1; projected pages use `rea-analysis-view` v1. Ghidra/IDA are not configured in this environment. The separate agent evidence bundle is outside the repository at `<LOCAL_USER_PROFILE>\.codex\visualizations\2026\10\30\01a18c2c-5b30-7ac2-841d-290449543b12\fmrte26-rea-evidence.json`; its final digest is recorded in the shared manifest.
 
 | Evidence alias | REA Evidence ID | Scope |
 |---|---|---|
