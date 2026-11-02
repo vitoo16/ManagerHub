@@ -66,7 +66,6 @@ export default {
   "Import a historical capture": "Nhập capture lịch sử",
   "Read-only": "Chỉ đọc",
   "Address-free wire JSON": "Wire JSON không chứa địa chỉ bộ nhớ",
-  "Choose the complete fm2013-live-capture-v1 JSON file.": "Chọn file JSON fm2013-live-capture-v1 đầy đủ.",
   "Career label (user-declared)": "Nhãn career (người dùng khai báo)",
   "Example: My FM2013 career": "Ví dụ: Career FM2013 của tôi",
   "Capture time (declared by source workflow)": "Thời điểm capture (do quy trình nguồn khai báo)",
@@ -78,7 +77,6 @@ export default {
   "Cancel import": "Hủy nhập",
   "Clear incompatible historical library": "Xóa thư viện snapshot lịch sử không tương thích",
   "Dismiss": "Đóng",
-  "Only complete address-free wire JSON is accepted. The source file is hashed and parsed in a Web Worker; raw wire data is never persisted. Unsupported builds, truncated transport and unrecognized fields are rejected.": "Chỉ chấp nhận wire JSON đầy đủ và không chứa địa chỉ bộ nhớ. File nguồn được băm và phân tích trong Web Worker; wire thô không bao giờ được lưu. Build không hỗ trợ, dữ liệu truyền bị cắt cụt và trường không nhận diện sẽ bị từ chối.",
   "No snapshot selected": "Chưa chọn snapshot",
   "Import a capture above or open a saved snapshot from this mode.": "Nhập capture ở phía trên hoặc mở snapshot đã lưu trong chế độ này.",
   "Source": "Nguồn",
@@ -218,5 +216,7 @@ export default {
   "Unknown scan stop reason.": "Không nhận diện được lý do dừng quét.",
   "No accepted player records; this does not establish whether a career is loaded.": "Không có bản ghi cầu thủ hợp lệ; điều này không xác nhận career có đang được nạp hay không.",
   "The historical capture worker returned a snapshot that failed schema or privacy validation.": "Web Worker trả về snapshot không vượt qua kiểm tra schema hoặc quyền riêng tư.",
-  "observed records": "bản ghi được quan sát"
+  "observed records": "bản ghi được quan sát",
+  "Choose an address-free fm2013-live-capture-v1 JSON capture.": "Chọn capture JSON fm2013-live-capture-v1 không chứa địa chỉ bộ nhớ.",
+  "Only valid address-free wire JSON for the supported FM2013 build is accepted. Optional biography and position fields may remain unknown. The source file is hashed and parsed in a Web Worker; raw wire data is never persisted. Unsupported builds, truncated transport and unrecognized fields are rejected.": "Chỉ chấp nhận wire JSON hợp lệ, không chứa địa chỉ bộ nhớ và thuộc build FM2013 được hỗ trợ. Các trường tiểu sử và vị trí tùy chọn có thể chưa được giải mã. File nguồn được băm và phân tích trong Web Worker; wire thô không được lưu. Build không hỗ trợ, dữ liệu truyền bị cắt cụt và trường không nhận diện sẽ bị từ chối."
 } as const;
