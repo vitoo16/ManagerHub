@@ -5,6 +5,7 @@ import { join, dirname, basename, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 import profile from '../packages/domain/src/fm2013-live-profile.json' with { type: 'json' };
+const imagePath = 'C:\\Games\\Football Manager 2013\\fm.exe';
 
 async function cleanup(directory) {
   const target = resolve(directory);
@@ -15,7 +16,7 @@ async function cleanup(directory) {
 
 function fixture() {
   return { schema: profile.schema, profileVersion: profile.profileVersion,
-    target: { pid: 100, arch: 'ia32', pointerSize: 4, imagePath: profile.imagePath, binarySha256: profile.binarySha256 },
+    target: { pid: 100, arch: 'ia32', pointerSize: 4, imagePath: imagePath, binarySha256: profile.binarySha256 },
     passes: ['player', 'playerStaff'].map((nativeKind, index) => ({ nativeKind, imageTypeMetadataVerified: true,
       coverage: { bytesScanned: 4096, matches: 1, rejected: 0, duplicates: 0, faultCount: 0, stopReason: null, selectedMappingsExhausted: true, elapsedMs: 10 },
       records: [{ nativeId: index + 1, firstName: 'Synthetic', lastName: 'Fixture', attributeBytes: profile.attributes.map(() => 75),
