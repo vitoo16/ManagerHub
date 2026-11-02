@@ -4,7 +4,7 @@ REA MCP6.7.0 / Frida17.23.2 executed the original research scanner twice against
 
 ## Static discovery path
 
-The FMRTE13 artifact remains `C:\BraCa Soft\FMRTE 13\FMRTE.exe`, version13.3.3.62, SHA-256 `c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae`, MVID `3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6`. New canonical static evidence is `ev_ee3b373fb1514a3e7c7e761fc13f69770d0c5e2d5de5a08e8aca853408337c57` (profile/descriptors) and `ev_dcdc817da7d2a760dfbc94ed93d764b721274d5d620d8c9a6759262231d9c7cf` (generic discovery/scanner/catalog entry). Exact method coordinates and hashes are in [the manifest](evidence-manifest.json).
+The FMRTE13 artifact remains `<FMRTE13_INSTALL_ROOT>\FMRTE.exe`, version13.3.3.62, SHA-256 `c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae`, MVID `3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6`. New canonical static evidence is `ev_ee3b373fb1514a3e7c7e761fc13f69770d0c5e2d5de5a08e8aca853408337c57` (profile/descriptors) and `ev_dcdc817da7d2a760dfbc94ed93d764b721274d5d620d8c9a6759262231d9c7cf` (generic discovery/scanner/catalog entry). Exact method coordinates and hashes are in [the manifest](evidence-manifest.json).
 
 The [previous catalog trace](15-fmrte13-player-catalog.md) already established `e8 -> 1bb -> 1b1`. Further CIL inspection identifies an additional, profile-dependent preparation path:
 
