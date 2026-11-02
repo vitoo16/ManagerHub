@@ -3,13 +3,13 @@ import { promisify } from 'node:util';
 import { createHash } from 'node:crypto';
 import { win32 } from 'node:path';
 import profile from '../packages/domain/src/fm2013-live-profile.json' with { type: 'json' };
+import { isSupportedFm2013ImagePath } from '../packages/domain/src/live-session.ts';
 import { readBoundedRegularFile } from './local-research-files.mjs';
 
 const runProcess = promisify(execFile);
 const systemRoot = win32.isAbsolute(process.env.SystemRoot ?? '') ? process.env.SystemRoot : 'C:\\Windows';
 const powerShellExecutable = win32.join(systemRoot, 'System32', 'WindowsPowerShell', 'v1.0', 'powershell.exe');
 const failed = reason => ({ status: 'observation_failed', reason });
-const samePath = value => typeof value === 'string' && value.toLowerCase() === profile.imagePath.toLowerCase();
 
 function command(pid) {
   return `$ErrorActionPreference='Stop';try{$p=Get-Process -Id ${pid} -ErrorAction Stop;$s=$p.StartTime.ToFileTimeUtc().ToString();$f=$p.Path;if([string]::IsNullOrWhiteSpace($f)){@{status='access_denied'}|ConvertTo-Json -Compress}else{@{status='observed';pid=$p.Id;startedAtFileTime=$s;imagePath=$f}|ConvertTo-Json -Compress}}catch{if($_.FullyQualifiedErrorId -like 'NoProcessFoundForGivenId*'){@{status='process_not_found'}|ConvertTo-Json -Compress}elseif($_.Exception -is [System.UnauthorizedAccessException] -or $_.Exception.NativeErrorCode -eq 5 -or $_.Exception.InnerException.NativeErrorCode -eq 5){@{status='access_denied'}|ConvertTo-Json -Compress}else{@{status='observation_failed'}|ConvertTo-Json -Compress}}`;
@@ -50,15 +50,15 @@ export async function observeFm2013Process(pid, options = {}) {
   const run = options.run ?? runProcess, digestImage = options.hashImage ?? hashImage;
   const before = await query(pid, run);
   if (before.status !== 'observed') return before;
-  if (!samePath(before.imagePath)) return { status: 'unsupported_build' };
+  if (!isSupportedFm2013ImagePath(before.imagePath)) return { status: 'unsupported_build' };
   let digest;
-  try { digest = await digestImage(profile.imagePath); } catch { return failed('image_hash_failed'); }
+  try { digest = await digestImage(before.imagePath); } catch { return failed('image_hash_failed'); }
   if (digest !== profile.binarySha256) return { status: 'unsupported_build' };
   const after = await query(pid, run);
   if (after.status !== 'observed') return after;
-  if (!samePath(after.imagePath)) return failed('identity_changed');
+  if (!isSupportedFm2013ImagePath(after.imagePath)) return failed('identity_changed');
   if (before.pid !== after.pid || before.startedAtFileTime !== after.startedAtFileTime ||
       before.imagePath.toLowerCase() !== after.imagePath.toLowerCase()) return failed('identity_changed');
   return { status: 'observed', process: { pid, startedAtFileTime: after.startedAtFileTime,
-    imagePath: profile.imagePath, binarySha256: digest } };
+    imagePath: before.imagePath, binarySha256: digest } };
 }
