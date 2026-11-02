@@ -4,7 +4,7 @@ Research date: 2026-10-30. **The Save Changes UI and delegate-dispatch boundary 
 
 ## Identity and scope
 
-Primary examined module: `C:\BraCa Soft\FMRTE 26\current\FmrteAvalonia.dll`; file version `26.3.2.42`, assembly version `26.3.2.0`, MVID `ae81bf4d-f887-2214-dad5-9a575848146b`, AnyCPU CIL, .NET 9. SHA-256: `c763b9614e98f13a16f1b49b4a14ad191fc585627919fbac165970938d425ecf`.
+Primary examined module: `<FMRTE26_INSTALL_ROOT>\current\FmrteAvalonia.dll`; file version `26.3.2.42`, assembly version `26.3.2.0`, MVID `ae81bf4d-f887-2214-dad5-9a575848146b`, AnyCPU CIL, .NET 9. SHA-256: `c763b9614e98f13a16f1b49b4a14ad191fc585627919fbac165970938d425ecf`.
 
 REA 6.7.0 `rea-dotnet-static` v1 inspected metadata and file-backed CIL without loading or executing the target. Evidence aliases and the outside-repository bundle location are defined in [the FMRTE26 load report](01-fmrte26-load-pipeline.md): VM26 `ev_282883d732782d257fefdd6e8241cedc787851ec60cc7c49bb6fb4b9589c5550`, W26 `ev_2341019003d68f8c2d501a5614afbea4b408fbe8c6e8ba6ee32408c4adf4b57c`, B26 `ev_ee75015b533bdbc0b4ca2202c1c9f87ae75a0f1fe1b8ebe5c93200b505a44cc6`. Native providers were unavailable. No user save or live game process was changed.
 
