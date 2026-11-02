@@ -647,47 +647,60 @@ test('incompatible save metadata can be cleared without deleting the player libr
 
 
 test('upgrades an existing v2 database to v3 without losing save or player metadata', async ({ page }) => {
-  await page.addInitScript(() => {
-    const request = indexedDB.open('managerhub-local', 2);
-    request.onupgradeneeded = () => {
-      const db = request.result;
-      if (!db.objectStoreNames.contains('player-exports')) db.createObjectStore('player-exports', { keyPath: 'id' });
-      if (!db.objectStoreNames.contains('player-export-summaries')) db.createObjectStore('player-export-summaries', { keyPath: 'id' });
-      if (!db.objectStoreNames.contains('save-inspections')) db.createObjectStore('save-inspections', { keyPath: 'id' });
-    };
-    request.onsuccess = () => {
-      const db = request.result;
-      const tx = db.transaction(['player-export-summaries', 'save-inspections'], 'readwrite');
-      tx.objectStore('player-export-summaries').put({
-        id: 'v2-player-summary',
-        savedAt: '2026-10-31T09:05:00.000Z',
-        fileName: 'v2-export.csv',
-        importedAt: '2026-10-31T09:00:00.000Z',
-        playerCount: 1,
-        attributeCount: 2
-      });
-      tx.objectStore('save-inspections').put({
-        id: 'v2-save-summary',
-        name: 'v2-career.fm',
-        importedAt: '2026-10-31T09:00:00.000Z',
-        lastModified: 1,
-        size: 6,
-        sha256: null,
-        signature: '02 01 61 66 65 2E',
-        detectedFamily: 'afe',
-        edition: null,
-        build: null,
-        support: 'signature_only',
-        inspectionStatus: 'inspected',
-        warnings: ['Player records have not been decoded.'],
-        archiveIndex: null
-      });
-      tx.oncomplete = () => db.close();
-      tx.onerror = () => db.close();
-    };
-    request.onerror = () => { /* The app reports storage errors if the v2 fixture cannot initialize. */ };
+  await page.route('**/*', async route => {
+    if (route.request().isNavigationRequest()) {
+      await route.fulfill({ status: 200, contentType: 'text/html', body: '<!doctype html><html><head></head><body></body></html>' });
+    } else {
+      await route.abort();
+    }
   });
-
+  await page.goto('/');
+  await page.evaluate(async () => {
+    const request = indexedDB.open('managerhub-local', 2);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      request.onupgradeneeded = () => {
+        const upgradeDb = request.result;
+        if (!upgradeDb.objectStoreNames.contains('player-exports')) upgradeDb.createObjectStore('player-exports', { keyPath: 'id' });
+        if (!upgradeDb.objectStoreNames.contains('player-export-summaries')) upgradeDb.createObjectStore('player-export-summaries', { keyPath: 'id' });
+        if (!upgradeDb.objectStoreNames.contains('save-inspections')) upgradeDb.createObjectStore('save-inspections', { keyPath: 'id' });
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    try {
+      await new Promise<void>((resolve, reject) => {
+        const tx = db.transaction(['player-export-summaries', 'save-inspections'], 'readwrite');
+        tx.objectStore('player-export-summaries').put({
+          id: 'v2-player-summary',
+          savedAt: '2026-10-31T09:05:00.000Z',
+          fileName: 'v2-export.csv',
+          importedAt: '2026-10-31T09:00:00.000Z',
+          playerCount: 1,
+          attributeCount: 2
+        });
+        tx.objectStore('save-inspections').put({
+          id: 'v2-save-summary',
+          name: 'v2-career.fm',
+          importedAt: '2026-10-31T09:00:00.000Z',
+          lastModified: 1,
+          size: 6,
+          sha256: null,
+          signature: '02 01 61 66 65 2E',
+          detectedFamily: 'afe',
+          edition: null,
+          build: null,
+          support: 'signature_only',
+          inspectionStatus: 'inspected',
+          warnings: ['Player records have not been decoded.'],
+          archiveIndex: null
+        });
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
+      });
+    } finally { db.close(); }
+  });
+  await page.unroute('**/*');
   await page.goto('/#/history');
   await expect(page.getByRole('heading', { name: 'Historical snapshots' })).toBeVisible();
   const result = await page.evaluate(async () => {
