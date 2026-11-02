@@ -204,6 +204,8 @@ test('detects duplicate source captures without creating a second saved snapshot
 
 test('enforces the historical snapshot count limit without overwriting existing records', async ({ page }) => {
   await page.goto('/#/history');
+  await expect(page.getByRole('heading', { name: 'Historical snapshots' })).toBeVisible();
+  await expect(page.getByText('No historical snapshots saved')).toBeVisible();
   await page.evaluate(async () => {
     const request = indexedDB.open('managerhub-local', 4);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
@@ -248,6 +250,8 @@ test('enforces the historical snapshot count limit without overwriting existing 
 
 test('clears corrupt historical metadata without deleting the existing player library', async ({ page }) => {
   await page.goto('/#/history');
+  await expect(page.getByRole('heading', { name: 'Historical snapshots' })).toBeVisible();
+  await expect(page.getByText('No historical snapshots saved')).toBeVisible();
   await page.evaluate(async () => {
     const request = indexedDB.open('managerhub-local', 4);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
