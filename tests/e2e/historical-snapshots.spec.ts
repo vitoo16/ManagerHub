@@ -80,6 +80,46 @@ test('imports, browses, saves, reloads and switches safely between Editor and Re
   await expect(page.getByRole('button', { name: 'Saved on this browser' })).toBeDisabled();
   await expect(page.getByRole('list', { name: 'Saved historical snapshots' }).getByText('Synthetic FM2013 career')).toBeVisible();
 
+  const persistedPrivacy = await page.evaluate(async () => {
+    const request = indexedDB.open('managerhub-local', 3);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    try {
+      const read = (name: string) => new Promise<unknown[]>((resolve, reject) => {
+        const get = db.transaction(name, 'readonly').objectStore(name).getAll();
+        get.onsuccess = () => resolve(get.result);
+        get.onerror = () => reject(get.error);
+      });
+      const editor = await read('historical-editor-snapshots') as Array<Record<string, unknown>>;
+      const realism = await read('historical-realism-snapshots') as Array<Record<string, unknown>>;
+      const editorPlayer = (editor[0]?.snapshot as { players: Array<{ attributes: Record<string, { value: number | null }> }> }).players[0];
+      const realismPlayer = (realism[0]?.snapshot as { players: Array<{
+        attributes: Record<string, { value: number | null; missingReason: string | null }>;
+        birthDate: { value: string | null };
+        primaryNation: { value: unknown };
+        calendarAge: { value: number | null };
+      }> }).players[0];
+      return {
+        editorCount: editor.length,
+        realismCount: realism.length,
+        editorPassing: editorPlayer?.attributes.passing?.value,
+        realismPassing: realismPlayer?.attributes.passing?.value,
+        realismMissingReason: realismPlayer?.attributes.passing?.missingReason,
+        realismBirthDate: realismPlayer?.birthDate.value,
+        realismNation: realismPlayer?.primaryNation.value,
+        realismAge: realismPlayer?.calendarAge.value,
+        rawWireStored: Object.hasOwn(realism[0] ?? {}, 'wire')
+      };
+    } finally { db.close(); }
+  });
+  expect(persistedPrivacy).toMatchObject({
+    editorCount: 1, realismCount: 1, editorPassing: 15, realismPassing: null,
+    realismMissingReason: 'redacted', realismBirthDate: null, realismNation: null,
+    realismAge: null, rawWireStored: false
+  });
+
   await page.getByRole('button', { name: 'Realism', exact: true }).click();
   const hiddenPassing = page.locator('.historical-value-row').filter({ hasText: 'Passing' });
   await expect(hiddenPassing.locator('strong')).toHaveText('Hidden in Realism mode');
@@ -96,6 +136,29 @@ test('imports, browses, saves, reloads and switches safely between Editor and Re
   const restoredPassing = page.locator('.historical-value-row').filter({ hasText: 'Passing' });
   await expect(restoredPassing.locator('strong')).toHaveText('15');
   await expect(page.getByText('Synthetic Nation')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Delete', exact: true }).click();
+  await page.getByRole('button', { name: 'Confirm delete', exact: true }).click();
+  await expect(page.getByText('No historical snapshots saved')).toBeVisible();
+  const remaining = await page.evaluate(async () => {
+    const request = indexedDB.open('managerhub-local', 3);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    try {
+      const count = (name: string) => new Promise<number>((resolve, reject) => {
+        const query = db.transaction(name, 'readonly').objectStore(name).count();
+        query.onsuccess = () => resolve(query.result);
+        query.onerror = () => reject(query.error);
+      });
+      return {
+        editor: await count('historical-editor-snapshots'),
+        realism: await count('historical-realism-snapshots')
+      };
+    } finally { db.close(); }
+  });
+  expect(remaining).toEqual({ editor: 0, realism: 0 });
 });
 
 test('Realism-only imports stay redacted after persistence and do not synthesize an Editor projection', async ({ page }) => {
