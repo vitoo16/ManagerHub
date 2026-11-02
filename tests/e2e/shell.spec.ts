@@ -417,7 +417,7 @@ test('save inspection metadata is opt-in, survives reload, and never stores the 
   await expect(page.getByText('Đã lưu thông tin trên trình duyệt này')).toBeVisible();
 
   const stored = await page.evaluate(async () => {
-    const open = indexedDB.open('managerhub-local', 2);
+    const open = indexedDB.open('managerhub-local', 4);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       open.onsuccess = () => resolve(open.result);
       open.onerror = () => reject(open.error);
@@ -451,7 +451,7 @@ test('save inspection metadata is opt-in, survives reload, and never stores the 
 });
 
 
-test('upgrades the v1 IndexedDB schema without dropping the existing player library', async ({ page }) => {
+test('upgrades the v1 IndexedDB schema to v4 without dropping existing libraries', async ({ page }) => {
   await page.addInitScript(() => {
     const request = indexedDB.open('managerhub-local', 1);
     request.onupgradeneeded = () => {
@@ -480,7 +480,7 @@ test('upgrades the v1 IndexedDB schema without dropping the existing player libr
   await expect(page.getByText('No files inspected yet')).toBeVisible();
 
   const migration = await page.evaluate(async () => {
-    const request = indexedDB.open('managerhub-local', 2);
+    const request = indexedDB.open('managerhub-local', 4);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
@@ -497,10 +497,14 @@ test('upgrades the v1 IndexedDB schema without dropping the existing player libr
       db.close();
     }
   });
-  expect(migration.version).toBe(2);
+  expect(migration.version).toBe(4);
   expect(migration.stores).toContain('player-exports');
   expect(migration.stores).toContain('player-export-summaries');
   expect(migration.stores).toContain('save-inspections');
+  expect(migration.stores).toContain('historical-editor-snapshots');
+  expect(migration.stores).toContain('historical-editor-summaries');
+  expect(migration.stores).toContain('historical-realism-snapshots');
+  expect(migration.stores).toContain('historical-realism-summaries');
   expect(migration.legacy).toMatchObject({ id: 'legacy-summary', fileName: 'legacy-export.csv' });
 });
 
@@ -511,7 +515,7 @@ test('save inspection metadata library enforces its 50-record limit', async ({ p
   // Wait for the lazy Save Library hook to finish opening/upgrading IndexedDB.
   await expect(page.getByText('Session only')).toBeVisible();
   await page.evaluate(async () => {
-    const request = indexedDB.open('managerhub-local', 2);
+    const request = indexedDB.open('managerhub-local', 4);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
@@ -565,7 +569,7 @@ test('incompatible save metadata can be cleared without deleting the player libr
   await expect(page.getByText('Session only')).toBeVisible();
 
   await page.evaluate(async () => {
-    const request = indexedDB.open('managerhub-local', 2);
+    const request = indexedDB.open('managerhub-local', 4);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
@@ -616,7 +620,7 @@ test('incompatible save metadata can be cleared without deleting the player libr
   await expect(page.getByText('No files inspected yet')).toBeVisible();
 
   const stores = await page.evaluate(async () => {
-    const request = indexedDB.open('managerhub-local', 2);
+    const request = indexedDB.open('managerhub-local', 4);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
@@ -639,4 +643,157 @@ test('incompatible save metadata can be cleared without deleting the player libr
   expect(stores.saveCount).toBe(0);
   expect(stores.playerSummaryCount).toBe(1);
   expect(stores.names).toContain('player-exports');
+});
+
+
+test('upgrades an existing v2 database to v4 without losing save or player metadata', async ({ page }) => {
+  await page.route('**/*', async route => {
+    if (route.request().isNavigationRequest()) {
+      await route.fulfill({ status: 200, contentType: 'text/html', body: '<!doctype html><html><head></head><body></body></html>' });
+    } else {
+      await route.abort();
+    }
+  });
+  await page.goto('/');
+  await page.evaluate(async () => {
+    const request = indexedDB.open('managerhub-local', 2);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      request.onupgradeneeded = () => {
+        const upgradeDb = request.result;
+        if (!upgradeDb.objectStoreNames.contains('player-exports')) upgradeDb.createObjectStore('player-exports', { keyPath: 'id' });
+        if (!upgradeDb.objectStoreNames.contains('player-export-summaries')) upgradeDb.createObjectStore('player-export-summaries', { keyPath: 'id' });
+        if (!upgradeDb.objectStoreNames.contains('save-inspections')) upgradeDb.createObjectStore('save-inspections', { keyPath: 'id' });
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    try {
+      await new Promise<void>((resolve, reject) => {
+        const tx = db.transaction(['player-export-summaries', 'save-inspections'], 'readwrite');
+        tx.objectStore('player-export-summaries').put({
+          id: 'v2-player-summary',
+          savedAt: '2026-10-31T09:05:00.000Z',
+          fileName: 'v2-export.csv',
+          importedAt: '2026-10-31T09:00:00.000Z',
+          playerCount: 1,
+          attributeCount: 2
+        });
+        tx.objectStore('save-inspections').put({
+          id: 'v2-save-summary',
+          name: 'v2-career.fm',
+          importedAt: '2026-10-31T09:00:00.000Z',
+          lastModified: 1,
+          size: 6,
+          sha256: null,
+          signature: '02 01 61 66 65 2E',
+          detectedFamily: 'afe',
+          edition: null,
+          build: null,
+          support: 'signature_only',
+          inspectionStatus: 'inspected',
+          warnings: ['Player records have not been decoded.'],
+          archiveIndex: null
+        });
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
+      });
+    } finally { db.close(); }
+  });
+  await page.unroute('**/*');
+  await page.goto('/?load-app=1#/history');
+  await expect(page.getByRole('heading', { name: 'Historical snapshots' })).toBeVisible();
+  const result = await page.evaluate(async () => {
+    const request = indexedDB.open('managerhub-local', 4);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    try {
+      const read = (store: string, id: string) => new Promise<unknown>((resolve, reject) => {
+        const get = db.transaction(store, 'readonly').objectStore(store).get(id);
+        get.onsuccess = () => resolve(get.result);
+        get.onerror = () => reject(get.error);
+      });
+      return {
+        version: db.version,
+        stores: Array.from(db.objectStoreNames),
+        player: await read('player-export-summaries', 'v2-player-summary'),
+        save: await read('save-inspections', 'v2-save-summary')
+      };
+    } finally { db.close(); }
+  });
+  expect(result.version).toBe(4);
+  expect(result.stores).toContain('historical-editor-snapshots');
+  expect(result.stores).toContain('historical-realism-snapshots');
+  expect(result.player).toMatchObject({ id: 'v2-player-summary', fileName: 'v2-export.csv' });
+  expect(result.save).toMatchObject({ id: 'v2-save-summary', name: 'v2-career.fm' });
+});
+
+test('repairs a partially initialized v3 database and preserves existing historical records', async ({ page }) => {
+  await page.route('**/*', async route => {
+    if (route.request().isNavigationRequest()) {
+      await route.fulfill({ status: 200, contentType: 'text/html', body: '<!doctype html><html><head></head><body></body></html>' });
+    } else {
+      await route.abort();
+    }
+  });
+  await page.goto('/');
+  await page.evaluate(async () => {
+    const request = indexedDB.open('managerhub-local', 3);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      request.onupgradeneeded = () => {
+        const upgradeDb = request.result;
+        upgradeDb.createObjectStore('player-exports', { keyPath: 'id' });
+        upgradeDb.createObjectStore('player-export-summaries', { keyPath: 'id' });
+        upgradeDb.createObjectStore('save-inspections', { keyPath: 'id' });
+        const editorRecords = upgradeDb.createObjectStore('historical-editor-snapshots', { keyPath: 'id' });
+        editorRecords.add({ id: 'preserved-editor-record' });
+        const editorSummaries = upgradeDb.createObjectStore('historical-editor-summaries', { keyPath: 'id' });
+        editorSummaries.add({ id: 'preserved-editor-summary' });
+        // Simulate a v3 database where the Realism stores and summary indexes were never created.
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    db.close();
+  });
+  await page.unroute('**/*');
+  await page.goto('/?load-app=1#/history');
+  await expect(page.getByRole('heading', { name: 'Historical snapshots' })).toBeVisible();
+  await expect(page.getByText('No historical snapshots saved')).toBeVisible();
+
+  const result = await page.evaluate(async () => {
+    const request = indexedDB.open('managerhub-local', 4);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    try {
+      const editorIndexNames = Array.from(db.transaction('historical-editor-summaries', 'readonly')
+        .objectStore('historical-editor-summaries').indexNames);
+      const realismIndexNames = Array.from(db.transaction('historical-realism-summaries', 'readonly')
+        .objectStore('historical-realism-summaries').indexNames);
+      const preserved = await new Promise<unknown>((resolve, reject) => {
+        const get = db.transaction('historical-editor-snapshots', 'readonly')
+          .objectStore('historical-editor-snapshots').get('preserved-editor-record');
+        get.onsuccess = () => resolve(get.result);
+        get.onerror = () => reject(get.error);
+      });
+      return {
+        version: db.version,
+        stores: Array.from(db.objectStoreNames),
+        editorIndexNames,
+        realismIndexNames,
+        preserved
+      };
+    } finally { db.close(); }
+  });
+
+  expect(result.version).toBe(4);
+  expect(result.stores).toContain('historical-realism-snapshots');
+  expect(result.stores).toContain('historical-realism-summaries');
+  expect(result.editorIndexNames).toContain('bySourceSha256');
+  expect(result.realismIndexNames).toContain('bySourceSha256');
+  expect(result.preserved).toEqual({ id: 'preserved-editor-record' });
 });

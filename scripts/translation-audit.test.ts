@@ -2,6 +2,9 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import vi from '../apps/web/src/i18n/vi';
+import historicalVi from '../apps/web/src/i18n/historical-vi';
+
+const vietnamese = { ...vi, ...historicalVi };
 
 type KeyUse = { key: string; file: string; line: number };
 type DynamicKeyUse = { file: string; line: number };
@@ -122,7 +125,7 @@ describe('UI translation key coverage', () => {
     const sourceRoot = join(process.cwd(), 'apps/web/src');
     const files = listTsx(sourceRoot);
     const uses = files.flatMap(file => auditTranslationCalls(file, readFileSync(file, 'utf8')).keys);
-    const missing = uses.filter(use => !Object.prototype.hasOwnProperty.call(vi, use.key));
+    const missing = uses.filter(use => !Object.prototype.hasOwnProperty.call(vietnamese, use.key));
 
     expect(missing.map(use => use.file + ':' + use.line + ' — ' + use.key)).toEqual([]);
   });

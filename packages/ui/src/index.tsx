@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from 'react';
 
 type IconName = 'grid' | 'database' | 'layers' | 'shield' | 'compass' | 'sun' | 'moon' |
   'settings' | 'chevron' | 'arrow' | 'plus' | 'search' | 'close' | 'file' | 'menu' | 'check' |
-  'warning' | 'sparkles' | 'book' | 'trash' | 'monitor' | 'download';
+  'warning' | 'sparkles' | 'book' | 'trash' | 'monitor' | 'download' | 'history';
 
 const pathData: Record<IconName, ReactNode> = {
   grid: <><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></>,
@@ -26,7 +26,8 @@ const pathData: Record<IconName, ReactNode> = {
   book: <><path d="M3 4h7c2 0 2 1 2 3v14c0-2-1-3-3-3H3V4ZM21 4h-7c-2 0-2 1-2 3v14c0-2 1-3 3-3h6V4Z"/></>,
   trash: <><path d="M4 7h16M9 4h6M6 7l1 14h10l1-14M10 11v6m4-6v6"/></>,
   monitor: <><rect x="2" y="3" width="20" height="15" rx="2"/><path d="M8 22h8m-4-4v4"/></>,
-  download: <><path d="M12 3v13m-5-5 5 5 5-5M4 18v3h16v-3"/></>
+  download: <><path d="M12 3v13m-5-5 5 5 5-5M4 18v3h16v-3"/></>,
+  history: <><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5m4-1v5l3 2"/></>
 };
 
 export function Icon({ name, size = 18, className = '' }: { name: IconName; size?: number; className?: string }) {
@@ -48,6 +49,6 @@ export function Status({ tone = 'neutral', children }: { tone?: 'positive' | 'wa
   return <span className={'mh-status mh-status--' + tone}><span aria-hidden="true" className="mh-status__dot"/>{children}</span>;
 }
 
-export function SectionHeading({ eyebrow, title, children }: { eyebrow: string; title: string; children?: ReactNode }) {
-  return <div className="mh-section-heading"><div><span className="mh-eyebrow">{eyebrow}</span><h2>{title}</h2></div>{children}</div>;
+export function SectionHeading({ eyebrow, title, children, id }: { eyebrow: string; title: string; children?: ReactNode; id?: string }) {
+  return <div className="mh-section-heading"><div><span className="mh-eyebrow">{eyebrow}</span><h2 id={id}>{title}</h2></div>{children}</div>;
 }

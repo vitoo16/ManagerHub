@@ -5,7 +5,8 @@
   "version": "0.1.0",
   "exports": {
     ".": "./src/index.ts",
-    "./save-inspections": "./src/save-inspections.ts"
+    "./save-inspections": "./src/save-inspections.ts",
+    "./historical-live-snapshots": "./src/historical-live-snapshots.ts"
   },
   "dependencies": {
     "@managerhub/domain": "*"
