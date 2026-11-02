@@ -6,12 +6,12 @@ Date: 2026-10-30, Asia/Bangkok. **REA MCP connectivity CONFIRMED** by an actual 
 
 The user-selected ManagerHub directory was empty and not a Git checkout. Cloned the specified https://github.com/vitoo16/ManagerHub repository into that directory; baseline HEAD: 8f973b3c37c464f0331b58de45cfda2cbe530cc2. Read AGENTS.md, save-safety skill, architecture/compatibility/editor specs and actual domain/workers. The full 27-module delivery scope remains unchanged. See [adapter audit](06-managerhub-adapter-design.md).
 
-Both installations were discovered under the supplied root before selecting files. **CONFIRMED** canonical roots: C:\BraCa Soft\FMRTE 13 and C:\BraCa Soft\FMRTE 26. All targets were read-only. No installation, license, game process or save was changed; no target assembly was loaded/executed for inspection. No archive fallback was needed. A hash identifies the analyzed bytes; it does not authenticate vendor origin.
+Both installations were discovered under the supplied root before selecting files. **CONFIRMED** canonical roots: <FMRTE13_INSTALL_ROOT> and <FMRTE26_INSTALL_ROOT>. All targets were read-only. No installation, license, game process or save was changed; no target assembly was loaded/executed for inspection. No archive fallback was needed. A hash identifies the analyzed bytes; it does not authenticate vendor origin.
 
 ## REA identity and availability
 
 - **CONFIRMED:** rea-agents / server 6.7.0; skill reverse-engineer-anything v42; MCP 2025-06-18; codex-mcp-client 0.166.0-alpha.5.1.
-- Server command: C:\Users\viett\AppData\Local\npm-cache\_npx\a1722018f28f9df2\node_modules\rea-agents\scripts\rea.mjs.
+- Server command: <LOCAL_USER_PROFILE>\AppData\Local\npm-cache\_npx\a1722018f28f9df2\node_modules\rea-agents\scripts\rea.mjs.
 - **CONFIRMED:** metadata/member/boundary provider rea-dotnet-static v1; views rea-analysis-view v1.
 - **CONFIRMED:** Ghidra unavailable, GHIDRA_INSTALL_DIR unset; Java probe also lacks the required absolute executable path. IDA unavailable, REA_IDA_MCP_CONFIG unset. Hopper unsupported on Windows; Kuna unconfigured. No native analysis provider was bound or used.
 - Actual successful operations: binary_session, inspect_managed_artifact, inspect_managed_members, inspect_managed_native_boundaries, inspect_analysis_view, project_managed_application_graph, export_evidence_bundle.
