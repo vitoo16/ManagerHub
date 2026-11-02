@@ -164,8 +164,10 @@ function isPlayer(value: unknown, snapshotId: string, mode: HistoricalSnapshotMo
     item.relation === 'person_primary_nation');
   if (!nationValid) return false;
 
-  if (!exactKeys(value.attributes, ATTRIBUTE_KEYS) || !ATTRIBUTE_KEYS.every(key => isAttribute(value.attributes[key], key, mode))) return false;
-  if (!exactKeys(value.positions, POSITION_KEYS) || !POSITION_KEYS.every(key => isPosition(value.positions[key], key, mode))) return false;
+  const attributes = value.attributes;
+  if (!exactKeys(attributes, ATTRIBUTE_KEYS) || !ATTRIBUTE_KEYS.every(key => isAttribute(attributes[key], key, mode))) return false;
+  const positions = value.positions;
+  if (!exactKeys(positions, POSITION_KEYS) || !POSITION_KEYS.every(key => isPosition(positions[key], key, mode))) return false;
 
   const clubValid = isEvidenceField(value.club, 'live_game', item =>
     exactKeys(item, ['nativeId', 'name', 'relation']) &&
