@@ -417,7 +417,7 @@ test('save inspection metadata is opt-in, survives reload, and never stores the 
   await expect(page.getByText('Đã lưu thông tin trên trình duyệt này')).toBeVisible();
 
   const stored = await page.evaluate(async () => {
-    const open = indexedDB.open('managerhub-local', 2);
+    const open = indexedDB.open('managerhub-local', 3);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       open.onsuccess = () => resolve(open.result);
       open.onerror = () => reject(open.error);
@@ -451,7 +451,7 @@ test('save inspection metadata is opt-in, survives reload, and never stores the 
 });
 
 
-test('upgrades the v1 IndexedDB schema without dropping the existing player library', async ({ page }) => {
+test('upgrades the v1 IndexedDB schema to v3 without dropping existing libraries', async ({ page }) => {
   await page.addInitScript(() => {
     const request = indexedDB.open('managerhub-local', 1);
     request.onupgradeneeded = () => {
@@ -480,7 +480,7 @@ test('upgrades the v1 IndexedDB schema without dropping the existing player libr
   await expect(page.getByText('No files inspected yet')).toBeVisible();
 
   const migration = await page.evaluate(async () => {
-    const request = indexedDB.open('managerhub-local', 2);
+    const request = indexedDB.open('managerhub-local', 3);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
@@ -497,10 +497,14 @@ test('upgrades the v1 IndexedDB schema without dropping the existing player libr
       db.close();
     }
   });
-  expect(migration.version).toBe(2);
+  expect(migration.version).toBe(3);
   expect(migration.stores).toContain('player-exports');
   expect(migration.stores).toContain('player-export-summaries');
   expect(migration.stores).toContain('save-inspections');
+  expect(migration.stores).toContain('historical-editor-snapshots');
+  expect(migration.stores).toContain('historical-editor-summaries');
+  expect(migration.stores).toContain('historical-realism-snapshots');
+  expect(migration.stores).toContain('historical-realism-summaries');
   expect(migration.legacy).toMatchObject({ id: 'legacy-summary', fileName: 'legacy-export.csv' });
 });
 
@@ -511,7 +515,7 @@ test('save inspection metadata library enforces its 50-record limit', async ({ p
   // Wait for the lazy Save Library hook to finish opening/upgrading IndexedDB.
   await expect(page.getByText('Session only')).toBeVisible();
   await page.evaluate(async () => {
-    const request = indexedDB.open('managerhub-local', 2);
+    const request = indexedDB.open('managerhub-local', 3);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
@@ -565,7 +569,7 @@ test('incompatible save metadata can be cleared without deleting the player libr
   await expect(page.getByText('Session only')).toBeVisible();
 
   await page.evaluate(async () => {
-    const request = indexedDB.open('managerhub-local', 2);
+    const request = indexedDB.open('managerhub-local', 3);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
@@ -616,7 +620,7 @@ test('incompatible save metadata can be cleared without deleting the player libr
   await expect(page.getByText('No files inspected yet')).toBeVisible();
 
   const stores = await page.evaluate(async () => {
-    const request = indexedDB.open('managerhub-local', 2);
+    const request = indexedDB.open('managerhub-local', 3);
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
