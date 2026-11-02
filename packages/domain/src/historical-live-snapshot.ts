@@ -281,6 +281,11 @@ export function isHistoricalSnapshotRecord(value: unknown): value is HistoricalS
   return true;
 }
 
+export function parseHistoricalSnapshotRecord(value: unknown): HistoricalSnapshotRecord {
+  if (!isHistoricalSnapshotRecord(value)) throw new TypeError('The saved historical snapshot failed schema validation.');
+  return deepFreeze(value);
+}
+
 export function toHistoricalSnapshotSummary(record: HistoricalSnapshotRecord): HistoricalSnapshotSummary {
   if (!isHistoricalSnapshotRecord(record)) throw new TypeError('Cannot summarize an invalid historical snapshot.');
   return deepFreeze({
