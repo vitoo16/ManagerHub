@@ -34,7 +34,7 @@ function validWorkerRecord(mode: 'editor' | 'realism') {
     schema: profile.schema, profileVersion: profile.profileVersion,
     target: {
       pid: 1234, arch: 'ia32', pointerSize: 4,
-      imagePath: 'C:\\\\Games\\\\Football Manager 2013\\\\fm.exe',
+      imagePath: 'C:\\Games\\Football Manager 2013\\fm.exe',
       binarySha256: profile.binarySha256
     },
     gameDateBytes: [59, 0, 209, 7],
