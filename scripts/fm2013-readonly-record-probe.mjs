@@ -114,8 +114,8 @@ function observeRecord(config) {
       ...(words ? { rawAbilityWords: words } : {}),
       attributes: ordinary,
       ...(positions ? { positions } : {}),
-      ...(clubLink ?? {}),
-      ...(biography ?? {}),
+      ...clubLink,
+      ...biography,
       actualAbilityVerified: false,
     };
   }
