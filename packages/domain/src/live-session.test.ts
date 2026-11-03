@@ -53,7 +53,7 @@ describe('FM2013 local capture ticket admission', () => {
   });
   it('rejects foreign builds, malformed creation times and unknown ticket claims', () => {
     for (const change of [{ binarySha256: '0'.repeat(64) }, { imagePath: '\\\\server\\share\\fm.exe' }, { startedAtFileTime: '134064000000000001.0' },
-      { startedAtFileTime: '000000000000000001' }, { startedAtFileTime: '99999999999999999999' }, { startedAtFileTime: 134064000000000001 }, { pid: 0 }]) {
+      { startedAtFileTime: '000000000000000001' }, { startedAtFileTime: '99999999999999999999' }, { startedAtFileTime: Number('134064000000000001') }, { pid: 0 }]) {
       const altered = { ...identity, ...change };
       expect(() => createFm2013CaptureTicket(altered as Fm2013ProcessIdentity, id, issued)).toThrow(TypeError);
       expect(validate({ ...make(), process: altered }).reason).toBe('invalid_ticket');
