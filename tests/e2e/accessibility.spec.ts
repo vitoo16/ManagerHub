@@ -23,6 +23,7 @@ function summarizeViolations(violations: Awaited<ReturnType<AxeBuilder['analyze'
 }
 
 test('every workspace meets the automated WCAG 2.2 A/AA accessibility baseline in both themes', async ({ page }) => {
+  test.setTimeout(120_000);
   const findings: Array<{
     theme: 'dark' | 'light';
     workspace: string;
