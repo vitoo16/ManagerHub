@@ -22,17 +22,35 @@ function summarizeViolations(violations: Awaited<ReturnType<AxeBuilder['analyze'
   }));
 }
 
-test('every workspace meets the automated WCAG 2.2 A/AA accessibility baseline', async ({ page }) => {
-  for (const workspace of WORKSPACES) {
-    await page.goto('/#/' + workspace);
-    await expect(page.locator('#main-content h1').first(), workspace + ' workspace heading').toBeVisible();
+test('every workspace meets the automated WCAG 2.2 A/AA accessibility baseline in both themes', async ({ page }) => {
+  const findings: Array<{
+    theme: 'dark' | 'light';
+    workspace: string;
+    violation: ReturnType<typeof summarizeViolations>[number];
+  }> = [];
 
-    const results = await new AxeBuilder({ page }).withTags(WCAG_AA_TAGS).analyze();
-    expect(
-      summarizeViolations(results.violations),
-      workspace + ' has WCAG A/AA accessibility violations'
-    ).toEqual([]);
+  for (const theme of ['dark', 'light'] as const) {
+    await page.goto('/#/' + WORKSPACES[0]);
+    const currentTheme = await page.locator('html').getAttribute('data-theme');
+    if (currentTheme !== theme) {
+      await page.getByRole('button', { name: /Switch to (light|dark) mode/ }).click();
+    }
+    await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+
+    for (const workspace of WORKSPACES) {
+      await page.goto('/#/' + workspace);
+      await expect(page.locator('#main-content h1').first(), theme + ' ' + workspace + ' workspace heading').toBeVisible();
+
+      const results = await new AxeBuilder({ page }).withTags(WCAG_AA_TAGS).analyze();
+      findings.push(...summarizeViolations(results.violations).map(violation => ({
+        theme,
+        workspace,
+        violation
+      })));
+    }
   }
+
+  expect(findings, 'WCAG 2.2 A/AA violations by theme and workspace').toEqual([]);
 });
 
 test('skip link is the first keyboard stop and moves focus to main content', async ({ page }) => {
