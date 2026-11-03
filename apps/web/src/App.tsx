@@ -195,7 +195,7 @@ export default function App() {
         <div className="topbar-right">
           <button className="command-trigger" onClick={() => setCommandOpen(true)}
             aria-label={t("Quick navigate") + " ⌘ K"}>
-            <Icon name="search" size={15}/><span>{t("Quick navigate")}</span><kbd aria-hidden="true">⌘ K</kbd>
+            <Icon name="search" size={15}/><span>{t("Quick navigate")}</span>
           </button>
           <div className="language-switch" role="group" aria-label={t('Change language')}>
             <button type="button" lang="vi" aria-pressed={i18n.resolvedLanguage === 'vi'}
