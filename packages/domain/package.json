@@ -6,6 +6,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./save-library": "./src/save-library.ts",
+    "./squad-scenarios": "./src/squad-scenarios.ts",
     "./types": "./src/types.ts",
     "./historical-live-snapshot": "./src/historical-live-snapshot.ts"
   }
