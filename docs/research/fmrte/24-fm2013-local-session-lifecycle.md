@@ -10,7 +10,7 @@ The connected research workflow now prepares a local process-instance ticket bef
 
 | Step | Executed behavior | Limit |
 |---|---|---|
-| `prepare` | Observe process identity, issue random capture UUID/window, hash the fixed image, derive both RTTI proofs, build guarded read-only script, reobserve identity, write fresh script/request. | Does not attach, launch FM, edit game data or authenticate loaded image bytes. |
+| `prepare` | Observe process identity, issue random capture UUID/window, hash the selected observed image, derive both RTTI proofs, build guarded read-only script, reobserve identity, write fresh script/request. | Does not attach, launch FM, edit game data or authenticate loaded image bytes. |
 | REA handoff | Explicitly load the prepared script through MCP; its outer envelope carries the UUID. | No automatic execution of an arbitrary supplied script. |
 | `finalize` | Check the unique selected Evidence record, `load_frida_script`, prepared-script SHA, UUID/PID and complete transport; observe the process before and after shared normalization. | Caller-controlled ticket/Evidence hashes are consistency checks, not signed execution attestation. |
 | Publication | Fresh bounded JSON with `session.decision:'same_process_at_endpoints'`, `availability:'historical_capture'`, `currentness:'unverified'`, `captureAuthenticated:false`. | Never promotes the snapshot to currently live or certified data. |
@@ -27,7 +27,7 @@ Run `npm run research:fm2013:session -- prepare` with explicit `--pid`, `--ticke
 
 ## Windows observation and actual evidence
 
-[The observer](../../../scripts/fm2013-process-observer.mjs) queries process start identity/path, hashes the fixed exact-build executable through bounded Node I/O, then queries identity again. It resolves an absolute Windows PowerShell path rather than searching executable PATH; this is not a separate executable-authentication claim. Query time/output are bounded and the helper window is hidden. Absent, denied, failed and unsupported outcomes remain explicit; a PID alone is never substituted for a successful identity query.
+[The observer](../../../scripts/fm2013-process-observer.mjs) queries process start identity/path, hashes the selected executable and checks its exact-build SHA-256 through bounded Node I/O, then queries identity again. It resolves an absolute Windows PowerShell path rather than searching executable PATH; this is not a separate executable-authentication claim. Query time/output are bounded and the helper window is hidden. Absent, denied, failed and unsupported outcomes remain explicit; a PID alone is never substituted for a successful identity query.
 
 The first real sandbox observation reported `process_not_found` although REA inventory saw the process. Private `fm13-process-observer-real-v1.json` preserves that failure. No start time was fabricated. Read-only host execution was approved, and the default observer obtained the actual OS creation time and matching image hash. This verifies the tested host context, not equivalent visibility in every sandbox or deployment environment.
 
