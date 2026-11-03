@@ -40,9 +40,12 @@ export async function prepareFm2013Session(options, dependencies={}) {
   const before=await observe(pid);
   if(before.status!=='observed')throw Error(observation(before).status);
   const ticket=createFm2013CaptureTicket(before.process,randomUUID(),clock());
-  const binary=await readBoundedRegularFile(profile.imagePath,64*1024*1024);
-  const proofs=Object.values(profile.nativeKinds).map(k=>findPe32RttiVtables(binary,{decoratedName:k.decoratedName,subobjectOffset:k.personOffset}));
-  const source=buildFm2013LiveWireCapture({pid,binarySha256:before.process.binarySha256},proofs,{},ticket.captureId);
+  const readBinary=dependencies.readBinary??(file=>readBoundedRegularFile(file,64*1024*1024));
+  const binary=await readBinary(before.process.imagePath);
+  if(!Buffer.isBuffer(binary)||digest(binary)!==before.process.binarySha256)throw Error('image_changed_before_prepare');
+  const findProof=dependencies.findPe32RttiVtables??findPe32RttiVtables;
+  const proofs=Object.values(profile.nativeKinds).map(k=>findProof(binary,{decoratedName:k.decoratedName,subobjectOffset:k.personOffset}));
+  const source=buildFm2013LiveWireCapture({pid,imagePath:before.process.imagePath,binarySha256:before.process.binarySha256},proofs,{},ticket.captureId);
   admit(ticket,await observe(pid),{captureId:ticket.captureId,pid},clock());
   const request={schema:'managerhub-local-capture-request-v1',ticket,script:{path:scriptPath,sha256:digest(source)},authority:'local_process_query',captureAuthenticated:false};
   await writeFile(scriptPath,source,{flag:'wx'});
@@ -50,13 +53,10 @@ export async function prepareFm2013Session(options, dependencies={}) {
   return {status:'prepared',pid,ticket:ticketPath,script:scriptPath,expiresAt:ticket.expiresAt,captureAuthenticated:false};
 }
 
-/** Accepts only matching, complete script evidence and matching process observations.
- * Output is explicitly historical; this is not a process watcher, IPC service or authentication.
- */
-export async function finalizeFm2013Session(options, dependencies={}) {
-  const output=resolve(options.output),ticketPath=resolve(options.ticket),evidencePath=resolve(options.evidence);
-  if(output===ticketPath||output===evidencePath||extname(output)!=='.json'||!/^ev_[0-9a-f]{64}$/u.test(options.evidenceId??''))throw Error('invalid_finalize_arguments');
-  await fresh(output);
+/** Validates the local ticket, exact prepared script, complete REA evidence and endpoint process identity. */
+async function validateSessionEvidence(options, dependencies={}) {
+  const ticketPath=resolve(options.ticket),evidencePath=resolve(options.evidence);
+  if(ticketPath===evidencePath||!/^ev_[0-9a-f]{64}$/u.test(options.evidenceId??''))throw Error('invalid_capture_arguments');
   const request=object(json((await readBoundedUtf8File(ticketPath,64*1024)).text,'invalid_capture_request'),['schema','ticket','script','authority','captureAuthenticated']);
   object(request.script,['path','sha256']);
   if(request.schema!=='managerhub-local-capture-request-v1'||request.authority!=='local_process_query'||request.captureAuthenticated!==false||
@@ -84,18 +84,42 @@ export async function finalizeFm2013Session(options, dependencies={}) {
   document.session={schema:'fm2013-local-session-admission-v1',captureId:ticket.captureId,process:ticket.process,
     observedAt,decision:'same_process_at_endpoints',availability:'historical_capture',captureAuthenticated:false,
     currentness:'unverified',careerLineage:'unverified',evidenceId:options.evidenceId,evidenceSha256:digest(source.bytes),scriptSha256:request.script.sha256};
+  return {wire,document};
+}
+
+/** Normalizes a complete, admitted capture for local research; it does not create a live session. */
+export async function finalizeFm2013Session(options, dependencies={}) {
+  const output=resolve(options.output),ticketPath=resolve(options.ticket),evidencePath=resolve(options.evidence);
+  if(output===ticketPath||output===evidencePath||extname(output).toLowerCase()!=='.json'||ticketPath===evidencePath||
+     !/^ev_[0-9a-f]{64}$/u.test(options.evidenceId??''))throw Error('invalid_finalize_arguments');
+  await fresh(output);
+  const {document}=await validateSessionEvidence(options,dependencies);
   await writeFm2013NormalizedDocument(output,document);
   return {status:document.result.status,playerCount:document.result.snapshot.players.length,mode:document.result.snapshot.mode,
     sessionDecision:'same_process_at_endpoints',availability:'historical_capture',output};
 }
 
+/** Exports the exact validated address-free wire format consumed by the Historical Snapshots workspace. */
+export async function exportFm2013WireCapture(options, dependencies={}) {
+  const output=resolve(options.output),ticketPath=resolve(options.ticket),evidencePath=resolve(options.evidence);
+  if(output===ticketPath||output===evidencePath||extname(output).toLowerCase()!=='.json'||ticketPath===evidencePath||
+     !/^ev_[0-9a-f]{64}$/u.test(options.evidenceId??''))throw Error('invalid_export_arguments');
+  await fresh(output);
+  const {wire,document}=await validateSessionEvidence({...options,snapshotId:'wire-export-validation',careerId:'wire-export-validation',capturedAt:'2000-01-01T00:00:00.000Z',mode:'editor'},dependencies);
+  const bytes=Buffer.from(JSON.stringify(wire)+'\n');
+  if(bytes.length>24_000_000)throw Error('Wire capture exceeds the browser import bound.');
+  await writeFile(output,bytes,{flag:'wx'});
+  return {status:document.result.status,playerCount:document.result.snapshot.players.length,format:profile.schema,
+    projection:'unprojected_source',availability:'historical_capture',captureAuthenticated:false,output,outputSha256:digest(bytes)};
+}
+
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
  try{
-  const action=process.argv[2],keys=action==='prepare'?['pid','ticket','script']:action==='finalize'?['ticket','evidence','evidence-id','output','snapshot-id','career-id','captured-at','mode']:[];
-  if(!keys.length)throw Error('Use prepare or finalize');
+  const action=process.argv[2],keys=action==='prepare'?['pid','ticket','script']:action==='finalize'?['ticket','evidence','evidence-id','output','snapshot-id','career-id','captured-at','mode']:action==='export-wire'?['ticket','evidence','evidence-id','output']:[];
+  if(!keys.length)throw Error('Use prepare, finalize or export-wire');
   const options={};for(let i=3;i<process.argv.length;i+=2){const key=process.argv[i]?.slice(2),value=process.argv[i+1];if(!process.argv[i]?.startsWith('--')||!keys.includes(key)||!value||Object.hasOwn(options,key))throw Error('invalid_named_arguments');options[key]=value;}
   if(Object.keys(options).length!==keys.length)throw Error('missing_named_arguments');
   const mapped=Object.fromEntries(Object.entries(options).map(([key,value])=>[key.replace(/-([a-z])/gu,(_,c)=>c.toUpperCase()),value]));
-  console.log(JSON.stringify(await(action==='prepare'?prepareFm2013Session(mapped):finalizeFm2013Session(mapped))));
+  console.log(JSON.stringify(await(action==='prepare'?prepareFm2013Session(mapped):action==='finalize'?finalizeFm2013Session(mapped):exportFm2013WireCapture(mapped))));
  }catch(error){console.error(error.message||String(error));process.exitCode=1;}
 }

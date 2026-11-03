@@ -4,7 +4,8 @@ import { win32 } from 'node:path';
 import profile from '../packages/domain/src/fm2013-live-profile.json' with { type: 'json' };
 import { observeFm2013Process } from './fm2013-process-observer.mjs';
 
-const identity = { status: 'observed', pid: 123, startedAtFileTime: '134063484000000000', imagePath: profile.imagePath };
+const imagePath = 'C:\\Games\\Football Manager 2013\\fm.exe';
+const identity = { status: 'observed', pid: 123, startedAtFileTime: '134063484000000000', imagePath: imagePath };
 function fixture(responses = [identity, identity], digest = profile.binarySha256) {
   const calls = [], hashes = [];
   return { calls, hashes, options: {
@@ -17,8 +18,8 @@ function fixture(responses = [identity, identity], digest = profile.binarySha256
 test('observer binds an exact-build PID to the same opaque start identity across the bounded Node hash', async () => {
   const f = fixture();
   assert.deepEqual(await observeFm2013Process(123, f.options), { status: 'observed', process: {
-    pid: 123, startedAtFileTime: identity.startedAtFileTime, imagePath: profile.imagePath, binarySha256: profile.binarySha256 } });
-  assert.deepEqual(f.hashes, [profile.imagePath]); assert.equal(f.calls.length, 2);
+    pid: 123, startedAtFileTime: identity.startedAtFileTime, imagePath: imagePath, binarySha256: profile.binarySha256 } });
+  assert.deepEqual(f.hashes, [imagePath]); assert.equal(f.calls.length, 2);
   for (const [file, args, options] of f.calls) {
     assert.equal(win32.isAbsolute(file), true);
     assert.ok(file.endsWith('\\System32\\WindowsPowerShell\\v1.0\\powershell.exe'));
@@ -44,8 +45,13 @@ test('observer stops before hashing denied, absent or unsupported targets and re
     const f = fixture([{ status }]); assert.deepEqual(await observeFm2013Process(123, f.options), { status });
     assert.equal(f.hashes.length, 0); assert.equal(f.calls.length, 1);
   }
-  const wrong = fixture([{ ...identity, imagePath: 'C:\\Other\\fm.exe' }]);
-  assert.deepEqual(await observeFm2013Process(123, wrong.options), { status: 'unsupported_build' }); assert.equal(wrong.hashes.length, 0);
+  const wrongHash = fixture([identity], '0'.repeat(64));
+  assert.deepEqual(await observeFm2013Process(123, wrongHash.options), { status: 'unsupported_build' });
+  assert.deepEqual(wrongHash.hashes, [imagePath]);
+  for (const path of ['C:\\Other\\not-fm.exe', '\\\\server\\share\\fm.exe']) {
+    const wrong = fixture([{ ...identity, imagePath: path }]);
+    assert.deepEqual(await observeFm2013Process(123, wrong.options), { status: 'unsupported_build' }); assert.equal(wrong.hashes.length, 0);
+  }
   assert.deepEqual(await observeFm2013Process(123, fixture([identity], '0'.repeat(64)).options), { status: 'unsupported_build' });
   assert.deepEqual(await observeFm2013Process(123, fixture([identity], new Error('private hash details')).options), { status: 'observation_failed', reason: 'image_hash_failed' });
 });

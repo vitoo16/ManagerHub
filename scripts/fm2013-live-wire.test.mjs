@@ -3,6 +3,7 @@ import test from 'node:test';
 import vm from 'node:vm';
 import profile from '../packages/domain/src/fm2013-live-profile.json' with { type: 'json' };
 import { buildFm2013LiveWireCapture, extractFm2013WireCapture } from './fm2013-live-wire.mjs';
+const imagePath = 'C:\\Games\\Football Manager 2013\\fm.exe';
 
 function proof(kind) {
   return { fileSha256: profile.binarySha256, imageSize: 0x10000, candidates: [{ ...profile.nativeKinds[kind],
@@ -10,7 +11,7 @@ function proof(kind) {
     locatorRva: 0x2000, typeDescriptorRva: 0x3000, hierarchyRva: 0x4000, firstFunctionRvas: [0x5000, 0x5004, 0x5008] }] };
 }
 test('wire builder requires both unique file-bound native kinds before any runtime work', () => {
-  const target = { pid: 100, binarySha256: profile.binarySha256 };
+  const target = { pid: 100, imagePath, binarySha256: profile.binarySha256 };
   for (const proofs of [[], [proof('player')], [proof('player'), proof('player')],
     [proof('player'), { ...proof('playerStaff'), fileSha256: 'wrong' }]]) {
     assert.throws(() => buildFm2013LiveWireCapture(target, proofs), RangeError);
@@ -30,9 +31,9 @@ test('game date brackets both native passes and refuses a changed date before em
       readPointer(){const rva=address-base;if(rva===0xffc)return pointer(base+0x2000);if(rva===0x200c)return pointer(base+0x3000);if(rva===0x2010)return pointer(base+0x4000);if(rva>=0x1000&&rva<=0x1008)return pointer(base+0x5000+(rva-0x1000));throw Error('unexpected_pointer');},
       readU8(){const rva=address-base;if(rva>=profile.gameDate.rva&&rva<profile.gameDate.rva+4){const offset=rva-profile.gameDate.rva;dateReads++;return offset===0?(changed&&dateReads>8?199:198):[198,0,220,7][offset];}
         const name=profile.nativeKinds[stage===0?'player':'playerStaff'].decoratedName;const offset=rva-0x3008;if(offset>=0&&offset<=name.length)return offset===name.length?0:name.charCodeAt(offset);throw Error('unexpected_byte');}});
-    const Process={id:100,arch:'ia32',pointerSize:4,mainModule:{path:profile.imagePath,size:profile.gameDate.imageSize,base:pointer(base)},
+    const Process={id:100,arch:'ia32',pointerSize:4,mainModule:{path:imagePath,size:profile.gameDate.imageSize,base:pointer(base)},
       findRangeByAddress:()=>({protection:'r-x'}),enumerateRanges:()=>[]};
-    vm.runInNewContext(buildFm2013LiveWireCapture({pid:100,binarySha256:profile.binarySha256},proofs,{},'12345678-1234-4234-8234-123456789abc'),{Process,send:m=>messages.push(m)});
+    vm.runInNewContext(buildFm2013LiveWireCapture({pid:100,imagePath,binarySha256:profile.binarySha256},proofs,{},'12345678-1234-4234-8234-123456789abc'),{Process,send:m=>messages.push(m)});
     return {message:messages[0],dateReads,stage};
   }
   const stable=run(false);assert.equal(stable.stage,1);assert.equal(stable.dateReads,16);assert.equal(stable.message.status,'captured');

@@ -4,7 +4,6 @@
   "edition": "FM2013",
   "build": "13.3.3f359652",
   "binarySha256": "df45cde67cb7361867e7afc9808dacab8bf53bd972f48145f6f881ff55d08871",
-  "imagePath": "C:\\Program Files (x86)\\Football Manager 2013\\fm.exe",
   "sourceFmrteSha256": "c3d594ed4d9d2c50e987a36ed186d771dd4242450c7e75fc34920e5d8dbcfcae",
   "sourceFmrteMvid": "3a4eebcf-0c16-4aa7-9cf2-ae0de96d1ec6",
   "biography": { "birthDateOffset": 80, "primaryNationOffset": 108, "nationIdOffset": 20, "nationNamePointerOffset": 32 },

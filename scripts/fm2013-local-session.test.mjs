@@ -6,9 +6,10 @@ import { join, resolve, dirname, basename } from 'node:path';
 import { createHash } from 'node:crypto';
 import profile from '../packages/domain/src/fm2013-live-profile.json' with { type:'json' };
 import { createFm2013CaptureTicket } from '../packages/domain/src/live-session.ts';
-import { finalizeFm2013Session, prepareFm2013Session } from './fm2013-local-session.mjs';
+import { exportFm2013WireCapture, finalizeFm2013Session, prepareFm2013Session } from './fm2013-local-session.mjs';
+const imagePath = 'C:\\Games\\Football Manager 2013\\fm.exe';
 const id='12345678-1234-4234-8234-123456789abc',evidenceId='ev_'+'1'.repeat(64),issued='2030-01-01T00:00:00.000Z';
-const processIdentity={pid:100,startedAtFileTime:'134000000000000001',imagePath:profile.imagePath,binarySha256:profile.binarySha256};
+const processIdentity={pid:100,startedAtFileTime:'134000000000000001',imagePath:imagePath,binarySha256:profile.binarySha256};
 const observed=()=>({status:'observed',process:{...processIdentity}});
 async function fixture(run){
  const dir=await mkdtemp(join(tmpdir(),'mh-session-flow-'));
@@ -17,7 +18,7 @@ async function fixture(run){
   const source='// Synthetic read-only fixture\n',sha=createHash('sha256').update(source).digest('hex');await writeFile(script,source);
   const request={schema:'managerhub-local-capture-request-v1',ticket:createFm2013CaptureTicket(processIdentity,id,issued),script:{path:script,sha256:sha},authority:'local_process_query',captureAuthenticated:false};
   await writeFile(ticket,JSON.stringify(request));
-  const capture={schema:profile.schema,profileVersion:profile.profileVersion,target:{pid:100,arch:'ia32',pointerSize:4,imagePath:profile.imagePath,binarySha256:profile.binarySha256},
+  const capture={schema:profile.schema,profileVersion:profile.profileVersion,target:{pid:100,arch:'ia32',pointerSize:4,imagePath:imagePath,binarySha256:profile.binarySha256},
    gameDateBytes:[198,0,220,7],passes:['player','playerStaff'].map((nativeKind,i)=>({nativeKind,imageTypeMetadataVerified:true,
     coverage:{bytesScanned:4096,matches:1,rejected:0,duplicates:0,faultCount:0,stopReason:null,selectedMappingsExhausted:true,elapsedMs:1},
     records:[{nativeId:i+1,firstName:'Synthetic',lastName:'Fixture',attributeBytes:Array(49).fill(75),positionBytes:Array(15).fill(1),birthDateBytes:[0,0,208,7]}]}))};
@@ -35,6 +36,23 @@ test('session finalization publishes only explicit historical snapshots and pres
  assert.equal(doc.session.decision,'same_process_at_endpoints');assert.equal(doc.result.snapshot.verification,'provisional');
  assert.deepEqual(await readFile(options.ticket),beforeTicket);assert.deepEqual(await readFile(options.evidence),beforeEvidence);
  const original=await readFile(options.output);await assert.rejects(finalizeFm2013Session(options,dependencies),/output_exists/u);assert.deepEqual(await readFile(options.output),original);
+}));
+test('wire export creates the exact address-free JSON accepted by Historical Snapshots',async()=>fixture(async({options,dependencies})=>{
+ const beforeTicket=await readFile(options.ticket),beforeEvidence=await readFile(options.evidence);
+ const summary=await exportFm2013WireCapture(options,dependencies);
+ assert.equal(summary.status,'ready');assert.equal(summary.playerCount,2);assert.equal(summary.format,profile.schema);
+ assert.equal(summary.projection,'unprojected_source');assert.equal(Object.hasOwn(summary,'mode'),false);
+ assert.equal(summary.availability,'historical_capture');assert.equal(summary.captureAuthenticated,false);
+ const bytes=await readFile(options.output),wire=JSON.parse(bytes.toString('utf8'));
+ assert.equal(wire.schema,profile.schema);assert.equal(wire.profileVersion,profile.profileVersion);
+ assert.equal(wire.target.pid,100);assert.equal(wire.target.imagePath,imagePath);assert.equal(wire.passes.length,2);
+ assert.equal(wire.passes[0].records.length,1);assert.equal(Object.hasOwn(wire,'session'),false);
+ const containsAddressKey=value=>Array.isArray(value)?value.some(containsAddressKey):
+  value!==null&&typeof value==='object'?Object.keys(value).some(key=>key.toLowerCase().includes('address')||containsAddressKey(value[key])):false;
+ assert.equal(containsAddressKey(wire),false);
+ assert.equal(summary.outputSha256,createHash('sha256').update(bytes).digest('hex'));
+ assert.deepEqual(await readFile(options.ticket),beforeTicket);assert.deepEqual(await readFile(options.evidence),beforeEvidence);
+ await assert.rejects(exportFm2013WireCapture(options,dependencies),/output_exists/u);
 }));
 test('same PID with a new creation time or an exited/denied process cannot publish a pending result',async()=>{
  for(const status of ['reused','process_not_found','access_denied'])await fixture(async({options,dependencies})=>{
@@ -68,6 +86,16 @@ test('expired requests fail before observing and Realism redacts through the sam
  await assert.rejects(readFile(options.output),{code:'ENOENT'});
  await finalizeFm2013Session({...options,mode:'realism',output:join(dir,'realism.json')},dependencies);
  const doc=JSON.parse(await readFile(join(dir,'realism.json'),'utf8'));for(const p of doc.result.snapshot.players){assert.equal(p.birthDate.value,null);assert.equal(p.calendarAge.value,null);for(const f of Object.values(p.attributes))assert.equal(f.value,null);}
+}));
+test('prepare binds RTTI file proofs to the observed executable path and rejects replaced image bytes',async()=>fixture(async({dir})=>{
+ const ticket=join(dir,'prepared-ticket.json'),script=join(dir,'prepared-script.js'),replacement=Buffer.from('different executable bytes');
+ let readPath=null;
+ await assert.rejects(prepareFm2013Session({pid:'100',ticket,script},{
+  observe:async()=>observed(),now:()=>issued,
+  readBinary:async file=>{readPath=file;return replacement;}
+ }),/image_changed_before_prepare/u);
+ assert.equal(readPath,imagePath);
+ await assert.rejects(readFile(ticket),{code:'ENOENT'});await assert.rejects(readFile(script),{code:'ENOENT'});
 }));
 test('unobserved prepare targets never fabricate a ticket or script',async()=>fixture(async({dir})=>{
  const ticket=join(dir,'not-created.json'),script=join(dir,'not-created.js');

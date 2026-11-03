@@ -6,7 +6,8 @@ import profile from '../packages/domain/src/fm2013-live-profile.json' with { typ
 import { buildFm2013ReadOnlyRecordProbe, buildFm2013ReadOnlyPlayerScan,
   buildFm2013ImageRelativePlayerScan, FM2013_RESEARCH_BINARY_SHA256 } from './fm2013-readonly-record-probe.mjs';
 
-const config = { binarySha256: FM2013_RESEARCH_BINARY_SHA256, pid: 100, playerAddress: '0x10000',
+const imagePath = 'C:\\Games\\Football Manager 2013\\fm.exe';
+const config = { binarySha256: FM2013_RESEARCH_BINARY_SHA256, pid: 100, imagePath, playerAddress: '0x10000',
   expectedId: 123, firstName: 'Test', lastName: 'Fixture' };
 const imageProof = { fileSha256: FM2013_RESEARCH_BINARY_SHA256, imageSize: 0x10000, candidates: [{
   decoratedName: '.?AVACTUAL_PLAYER@@', subobjectOffset: 356, constructorDisplacement: 4,
@@ -97,7 +98,7 @@ function execute(options = {}) {
   if (options.badHeader) numbers.set(0x30001, 255);
   const Process = { id: options.pid ?? 100, arch: options.arch ?? 'ia32', pointerSize: 4,
     mainModule: { base: pointer(options.imageRelative ? imageBase : marker), size: options.imageSize ?? 0x10000,
-      path: options.path ?? 'C:\\Program Files (x86)\\Football Manager 2013\\fm.exe' },
+      path: options.path ?? imagePath },
     findRangeByAddress: () => ({ protection: options.nonExecutable ? 'r--' : 'r-x' }),
     enumerateRanges: () => options.ranges ?? [{ base: pointer(0x10000), size: 0x4000 }] };
   const Memory = { scanSync(base, length, pattern) {
@@ -110,7 +111,7 @@ function execute(options = {}) {
   class Clock extends Date { static now() { return options.clockStep ? (ticks++ * options.clockStep) : 1000; } }
   const proof = options.dual ? { ...imageProof, candidates: [{ ...imageProof.candidates[0],
     decoratedName: '.?AVACTUAL_PLAYER_AND_NON_PLAYER@@', subobjectOffset: 452 }] } : imageProof;
-  const source = options.imageRelative ? buildFm2013ImageRelativePlayerScan({ binarySha256: config.binarySha256,
+  const source = options.imageRelative ? buildFm2013ImageRelativePlayerScan({ binarySha256: config.binarySha256, imagePath: options.config?.imagePath ?? config.imagePath,
     pid: options.config?.pid ?? config.pid, attributeSet: options.ordinary49 ? 'ordinary49' : 'passing_pace',
     includePositions: !!options.positions, includeClubLinks: !!options.club, includeBiography: !!options.biography }, proof, options.limits) :
     options.scan ? buildFm2013ReadOnlyPlayerScan({ ...config, ...options.config, includeBiography: !!options.biography }, options.limits) :

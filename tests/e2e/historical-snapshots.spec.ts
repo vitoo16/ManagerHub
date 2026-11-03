@@ -40,7 +40,7 @@ function syntheticWire() {
       pid: 101,
       arch: 'ia32',
       pointerSize: 4,
-      imagePath: profile.imagePath,
+      imagePath: 'C:\\Games\\Football Manager 2013\\fm.exe',
       binarySha256: profile.binarySha256
     },
     gameDateBytes: [59, 0, 209, 7],
