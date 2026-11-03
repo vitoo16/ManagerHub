@@ -12,6 +12,7 @@ export default {
   "Data & Trust": "Dữ liệu & độ tin cậy",
   "How it works": "Cách sử dụng",
   "Close menu": "Đóng menu",
+  "Skip to main content": "Bỏ qua điều hướng, đến nội dung chính",
   "Main navigation": "Điều hướng chính",
   "WORKSPACE": "KHÔNG GIAN LÀM VIỆC",
   "Development workspace": "Không gian làm việc",
