@@ -236,6 +236,7 @@ export default function HistoricalWorkspace() {
     event.preventDefault();
     if (importing || switchingMode || library.activity !== null) return;
     const revision = ++selectionRevisionRef.current;
+    setPendingDelete(null);
     setImportError(null);
     setNotice(null);
     if (!file) { setImportError(t('Choose an address-free FM2013 wire JSON file first.')); return; }
@@ -288,6 +289,7 @@ export default function HistoricalWorkspace() {
   const onSave = useCallback(async () => {
     if (!record || importing || switchingMode || library.activity !== null) return;
     const revision = ++selectionRevisionRef.current;
+    setPendingDelete(null);
     const result = await library.save(record, pairedRecord);
     if (!result || selectionRevisionRef.current !== revision) return;
     if (result.status === 'duplicate') {
@@ -324,6 +326,7 @@ export default function HistoricalWorkspace() {
   const onOpenSaved = useCallback(async (id: string) => {
     if (importing || switchingMode || library.activity !== null || library.loading) return;
     const revision = ++selectionRevisionRef.current;
+    setPendingDelete(null);
     const opened = await library.open(id);
     if (!opened || selectionRevisionRef.current !== revision || opened.mode !== mode) return;
     setRecord(opened);
@@ -341,6 +344,7 @@ export default function HistoricalWorkspace() {
     if (importing || switchingMode || library.activity !== null || library.loading) return;
     if (pendingDelete !== id) { setPendingDelete(id); return; }
     const revision = ++selectionRevisionRef.current;
+    setPendingDelete(null);
     const removed = await library.remove(id);
     if (revision !== selectionRevisionRef.current) return;
     if (removed) {
@@ -350,13 +354,13 @@ export default function HistoricalWorkspace() {
         setActiveId(null);
         setActiveSaved(false);
       }
-      setPendingDelete(null);
     }
   }, [pendingDelete, library.remove, library.activity, library.loading, activeId, importing, switchingMode]);
 
   const onModeChange = useCallback(async (next: HistoricalSnapshotMode) => {
     if (next === mode || switchingMode || library.activity !== null) return;
     const revision = ++selectionRevisionRef.current;
+    setPendingDelete(null);
     setSwitchingMode(true);
     try {
       const pendingImport = abortRef.current;
