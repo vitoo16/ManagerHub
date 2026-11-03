@@ -19,6 +19,7 @@ export function useHistoricalSnapshotLibrary(mode: HistoricalSnapshotMode) {
   const [error, setError] = useState<string | null>(null);
   const [canClearIncompatible, setCanClearIncompatible] = useState(false);
   const [externalRevision, setExternalRevision] = useState(0);
+  const [syncedExternalRevision, setSyncedExternalRevision] = useState(0);
 
   useEffect(() => onHistoricalLibraryCommit(() => setExternalRevision(value => value + 1)), []);
 
@@ -38,6 +39,7 @@ export function useHistoricalSnapshotLibrary(mode: HistoricalSnapshotMode) {
       if (active) {
         setItems(rows);
         setLoadedMode(mode);
+        setSyncedExternalRevision(externalRevision);
       }
     }).catch(cause => {
       if (active) {
@@ -134,8 +136,9 @@ export function useHistoricalSnapshotLibrary(mode: HistoricalSnapshotMode) {
     activity,
     error: loadedMode === mode ? error : null,
     canClearIncompatible: loadedMode === mode && canClearIncompatible,
+    syncedExternalRevision: loadedMode === mode && !loading ? syncedExternalRevision : null,
     reload, save, open, remove, clearIncompatible, clearError
-  }), [items, loading, loadedMode, mode, activity, error, canClearIncompatible, reload, save, open, remove, clearIncompatible, clearError]);
+  }), [items, loading, loadedMode, mode, activity, error, canClearIncompatible, syncedExternalRevision, reload, save, open, remove, clearIncompatible, clearError]);
 }
 
 function message(cause: unknown): string {
