@@ -205,8 +205,24 @@ export default function HistoricalWorkspace() {
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const appliedExternalRevision = useRef(0);
 
   useEffect(() => () => { const active = abortRef.current; abortRef.current = null; active?.abort(); }, []);
+
+  // A different tab can remove a saved record while it is open here. Revalidate
+  // only after that tab's change has been reread from IndexedDB in this mode.
+  useEffect(() => {
+    const revision = library.syncedExternalRevision;
+    if (revision === null || revision === 0 || revision === appliedExternalRevision.current) return;
+    appliedExternalRevision.current = revision;
+    if (!activeSaved || !activeId || (!library.error && library.items.some(item => item.id === activeId))) return;
+    setRecord(null);
+    setPairedRecord(null);
+    setActiveId(null);
+    setActiveSaved(false);
+    setSelectedPlayerId(null);
+    setNotice(t('A saved snapshot changed or was removed in another tab. The open record was closed; reopen it from the refreshed library if available.'));
+  }, [library.syncedExternalRevision, library.items, library.error, activeSaved, activeId, t]);
 
   const onImport = useCallback(async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

@@ -71,6 +71,13 @@ The source file itself is not persisted. Metadata contains only a safe basename,
 - Removal clears the matching ID from all four historical stores.
 - An explicit recovery action clears only historical stores; Player Lab and Save Library stores are preserved.
 
+## Same-origin multi-tab consistency
+
+The browser-only Historical Snapshots library broadcasts a **versioned invalidation notice** after a committed save, projection upgrade, deletion or explicit clear. It sends no snapshot ID, filename, source hash, game values or Editor payload. Other open ManagerHub tabs re-read and validate the relevant mode's IndexedDB summaries rather than trusting the message contents. If a saved open snapshot disappeared or refreshed metadata is incompatible, the receiving tab closes its in-memory selection and shows a recovery message. Unsaved imports remain independent in each tab.
+
+Synchronization requires the browser's `BroadcastChannel` API and same-origin, same-storage context; it is notification-based, not a lock or a substitute for IndexedDB transaction checks. Browsers without that API do not receive automatic cross-tab notices; reloading refreshes the local library. Race/last-writer checks remain transactional within IndexedDB. E2E regression covers cross-tab save/delete, invalid metadata fail-closed recovery and retry after a storage-unavailable save failure.
+
+
 ## Evidence and limitations
 
 live_game identifies the source category; it does not mean a game is currently connected. Capture time and career label are caller-declared. PID and executable hash in the parser snapshot do not prove loaded-image authentication, currentness, career lineage or roster completeness. All observed fields remain provisional.

@@ -285,6 +285,101 @@ test('reimporting a saved Realism-only source adds Editor without overwriting it
     .toHaveText('15');
 });
 
+test('refreshes saved historical library across tabs and closes records removed elsewhere', async ({ page, context }) => {
+  await page.goto('/#/history');
+  const otherTab = await context.newPage();
+  try {
+    await otherTab.goto('/#/history');
+    await expect(otherTab.getByText('No historical snapshots saved')).toBeVisible();
+
+    await importSynthetic(page, 'Realism');
+    await page.getByRole('button', { name: 'Save snapshot locally' }).click();
+    await expect(page.getByRole('button', { name: 'Saved on this browser' })).toBeDisabled();
+
+    const otherLibrary = otherTab.getByRole('list', { name: 'Saved historical snapshots' });
+    await expect(otherLibrary.getByText('Synthetic FM2013 career')).toBeVisible();
+    await otherLibrary.getByRole('button', { name: 'Open' }).click();
+    await expect(otherTab.getByRole('button', { name: 'Saved on this browser' })).toBeDisabled();
+    await otherTab.getByRole('button', { name: 'Delete', exact: true }).click();
+    await otherTab.getByRole('button', { name: 'Confirm delete', exact: true }).click();
+
+    await expect(page.getByText('No historical snapshots saved')).toBeVisible();
+    await expect(page.getByText('A saved snapshot changed or was removed in another tab. The open record was closed; reopen it from the refreshed library if available.')).toBeVisible();
+    await expect(page.locator('.historical-value-row')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Saved on this browser' })).toHaveCount(0);
+  } finally {
+    await otherTab.close();
+  }
+});
+
+test('fails closed on corrupt historical metadata reported by another tab', async ({ page, context }) => {
+  await page.goto('/#/history');
+  await importSynthetic(page, 'Realism');
+  await page.getByRole('button', { name: 'Save snapshot locally' }).click();
+  await expect(page.getByRole('button', { name: 'Saved on this browser' })).toBeDisabled();
+
+  const otherTab = await context.newPage();
+  try {
+    await otherTab.goto('/#/history');
+    await expect(otherTab.getByRole('list', { name: 'Saved historical snapshots' })).toBeVisible();
+    await otherTab.evaluate(async () => {
+      const request = indexedDB.open('managerhub-local', 4);
+      const db = await new Promise<IDBDatabase>((resolve, reject) => {
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      try {
+        await new Promise<void>((resolve, reject) => {
+          const tx = db.transaction('historical-realism-summaries', 'readwrite');
+          tx.objectStore('historical-realism-summaries').put({
+            id: 'corrupt-cross-tab', mode: 'realism', sourceSha256: 'invalid'
+          });
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => reject(tx.error);
+          tx.onabort = () => reject(tx.error);
+        });
+      } finally { db.close(); }
+      const broadcast = new BroadcastChannel('managerhub-historical-library-v1');
+      broadcast.postMessage({ type: 'historical-library-committed', version: 1 });
+      broadcast.close();
+    });
+    await expect(page.getByRole('alert')).toContainText('Saved historical snapshot metadata is incompatible with this version.');
+    await expect(page.getByText('A saved snapshot changed or was removed in another tab. The open record was closed; reopen it from the refreshed library if available.')).toBeVisible();
+    await expect(page.locator('.historical-value-row')).toHaveCount(0);
+    await page.getByRole('button', { name: 'Clear incompatible historical library' }).click();
+    await expect(page.getByText('No historical snapshots saved')).toBeVisible();
+  } finally {
+    await otherTab.close();
+  }
+});
+
+test('keeps an unsaved parsed capture available when IndexedDB refuses a save', async ({ page }) => {
+  await page.goto('/#/history');
+  await importSynthetic(page, 'Realism');
+  await page.evaluate(() => {
+    // indexedDB is an own Window attribute in Chromium; deleting the override
+    // does not restore it. Preserve the real factory for the retry.
+    Object.defineProperty(window, '__managerhubTestIndexedDB', {
+      configurable: true, value: window.indexedDB
+    });
+    Object.defineProperty(window, 'indexedDB', { configurable: true, value: undefined });
+  });
+  await page.getByRole('button', { name: 'Save snapshot locally' }).click();
+  await expect(page.getByRole('alert')).toContainText('Local browser storage is unavailable');
+  await expect(page.getByRole('button', { name: 'Save snapshot locally' })).toBeEnabled();
+  await expect(page.locator('.historical-value-row').filter({ hasText: 'Passing' }).locator('strong'))
+    .toHaveText('Hidden in Realism mode');
+
+  await page.evaluate(() => {
+    const original = (window as Window & { __managerhubTestIndexedDB?: IDBFactory }).__managerhubTestIndexedDB;
+    if (!original) throw new Error('Original IndexedDB factory was not retained');
+    Object.defineProperty(window, 'indexedDB', { configurable: true, value: original });
+    Reflect.deleteProperty(window, '__managerhubTestIndexedDB');
+  });
+  await page.getByRole('button', { name: 'Save snapshot locally' }).click();
+  await expect(page.getByRole('button', { name: 'Saved on this browser' })).toBeDisabled();
+});
+
 test('rejects malformed and unsupported captures without saving a snapshot', async ({ page }) => {
   await page.goto('/#/history');
   await page.getByLabel('Career label (user-declared)').fill('Malformed test career');
