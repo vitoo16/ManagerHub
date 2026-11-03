@@ -42,9 +42,14 @@ test('inspects AFE header locally and never claims full save support', async ({ 
     mimeType: 'application/octet-stream',
     buffer: Buffer.from([2, 1, 97, 102, 101, 46, 5, 0, 0, 0])
   });
-  await expect(page.getByText('Signature recognized')).toBeVisible();
-  await expect(page.getByText('Not decoded')).toBeVisible();
-  await expect(page.getByText(/We can check this save’s format/)).toBeVisible();
+  await expect(page.getByText('Family signature detected')).toBeVisible();
+  await expect(page.getByText('Reader compatibility')).toBeVisible();
+  await expect(page.getByText('Edition/build not identified')).toBeVisible();
+  const coverage = page.locator('.save-coverage');
+  await coverage.locator('summary').click();
+  await expect(coverage.getByText('Player identity')).toBeVisible();
+  await expect(coverage.getByText('Not decoded').first()).toBeVisible();
+  await expect(page.getByText(/A container signature is recognized/)).toBeVisible();
   await page.getByText('Technical details').click();
   await expect(page.getByText(/Container family detected; player records/i)).toBeVisible();
   await expect(page.getByText('career.fm').first()).toBeVisible();

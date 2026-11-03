@@ -1,8 +1,44 @@
-import { memo, useEffect, useId, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
+import { Fragment, memo, useEffect, useId, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { formatBytes, type SaveIdentity } from '@managerhub/domain';
+import {
+  createSaveCompatibilityReport, formatBytes,
+  type SaveCompatibilityResolution, type SaveCoverageState, type SaveDataDomain, type SaveIdentity
+} from '@managerhub/domain';
 import { Button, Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
 import { useSaveInspectionLibrary } from '../../useSaveInspectionLibrary';
+
+const SAVE_DOMAIN_LABELS: Record<SaveDataDomain, string> = {
+  player_identity: 'Player identity',
+  attributes: 'Attributes',
+  actual_ca: 'Actual CA',
+  potential_ability: 'Potential ability',
+  positions: 'Positions',
+  club_links: 'Club links',
+  contracts: 'Contracts',
+  tactics: 'Tactics',
+  matches: 'Matches',
+  finance: 'Finance'
+};
+
+function compatibilityStatusLabel(status: SaveCompatibilityResolution['status']): string {
+  switch (status) {
+    case 'unknown_format': return 'Unknown format';
+    case 'edition_build_unknown': return 'Edition/build not identified';
+    case 'unsupported_build': return 'No exact-build compatibility profile';
+    case 'ambiguous_profile': return 'Ambiguous compatibility profiles';
+    case 'research_only': return 'Research-only; not product-supported';
+    case 'verified': return 'Verified read profile';
+  }
+}
+
+function coverageStateLabel(state: SaveCoverageState): string {
+  switch (state) {
+    case 'verified': return 'Verified';
+    case 'experimental': return 'Experimental only';
+    case 'not_decoded': return 'Not decoded';
+    case 'unsupported': return 'Unsupported';
+  }
+}
 
 function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, select, onRestoreSaved }: {
   imports: readonly SaveIdentity[]; selected: SaveIdentity | null;
@@ -20,6 +56,7 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
   const visibleMemberPage = Math.min(memberPage, totalMemberPages - 1);
   const [drag, setDrag] = useState(false);
   const isSelectedSaved = selected ? saveLibrary.items.some(item => item.id === selected.id) : false;
+  const compatibility = selected ? createSaveCompatibilityReport(selected) : null;
   useEffect(() => { setMemberPage(0); }, [selected?.id]);
   useEffect(() => {
     if (!saveLibrary.loading && saveLibrary.items.length > 0) onRestoreSaved(saveLibrary.items);
@@ -69,16 +106,29 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
           </div>)}
         </Surface>
         {selected && <Surface className="save-detail">
-          <div className="panel-heading"><span>{t("FILE INSPECTION")}</span><Status tone={selected.detectedFamily ? 'info' : 'warning'}>{t(selected.detectedFamily ? 'Signature recognized' : 'Unknown format')}</Status></div>
+          <div className="panel-heading"><span>{t("FILE INSPECTION")}</span><Status tone={compatibility?.resolution.status === 'verified' ? 'positive' : selected.detectedFamily ? 'info' : 'warning'}>
+            {t(compatibility?.resolution.status === 'verified' ? 'Verified reader' : selected.detectedFamily ? 'Family signature detected' : 'Unknown format')}
+          </Status></div>
           <h3 title={selected.name}>{selected.name}</h3>
           <dl className="detail-grid">
             <dt>{t("Container family")}</dt><dd>{selected.detectedFamily?.toUpperCase() || t('Unknown')}</dd>
             <dt>{t("Edition / build")}</dt><dd>{t("Not verified")}</dd>
+            <dt>{t("Reader compatibility")}</dt><dd>{t(compatibilityStatusLabel(compatibility!.resolution.status))}</dd>
+            <dt>{t("Archive catalogue")}</dt><dd>{t(compatibility!.archiveCatalogue === 'experimental' ? 'Experimental only' : 'Not observed')}</dd>
+            <dt>{t("Write capability")}</dt><dd>{t('Unsupported')}</dd>
             <dt>{t("Size")}</dt><dd>{formatBytes(selected.size)}</dd>
             <dt>{t("Header bytes")}</dt><dd className="mono">{selected.signature}</dd>
             <dt>{t("SHA-256")}</dt><dd className="mono digest">{selected.sha256 || t('Not calculated')}</dd>
             <dt>{t("Player / CA / PA")}</dt><dd>{t("Not decoded")}</dd>
           </dl>
+          <details className="inspection-technical save-coverage">
+            <summary>{t('Data coverage')}</summary>
+            <dl className="detail-grid">
+              {compatibility!.coverage.map(item => <Fragment key={item.domain}>
+                <dt>{t(SAVE_DOMAIN_LABELS[item.domain])}</dt><dd>{t(coverageStateLabel(item.state))}</dd>
+              </Fragment>)}
+            </dl>
+          </details>
           {selected.archiveIndex && <div className="archive-preview">
             <div className="archive-preview__head"><div><strong>{t("Internal archive index")}</strong><small>{t("Experimental metadata discovery · Not decoded gameplay records")}</small></div><Status tone="warning">{selected.archiveIndex.memberCount} {t('entries')}</Status></div>
             {selected.archiveIndex.nestedGroups && selected.archiveIndex.nestedGroups.length > 0 && <p>
@@ -134,7 +184,7 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
           <div className="inspector-note"><Icon name="warning" size={16}/>
             <div>
               <p>{t(selected.detectedFamily
-                ? 'We can check this save’s format, but player data is not available yet. Use Player Lab with an exported HTML/CSV squad list.'
+                ? 'A container signature is recognized, but no exact-build verified reader is registered. Player data, CA and PA remain unavailable. Use Player Lab with an exported HTML/CSV squad list.'
                 : 'This save format is not recognized yet. Try another save, or import a player list in Player Lab.')}</p>
               <details className="inspection-technical"><summary>{t('Technical details')}</summary>
                 <p>{selected.warnings.join(' ')}</p>

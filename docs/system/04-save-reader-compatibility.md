@@ -17,6 +17,16 @@ Domains: player identity, attributes, CA/PA, positions, clubs, contracts, tactic
 
 Input safety: file-picker consent, maximum byte lengths, offset checks, bounded decompression, structured error recovery, fuzzing and time/memory quotas. No save mutation on read path. Validate interpreted fields against same-build in-game observation and repeatable fixtures.
 
+## Implemented exact-build compatibility contract — 2026-11-03
+
+`packages/domain/src/save-compatibility.ts` provides a typed compatibility-profile resolver and per-domain coverage report. The production profile registry is intentionally empty: no offline `.fm` reader has passed exact-build verification.
+
+- An AFE/FMF family signature alone resolves to `edition_build_unknown`; it never identifies a Football Manager edition or build.
+- A profile must match family, edition and build exactly. No adjacent-build fallback is allowed; duplicate exact matches fail closed as ambiguous.
+- Research-only profiles produce experimental coverage, never verified coverage. A verified profile can mark only its explicitly listed domains as verified; other domains remain unsupported.
+- The report keeps experimental archive-catalogue discovery separate from player, attribute, CA/PA and other game-data coverage.
+- Save write capability remains false. This resolver is a metadata/contract layer; it does not decode file bytes or claim product reader support.
+
 ## Compatibility matrix (initial)
 | Family | Read | Write |
 |---|---|---|
