@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isSaveIdentity, MAX_SAVED_SAVE_INSPECTIONS, toPersistedSaveIdentity } from './save-library';
+import { isSaveIdentity, isSaveInspectionResult, MAX_SAVED_SAVE_INSPECTIONS, toPersistedSaveIdentity } from './save-library';
 import type { SaveIdentity } from './types';
 
 function save(overrides: Partial<SaveIdentity> = {}): SaveIdentity {
@@ -132,6 +132,67 @@ describe('save inspection metadata validation', () => {
     });
     expect(JSON.stringify(persisted)).not.toContain('aa bb cc');
     expect(persisted).not.toBe(observed);
+  });
+
+  it('validates ephemeral envelope probes but never allows arbitrary worker payload fields', () => {
+    const hex = Array.from({ length: 16 }, (_, i) => i.toString(16).padStart(2, '0'));
+    const probe = {
+      filename: 'game_info.dat', absoluteOffset: 18, sampleBytes: 16,
+      prefixHex: hex.join(' '), prefixKind: 'unknown',
+      afterFirstEightBytesHex: hex.slice(8).join(' '), afterFirstEightBytesKind: 'unknown',
+      storedBytes: 128, reportedUncompressedBytes: 256
+    };
+    const indexed = save({ archiveIndex: {
+      family: 'fmf-index-candidate', evidence: 'experimental',
+      memberCount: 1, directoryOffset: 256,
+      members: [{ filename: 'game_info.dat', offset: 0, storedBytes: 128, reportedUncompressedBytes: 256 }],
+      probes: [probe]
+    } });
+    expect(isSaveIdentity(indexed)).toBe(false); // ephemerals must not enter IndexedDB
+    expect(isSaveInspectionResult(indexed)).toBe(true);
+    const persisted = toPersistedSaveIdentity(indexed);
+    expect(isSaveIdentity(persisted)).toBe(true);
+    expect(JSON.stringify(persisted)).not.toContain(probe.prefixHex);
+
+    const archive = indexed.archiveIndex!;
+    expect(isSaveInspectionResult({ ...indexed, fileBytes: new Uint8Array([1]) })).toBe(false);
+    expect(isSaveInspectionResult({ ...indexed, archiveIndex: {
+      ...archive, probes: [{ ...probe, payload: 'secret' }]
+    } })).toBe(false);
+    expect(isSaveInspectionResult({ ...indexed, archiveIndex: {
+      ...archive, probes: [{ ...probe, sampleBytes: 100 }]
+    } })).toBe(false);
+    expect(isSaveInspectionResult({ ...indexed, archiveIndex: {
+      ...archive, probes: Array.from({ length: 33 }, () => probe)
+    } })).toBe(false);
+    expect(isSaveInspectionResult({ ...indexed, detectedFamily: 'fmf' })).toBe(false);
+  });
+
+  it('bounds ephemeral gap evidence without interpreting it as decoded players', () => {
+    const archive = {
+      family: 'fmf-index-candidate' as const, evidence: 'experimental' as const,
+      memberCount: 2, directoryOffset: 300,
+      members: [
+        { filename: 'a.dat', offset: 0, storedBytes: 50, reportedUncompressedBytes: 100 },
+        { filename: 'b.dat', offset: 100, storedBytes: 50, reportedUncompressedBytes: 100 }
+      ]
+    };
+    const gap = {
+      afterMember: 'a.dat', beforeMember: 'b.dat', sizeBytes: 50,
+      markerMatches: 0, firstMarkerAt: null, mostCommonMarkerDistance: null,
+      mostCommonDistanceOccurrences: 0, status: 'sampled'
+    };
+    const raw = save({ archiveIndex: { ...archive, gapObservations: [gap] } });
+    expect(isSaveInspectionResult(raw)).toBe(true);
+    expect(isSaveInspectionResult(save({ archiveIndex: {
+      ...archive, gapObservations: [{ ...gap, extraData: new Uint8Array([9]) }]
+    } }))).toBe(false);
+    expect(isSaveInspectionResult(save({ archiveIndex: {
+      ...archive, gapObservations: [{ ...gap, markerMatches: -1 }]
+    } }))).toBe(false);
+    expect(isSaveInspectionResult(save({ archiveIndex: {
+      ...archive, gapObservations: [{ ...gap, afterMember: 'missing.dat' }]
+    } }))).toBe(false);
   });
 
   it('keeps the local inspection catalogue bounded', () => {
