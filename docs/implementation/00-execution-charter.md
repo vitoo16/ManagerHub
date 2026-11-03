@@ -12,6 +12,8 @@
 - **Speed:** parallelize only independent work streams with stable typed interfaces and clear file ownership. Never trade away architecture, tests, accessibility, provenance or editor safety for velocity.
 
 ## Implementation defaults (ADR candidates, decide & lock during Phase 1)
+
+> **Current-state guardrail (2026-11-03):** The running repository uses npm workspaces, React/Vite/TypeScript, browser IndexedDB and read-only research tools. The options below are historical/planned ADR candidates, **not an automatic migration mandate**. Inspect existing implementation and tests before proposing pnpm, Tauri, Rust, SQLite, a new package boundary or alternate runtime. Require an ADR, compatibility/migration plan, and measurable benefit before changing a working foundation.
 - Monorepo: pnpm workspaces + Turborepo **only if beneficial**, no tooling duplication.
 - apps/web: React + TypeScript + Vite (shared renderer); apps/desktop: Tauri + same web UI; avoid duplicated screens.
 - packages/ui (headless accessible primitives, design tokens + Liquid Glass surface semantics); packages/motion (CSS + GSAP facade); packages/domain (schema, stable identities, provenance), packages/football (pure scoring/recruitment/tactics), packages/charts (single source-aware chart API); packages/app (feature composition, optional if reuse justified).
@@ -53,6 +55,20 @@ docs/implementation        execution charter, plan, prompts, design and referenc
 - Every PR documents WHAT/WHY, reused abstractions, evidence and tests run, compatibility limits, screenshots for UI, and no known regressions. Required checks block merges; 1 stable branch per bounded integration when working in parallel.
 - Source and licensing review for game data and external skill scripts/assets. Bundle and animation runtime budgets measured and documented against baseline after Phase 1.
 - Definition of done: real integration, accessibility and missing states, source-backed UI, passing test suite and documentation synced; no stubs in completed scope.
+
+## Cross-cutting reliability, architectural and debt controls
+
+Apply these controls when the affected code or risk warrants them; avoid ceremony for unrelated tasks.
+
+- **Verified identity and persistence:** Separate unique record identity from content fingerprints; never assume file name/size/mtime proves content identity. Validate persisted and imported data against complete versioned schemas, with explicit migration, corruption and recovery behavior. Do not silently overwrite unrelated records.
+- **Destructive operations:** Show accurate deletion scope, including shared Editor/Realism projections and whole-library recovery actions. Use explicit confirmation, transactions and appropriate backup/export options before irreversible changes.
+- **Async correctness:** Guard file import/save/open/delete and worker operations against stale completions, duplicate submissions and cross-dataset races. Define cancellation, timeouts, cleanup, error boundaries and user-visible recoverable errors where appropriate. Test overlapping operations.
+- **Architecture boundaries:** Prefer pure domain rules and explicit IO/adapters at browser, worker, native and storage edges. Separate workflow orchestration from presentation when this reduces coupling. Preserve current behavior and storage compatibility during refactors; do not generate redundant generic service/repository layers.
+- **Input security:** Treat HTML, binary files, worker messages and persisted records as untrusted. Bound sizes/time/memory and HTML resource behavior; review parser and CSP defenses. Avoid presenting speculative risks as proven exploits.
+- **Measured performance:** Keep React memoization and lazy splitting selective; benchmark meaningful roster/data workloads, memory and UI responsiveness before claiming speedups or adding caches.
+- **Reproducible engineering:** Use a committed lockfile with deterministic CI install appropriate to the *actual* package manager, and run relevant type/lint/format/test/build/a11y/security checks as available. Propose missing gates separately from claiming they already pass.
+- **Technical debt decisions:** Record confirmed defects, credible risks and planned-but-unbuilt features separately, with file evidence, severity, proposed correction, acceptance tests and PR. Fix high-impact risks before expanding dependent features; document conscious trade-offs, never claim literal zero future debt.
+- **Documentation authority:** Update feature acceptance only with observed evidence. Do not bulk-edit the delivery roadmap when only improving agent instructions; if a plan changes, explain its scope and dependencies through a separate reviewed decision.
 
 ## How to work fast without accumulating debt
 - Start each phase with a 1-page implementation map and typed interfaces, then ship independent packages in parallel: core/domain, UX/components, analytics and test fixtures.

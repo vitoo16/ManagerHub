@@ -6,6 +6,9 @@
 
 ## Required / enabled external skills
 
+> **Task-scoped selection:** “MUST” in the reference matrix means mandatory **when that particular capability is being implemented**, not for every coding task. Root `AGENTS.md` and `.agents/README.md` control activation. No skill should trigger a package-manager swap, new runtime, script execution or roadmap revision by itself.
+
+
 | Priority | Skill name | Trusted upstream | Why / trigger | Scope caveat |
 |---|---|---|---|---|
 | MUST | `web-design-guidelines` | [Vercel Agent Skills](https://github.com/vercel-labs/agent-skills/blob/main/skills/web-design-guidelines/SKILL.md) | Audit responsive, focus, form, keyboard, accessibility, motion and performance; fetch freshest linked guideline when used | UI **review** skill, not standalone art director |
@@ -25,7 +28,7 @@
 | OPTIONAL | `webapp-testing` | [Anthropic](https://github.com/anthropics/skills/tree/main/skills/webapp-testing) | QA, screenshot, interaction tests | Needs browser infrastructure |
 | OPTIONAL | Motion AI skill | [Motion official](https://motion.dev/docs/react) | Useful for evaluation if changing animation stack | **Not mandatory**. GSAP already chosen; Motion+GSAP ownership overlap adds code debt |
 
-## Three original ManagerHub skills already committed
+## Four original ManagerHub skills already committed
 - [managerhub-football-intelligence](../../.agents/skills/managerhub-football-intelligence/SKILL.md): eCA/CA/Role Fit/football rules.
 - [managerhub-save-safety](../../.agents/skills/managerhub-save-safety/SKILL.md): safe parser/reader/writer boundaries.
 - [managerhub-data-ux](../../.agents/skills/managerhub-data-ux/SKILL.md): honest football charts, provenance and accessible UX.
