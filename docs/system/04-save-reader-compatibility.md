@@ -10,6 +10,14 @@
 
 A different independent FM26 `fmf.` save-reader research line exists (see [references](../references.md)). Extension `.fm` is not proof of format compatibility. Separate version-specific adapters.
 
+## Browser save-inspection worker boundary
+
+Save Library's existing file inspection remains **read-only**, local, and limited to 256 MiB. The background worker is the sole execution path; browsers without Worker support now receive an actionable error rather than synchronously hashing and scanning potentially large files on the UI thread. The caller terminates work after 45 seconds or on explicit cancellation and rejects stale results from earlier file selections.
+
+Worker replies are untrusted transport. The client verifies message discriminants, exact file name/size/lastModified binding and the canonical persisted metadata schema, plus strictly bounded, ephemeral archive probe/gap diagnostics. Only admitted data reaches React state. Ephemeral member-prefix hex and gap samples remain in memory and are still stripped before opt-in IndexedDB persistence; no original `.fm` bytes enter the save library. Invalid responses, message errors and timeouts terminate the worker and expose recoverable VI/EN guidance.
+
+This protects the **inspection boundary only**. It does not authenticate the producing game build, determine actual save integrity, decode player records, certify CA/PA or enable writing. Native IPC and exact-build adapter verification remain separate acceptance gates.
+
 ## Reader contract
 detect(bytes) -> edition?, build?, family?, confidence, capabilities, diagnostics.
 read(bytes) -> immutable canonical snapshot + per-domain coverage + warnings or typed error.
