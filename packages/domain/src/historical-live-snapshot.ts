@@ -296,6 +296,45 @@ export function parseHistoricalSnapshotRecord(value: unknown): HistoricalSnapsho
   return deepFreeze(value);
 }
 
+/**
+ * A prior Realism-only import owns the canonical snapshot identity and user declarations.
+ * Reimporting the identical source in Editor mode may add the missing Editor projection,
+ * but must not mutate the pre-existing redacted record or silently revise its metadata.
+ */
+export function alignEditorToSavedRealism(
+  editor: HistoricalSnapshotRecord,
+  savedRealism: HistoricalSnapshotRecord
+): HistoricalSnapshotRecord {
+  if (!isHistoricalSnapshotRecord(editor) || !isHistoricalSnapshotRecord(savedRealism) ||
+      editor.mode !== 'editor' || savedRealism.mode !== 'realism' ||
+      editor.sourceSha256 !== savedRealism.sourceSha256 || editor.sourceSize !== savedRealism.sourceSize ||
+      editor.status !== savedRealism.status ||
+      editor.snapshot.players.length !== savedRealism.snapshot.players.length ||
+      editor.snapshot.gameDate.value !== savedRealism.snapshot.gameDate.value ||
+      editor.snapshot.sourceIdentity.binarySha256 !== savedRealism.snapshot.sourceIdentity.binarySha256 ||
+      editor.snapshot.players.some((player, index) => {
+        const previous = savedRealism.snapshot.players[index];
+        return !previous || previous.nativeId !== player.nativeId || previous.nativeKind !== player.nativeKind;
+      })) {
+    throw new TypeError('Existing Realism capture is incompatible with this Editor import.');
+  }
+  const id = savedRealism.id;
+  return parseHistoricalSnapshotRecord({
+    ...editor,
+    id,
+    fileName: savedRealism.fileName,
+    sourceSize: savedRealism.sourceSize,
+    importedAt: savedRealism.importedAt,
+    snapshot: {
+      ...editor.snapshot,
+      id,
+      capturedAt: savedRealism.snapshot.capturedAt,
+      careerId: savedRealism.snapshot.careerId,
+      players: editor.snapshot.players.map(player => ({ ...player, id: `${id}:${player.nativeId}` }))
+    }
+  });
+}
+
 export function toHistoricalSnapshotSummary(record: HistoricalSnapshotRecord): HistoricalSnapshotSummary {
   if (!isHistoricalSnapshotRecord(record)) throw new TypeError('Cannot summarize an invalid historical snapshot.');
   return deepFreeze({
