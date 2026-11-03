@@ -50,6 +50,43 @@ test('inspects AFE header locally and never claims full save support', async ({ 
   await expect(page.getByText('career.fm').first()).toBeVisible();
 });
 
+test('reports truthful save capabilities for AFE, FMF and unknown signatures in VI/EN', async ({ page }) => {
+  await page.goto('/#/saves');
+  const input = page.locator('input[type="file"]');
+  await input.setInputFiles({
+    name: 'header-only.fm', mimeType: 'application/octet-stream',
+    buffer: Buffer.from([2, 1, 97, 102, 101, 46, 0, 0])
+  });
+
+  const matrix = page.getByRole('table', { name: 'Save inspection capability matrix' });
+  await expect(matrix).toBeVisible();
+  await expect(matrix.getByRole('row', { name: /Container signature/ })).toContainText('Header signature observed only');
+  await expect(matrix.getByRole('row', { name: /Archive directory/ })).toContainText('Not detected by this inspection');
+  await expect(matrix.getByRole('row', { name: /Game edition \/ build/ })).toContainText('Not independently verified');
+  await expect(matrix.getByRole('row', { name: /Current & potential ability/ })).toContainText('Not decoded from this save');
+  await expect(matrix.getByRole('row', { name: /Save editing \/ write-back/ })).toContainText('Unavailable — writing disabled');
+  await expect(matrix.getByRole('row')).toHaveCount(12);
+
+  await input.setInputFiles({
+    name: 'independent-fmf.fm', mimeType: 'application/octet-stream',
+    buffer: Buffer.from([2, 1, 102, 109, 102, 46, 0, 0])
+  });
+  await expect(matrix.getByRole('row', { name: /Container signature/ })).toContainText('Header signature observed only');
+  await expect(matrix.getByRole('row', { name: /Archive directory/ })).toContainText('Not detected by this inspection');
+
+  await input.setInputFiles({
+    name: 'unrecognized.fm', mimeType: 'application/octet-stream',
+    buffer: Buffer.from([3, 4, 5, 6, 7, 8])
+  });
+  await expect(matrix.getByRole('row', { name: /Container signature/ })).toContainText('Not detected by this inspection');
+  await expect(matrix.getByRole('row', { name: /Player identities/ })).toContainText('Not decoded from this save');
+
+  await page.getByRole('button', { name: /VI.*Chuyển sang tiếng Việt/ }).click();
+  const localized = page.getByRole('table', { name: 'Bảng khả năng kiểm tra tệp save' });
+  await expect(localized.getByRole('row', { name: /Danh tính cầu thủ/ })).toContainText('Chưa giải mã từ tệp save này');
+  await expect(localized.getByRole('row', { name: /Chỉnh sửa \/ ghi trở lại/ })).toContainText('Không hỗ trợ');
+});
+
 test('theme and glass preference controls remain accessible', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('button', { name: 'Switch to light mode' }).click();
@@ -88,6 +125,8 @@ test('discovers a bounded synthetic trailing archive catalogue without extractin
   await page.locator('input[type="file"]').setInputFiles({ name: 'synthetic.fm', mimeType: 'application/octet-stream', buffer: file });
   await expect(page.getByText('Internal archive index')).toBeVisible();
   await expect(page.getByRole('list', { name: 'Internal save archive members' }).getByText('game_info.dat')).toBeVisible();
+  await expect(page.getByRole('table', { name: 'Save inspection capability matrix' })
+    .getByRole('row', { name: /Archive directory/ })).toContainText('Experimental directory metadata');
   await page.getByText('Technical details').click();
   await expect(page.getByText(/member contents and game records are NOT decoded/i)).toBeVisible();
   // Only vetted catalogue metadata persists; sampled header bytes remain ephemeral.
