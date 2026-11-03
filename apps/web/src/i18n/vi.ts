@@ -564,6 +564,8 @@ export default {
   "Unable to save inspection metadata locally. Check browser storage permissions and available disk space.": "Không thể lưu thông tin kiểm tra save trên máy. Hãy kiểm tra quyền lưu trữ và dung lượng còn trống.",
   "Could not access saved save metadata. Your original save remains untouched.": "Không thể truy cập thông tin save đã lưu. File save gốc vẫn được giữ nguyên.",
   "Choose a Football Manager .fm save file.": "Hãy chọn tệp save Football Manager có đuôi .fm.",
+  "Choose a Football Manager save file": "Chọn tệp save Football Manager",
+  "Select a player export file": "Chọn tệp dữ liệu cầu thủ để nhập",
   "This file is empty or larger than 256 MB. Choose a valid .fm save file up to 256 MB and try again.": "Tệp đang trống hoặc lớn hơn 256 MB. Hãy chọn tệp save .fm hợp lệ không quá 256 MB rồi thử lại.",
   "We couldn't inspect this save file. Check that it is a valid .fm file and try again.": "Không thể kiểm tra tệp save này. Hãy kiểm tra tệp .fm hợp lệ rồi thử lại.",
   "Background player import failed. Please try the export again.": "Không thể nhập danh sách cầu thủ ở chế độ nền. Vui lòng thử lại.",
