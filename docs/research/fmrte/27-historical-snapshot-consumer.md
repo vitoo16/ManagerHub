@@ -58,7 +58,7 @@ The source file itself is not persisted. Metadata contains only a safe basename,
 
 - IndexedDB is used for cohorts that may be many MiB; localStorage is not used.
 - Every stored record is schema/version validated on reload and deeply frozen after validation.
-- A source-hash index detects duplicate imports.
+- A source-hash index detects duplicate imports before enforcing the ten-record limit; reimporting an already-saved capture does not consume capacity or overwrite records.
 - Editor + Realism projections are written in one four-store transaction; transaction failure aborts both.
 - Each mode is capped at ten snapshots. Quota errors are surfaced without overwriting an older record.
 - Removal clears the matching ID from all four historical stores.
