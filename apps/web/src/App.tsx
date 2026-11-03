@@ -7,7 +7,6 @@ import {
 } from '@managerhub/domain';
 import { Icon, Status } from '@managerhub/ui';
 import { useReducedMotion, useWorkspaceTransition } from '@managerhub/motion';
-import { inspectSaveInWorker } from './inspect-save-in-worker';
 import { readableSaveInspectionError } from './i18n/save-inspection-copy';
 import './app.css';
 
@@ -181,6 +180,9 @@ export default function App() {
     inspectionAbortRef.current = controller;
     setBusy(true); setError(null);
     try {
+      // Keep the full untrusted-file validator and worker transport off the
+      // initial app shell bundle; import only on deliberate file selection.
+      const { inspectSaveInWorker } = await import('./inspect-save-in-worker');
       const result = await inspectSaveInWorker(file, controller.signal);
       if (controller.signal.aborted || revision !== inspectionRevisionRef.current) return;
       setImports(previous => [result, ...previous.filter(item => item.id !== result.id)]);
