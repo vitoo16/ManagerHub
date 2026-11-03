@@ -44,7 +44,10 @@
 .historical-snapshot-file {font-size:11px;color:var(--text-faint);overflow-wrap:anywhere}
 .historical-snapshot-meta {display:flex;flex-wrap:wrap;gap:5px 12px;font-size:11px;color:var(--text-sub)}
 .historical-snapshot-status {display:flex;align-items:center;gap:9px;margin-top:4px;font-size:11px;color:var(--text-faint)}
-.historical-snapshot-actions {display:flex;gap:5px;margin-top:7px}
+.historical-snapshot-actions {display:flex;gap:5px;margin-top:7px;flex-wrap:wrap}
+.historical-destructive-warning {font-size:11px;line-height:1.65;margin-top:9px;padding:9px 10px;border-left:2px solid var(--accent-strong);background:var(--surface-up);color:var(--text-sub)}
+.historical-clear-confirmation {display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-width:0}
+.historical-clear-confirmation p {flex-basis:100%;margin:0;font-size:12px;line-height:1.6}
 .historical-detail-column {display:grid;gap:14px;min-width:0}
 .historical-detail-empty {min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text-faint)}
 .historical-detail-empty strong {margin-top:10px;color:var(--text)}
