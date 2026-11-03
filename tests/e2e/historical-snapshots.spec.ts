@@ -51,9 +51,14 @@ function syntheticWire() {
   });
 }
 
-async function importSynthetic(page: import('@playwright/test').Page, mode: 'Editor' | 'Realism' = 'Editor') {
-  await page.getByLabel('Career label (user-declared)').fill('Synthetic FM2013 career');
-  await page.getByLabel('Capture time (declared by source workflow)').fill('2026-10-31T09:00');
+async function importSynthetic(
+  page: import('@playwright/test').Page,
+  mode: 'Editor' | 'Realism' = 'Editor',
+  careerLabel = 'Synthetic FM2013 career',
+  captureTime = '2026-10-31T09:00'
+) {
+  await page.getByLabel('Career label (user-declared)').fill(careerLabel);
+  await page.getByLabel('Capture time (declared by source workflow)').fill(captureTime);
   if (mode === 'Editor') await page.getByRole('button', { name: 'Editor', exact: true }).click();
   else await page.getByRole('button', { name: 'Realism', exact: true }).click();
   await page.locator('input[type=file]').setInputFiles({
@@ -63,7 +68,7 @@ async function importSynthetic(page: import('@playwright/test').Page, mode: 'Edi
   });
   await page.getByRole('button', { name: 'Validate and import' }).click();
   await expect(page.getByText('Capture parsed. Review its source, coverage and unknown fields before saving.')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Synthetic FM2013 career' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: careerLabel })).toBeVisible();
 }
 
 test('explains the manual capture handoff in English and Vietnamese without a fake live connection', async ({ page }) => {
@@ -193,6 +198,91 @@ test('Realism-only imports stay redacted after persistence and do not synthesize
   await page.getByRole('button', { name: 'Editor', exact: true }).click();
   await expect(page.getByText('No saved projection exists in this mode. Reimport the source capture in this mode, or save an Editor import to keep both projections.')).toBeVisible();
   await expect(page.locator('.historical-value-row')).toHaveCount(0);
+});
+
+test('reimporting a saved Realism-only source adds Editor without overwriting its original projection', async ({ page }) => {
+  await page.goto('/#/history');
+  await importSynthetic(page, 'Realism');
+  await page.getByRole('button', { name: 'Save snapshot locally' }).click();
+  await expect(page.getByRole('button', { name: 'Saved on this browser' })).toBeDisabled();
+
+  const originalRealism = await page.evaluate(async () => {
+    const request = indexedDB.open('managerhub-local', 4);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    try {
+      const tx = db.transaction('historical-realism-snapshots', 'readonly');
+      const rows = await new Promise<unknown[]>((resolve, reject) => {
+        const get = tx.objectStore('historical-realism-snapshots').getAll();
+        get.onsuccess = () => resolve(get.result);
+        get.onerror = () => reject(get.error);
+      });
+      return JSON.stringify(rows[0]);
+    } finally { db.close(); }
+  });
+  expect(originalRealism).not.toBe('undefined');
+  await page.getByRole('button', { name: 'Editor', exact: true }).click();
+  await importSynthetic(page, 'Editor', 'Different user declaration', '2026-11-02T09:00');
+  await page.getByRole('button', { name: 'Save snapshot locally' }).click();
+  await expect(page.getByRole('status').filter({
+    hasText: 'Editor projection added to the existing Realism snapshot.'
+  })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Saved on this browser' })).toBeDisabled();
+  await expect(page.getByRole('heading', { name: 'Synthetic FM2013 career' })).toBeVisible();
+  const passing = page.locator('.historical-value-row').filter({ hasText: 'Passing' });
+  await expect(passing.locator('strong')).toHaveText('15');
+
+  const after = await page.evaluate(async () => {
+    const request = indexedDB.open('managerhub-local', 4);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    try {
+      const read = (name: string) => new Promise<Array<{
+        id: string;
+        snapshot: { capturedAt: string; careerId: { value: string }; players: Array<{
+          id: string; attributes: { passing: { value: number | null } }
+        }> };
+      }>>((resolve, reject) => {
+        const get = db.transaction(name, 'readonly').objectStore(name).getAll();
+        get.onsuccess = () => resolve(get.result);
+        get.onerror = () => reject(get.error);
+      });
+      const editor = await read('historical-editor-snapshots');
+      const realism = await read('historical-realism-snapshots');
+      return {
+        editorCount: editor.length, realismCount: realism.length,
+        editorId: editor[0]?.id, realismId: realism[0]?.id,
+        editorCareer: editor[0]?.snapshot.careerId.value,
+        editorCapturedAt: editor[0]?.snapshot.capturedAt,
+        editorPlayerId: editor[0]?.snapshot.players[0]?.id,
+        realismPlayerId: realism[0]?.snapshot.players[0]?.id,
+        editorPassing: editor[0]?.snapshot.players[0]?.attributes.passing.value,
+        realismPassing: realism[0]?.snapshot.players[0]?.attributes.passing.value,
+        realismBytes: JSON.stringify(realism[0])
+      };
+    } finally { db.close(); }
+  });
+  expect(after).toMatchObject({
+    editorCount: 1, realismCount: 1,
+    editorCareer: 'Synthetic FM2013 career', editorPassing: 15, realismPassing: null,
+    editorCapturedAt: '2026-10-31T09:00:00.000Z'
+  });
+  expect(after.editorId).toBe(after.realismId);
+  expect(after.editorPlayerId).toBe(after.realismPlayerId);
+  expect(after.realismBytes).toBe(originalRealism);
+
+  await page.getByRole('button', { name: 'Realism', exact: true }).click();
+  await expect(page.locator('.historical-value-row').filter({ hasText: 'Passing' }).locator('strong'))
+    .toHaveText('Hidden in Realism mode');
+  await page.reload();
+  await page.getByRole('button', { name: 'Editor', exact: true }).click();
+  await page.getByRole('list', { name: 'Saved historical snapshots' }).getByRole('button', { name: 'Open' }).click();
+  await expect(page.locator('.historical-value-row').filter({ hasText: 'Passing' }).locator('strong'))
+    .toHaveText('15');
 });
 
 test('rejects malformed and unsupported captures without saving a snapshot', async ({ page }) => {
