@@ -1,10 +1,9 @@
 import { setAppLocale } from './i18n';
 import { useTranslation } from 'react-i18next';
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import {
-  createDefaultSquadPlans, type PlayerDataset, type SaveIdentity,
-  type SquadPlanKey, type SquadPlans, type WorkspaceKey
-} from '@managerhub/domain';
+import { createDefaultSquadPlans, type SquadPlanKey, type SquadPlans } from '@managerhub/domain/squad-scenarios';
+import type { SaveIdentity, WorkspaceKey } from '@managerhub/domain/types';
+import type { PlayerDataset } from '@managerhub/domain';
 import { Icon, Status } from '@managerhub/ui';
 import { useReducedMotion, useWorkspaceTransition } from '@managerhub/motion';
 import { inspectSaveInWorker } from './inspect-save-in-worker';
