@@ -66,6 +66,26 @@ async function importSynthetic(page: import('@playwright/test').Page, mode: 'Edi
   await expect(page.getByRole('heading', { name: 'Synthetic FM2013 career' })).toBeVisible();
 }
 
+test('explains the manual capture handoff in English and Vietnamese without a fake live connection', async ({ page }) => {
+  await page.goto('/#/history');
+  const guide = page.locator('details.historical-capture-guide');
+  await expect(guide).not.toHaveAttribute('open', '');
+  await guide.locator('summary').click();
+  await expect(guide).toHaveAttribute('open', '');
+  await expect(guide.getByText('Prepare an authorized capture')).toBeVisible();
+  await expect(guide.getByText('Run the prepared script manually')).toBeVisible();
+  await expect(guide.locator('pre').first()).toContainText('--pid 1234');
+  await expect(guide.locator('pre').nth(1)).toContainText('export-wire');
+  await expect(guide.locator('pre').nth(1)).toContainText('--evidence-id ev_REPLACE_WITH_64_HEX');
+  await expect(guide.getByText('This procedure does not establish a live connection, authenticated runtime bytes, career lineage, or permission to edit game data.')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
+  await expect(guide.locator('summary')).toHaveText('Cách tạo file capture');
+  await expect(guide.getByText('Chạy thủ công script đã chuẩn bị')).toBeVisible();
+  await guide.locator('summary').press('Enter');
+  await expect(guide).not.toHaveAttribute('open', '');
+});
+
 test('imports, browses, saves, reloads and switches safely between Editor and Realism projections', async ({ page }) => {
   await page.goto('/#/history');
   await expect(page.getByRole('heading', { name: 'Historical snapshots' })).toBeVisible();
