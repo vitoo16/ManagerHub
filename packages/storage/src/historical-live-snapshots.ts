@@ -82,19 +82,24 @@ async function saveRecords(records: readonly HistoricalSnapshotRecord[], primary
         }
         duplicateSummaries.push(duplicate);
       }
-      const count = await readRequest<number>(store.count());
-      if (count >= MAX_HISTORICAL_SNAPSHOTS) {
-        tx.abort();
-        await completed.catch(() => undefined);
-        throw new Error('This browser already holds 10 historical snapshots in this mode. Delete one before importing another.');
-      }
     }
+    // A source that is already present does not consume capacity. Check all involved
+    // mode indexes before enforcing their limits, while keeping one transaction.
     if (duplicateSummaries.length) {
       tx.abort();
       await completed.catch(() => undefined);
       const existing = duplicateSummaries.find(summary => summary.mode === primaryMode) ?? duplicateSummaries[0];
       if (!existing) throw new Error('A duplicate capture was found but its summary is unavailable.');
       return { status: 'duplicate', summary: existing };
+    }
+    for (const record of records) {
+      const store = tx.objectStore(storeNames(record.mode).summaries);
+      const count = await readRequest<number>(store.count());
+      if (count >= MAX_HISTORICAL_SNAPSHOTS) {
+        tx.abort();
+        await completed.catch(() => undefined);
+        throw new Error('This browser already holds 10 historical snapshots in this mode. Delete one before importing another.');
+      }
     }
     for (const record of records) {
       const namesForMode = storeNames(record.mode);
