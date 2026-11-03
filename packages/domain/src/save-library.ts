@@ -85,6 +85,82 @@ export function isSaveIdentity(value: unknown): value is SaveIdentity {
 }
 
 /**
+ * Validate unpersisted inspection results from the worker while retaining
+ * short-lived bounded archive diagnostics. Unknown keys or binary payloads
+ * never enter React state, and the canonical stored schema remains unchanged.
+ */
+export function isSaveInspectionResult(value: unknown): value is SaveIdentity {
+  if (!isRecord(value)) return false;
+  const index = value.archiveIndex;
+  if (index === null) return isSaveIdentity(value);
+  if (!isRecord(index) || !hasOnlyKeys(index, [
+    'family', 'evidence', 'memberCount', 'directoryOffset',
+    'members', 'nestedGroups', 'probes', 'gapObservations'
+  ])) return false;
+
+  const { probes, gapObservations, ...catalogue } = index;
+  // The existing persisted validator owns all common record/index rules.
+  if (!isSaveIdentity({ ...value, archiveIndex: catalogue }) ||
+      value.detectedFamily !== 'afe') return false;
+  const members = catalogue.members as ArchiveMember[];
+  const isHexBytes = (input: unknown, size: number): boolean => {
+    if (typeof input !== 'string') return false;
+    if (size === 0) return input === '';
+    const values = input.split(' ');
+    return values.length === size && values.every(part => /^[0-9a-f]{2}$/.test(part));
+  };
+
+  if (probes !== undefined) {
+    if (!Array.isArray(probes) || probes.length > 32) return false;
+    const allowedKinds = ['zlib_candidate', 'gzip', 'zip', 'json_text', 'unknown'];
+    for (const probe of probes) {
+      if (!isRecord(probe) || !hasOnlyKeys(probe, [
+        'filename', 'absoluteOffset', 'sampleBytes', 'prefixHex', 'prefixKind',
+        'afterFirstEightBytesHex', 'afterFirstEightBytesKind', 'storedBytes',
+        'reportedUncompressedBytes'
+      ])) return false;
+      const member = members.find(item => item.filename === probe.filename);
+      if (!member || probe.storedBytes !== member.storedBytes ||
+          probe.reportedUncompressedBytes !== member.reportedUncompressedBytes ||
+          !isSafeNonNegativeInteger(probe.absoluteOffset) ||
+          probe.absoluteOffset !== member.offset + 18 ||
+          !isSafeNonNegativeInteger(probe.sampleBytes) ||
+          probe.sampleBytes < 1 || probe.sampleBytes > 16 ||
+          probe.sampleBytes > member.storedBytes ||
+          !isHexBytes(probe.prefixHex, probe.sampleBytes) ||
+          !isHexBytes(probe.afterFirstEightBytesHex, Math.max(0, probe.sampleBytes - 8)) ||
+          !allowedKinds.includes(String(probe.prefixKind)) ||
+          !allowedKinds.includes(String(probe.afterFirstEightBytesKind))) return false;
+    }
+  }
+
+  if (gapObservations !== undefined) {
+    if (!Array.isArray(gapObservations) || gapObservations.length > 8) return false;
+    for (const gap of gapObservations) {
+      if (!isRecord(gap) || !hasOnlyKeys(gap, [
+        'afterMember', 'beforeMember', 'sizeBytes', 'markerMatches',
+        'firstMarkerAt', 'mostCommonMarkerDistance',
+        'mostCommonDistanceOccurrences', 'status'
+      ])) return false;
+      if (typeof gap.afterMember !== 'string' || typeof gap.beforeMember !== 'string' ||
+          !members.some(item => item.filename === gap.afterMember) ||
+          !members.some(item => item.filename === gap.beforeMember) ||
+          !isSafeNonNegativeInteger(gap.sizeBytes) || gap.sizeBytes < 1 ||
+          !isSafeNonNegativeInteger(gap.mostCommonDistanceOccurrences) ||
+          (gap.status !== 'sampled' && gap.status !== 'too_large')) return false;
+      for (const key of ['markerMatches', 'firstMarkerAt', 'mostCommonMarkerDistance'] as const) {
+        const number = gap[key];
+        if (number !== null && !isSafeNonNegativeInteger(number)) return false;
+      }
+      if (gap.status === 'too_large' && (gap.markerMatches !== null ||
+          gap.firstMarkerAt !== null || gap.mostCommonMarkerDistance !== null)) return false;
+      if (gap.status === 'sampled' && gap.markerMatches === null) return false;
+    }
+  }
+  return true;
+}
+
+/**
  * Drop ephemeral binary-derived diagnostics before persisting an inspection.
  * In particular, member-prefix hex samples must never enter IndexedDB.
  * Only the validated directory catalogue and ordinary identity fields survive.

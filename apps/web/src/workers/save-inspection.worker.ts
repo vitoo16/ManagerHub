@@ -1,4 +1,5 @@
 import { inspectSave } from '@managerhub/domain';
+import { isSaveInspectionResult } from '@managerhub/domain/save-library';
 import type { SaveIdentity } from '@managerhub/domain';
 
 interface Request { readonly file: File; }
@@ -13,6 +14,9 @@ const workerScope = self as unknown as {
 workerScope.onmessage = async event => {
   try {
     const result = await inspectSave(event.data.file);
+    if (!isSaveInspectionResult(result)) {
+      throw new Error('Background save inspection returned an invalid result.');
+    }
     workerScope.postMessage({ ok: true, result });
   } catch (error) {
     workerScope.postMessage({

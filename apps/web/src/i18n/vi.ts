@@ -597,4 +597,7 @@ export default {
   "not_decoded": "Chưa giải mã",
   "Observed player-team pointer": "Con trỏ liên kết cầu thủ–đội bóng được quan sát",
   "Observed primary-contract team": "Đội bóng trong hợp đồng chính được quan sát",
+  "This browser cannot run background save inspection. Use a current browser with Web Worker support.": "Trình duyệt này không hỗ trợ kiểm tra save trong tiến trình nền. Hãy dùng trình duyệt mới có hỗ trợ Web Worker.",
+  "Save inspection timed out after 45 seconds. Try a smaller .fm file or select the file again.": "Quá trình kiểm tra save vượt quá 45 giây. Hãy thử tệp .fm nhỏ hơn hoặc chọn lại tệp.",
+  "Background save inspection returned invalid data. Select the .fm file again.": "Tiến trình nền trả về dữ liệu kiểm tra không hợp lệ. Hãy chọn lại tệp .fm.",
 } as const;
