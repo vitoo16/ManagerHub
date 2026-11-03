@@ -21,7 +21,9 @@
     "check": "npm run typecheck && npm run test && npm run build",
     "test:e2e": "playwright test",
     "test:node:afe": "node --test scripts/afe-codec-consumption.test.mjs scripts/afe-batch-codec.test.mjs scripts/afe-structure-summary.test.mjs scripts/afe-cohort-profile.test.mjs scripts/afe-envelope-census.test.mjs scripts/afe-gap-audit.test.mjs scripts/afe-gap-comparison.test.mjs scripts/afe-frame-signatures.test.mjs scripts/afe-cross-save.test.mjs scripts/afe-validated-decode.test.mjs scripts/afe-raw-lz4.test.mjs",
-    "test:node:fm2013": "node --experimental-strip-types --test scripts/fmrte13-field-math.test.mjs scripts/fm2013-readonly-record-probe.test.mjs scripts/pe32-rtti-vtables.test.mjs scripts/fm2013-live-wire.test.mjs scripts/fm2013-normalize-live.test.mjs scripts/fm2013-game-date-probe.test.mjs scripts/local-research-files.test.mjs scripts/fm2013-process-observer.test.mjs scripts/fm2013-local-session.test.mjs"
+    "test:node:fm2013": "node --experimental-strip-types --test scripts/fmrte13-field-math.test.mjs scripts/fm2013-readonly-record-probe.test.mjs scripts/pe32-rtti-vtables.test.mjs scripts/fm2013-live-wire.test.mjs scripts/fm2013-normalize-live.test.mjs scripts/fm2013-game-date-probe.test.mjs scripts/local-research-files.test.mjs scripts/fm2013-process-observer.test.mjs scripts/fm2013-local-session.test.mjs",
+    "lint": "oxlint apps/web/src packages tests/e2e scripts --deny-warnings",
+    "format:check": "prettier --check \"package.json\" \"package-lock.json\" \"apps/*/package.json\" \"packages/*/package.json\" \".oxlintrc.json\" \".prettierrc.json\""
   },
   "devDependencies": {
     "@playwright/test": "1.64.1",
