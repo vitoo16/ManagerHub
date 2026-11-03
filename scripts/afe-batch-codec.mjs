@@ -58,6 +58,8 @@ export function parseObservedDirectoryDetails(data, boundary) {
     cursor += length * 2;
     if (data.readUInt16LE(cursor) !== 0) throw Error('missing terminator');
     cursor += 2;
+    // Deliberately reject control characters from untrusted FM strings and filenames.
+    // oxlint-disable-next-line no-control-regex
     if (!value || /[\\/\x00-\x1f]/.test(value)) throw Error('invalid filename');
     return value;
   };
