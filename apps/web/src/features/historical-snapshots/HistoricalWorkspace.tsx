@@ -58,8 +58,8 @@ function progressCopy(stage: HistoricalImportStage, t: (key: string) => string):
   return t(labels[stage] ?? 'Checking snapshot provenance and privacy…');
 }
 
-const SnapshotList = memo(function SnapshotList({ items, loading, selectedId, pendingDelete, onOpen, onDelete }:
-  { items: readonly HistoricalSnapshotSummary[]; loading: boolean; selectedId: string | null; pendingDelete: string | null;
+const SnapshotList = memo(function SnapshotList({ items, loading, disabled, selectedId, pendingDelete, onOpen, onDelete }:
+  { items: readonly HistoricalSnapshotSummary[]; loading: boolean; disabled: boolean; selectedId: string | null; pendingDelete: string | null;
     onOpen: (id: string) => void; onDelete: (id: string) => void }) {
   const { t, i18n } = useTranslation();
   return <section className="historical-panel historical-library" aria-labelledby="historical-library-title">
@@ -72,7 +72,7 @@ const SnapshotList = memo(function SnapshotList({ items, loading, selectedId, pe
       </div> :
       <ul className="historical-snapshot-list" aria-label={t('Saved historical snapshots')}>
         {items.map(item => <li key={item.id} className={selectedId === item.id ? 'historical-snapshot-row historical-snapshot-row--active' : 'historical-snapshot-row'}>
-          <button className="historical-snapshot-open" onClick={() => onOpen(item.id)}>
+          <button className="historical-snapshot-open" onClick={() => onOpen(item.id)} disabled={disabled}>
             <span className="historical-snapshot-name">{item.careerLabel}</span>
             <span className="historical-snapshot-file">{item.fileName}</span>
             <span className="historical-snapshot-meta">
@@ -85,8 +85,8 @@ const SnapshotList = memo(function SnapshotList({ items, loading, selectedId, pe
             </span>
           </button>
           <div className="historical-snapshot-actions">
-            <Button variant="quiet" onClick={() => onOpen(item.id)}>{t('Open')}</Button>
-            <Button variant="quiet" onClick={() => onDelete(item.id)}>{pendingDelete === item.id ? t('Confirm delete') : t('Delete')}</Button>
+            <Button variant="quiet" onClick={() => onOpen(item.id)} disabled={disabled}>{t('Open')}</Button>
+            <Button variant="quiet" onClick={() => onDelete(item.id)} disabled={disabled}>{pendingDelete === item.id ? t('Confirm delete') : t('Delete')}</Button>
           </div>
         </li>)}
       </ul>}
@@ -204,10 +204,15 @@ export default function HistoricalWorkspace() {
   const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  // Only the latest selection-changing user action may publish an async result.
+  const selectionRevisionRef = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const appliedExternalRevision = useRef(0);
 
-  useEffect(() => () => { const active = abortRef.current; abortRef.current = null; active?.abort(); }, []);
+  useEffect(() => () => {
+    selectionRevisionRef.current += 1;
+    const active = abortRef.current; abortRef.current = null; active?.abort();
+  }, []);
 
   // A different tab can remove a saved record while it is open here. Revalidate
   // only after that tab's change has been reread from IndexedDB in this mode.
@@ -216,6 +221,9 @@ export default function HistoricalWorkspace() {
     if (revision === null || revision === 0 || revision === appliedExternalRevision.current) return;
     appliedExternalRevision.current = revision;
     if (!activeSaved || !activeId || (!library.error && library.items.some(item => item.id === activeId))) return;
+    // A remote deletion invalidates the saved selection, but must not cancel
+    // an unrelated, already-running unsaved file import in this tab.
+    if (abortRef.current === null) selectionRevisionRef.current += 1;
     setRecord(null);
     setPairedRecord(null);
     setActiveId(null);
@@ -226,6 +234,9 @@ export default function HistoricalWorkspace() {
 
   const onImport = useCallback(async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (importing || switchingMode || library.activity !== null) return;
+    const revision = ++selectionRevisionRef.current;
+    setPendingDelete(null);
     setImportError(null);
     setNotice(null);
     if (!file) { setImportError(t('Choose an address-free FM2013 wire JSON file first.')); return; }
@@ -246,6 +257,7 @@ export default function HistoricalWorkspace() {
         careerId: careerLabel.trim(),
         capturedAt: capturedAt.toISOString()
       }, mode, setStage, controller.signal);
+      if (selectionRevisionRef.current !== revision || controller.signal.aborted) return;
       setRecord(result.record);
       setPairedRecord(result.pairedRecord);
       setFile(null);
@@ -270,21 +282,23 @@ export default function HistoricalWorkspace() {
         setImporting(false);
       }
     }
-  }, [file, careerLabel, capturedAtInput, mode, t]);
+  }, [file, careerLabel, capturedAtInput, mode, t, importing, switchingMode, library.activity]);
 
   const onCancel = useCallback(() => abortRef.current?.abort(), []);
 
   const onSave = useCallback(async () => {
-    if (!record) return;
+    if (!record || importing || switchingMode || library.activity !== null) return;
+    const revision = ++selectionRevisionRef.current;
+    setPendingDelete(null);
     const result = await library.save(record, pairedRecord);
-    if (!result) return;
+    if (!result || selectionRevisionRef.current !== revision) return;
     if (result.status === 'duplicate') {
       setNotice(t('This source capture is already saved in the local library for the {{mode}} projection.', {
         mode: result.summary.mode === 'editor' ? t('Editor') : t('Realism')
       }));
       if (result.summary.mode === mode) {
         const existing = await library.open(result.summary.id);
-        if (existing) {
+        if (existing && selectionRevisionRef.current === revision && existing.mode === mode) {
           setRecord(existing);
           setActiveId(existing.id);
           setActiveSaved(true);
@@ -297,7 +311,7 @@ export default function HistoricalWorkspace() {
     // caller-declared metadata. Reload that canonical record before marking it saved.
     if (result.status === 'upgraded') {
       const savedEditor = await library.open(result.summary.id);
-      if (!savedEditor) return;
+      if (!savedEditor || selectionRevisionRef.current !== revision || savedEditor.mode !== mode) return;
       setRecord(savedEditor);
       setActiveId(savedEditor.id);
       setSelectedPlayerId(savedEditor.snapshot.players[0]?.id ?? null);
@@ -307,11 +321,14 @@ export default function HistoricalWorkspace() {
     }
     setActiveSaved(true);
     setPairedRecord(null);
-  }, [record, pairedRecord, library.save, library.open, mode, t]);
+  }, [record, pairedRecord, library.save, library.open, mode, t, importing, switchingMode, library.activity]);
 
   const onOpenSaved = useCallback(async (id: string) => {
+    if (importing || switchingMode || library.activity !== null || library.loading) return;
+    const revision = ++selectionRevisionRef.current;
+    setPendingDelete(null);
     const opened = await library.open(id);
-    if (!opened) return;
+    if (!opened || selectionRevisionRef.current !== revision || opened.mode !== mode) return;
     setRecord(opened);
     setPairedRecord(null);
     setActiveId(id);
@@ -321,23 +338,29 @@ export default function HistoricalWorkspace() {
     setVisibleLimit(PAGE_SIZE);
     setNotice(null);
     setImportError(null);
-  }, [library.open]);
+  }, [library.open, library.activity, library.loading, importing, switchingMode, mode]);
 
   const onDelete = useCallback(async (id: string) => {
+    if (importing || switchingMode || library.activity !== null || library.loading) return;
     if (pendingDelete !== id) { setPendingDelete(id); return; }
-    if (await library.remove(id)) {
+    const revision = ++selectionRevisionRef.current;
+    setPendingDelete(null);
+    const removed = await library.remove(id);
+    if (revision !== selectionRevisionRef.current) return;
+    if (removed) {
       if (activeId === id) {
         setRecord(null);
         setPairedRecord(null);
         setActiveId(null);
         setActiveSaved(false);
       }
-      setPendingDelete(null);
     }
-  }, [pendingDelete, library.remove, activeId]);
+  }, [pendingDelete, library.remove, library.activity, library.loading, activeId, importing, switchingMode]);
 
   const onModeChange = useCallback(async (next: HistoricalSnapshotMode) => {
-    if (next === mode || switchingMode) return;
+    if (next === mode || switchingMode || library.activity !== null) return;
+    const revision = ++selectionRevisionRef.current;
+    setPendingDelete(null);
     setSwitchingMode(true);
     try {
       const pendingImport = abortRef.current;
@@ -367,12 +390,14 @@ export default function HistoricalWorkspace() {
       if (currentId && wasSaved) {
         try {
           const counterpart = await getHistoricalSnapshot(currentId, next);
+          if (selectionRevisionRef.current !== revision) return;
           setRecord(counterpart);
           setActiveId(counterpart.id);
           setActiveSaved(true);
           setSelectedPlayerId(counterpart.snapshot.players[0]?.id ?? null);
           return;
         } catch {
+          if (selectionRevisionRef.current !== revision) return;
           setActiveId(null);
           setNotice(t('No saved projection exists in this mode. Reimport the source capture in this mode, or save an Editor import to keep both projections.'));
           return;
@@ -383,7 +408,7 @@ export default function HistoricalWorkspace() {
     } finally {
       setSwitchingMode(false);
     }
-  }, [mode, switchingMode, record, pairedRecord, activeId, activeSaved, t]);
+  }, [mode, switchingMode, record, pairedRecord, activeId, activeSaved, t, library.activity]);
 
   const normalizedSearch = search.trim().toLocaleLowerCase();
   const deferredSearch = useDeferredValue(normalizedSearch);
@@ -438,7 +463,7 @@ export default function HistoricalWorkspace() {
             : t('Exact observed values remain provisional. Saving also creates a separately redacted Realism projection in another local store.')}</small>
         </fieldset>
         <div className="historical-import-actions">
-          <Button variant="primary" type="submit" disabled={importing || !file}>{importing ? t('Importing…') : t('Validate and import')}</Button>
+          <Button variant="primary" type="submit" disabled={importing || switchingMode || library.activity !== null || !file}>{importing ? t('Importing…') : t('Validate and import')}</Button>
           {importing && <Button variant="quiet" type="button" onClick={onCancel}>{t('Cancel import')}</Button>}
         </div>
       </form>
@@ -453,7 +478,7 @@ export default function HistoricalWorkspace() {
     </section>
 
     <div className="historical-library-layout">
-      <SnapshotList items={library.items} loading={library.loading} selectedId={activeId}
+      <SnapshotList items={library.items} loading={library.loading} disabled={importing || switchingMode || library.activity !== null || library.error !== null} selectedId={activeId}
         pendingDelete={pendingDelete} onOpen={id => void onOpenSaved(id)} onDelete={id => void onDelete(id)}/>
       <section className="historical-detail-column">
         {!record ? <div className="historical-panel historical-empty historical-detail-empty">
@@ -485,7 +510,7 @@ export default function HistoricalWorkspace() {
               <Status tone="warning">{record.mode === 'editor' ? t('Editor projection') : t('Realism projection')}</Status>
               {activeSaved
                 ? <Button variant="quiet" disabled>{t('Saved on this browser')}</Button>
-                : <Button variant="primary" onClick={() => void onSave()} disabled={library.activity !== null}>{t('Save snapshot locally')}</Button>}
+                : <Button variant="primary" onClick={() => void onSave()} disabled={importing || switchingMode || library.activity !== null}>{t('Save snapshot locally')}</Button>}
             </div>
             <p className="historical-footnote">{t('The capture is historical. PID, file hash, declared career label and timestamp do not prove a currently running process, loaded save lineage or authenticated runtime image bytes.')}</p>
           </section>
