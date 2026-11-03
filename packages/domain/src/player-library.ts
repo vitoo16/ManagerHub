@@ -1,4 +1,4 @@
-import type { AttributeKey, PlayerDataset, PlayerExport } from './player-import';
+import type { PlayerDataset } from './player-import';
 
 /** Versioned local snapshot. Never stores raw .fm saves or executable HTML. */
 export const PLAYER_LIBRARY_SCHEMA = 1;

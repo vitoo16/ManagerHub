@@ -119,8 +119,9 @@ test('imports, browses, saves, reloads and switches safely between Editor and Re
       });
       const editor = await read('historical-editor-snapshots') as Array<Record<string, unknown>>;
       const realism = await read('historical-realism-snapshots') as Array<Record<string, unknown>>;
-      const editorPlayer = (editor[0]?.snapshot as { players: Array<{ attributes: Record<string, { value: number | null }> }> }).players[0];
-      const realismPlayer = (realism[0]?.snapshot as { players: Array<{
+      if (!editor[0] || !realism[0]) throw new Error('Expected separately saved Editor and Realism snapshots.');
+      const editorPlayer = (editor[0].snapshot as { players: Array<{ attributes: Record<string, { value: number | null }> }> }).players[0];
+      const realismPlayer = (realism[0].snapshot as { players: Array<{
         attributes: Record<string, { value: number | null; missingReason: string | null }>;
         birthDate: { value: string | null };
         primaryNation: { value: unknown };

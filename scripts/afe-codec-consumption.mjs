@@ -1,4 +1,3 @@
-import { readFile } from 'node:fs/promises';
 import { inflateSync, inflateRawSync, gunzipSync } from 'node:zlib';
 import { pathToFileURL } from 'node:url';
 

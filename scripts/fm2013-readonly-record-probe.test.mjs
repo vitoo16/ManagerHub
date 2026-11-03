@@ -30,7 +30,8 @@ function execute(options = {}) {
     if (!numbers.has(address)) numbers.set(address, 80);
   }
   if (options.positions) profile.positions.forEach((p, i) => numbers.set(0x40000 + p.offset, i));
-  for (const [address, value] of [...numbers]) {
+  // Iterate the original entries only; this loop adds more entries to the Map.
+  for (const [address, value] of Array.from(numbers.entries())) {
     if (address >= 0x10000 && address < 0x10300) numbers.set(address + 0x2000, value);
   }
   numbers.set(0x12000 + personOffset + 20, options.duplicateId ? 123 : 456);
