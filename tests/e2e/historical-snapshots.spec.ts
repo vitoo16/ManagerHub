@@ -312,6 +312,47 @@ test('refreshes saved historical library across tabs and closes records removed 
   }
 });
 
+test('fails closed on corrupt historical metadata reported by another tab', async ({ page, context }) => {
+  await page.goto('/#/history');
+  await importSynthetic(page, 'Realism');
+  await page.getByRole('button', { name: 'Save snapshot locally' }).click();
+  await expect(page.getByRole('button', { name: 'Saved on this browser' })).toBeDisabled();
+
+  const otherTab = await context.newPage();
+  try {
+    await otherTab.goto('/#/history');
+    await expect(otherTab.getByRole('list', { name: 'Saved historical snapshots' })).toBeVisible();
+    await otherTab.evaluate(async () => {
+      const request = indexedDB.open('managerhub-local', 4);
+      const db = await new Promise<IDBDatabase>((resolve, reject) => {
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      try {
+        await new Promise<void>((resolve, reject) => {
+          const tx = db.transaction('historical-realism-summaries', 'readwrite');
+          tx.objectStore('historical-realism-summaries').put({
+            id: 'corrupt-cross-tab', mode: 'realism', sourceSha256: 'invalid'
+          });
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => reject(tx.error);
+          tx.onabort = () => reject(tx.error);
+        });
+      } finally { db.close(); }
+      const broadcast = new BroadcastChannel('managerhub-historical-library-v1');
+      broadcast.postMessage({ type: 'historical-library-committed', version: 1 });
+      broadcast.close();
+    });
+    await expect(page.getByRole('alert')).toContainText('Saved historical snapshot metadata is incompatible with this version.');
+    await expect(page.getByText('A saved snapshot changed or was removed in another tab. The open record was closed; reopen it from the refreshed library if available.')).toBeVisible();
+    await expect(page.locator('.historical-value-row')).toHaveCount(0);
+    await page.getByRole('button', { name: 'Clear incompatible historical library' }).click();
+    await expect(page.getByText('No historical snapshots saved')).toBeVisible();
+  } finally {
+    await otherTab.close();
+  }
+});
+
 test('keeps an unsaved parsed capture available when IndexedDB refuses a save', async ({ page }) => {
   await page.goto('/#/history');
   await importSynthetic(page, 'Realism');
