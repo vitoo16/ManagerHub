@@ -221,7 +221,9 @@ export default function HistoricalWorkspace() {
     if (revision === null || revision === 0 || revision === appliedExternalRevision.current) return;
     appliedExternalRevision.current = revision;
     if (!activeSaved || !activeId || (!library.error && library.items.some(item => item.id === activeId))) return;
-    selectionRevisionRef.current += 1;
+    // A remote deletion invalidates the saved selection, but must not cancel
+    // an unrelated, already-running unsaved file import in this tab.
+    if (abortRef.current === null) selectionRevisionRef.current += 1;
     setRecord(null);
     setPairedRecord(null);
     setActiveId(null);
