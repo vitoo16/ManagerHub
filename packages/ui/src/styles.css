@@ -11,12 +11,13 @@
   --line: #293744;
   --text: #eaf0f3;
   --text-sub: #9eabb7;
-  --text-faint: #738391;
+  --text-faint: #9aa8b3;
   --accent: #a7e4bb;
   --accent-strong: #6bc89a;
   --accent-ink: #10281a;
   --warning: #e4bc7c;
   --negative: #f1a39e;
+  --info: #93b9eb;
   --glass-tint: rgba(25, 36, 45, .73);
   --glass-border: rgba(209, 231, 238, .17);
   --radius-sm: 10px;
@@ -32,12 +33,13 @@
   --line: #d9e4e1;
   --text: #172525;
   --text-sub: #4f6063;
-  --text-faint: #7a8989;
+  --text-faint: #59696a;
   --accent: #25784d;
   --accent-strong: #13683c;
   --accent-ink: #fff;
   --warning: #9c6720;
   --negative: #b84e41;
+  --info: #245a91;
   --glass-tint: rgba(255, 255, 255, .84);
   --glass-border: rgba(72, 103, 105, .18);
 }
@@ -69,7 +71,7 @@ small { font-size: 12px; }
 .mh-status__dot {width:6px;height:6px;border-radius:50%;background:currentColor}
 .mh-status--positive {color:var(--accent-strong)}
 .mh-status--warning {color:var(--warning)}
-.mh-status--info {color:#93b9eb}
+.mh-status--info {color:var(--info)}
 .mh-section-heading {display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin:30px 0 17px;}
 .mh-section-heading h2 {font-size:19px;margin-top:5px}
 .mh-eyebrow {display:block;font-size:10px;letter-spacing:.17em;text-transform:uppercase;font-weight:800;color:var(--accent-strong)}

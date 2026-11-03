@@ -21,6 +21,7 @@ function PlayerImportToolbar({ dataset, importing, savedCurrent, activity, onFil
 
   return <div className="player-lab-header">
     <div>
+      <label htmlFor={fileInputId} className="visually-hidden">{t('Select a player export file')}</label>
       <input id={fileInputId} ref={inputRef} type="file"
         accept=".csv,.tsv,.txt,.html,.htm,text/csv,text/tab-separated-values,text/html"
         className="visually-hidden" onChange={onFile}/>

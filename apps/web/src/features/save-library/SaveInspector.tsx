@@ -38,6 +38,7 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
   return <div className="view-flow">
     <div className="page-title"><div className="mh-eyebrow">{t("GAME DATA / LOCAL FILES")}</div><h1>{t("Save Library")}</h1><p>{t("Choose a .fm save to check its file type. To analyze players today, export a squad list as HTML or CSV and open Player Lab.")}</p></div>
     <Surface className={'file-drop ' + (drag ? 'file-drop--drag' : '')} onDragOver={e => {e.preventDefault(); setDrag(true);}} onDragLeave={() => setDrag(false)} onDrop={handleDrop}>
+      <label htmlFor={fileId} className="visually-hidden">{t('Choose a Football Manager save file')}</label>
       <input ref={inputRef} id={fileId} className="visually-hidden" type="file" accept=".fm" onChange={handleInput} tabIndex={-1}/>
       <div className="file-drop__icon"><Icon name="file" size={29}/></div>
       <h2>{t("Inspect a saved career")}</h2>
