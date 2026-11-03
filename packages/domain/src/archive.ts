@@ -56,6 +56,8 @@ export function parseArchiveDirectoryDetails(bytes: Uint8Array, boundary: number
     cursor += size * 2;
     if (view.getUint16(cursor, true) !== 0) return null;
     cursor += 2;
+    // Deliberately reject control characters from untrusted FM strings and filenames.
+    // oxlint-disable-next-line no-control-regex
     if (!text || /[\\/\x00-\x1f]/.test(text)) return null;
     return text;
   }
