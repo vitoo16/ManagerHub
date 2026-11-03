@@ -234,5 +234,9 @@ export default {
   "This procedure does not establish a live connection, authenticated runtime bytes, career lineage, or permission to edit game data.": "Quy trình này không xác nhận kết nối thời gian thực, xác thực byte của chương trình đang chạy, nguồn gốc career hoặc quyền chỉnh sửa dữ liệu game.",
   "Read the complete capture workflow documentation": "Xem tài liệu đầy đủ về quy trình capture",
   "Editor projection added to the existing Realism snapshot. Its original career label and capture time were preserved.": "Đã bổ sung bản Editor cho snapshot Realism hiện có. Nhãn career và thời điểm capture đã khai báo trước đó được giữ nguyên.",
-  "A saved snapshot changed or was removed in another tab. The open record was closed; reopen it from the refreshed library if available.": "Một snapshot đã lưu đã thay đổi hoặc bị xóa ở tab khác. Bản ghi đang mở đã được đóng; hãy mở lại từ thư viện vừa cập nhật nếu còn tồn tại."
+  "A saved snapshot changed or was removed in another tab. The open record was closed; reopen it from the refreshed library if available.": "Một snapshot đã lưu đã thay đổi hoặc bị xóa ở tab khác. Bản ghi đang mở đã được đóng; hãy mở lại từ thư viện vừa cập nhật nếu còn tồn tại.",
+  "Cancel": "Hủy",
+  "Deleting removes this snapshot and any saved Editor or Realism projection. This cannot be undone; keep the source JSON to reimport.": "Việc xóa sẽ xóa snapshot này và mọi bản Editor hoặc Realism đã lưu tương ứng. Không thể hoàn tác; hãy giữ file JSON nguồn để nhập lại.",
+  "Clearing permanently deletes every historical Editor and Realism snapshot on this browser. Player Lab and Save Library are not affected. Keep the original source JSON files to restore these snapshots.": "Thao tác dọn dẹp sẽ xóa vĩnh viễn tất cả snapshot lịch sử Editor và Realism trên trình duyệt này. Dữ liệu Player Lab và Save Library không bị ảnh hưởng. Hãy giữ file JSON nguồn để khôi phục bằng cách nhập lại.",
+  "Confirm clear historical library": "Xác nhận xóa toàn bộ snapshot lịch sử"
 } as const;
