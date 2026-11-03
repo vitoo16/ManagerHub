@@ -104,11 +104,17 @@ export default function App() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const inspectionAbortRef = useRef<AbortController | null>(null);
+  const inspectionRevisionRef = useRef(0);
   const viewScope = useRef<HTMLElement>(null);
   const commandDialogRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
 
   useWorkspaceTransition(viewScope, view, reduced);
+  useEffect(() => () => {
+    inspectionRevisionRef.current += 1;
+    inspectionAbortRef.current?.abort();
+  }, []);
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     try { localStorage.setItem('mh-theme', theme); } catch { /* blocked storage */ }
@@ -167,14 +173,28 @@ export default function App() {
   }, []);
 
   const onInspect = useCallback(async (file: File) => {
+    // Only a result belonging to the most recent user-selected file may
+    // update the Save Library; terminate the superseded worker immediately.
+    const revision = ++inspectionRevisionRef.current;
+    inspectionAbortRef.current?.abort();
+    const controller = new AbortController();
+    inspectionAbortRef.current = controller;
     setBusy(true); setError(null);
     try {
-      const result = await inspectSaveInWorker(file);
+      const result = await inspectSaveInWorker(file, controller.signal);
+      if (controller.signal.aborted || revision !== inspectionRevisionRef.current) return;
       setImports(previous => [result, ...previous.filter(item => item.id !== result.id)]);
       setSelectedId(result.id);
     } catch (exception) {
-      setError(readableSaveInspectionError(exception));
-    } finally { setBusy(false); }
+      if (!controller.signal.aborted && revision === inspectionRevisionRef.current) {
+        setError(readableSaveInspectionError(exception));
+      }
+    } finally {
+      if (revision === inspectionRevisionRef.current) {
+        inspectionAbortRef.current = null;
+        setBusy(false);
+      }
+    }
   }, []);
   const remove = useCallback((id: string) => {
     setImports(prev => prev.filter(file => file.id !== id));
