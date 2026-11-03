@@ -58,8 +58,8 @@ function progressCopy(stage: HistoricalImportStage, t: (key: string) => string):
   return t(labels[stage] ?? 'Checking snapshot provenance and privacy…');
 }
 
-const SnapshotList = memo(function SnapshotList({ items, loading, selectedId, pendingDelete, onOpen, onDelete }:
-  { items: readonly HistoricalSnapshotSummary[]; loading: boolean; selectedId: string | null; pendingDelete: string | null;
+const SnapshotList = memo(function SnapshotList({ items, loading, disabled, selectedId, pendingDelete, onOpen, onDelete }:
+  { items: readonly HistoricalSnapshotSummary[]; loading: boolean; disabled: boolean; selectedId: string | null; pendingDelete: string | null;
     onOpen: (id: string) => void; onDelete: (id: string) => void }) {
   const { t, i18n } = useTranslation();
   return <section className="historical-panel historical-library" aria-labelledby="historical-library-title">
@@ -72,7 +72,7 @@ const SnapshotList = memo(function SnapshotList({ items, loading, selectedId, pe
       </div> :
       <ul className="historical-snapshot-list" aria-label={t('Saved historical snapshots')}>
         {items.map(item => <li key={item.id} className={selectedId === item.id ? 'historical-snapshot-row historical-snapshot-row--active' : 'historical-snapshot-row'}>
-          <button className="historical-snapshot-open" onClick={() => onOpen(item.id)}>
+          <button className="historical-snapshot-open" onClick={() => onOpen(item.id)} disabled={disabled}>
             <span className="historical-snapshot-name">{item.careerLabel}</span>
             <span className="historical-snapshot-file">{item.fileName}</span>
             <span className="historical-snapshot-meta">
@@ -85,8 +85,8 @@ const SnapshotList = memo(function SnapshotList({ items, loading, selectedId, pe
             </span>
           </button>
           <div className="historical-snapshot-actions">
-            <Button variant="quiet" onClick={() => onOpen(item.id)}>{t('Open')}</Button>
-            <Button variant="quiet" onClick={() => onDelete(item.id)}>{pendingDelete === item.id ? t('Confirm delete') : t('Delete')}</Button>
+            <Button variant="quiet" onClick={() => onOpen(item.id)} disabled={disabled}>{t('Open')}</Button>
+            <Button variant="quiet" onClick={() => onDelete(item.id)} disabled={disabled}>{pendingDelete === item.id ? t('Confirm delete') : t('Delete')}</Button>
           </div>
         </li>)}
       </ul>}
@@ -457,7 +457,7 @@ export default function HistoricalWorkspace() {
             : t('Exact observed values remain provisional. Saving also creates a separately redacted Realism projection in another local store.')}</small>
         </fieldset>
         <div className="historical-import-actions">
-          <Button variant="primary" type="submit" disabled={importing || !file}>{importing ? t('Importing…') : t('Validate and import')}</Button>
+          <Button variant="primary" type="submit" disabled={importing || switchingMode || library.activity !== null || !file}>{importing ? t('Importing…') : t('Validate and import')}</Button>
           {importing && <Button variant="quiet" type="button" onClick={onCancel}>{t('Cancel import')}</Button>}
         </div>
       </form>
@@ -472,7 +472,7 @@ export default function HistoricalWorkspace() {
     </section>
 
     <div className="historical-library-layout">
-      <SnapshotList items={library.items} loading={library.loading} selectedId={activeId}
+      <SnapshotList items={library.items} loading={library.loading} disabled={importing || switchingMode || library.activity !== null || library.error !== null} selectedId={activeId}
         pendingDelete={pendingDelete} onOpen={id => void onOpenSaved(id)} onDelete={id => void onDelete(id)}/>
       <section className="historical-detail-column">
         {!record ? <div className="historical-panel historical-empty historical-detail-empty">
@@ -504,7 +504,7 @@ export default function HistoricalWorkspace() {
               <Status tone="warning">{record.mode === 'editor' ? t('Editor projection') : t('Realism projection')}</Status>
               {activeSaved
                 ? <Button variant="quiet" disabled>{t('Saved on this browser')}</Button>
-                : <Button variant="primary" onClick={() => void onSave()} disabled={library.activity !== null}>{t('Save snapshot locally')}</Button>}
+                : <Button variant="primary" onClick={() => void onSave()} disabled={importing || switchingMode || library.activity !== null}>{t('Save snapshot locally')}</Button>}
             </div>
             <p className="historical-footnote">{t('The capture is historical. PID, file hash, declared career label and timestamp do not prove a currently running process, loaded save lineage or authenticated runtime image bytes.')}</p>
           </section>
