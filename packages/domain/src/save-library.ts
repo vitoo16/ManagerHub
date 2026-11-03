@@ -85,9 +85,9 @@ export function isSaveIdentity(value: unknown): value is SaveIdentity {
 }
 
 /**
- * Validate the *live worker result*, including bounded ephemeral diagnostics.
- * Persisted records intentionally omit these fields. Never admit raw file
- * bytes, unknown fields or unbounded diagnostic arrays to application state.
+ * Validate unpersisted inspection results from the worker while retaining
+ * short-lived bounded archive diagnostics. Unknown keys or binary payloads
+ * never enter React state, and the canonical stored schema remains unchanged.
  */
 export function isSaveInspectionResult(value: unknown): value is SaveIdentity {
   if (!isRecord(value)) return false;
@@ -98,70 +98,39 @@ export function isSaveInspectionResult(value: unknown): value is SaveIdentity {
     'members', 'nestedGroups', 'probes', 'gapObservations'
   ])) return false;
 
-  // Reuse the canonical persisted schema for the common identity/catalogue.
   const { probes, gapObservations, ...catalogue } = index;
+  // The existing persisted validator owns all common record/index rules.
   if (!isSaveIdentity({ ...value, archiveIndex: catalogue }) ||
       value.detectedFamily !== 'afe') return false;
-
   const members = catalogue.members as ArchiveMember[];
+  const isHexBytes = (input: unknown, size: number): boolean => {
+    if (typeof input !== 'string') return false;
+    if (size === 0) return input === '';
+    const values = input.split(' ');
+    return values.length === size && values.every(part => /^[0-9a-f]{2}$/.test(part));
+  };
+
   if (probes !== undefined) {
     if (!Array.isArray(probes) || probes.length > 32) return false;
     const allowedKinds = ['zlib_candidate', 'gzip', 'zip', 'json_text', 'unknown'];
-    const hex = (text: unknown, length: number): boolean =>
-      typeof text === 'string' && (length === 0 ? text === '' :
-        new RegExp('^[0-9a-f]{2}(?: [0-9a-f]{2}){' + (length - 1) + '}
- * In particular, member-prefix hex samples must never enter IndexedDB.
- * Only the validated directory catalogue and ordinary identity fields survive.
- */
-export function toPersistedSaveIdentity(identity: SaveIdentity): SaveIdentity {
-  const archiveIndex: ArchiveIndex | null = identity.archiveIndex === null ? null : {
-    family: identity.archiveIndex.family,
-    evidence: identity.archiveIndex.evidence,
-    memberCount: identity.archiveIndex.memberCount,
-    directoryOffset: identity.archiveIndex.directoryOffset,
-    ...(identity.archiveIndex.nestedGroups ? { nestedGroups: identity.archiveIndex.nestedGroups.map(group => ({ name: group.name, memberCount: group.memberCount })) } : {}),
-    members: identity.archiveIndex.members.map(member => ({
-      filename: member.filename,
-      offset: member.offset,
-      storedBytes: member.storedBytes,
-      reportedUncompressedBytes: member.reportedUncompressedBytes
-    }))
-  };
-  return {
-    id: identity.id,
-    name: identity.name,
-    importedAt: identity.importedAt,
-    lastModified: identity.lastModified,
-    size: identity.size,
-    sha256: identity.sha256,
-    signature: identity.signature,
-    detectedFamily: identity.detectedFamily,
-    edition: identity.edition,
-    build: identity.build,
-    support: identity.support,
-    inspectionStatus: identity.inspectionStatus,
-    warnings: [...identity.warnings],
-    archiveIndex
-  };
-}
-).test(text));
-    for (const candidate of probes) {
-      if (!isRecord(candidate) || !hasOnlyKeys(candidate, [
+    for (const probe of probes) {
+      if (!isRecord(probe) || !hasOnlyKeys(probe, [
         'filename', 'absoluteOffset', 'sampleBytes', 'prefixHex', 'prefixKind',
-        'afterFirstEightBytesHex', 'afterFirstEightBytesKind', 'storedBytes', 'reportedUncompressedBytes'
+        'afterFirstEightBytesHex', 'afterFirstEightBytesKind', 'storedBytes',
+        'reportedUncompressedBytes'
       ])) return false;
-      const member = members.find(entry => entry.filename === candidate.filename);
-      if (!member || candidate.storedBytes !== member.storedBytes ||
-          candidate.reportedUncompressedBytes !== member.reportedUncompressedBytes ||
-          !isSafeNonNegativeInteger(candidate.absoluteOffset) ||
-          candidate.absoluteOffset !== member.offset + 18 ||
-          !isSafeNonNegativeInteger(candidate.sampleBytes) ||
-          candidate.sampleBytes < 1 || candidate.sampleBytes > 16 ||
-          candidate.sampleBytes > member.storedBytes ||
-          !hex(candidate.prefixHex, candidate.sampleBytes) ||
-          !hex(candidate.afterFirstEightBytesHex, Math.max(0, candidate.sampleBytes - 8)) ||
-          !allowedKinds.includes(String(candidate.prefixKind)) ||
-          !allowedKinds.includes(String(candidate.afterFirstEightBytesKind))) return false;
+      const member = members.find(item => item.filename === probe.filename);
+      if (!member || probe.storedBytes !== member.storedBytes ||
+          probe.reportedUncompressedBytes !== member.reportedUncompressedBytes ||
+          !isSafeNonNegativeInteger(probe.absoluteOffset) ||
+          probe.absoluteOffset !== member.offset + 18 ||
+          !isSafeNonNegativeInteger(probe.sampleBytes) ||
+          probe.sampleBytes < 1 || probe.sampleBytes > 16 ||
+          probe.sampleBytes > member.storedBytes ||
+          !isHexBytes(probe.prefixHex, probe.sampleBytes) ||
+          !isHexBytes(probe.afterFirstEightBytesHex, Math.max(0, probe.sampleBytes - 8)) ||
+          !allowedKinds.includes(String(probe.prefixKind)) ||
+          !allowedKinds.includes(String(probe.afterFirstEightBytesKind))) return false;
     }
   }
 
@@ -174,14 +143,14 @@ export function toPersistedSaveIdentity(identity: SaveIdentity): SaveIdentity {
         'mostCommonDistanceOccurrences', 'status'
       ])) return false;
       if (typeof gap.afterMember !== 'string' || typeof gap.beforeMember !== 'string' ||
-          !members.some(member => member.filename === gap.afterMember) ||
-          !members.some(member => member.filename === gap.beforeMember) ||
+          !members.some(item => item.filename === gap.afterMember) ||
+          !members.some(item => item.filename === gap.beforeMember) ||
           !isSafeNonNegativeInteger(gap.sizeBytes) || gap.sizeBytes < 1 ||
           !isSafeNonNegativeInteger(gap.mostCommonDistanceOccurrences) ||
           (gap.status !== 'sampled' && gap.status !== 'too_large')) return false;
       for (const key of ['markerMatches', 'firstMarkerAt', 'mostCommonMarkerDistance'] as const) {
-        const n = gap[key];
-        if (n !== null && !isSafeNonNegativeInteger(n)) return false;
+        const number = gap[key];
+        if (number !== null && !isSafeNonNegativeInteger(number)) return false;
       }
       if (gap.status === 'too_large' && (gap.markerMatches !== null ||
           gap.firstMarkerAt !== null || gap.mostCommonMarkerDistance !== null)) return false;
