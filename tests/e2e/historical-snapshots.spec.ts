@@ -357,6 +357,11 @@ test('keeps an unsaved parsed capture available when IndexedDB refuses a save', 
   await page.goto('/#/history');
   await importSynthetic(page, 'Realism');
   await page.evaluate(() => {
+    // indexedDB is an own Window attribute in Chromium; deleting the override
+    // does not restore it. Preserve the real factory for the retry.
+    Object.defineProperty(window, '__managerhubTestIndexedDB', {
+      configurable: true, value: window.indexedDB
+    });
     Object.defineProperty(window, 'indexedDB', { configurable: true, value: undefined });
   });
   await page.getByRole('button', { name: 'Save snapshot locally' }).click();
@@ -365,7 +370,12 @@ test('keeps an unsaved parsed capture available when IndexedDB refuses a save', 
   await expect(page.locator('.historical-value-row').filter({ hasText: 'Passing' }).locator('strong'))
     .toHaveText('Hidden in Realism mode');
 
-  await page.evaluate(() => { Reflect.deleteProperty(window, 'indexedDB'); });
+  await page.evaluate(() => {
+    const original = (window as Window & { __managerhubTestIndexedDB?: IDBFactory }).__managerhubTestIndexedDB;
+    if (!original) throw new Error('Original IndexedDB factory was not retained');
+    Object.defineProperty(window, 'indexedDB', { configurable: true, value: original });
+    Reflect.deleteProperty(window, '__managerhubTestIndexedDB');
+  });
   await page.getByRole('button', { name: 'Save snapshot locally' }).click();
   await expect(page.getByRole('button', { name: 'Saved on this browser' })).toBeDisabled();
 });
