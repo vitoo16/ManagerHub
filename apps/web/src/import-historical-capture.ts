@@ -56,34 +56,57 @@ export function importHistoricalCapture(
     const abort = () => finish(new DOMException('Import cancelled.', 'AbortError'));
 
     signal.addEventListener('abort', abort, { once: true });
-    worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
-      const response = event.data;
-      if (response.type === 'progress') {
-        onProgress(response.stage);
-      } else if (response.type === 'error') {
+    // Abort can occur between our initial check and registering the listener.
+    if (signal.aborted) { abort(); return; }
+    worker.onmessage = (event: MessageEvent<unknown>) => {
+      if (settled) return;
+      const raw = event.data;
+      const invalid = () => finish(new Error('The historical capture worker returned a snapshot that failed schema or privacy validation.'));
+      if (raw === null || typeof raw !== 'object' || Array.isArray(raw)) { invalid(); return; }
+      const response = raw as Record<string, unknown>;
+      const keys = Object.keys(response);
+      if (response.type === 'progress' && keys.length === 2 && keys.includes('stage') &&
+          (response.stage === 'reading' || response.stage === 'hashing' ||
+            response.stage === 'parsing' || response.stage === 'validating')) {
+        try { onProgress(response.stage); } catch { invalid(); }
+        return;
+      }
+      if (response.type === 'error' && keys.length === 2 && keys.includes('message') &&
+          typeof response.message === 'string' && response.message.length > 0 && response.message.length <= 2000) {
         finish(new Error(response.message));
-      } else {
-        try {
-          const record = parseHistoricalSnapshotRecord(response.record);
-          if (record.mode !== mode) throw new Error('The worker returned a snapshot for a different visibility mode.');
-          let pairedRecord: HistoricalSnapshotRecord | null = null;
-          if (response.pairedRecord !== null) {
-            pairedRecord = parseHistoricalSnapshotRecord(response.pairedRecord);
-            if (mode !== 'editor' || pairedRecord.mode !== 'realism' || pairedRecord.id !== record.id ||
-                pairedRecord.sourceSha256 !== record.sourceSha256) {
-              throw new Error('The worker returned an invalid Editor/Realism projection pair.');
-            }
-          }
-          if (mode === 'editor' && pairedRecord === null) {
-            throw new Error('The separately redacted Realism projection is missing.');
-          }
-          if (mode === 'realism' && pairedRecord !== null) {
-            throw new Error('A Realism-only import must not include an Editor projection.');
-          }
-          finish(undefined, { record, pairedRecord });
-        } catch {
-          finish(new Error('The historical capture worker returned a snapshot that failed schema or privacy validation.'));
+        return;
+      }
+      if (response.type !== 'success' || keys.length !== 3 ||
+          !keys.includes('record') || !keys.includes('pairedRecord')) {
+        invalid();
+        return;
+      }
+      try {
+        const record = parseHistoricalSnapshotRecord(response.record);
+        if (record.mode !== mode || record.id !== context.snapshotId ||
+            record.snapshot.careerId.value !== context.careerId ||
+            record.snapshot.capturedAt !== context.capturedAt) {
+          throw new Error('The worker returned a snapshot for another import request.');
         }
+        let pairedRecord: HistoricalSnapshotRecord | null = null;
+        if (response.pairedRecord !== null) {
+          pairedRecord = parseHistoricalSnapshotRecord(response.pairedRecord);
+          if (mode !== 'editor' || pairedRecord.mode !== 'realism' || pairedRecord.id !== record.id ||
+              pairedRecord.sourceSha256 !== record.sourceSha256 ||
+              pairedRecord.sourceSize !== record.sourceSize || pairedRecord.fileName !== record.fileName ||
+              pairedRecord.importedAt !== record.importedAt ||
+              pairedRecord.snapshot.capturedAt !== record.snapshot.capturedAt ||
+              pairedRecord.snapshot.careerId.value !== record.snapshot.careerId.value) {
+            throw new Error('The worker returned an invalid Editor/Realism projection pair.');
+          }
+        }
+        if ((mode === 'editor' && pairedRecord === null) ||
+            (mode === 'realism' && pairedRecord !== null)) {
+          throw new Error('The historical capture worker returned the wrong projection scope.');
+        }
+        finish(undefined, { record, pairedRecord });
+      } catch {
+        invalid();
       }
     };
     worker.onerror = () => finish(new Error('The historical capture worker failed. The source file was not changed.'));
