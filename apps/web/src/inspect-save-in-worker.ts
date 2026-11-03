@@ -1,5 +1,4 @@
 import type { SaveIdentity } from '@managerhub/domain';
-import { isSaveInspectionResult } from '@managerhub/domain/save-library';
 
 const INSPECTION_TIMEOUT_MS = 45_000;
 
@@ -26,6 +25,7 @@ export async function inspectSaveInWorker(file: File, signal?: AbortSignal): Pro
       return;
     }
     let settled = false;
+    let validating = false;
     const abort = () => finish(new DOMException('Save inspection cancelled.', 'AbortError'));
     const timer = setTimeout(
       () => finish(new Error('Background save inspection exceeded 45 seconds.')),
@@ -49,7 +49,7 @@ export async function inspectSaveInWorker(file: File, signal?: AbortSignal): Pro
     if (signal?.aborted) { abort(); return; }
 
     worker.onmessage = (event: MessageEvent<unknown>) => {
-      if (settled) return;
+      if (settled || validating) return;
       const data = event.data;
       if (!record(data) || Object.keys(data).length !== 2 ||
           typeof data.ok !== 'boolean') {
@@ -65,14 +65,23 @@ export async function inspectSaveInWorker(file: File, signal?: AbortSignal): Pro
         }
         return;
       }
-      if (!Object.prototype.hasOwnProperty.call(data, 'result') ||
-          !isSaveInspectionResult(data.result) ||
-          data.result.name !== file.name || data.result.size !== file.size ||
-          data.result.lastModified !== file.lastModified) {
+      if (!Object.prototype.hasOwnProperty.call(data, 'result')) {
         finish(new Error('Background save inspection returned an invalid result.'));
         return;
       }
-      finish(undefined, data.result);
+      // Keep the validation/schema module out of the initial application shell.
+      // In-flight aborts and timeouts still win over a late module load.
+      validating = true;
+      void import('@managerhub/domain/save-library').then(({ isSaveInspectionResult }) => {
+        if (settled) return;
+        const result = data.result;
+        if (!isSaveInspectionResult(result) || result.name !== file.name ||
+            result.size !== file.size || result.lastModified !== file.lastModified) {
+          finish(new Error('Background save inspection returned an invalid result.'));
+        } else {
+          finish(undefined, result);
+        }
+      }).catch(() => finish(new Error('Background save inspection returned an invalid result.')));
     };
     worker.onerror = () => finish(new Error('Background save inspection failed. Please try the file again.'));
     worker.onmessageerror = () => finish(new Error('Background save inspection returned an invalid result.'));
