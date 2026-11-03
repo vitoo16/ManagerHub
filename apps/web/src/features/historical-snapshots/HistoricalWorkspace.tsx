@@ -204,10 +204,15 @@ export default function HistoricalWorkspace() {
   const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  // Only the latest selection-changing user action may publish an async result.
+  const selectionRevisionRef = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const appliedExternalRevision = useRef(0);
 
-  useEffect(() => () => { const active = abortRef.current; abortRef.current = null; active?.abort(); }, []);
+  useEffect(() => () => {
+    selectionRevisionRef.current += 1;
+    const active = abortRef.current; abortRef.current = null; active?.abort();
+  }, []);
 
   // A different tab can remove a saved record while it is open here. Revalidate
   // only after that tab's change has been reread from IndexedDB in this mode.
@@ -216,6 +221,7 @@ export default function HistoricalWorkspace() {
     if (revision === null || revision === 0 || revision === appliedExternalRevision.current) return;
     appliedExternalRevision.current = revision;
     if (!activeSaved || !activeId || (!library.error && library.items.some(item => item.id === activeId))) return;
+    selectionRevisionRef.current += 1;
     setRecord(null);
     setPairedRecord(null);
     setActiveId(null);
@@ -226,6 +232,8 @@ export default function HistoricalWorkspace() {
 
   const onImport = useCallback(async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (importing || switchingMode || library.activity !== null) return;
+    const revision = ++selectionRevisionRef.current;
     setImportError(null);
     setNotice(null);
     if (!file) { setImportError(t('Choose an address-free FM2013 wire JSON file first.')); return; }
@@ -246,6 +254,7 @@ export default function HistoricalWorkspace() {
         careerId: careerLabel.trim(),
         capturedAt: capturedAt.toISOString()
       }, mode, setStage, controller.signal);
+      if (selectionRevisionRef.current !== revision || controller.signal.aborted) return;
       setRecord(result.record);
       setPairedRecord(result.pairedRecord);
       setFile(null);
@@ -270,21 +279,22 @@ export default function HistoricalWorkspace() {
         setImporting(false);
       }
     }
-  }, [file, careerLabel, capturedAtInput, mode, t]);
+  }, [file, careerLabel, capturedAtInput, mode, t, importing, switchingMode, library.activity]);
 
   const onCancel = useCallback(() => abortRef.current?.abort(), []);
 
   const onSave = useCallback(async () => {
-    if (!record) return;
+    if (!record || importing || switchingMode || library.activity !== null) return;
+    const revision = ++selectionRevisionRef.current;
     const result = await library.save(record, pairedRecord);
-    if (!result) return;
+    if (!result || selectionRevisionRef.current !== revision) return;
     if (result.status === 'duplicate') {
       setNotice(t('This source capture is already saved in the local library for the {{mode}} projection.', {
         mode: result.summary.mode === 'editor' ? t('Editor') : t('Realism')
       }));
       if (result.summary.mode === mode) {
         const existing = await library.open(result.summary.id);
-        if (existing) {
+        if (existing && selectionRevisionRef.current === revision && existing.mode === mode) {
           setRecord(existing);
           setActiveId(existing.id);
           setActiveSaved(true);
@@ -297,7 +307,7 @@ export default function HistoricalWorkspace() {
     // caller-declared metadata. Reload that canonical record before marking it saved.
     if (result.status === 'upgraded') {
       const savedEditor = await library.open(result.summary.id);
-      if (!savedEditor) return;
+      if (!savedEditor || selectionRevisionRef.current !== revision || savedEditor.mode !== mode) return;
       setRecord(savedEditor);
       setActiveId(savedEditor.id);
       setSelectedPlayerId(savedEditor.snapshot.players[0]?.id ?? null);
@@ -307,11 +317,13 @@ export default function HistoricalWorkspace() {
     }
     setActiveSaved(true);
     setPairedRecord(null);
-  }, [record, pairedRecord, library.save, library.open, mode, t]);
+  }, [record, pairedRecord, library.save, library.open, mode, t, importing, switchingMode, library.activity]);
 
   const onOpenSaved = useCallback(async (id: string) => {
+    if (importing || switchingMode || library.activity !== null || library.loading) return;
+    const revision = ++selectionRevisionRef.current;
     const opened = await library.open(id);
-    if (!opened) return;
+    if (!opened || selectionRevisionRef.current !== revision || opened.mode !== mode) return;
     setRecord(opened);
     setPairedRecord(null);
     setActiveId(id);
@@ -321,11 +333,15 @@ export default function HistoricalWorkspace() {
     setVisibleLimit(PAGE_SIZE);
     setNotice(null);
     setImportError(null);
-  }, [library.open]);
+  }, [library.open, library.activity, library.loading, importing, switchingMode, mode]);
 
   const onDelete = useCallback(async (id: string) => {
+    if (importing || switchingMode || library.activity !== null || library.loading) return;
     if (pendingDelete !== id) { setPendingDelete(id); return; }
-    if (await library.remove(id)) {
+    const revision = ++selectionRevisionRef.current;
+    const removed = await library.remove(id);
+    if (revision !== selectionRevisionRef.current) return;
+    if (removed) {
       if (activeId === id) {
         setRecord(null);
         setPairedRecord(null);
@@ -334,10 +350,11 @@ export default function HistoricalWorkspace() {
       }
       setPendingDelete(null);
     }
-  }, [pendingDelete, library.remove, activeId]);
+  }, [pendingDelete, library.remove, library.activity, library.loading, activeId, importing, switchingMode]);
 
   const onModeChange = useCallback(async (next: HistoricalSnapshotMode) => {
-    if (next === mode || switchingMode) return;
+    if (next === mode || switchingMode || library.activity !== null) return;
+    const revision = ++selectionRevisionRef.current;
     setSwitchingMode(true);
     try {
       const pendingImport = abortRef.current;
@@ -367,12 +384,14 @@ export default function HistoricalWorkspace() {
       if (currentId && wasSaved) {
         try {
           const counterpart = await getHistoricalSnapshot(currentId, next);
+          if (selectionRevisionRef.current !== revision) return;
           setRecord(counterpart);
           setActiveId(counterpart.id);
           setActiveSaved(true);
           setSelectedPlayerId(counterpart.snapshot.players[0]?.id ?? null);
           return;
         } catch {
+          if (selectionRevisionRef.current !== revision) return;
           setActiveId(null);
           setNotice(t('No saved projection exists in this mode. Reimport the source capture in this mode, or save an Editor import to keep both projections.'));
           return;
@@ -383,7 +402,7 @@ export default function HistoricalWorkspace() {
     } finally {
       setSwitchingMode(false);
     }
-  }, [mode, switchingMode, record, pairedRecord, activeId, activeSaved, t]);
+  }, [mode, switchingMode, record, pairedRecord, activeId, activeSaved, t, library.activity]);
 
   const normalizedSearch = search.trim().toLocaleLowerCase();
   const deferredSearch = useDeferredValue(normalizedSearch);
