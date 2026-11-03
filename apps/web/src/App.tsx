@@ -193,12 +193,12 @@ export default function App() {
           <div className="topbar-breadcrumb"><span>{t("ManagerHub")}</span><Icon name="chevron" size={14}/><strong>{t(activeItem?.title ?? 'Overview')}</strong></div>
         </div>
         <div className="topbar-right">
-          <button className="command-trigger" onClick={() => setCommandOpen(true)} aria-label={t("Open navigation search")}><Icon name="search" size={15}/><span>{t("Quick navigate")}</span><kbd>⌘ K</kbd></button>
+          <button className="command-trigger" onClick={() => setCommandOpen(true)}><Icon name="search" size={15}/><span>{t("Quick navigate")}</span><kbd>⌘ K</kbd></button>
           <div className="language-switch" role="group" aria-label={t('Change language')}>
             <button type="button" lang="vi" aria-pressed={i18n.resolvedLanguage === 'vi'}
-              onClick={() => void setAppLocale('vi')}>VI</button>
+              onClick={() => void setAppLocale('vi')}>VI<span className="visually-hidden"> {t('Switch language to Vietnamese')}</span></button>
             <button type="button" lang="en" aria-pressed={i18n.resolvedLanguage !== 'vi'}
-              onClick={() => void setAppLocale('en')}>EN</button>
+              onClick={() => void setAppLocale('en')}>EN<span className="visually-hidden"> {t('Switch language to English')}</span></button>
           </div>
           <button className="icon-action" aria-label={t(theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode')} onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}><Icon name={theme === 'dark' ? 'sun' : 'moon'} size={18}/></button>
           <button className="icon-action" aria-label={t(glass === 'on' ? 'Disable glass effects' : 'Enable glass effects')} title={t(glass === 'on' ? 'Disable glass' : 'Enable glass')} onClick={() => setGlass(s => s === 'on' ? 'off' : 'on')}><Icon name="settings" size={18}/></button>
