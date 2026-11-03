@@ -46,6 +46,7 @@ export function useHistoricalSnapshotLibrary(mode: HistoricalSnapshotMode) {
         setError(message(cause));
         setCanClearIncompatible(cause instanceof Error && /incompatible|schema validation|damaged/u.test(cause.message));
         setLoadedMode(mode);
+        setSyncedExternalRevision(externalRevision);
       }
     }).finally(() => {
       if (active) setLoading(false);
