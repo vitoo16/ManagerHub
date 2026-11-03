@@ -95,6 +95,7 @@ export default {
   "Experimental metadata discovery · Not decoded gameplay records": "Chỉ xem tên mục dữ liệu · Chưa đọc nội dung cầu thủ",
   "Important:": "Lưu ý:",
   "recognizing AFE or FMF headers does not establish compatibility, identify your Football Manager version or give access to player attributes. Those capabilities require validated version-specific adapters.": "Nhận diện được định dạng AFE/FMF chưa có nghĩa ManagerHub đã đọc được cầu thủ hoặc CA/PA. Bạn có thể nhập file HTML/CSV xuất từ game trong Player Lab.",
+  "A container signature is recognized, but no exact-build verified reader is registered. Player data, CA and PA remain unavailable. Use Player Lab with an exported HTML/CSV squad list.": "ManagerHub đã nhận diện chữ ký của định dạng tệp, nhưng chưa có bộ đọc được xác minh cho đúng phiên bản game. Dữ liệu cầu thủ, CA và PA hiện chưa thể đọc. Hãy dùng Player Lab với danh sách cầu thủ đã xuất sang HTML/CSV.",
   "THE FULL PRODUCT / 27 MODULES": "LỘ TRÌNH ĐẦY ĐỦ / 27 TÍNH NĂNG",
   "Search modules": "Tìm tính năng",
   "Department filter": "Lọc theo nhóm",
