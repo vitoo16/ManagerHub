@@ -10,11 +10,6 @@ interface WorkerRequest extends HistoricalImportContext {
   readonly file: File;
   readonly mode: HistoricalSnapshotMode;
 }
-type WorkerResponse =
-  | { readonly type: 'progress'; readonly stage: HistoricalImportStage }
-  | { readonly type: 'success'; readonly record: unknown; readonly pairedRecord: unknown }
-  | { readonly type: 'error'; readonly message: string };
-
 export interface HistoricalImportResult {
   readonly record: HistoricalSnapshotRecord;
   /** Present only for an Editor import; contains the separately redacted Realism projection. */
