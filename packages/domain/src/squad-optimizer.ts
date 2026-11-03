@@ -262,7 +262,7 @@ function optimizeSquadUncached(
   for(const slot of slots){
     let scores=scoresByRole.get(slot.roleId);
     if(!scores){
-      scores=new Array(available.length);
+      scores=Array.from({ length: available.length }, () => undefined);
       scoresByRole.set(slot.roleId,scores);
     }
     const role=roles.get(slot.roleId);
