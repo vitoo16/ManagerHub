@@ -237,6 +237,25 @@ test('blocks conflicting actions while an IndexedDB open is still pending', asyn
     .toHaveText('Hidden in Realism mode');
 });
 
+test('requires fresh delete confirmation after a visibility or selection change', async ({ page }) => {
+  await page.goto('/#/history');
+  await importSynthetic(page, 'Editor');
+  await page.getByRole('button', { name: 'Save snapshot locally' }).click();
+  await expect(page.getByRole('button', { name: 'Saved on this browser' })).toBeDisabled();
+
+  const library = page.getByRole('list', { name: 'Saved historical snapshots' });
+  await library.getByRole('button', { name: 'Delete', exact: true }).click();
+  await expect(library.getByRole('button', { name: 'Confirm delete' })).toBeVisible();
+  await page.getByRole('button', { name: 'Realism', exact: true }).click();
+  await expect(library.getByRole('button', { name: 'Confirm delete' })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Editor', exact: true }).click();
+  await library.getByRole('button', { name: 'Delete', exact: true }).click();
+  await expect(library.getByRole('button', { name: 'Confirm delete' })).toBeVisible();
+  await library.getByRole('button', { name: 'Open', exact: true }).click();
+  await expect(library.getByRole('button', { name: 'Confirm delete' })).toHaveCount(0);
+  await expect(library.getByRole('listitem')).toHaveCount(1);
+});
+
 test('Realism-only imports stay redacted after persistence and do not synthesize an Editor projection', async ({ page }) => {
   await page.goto('/#/history');
   await importSynthetic(page, 'Realism');
