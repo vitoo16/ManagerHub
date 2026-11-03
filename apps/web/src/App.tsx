@@ -184,6 +184,7 @@ export default function App() {
   const activeItem = NAV.find(n => n.key === view) ?? NAV[0];
 
   return <div className="app-frame">
+    <a className="skip-link" href="#main-content">{t('Skip to main content')}</a>
     {menuOpen && <button className="mobile-backdrop" aria-label={t("Close navigation menu")} onClick={() => setMenuOpen(false)}/>}
     <aside className={'sidebar mh-surface mh-surface--glass ' + (menuOpen ? 'sidebar--open' : '')} aria-label={t("Primary sidebar")}><Rail current={view} onNavigate={navigate} onClose={() => setMenuOpen(false)}/></aside>
     <div className="app-column">
