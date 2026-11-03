@@ -2,27 +2,26 @@
 
 > **Taste v2 (verified upstream):** supports dashboards and app screens with dedicated `references/app-screens.md` and `library/app.json`. For ManagerHub apply its **app-screen workflow**, not marketing landing layouts. See `.agents/SKILLS-SOURCES.md`.
 
-**How to use:** Give the coding agent the **MASTER CONTRACT** once. Then copy a phase prompt (01→07) into the same working repository. Phase prompts instruct the agent to write code, run checks, commit clean slices and produce evidence — **not merely propose another plan**. Skills are conditional on being actually installed; if absent, read their referenced official documentation and use original project skills without falsely claiming invocation. Team cooperation uses narrow non-overlapping ownership; implement parallel substreams only when contracts are stable.
+**How to use (current repo first):** Start with root `AGENTS.md`, then consult the charter, current acceptance ledger and only the relevant plan section. The phase prompts below are **historical templates for assigned remaining work**, not a queue to execute automatically or permission to overwrite existing architecture. Remove already-completed steps, review outdated stack/tool references against current code, and implement only verified gaps. Skills are conditional on task relevance and actual installation; team work requires non-overlapping ownership and stable contracts.
 
-## MASTER CONTRACT — Run once before Phase 1
+## MASTER CONTRACT — Read before an assigned phase/task
+
+The earlier master contract has been consolidated into [AGENTS.md](../../AGENTS.md) and [the execution charter](00-execution-charter.md). **Do not append another universal instruction block to an agent's context.**
 
 ```text
-You are the lead engineer + system architect + product design engineer of vitoo16/ManagerHub.
-Goal: IMPLEMENT THE COMPLETE MANAGERHUB PRODUCT with all MH-01..MH-27 functions; DO NOT create an MVP, reduced demo, placeholder production UI, or only a planning document. Build sequentially in the 7 medium integration phases in docs/implementation/01-full-delivery-plan.md.
+You are implementing an assigned ManagerHub task against the CURRENT repository state.
+First read AGENTS.md and the relevant parts of the engineering charter, acceptance ledger,
+seven-phase roadmap and feature/domain specifications. Verify code, tests and open PRs.
 
-Mandatory before writing code:
-- Read AGENTS.md; docs/implementation/00-execution-charter.md; 01-full-delivery-plan.md; 03-liquid-glass-motion-spec.md; 04-motion-skills-and-references.md; docs/product/01-full-feature-catalog.md; docs/product/02-design-system.md; docs/business/README.md; docs/system/README.md.
-- Identify available installed agent skills; activate the relevant ones for the task: official Vercel, Impeccable, official GreenSock GSAP, ManagerHub-specific skills; use Taste v2 `references/app-screens.md` for dashboard/app screens, alongside Impeccable Operate and Vercel; its public website mode is separate.
-- Read, understand and preserve existing repo structure; search for reusable code BEFORE authoring new code.
-- Write small, clean, typed modules. Follow SOLID where helpful, KISS, DRY, YAGNI, separation of domain/view/IO, single source of truth, strict TS/Rust lint and type checks. No duplicated types/formulas/charts/role mappings/GSAP hooks. Reuse a shared package if the semantics truly match, do not overabstract.
-- Never use fabricated player CA/PA/statistics/transfer fees/shot events in production. eCA must be calibrated with verified labels, otherwise call it attribute-strength index. Never write unknown .fm formats or corrupt the original save.
-- Implement Apple-inspired Liquid Glass on NAVIGATION/CONTROLS/overlays, not everywhere. Use opaque surfaces for dense football tables/charts. GSAP for meaningful Flip/formation/split-panel transitions; CSS for simple hover. Respect reduced motion, contrast, focus, touch and keyboard.
-- Every delivered feature must work end-to-end with honest empty/unsupported states. Do not leave TODO/FIXME debt, dead buttons, mock production values, disabled failing tests or 'temporary' duplicate components. Do not promise absolute zero future debt; enforce zero accepted known avoidable debt.
-- Enforce formatter/linter/types/unit/integration/E2E/a11y checks. Report exact commands run, pass/fail and blockers. Never claim tests ran unless executed.
-- Make ADR only for material technical choices. Commit atomic verified changes with coherent documentation. If a tool/permission/resource prevents writing, report it accurately without claiming success.
-- No request for new user choices when enough context exists: choose supported defaults, document assumptions and proceed. If a binary format is unsupported, preserve truthful unsupported status and continue independent core features; do not fake compatibility.
+Preserve the full 27-module / seven-phase product scope, FM2013 source truth, save safety,
+Editor/Realism isolation, local-first behavior, accessibility, and VI/EN i18n.
 
-For each phase: inspect current repo -> produce small file/ownership/task map -> implement production code (parallel independent lanes if possible) -> integrate -> test -> browser inspect and screenshot for UI -> review duplication/debt -> update docs/feature checklist -> concise completion report with evidence and remaining verified limitations. Continue work through the currently assigned phase instead of stopping at the task map.
+Treat the phase instructions below as historical execution templates. Do not re-create
+foundations already implemented. Apply new architecture or tooling only with a justified ADR,
+migration plan and tests. Choose relevant skills, rather than activating all skills.
+
+Implement the requested remaining work in bounded, tested changes. Report actual test results,
+unverified areas and acceptance status; never claim that planned capability is complete.
 ```
 
 ---
@@ -34,7 +33,7 @@ For each phase: inspect current repo -> produce small file/ownership/task map ->
 ```text
 EXECUTE PHASE 1 of docs/implementation/01-full-delivery-plan.md NOW. Read Master Contract and all cited docs.
 
-Create a production-quality pnpm/TypeScript workspace with one shared React UI for browser and Tauri desktop (record ADR if evidence requires a different choice). Establish domain contracts for SaveSnapshot, Field<T>/provenance, PlayerKey, EditionBuild, RoleCatalog, DerivedMetric, TacticalScenario, ModelVersion, errors and ChartData. Set up Rust parser crate and secure desktop bridge skeleton with tested error results, but don't fake an imported save.
+Inspect the existing npm workspaces / React / TypeScript / Vite implementation and extend only missing, approved foundations. Reuse current domain contracts for SaveSnapshot, Field<T>/provenance, PlayerKey, EditionBuild, RoleCatalog, DerivedMetric, TacticalScenario, ModelVersion, errors and ChartData where present. Treat pnpm, Tauri, Rust or new workspace boundaries as ADR candidates requiring explicit compatibility and migration evidence; do not replace functioning architecture just to match this historical Phase 1 template.
 
 Design ManagerHub as a premium Apple-inspired Liquid Glass football workstation: dark/light, solid/opaque content and charts, selectively glass sidebar/header/menus/command palette, well-labeled numeric/contrast scales, responsive navigation, empty/partial/error/import states. Implement tokens and reusable GlassSurface/navigation controls exactly once. Study Apple HIG and Impeccable Operate. Build keyboard navigation, focus management and high-contrast/glass-off mode.
 
@@ -52,7 +51,7 @@ Deliver: runnable web+desktop shells if environment permits, shared design syste
 ```text
 EXECUTE PHASE 2 from docs/implementation/01-full-delivery-plan.md with the Master Contract. Inspect Phase 1 app/contracts and reuse them.
 
-Build the real save ingestion system, no writable parser: family/edition/build detection, adapter registry, bounded Rust decoder workers, typed diagnostics, field coverage, immutable source hash and local SQLite snapshots. Investigate the user's documented afe. header as an unknown research family and independent FM26 fmf. format only with verified fixtures and primary sources. NEVER assume .fm suffix means compatibility. Build fixture corpus with version/build and game-verified player IDs/CA/PA/attrs; no private saves committed, no fake extraction.
+Extend verified read-only save ingestion from the present FM2013 research and browser app: edition/build detection, source evidence, adapter contracts, bounded parsing, immutable source identity, typed diagnostics and field coverage. Review the existing IndexedDB storage; a Rust/Tauri decoder or SQLite migration is a proposed architectural change, not assumed present or mandatory. Treat afe./fmf. families as independent until validated with authorized fixtures. NEVER assume .fm suffix means compatibility. Record edition/build and independently verified player values; no private saves committed, no fake extraction.
 
 Implement Save Manager UI: select local save, progress/partial/unsupported/corrupt outcomes, import coverage report, multiple saves and snapshots. Implement full Player Database Explorer with search, sorting, filters, multi-player compare, career identity, readable missingness and exports. All Field<T> metadata flows from decoder to UI; unknown is null not 0. No editing actions.
 
