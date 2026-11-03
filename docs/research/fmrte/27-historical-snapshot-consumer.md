@@ -64,6 +64,8 @@ The source file itself is not persisted. Metadata contains only a safe basename,
 - IndexedDB is used for cohorts that may be many MiB; localStorage is not used.
 - Every stored record is schema/version validated on reload and deeply frozen after validation.
 - A source-hash index detects duplicate imports before enforcing the ten-record limit; reimporting an already-saved capture does not consume capacity or overwrite records.
+- An Editor reimport of a source previously saved only in Realism adds the missing Editor projection atomically under the existing snapshot ID; the stored Realism record remains byte-for-byte unchanged. The original user-declared career label, captured-at time, file metadata and import time take precedence over later declarations for the same source SHA-256. Both modes then reopen and delete together by ID. This is an explicit mode upgrade, not new evidence that the career label or timestamp was verified.
+- A duplicate in the selected mode remains a no-write duplicate, while genuinely new projections still enforce the ten-record limit. A Realism store already at ten entries does not block adding a missing Editor projection for its existing source.
 - Editor + Realism projections are written in one four-store transaction; transaction failure aborts both.
 - Each mode is capped at ten snapshots. Quota errors are surfaced without overwriting an older record.
 - Removal clears the matching ID from all four historical stores.

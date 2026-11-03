@@ -277,9 +277,20 @@ export default function HistoricalWorkspace() {
       }
       return;
     }
+    // An Editor upgrade reuses the existing Realism snapshot ID and its original
+    // caller-declared metadata. Reload that canonical record before marking it saved.
+    if (result.status === 'upgraded') {
+      const savedEditor = await library.open(result.summary.id);
+      if (!savedEditor) return;
+      setRecord(savedEditor);
+      setActiveId(savedEditor.id);
+      setSelectedPlayerId(savedEditor.snapshot.players[0]?.id ?? null);
+      setNotice(t('Editor projection added to the existing Realism snapshot. Its original career label and capture time were preserved.'));
+    } else {
+      setNotice(t('Snapshot and its permitted projection were saved locally. The source JSON was not stored.'));
+    }
     setActiveSaved(true);
     setPairedRecord(null);
-    setNotice(t('Snapshot and its permitted projection were saved locally. The source JSON was not stored.'));
   }, [record, pairedRecord, library.save, library.open, mode, t]);
 
   const onOpenSaved = useCallback(async (id: string) => {

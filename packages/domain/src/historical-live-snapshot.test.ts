@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import profile from './fm2013-live-profile.json' with { type: 'json' };
 import { parseFm2013LiveCapture, type LiveSnapshotContext } from './live-snapshot';
 import {
-  createHistoricalSnapshotRecord, isHistoricalSnapshotRecord, isHistoricalSnapshotSummary,
+  alignEditorToSavedRealism, createHistoricalSnapshotRecord, isHistoricalSnapshotRecord, isHistoricalSnapshotSummary,
   parseHistoricalSnapshotRecord, toHistoricalSnapshotSummary
 } from './historical-live-snapshot';
 
@@ -110,6 +110,41 @@ describe('historical FM2013 snapshot persistence schema', () => {
     expect(playerRecord?.actualCa).toMatchObject({ value: null, missingReason: 'redacted' });
     expect(JSON.stringify(record)).not.toContain('"value":15');
     expect(JSON.stringify(record)).not.toContain('Synthetic Nation');
+  });
+
+  it('adds Editor under an existing Realism snapshot ID without modifying Realism declarations', () => {
+    const existing = makeRecord('realism');
+    const parsed = parseFm2013LiveCapture(JSON.stringify(capture()), {
+      ...context, mode: 'editor', snapshotId: 'reimport-different-id',
+      careerId: 'Changed label', capturedAt: '2026-11-02T12:00:00.000Z'
+    });
+    if (parsed.status === 'rejected') throw new Error('Expected valid reimport');
+    const incoming = createHistoricalSnapshotRecord(parsed, {
+      ...metadata, importedAt: '2026-11-02T12:10:00.000Z'
+    });
+    const preservedRealism = JSON.stringify(existing);
+    const added = alignEditorToSavedRealism(incoming, existing);
+    expect(added.id).toBe(existing.id);
+    expect(added.snapshot.players.map(player => player.id)).toEqual(existing.snapshot.players.map(player => player.id));
+    expect(added.snapshot.careerId).toEqual(existing.snapshot.careerId);
+    expect(added.snapshot.capturedAt).toBe(existing.snapshot.capturedAt);
+    expect(added.importedAt).toBe(existing.importedAt);
+    expect(added.snapshot.players[0]?.attributes.passing?.value).toBe(15);
+    expect(isHistoricalSnapshotRecord(added)).toBe(true);
+    expect(JSON.stringify(existing)).toBe(preservedRealism);
+    expect(existing.snapshot.players[0]?.attributes.passing?.value).toBeNull();
+    expect(Object.isFrozen(added)).toBe(true);
+  });
+
+  it('rejects an Editor upgrade for mismatched source hash or record identities', () => {
+    const existing = makeRecord('realism');
+    const incoming = makeRecord('editor');
+    const mismatchedHash = { ...incoming, sourceSha256: 'b'.repeat(64) };
+    expect(() => alignEditorToSavedRealism(mismatchedHash, existing)).toThrow('incompatible');
+    const incompatiblePlayers = { ...incoming, snapshot: {
+      ...incoming.snapshot, players: incoming.snapshot.players.slice().reverse()
+    }};
+    expect(() => alignEditorToSavedRealism(incompatiblePlayers, existing)).toThrow('incompatible');
   });
 
   it('rejects persisted Editor values relabelled as Realism or injected into a Realism field', () => {
