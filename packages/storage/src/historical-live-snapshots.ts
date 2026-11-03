@@ -1,5 +1,5 @@
 import {
-  MAX_HISTORICAL_SNAPSHOTS, isHistoricalSnapshotRecord, isHistoricalSnapshotSummary, parseHistoricalSnapshotRecord,
+  MAX_HISTORICAL_SNAPSHOTS, alignEditorToSavedRealism, isHistoricalSnapshotRecord, isHistoricalSnapshotSummary, parseHistoricalSnapshotRecord,
   toHistoricalSnapshotSummary, type HistoricalSnapshotMode, type HistoricalSnapshotRecord,
   type HistoricalSnapshotSummary
 } from '@managerhub/domain';
@@ -11,7 +11,8 @@ import {
 
 export type HistoricalSnapshotSaveResult =
   | { readonly status: 'saved'; readonly summary: HistoricalSnapshotSummary }
-  | { readonly status: 'duplicate'; readonly summary: HistoricalSnapshotSummary };
+  | { readonly status: 'duplicate'; readonly summary: HistoricalSnapshotSummary }
+  | { readonly status: 'upgraded'; readonly summary: HistoricalSnapshotSummary };
 
 function storeNames(mode: HistoricalSnapshotMode): { data: string; summaries: string } {
   return mode === 'editor'
@@ -70,48 +71,74 @@ async function saveRecords(records: readonly HistoricalSnapshotRecord[], primary
   try {
     const tx = db.transaction(names, 'readwrite');
     const completed = transactionCompleted(tx);
-    const duplicateSummaries: HistoricalSnapshotSummary[] = [];
+    const abort = async () => { tx.abort(); await completed.catch(() => undefined); };
+    const duplicates = new Map<HistoricalSnapshotMode, HistoricalSnapshotSummary>();
     for (const record of records) {
-      const store = tx.objectStore(storeNames(record.mode).summaries);
-      const duplicate: unknown = await readRequest(store.index('bySourceSha256').get(record.sourceSha256));
-      if (duplicate !== undefined) {
-        if (!isHistoricalSnapshotSummary(duplicate)) {
-          tx.abort();
-          await completed.catch(() => undefined);
-          throw new Error('Saved historical snapshot metadata is incompatible with this version.');
-        }
-        duplicateSummaries.push(duplicate);
+      const summaryStore = tx.objectStore(storeNames(record.mode).summaries);
+      const found: unknown = await readRequest(summaryStore.index('bySourceSha256').get(record.sourceSha256));
+      if (found === undefined) continue;
+      if (!isHistoricalSnapshotSummary(found) || found.mode !== record.mode || found.sourceSha256 !== record.sourceSha256) {
+        await abort();
+        throw new Error('Saved historical snapshot metadata is incompatible with this version.');
       }
+      duplicates.set(record.mode, found);
     }
-    // A source that is already present does not consume capacity. Check all involved
-    // mode indexes before enforcing their limits, while keeping one transaction.
-    if (duplicateSummaries.length) {
-      tx.abort();
-      await completed.catch(() => undefined);
-      const existing = duplicateSummaries.find(summary => summary.mode === primaryMode) ?? duplicateSummaries[0];
-      if (!existing) throw new Error('A duplicate capture was found but its summary is unavailable.');
-      return { status: 'duplicate', summary: existing };
+
+    // Duplicate in the requested visibility mode: do not allocate, overwrite or change metadata.
+    const primaryDuplicate = duplicates.get(primaryMode);
+    if (primaryDuplicate) {
+      await abort();
+      return { status: 'duplicate', summary: primaryDuplicate };
     }
-    for (const record of records) {
-      const store = tx.objectStore(storeNames(record.mode).summaries);
-      const count = await readRequest<number>(store.count());
+
+    let toWrite = records;
+    let upgraded = false;
+    const existingRealismSummary = duplicates.get('realism');
+    if (editor && existingRealismSummary) {
+      // Reimporting Editor for a previously saved Realism-only source adds the missing
+      // projection under the existing snapshot ID. The stored Realism bytes are untouched.
+      const existingValue: unknown = await readRequest(
+        tx.objectStore(HISTORICAL_REALISM_SNAPSHOTS).get(existingRealismSummary.id)
+      );
+      if (!isHistoricalSnapshotRecord(existingValue) || existingValue.mode !== 'realism') {
+        await abort();
+        throw new Error('Saved historical snapshot metadata is incompatible with this version.');
+      }
+      const stored = parseHistoricalSnapshotRecord(existingValue);
+      const summary = toHistoricalSnapshotSummary(stored);
+      if (summary.id !== existingRealismSummary.id || summary.sourceSha256 !== existingRealismSummary.sourceSha256 ||
+          summary.fileName !== existingRealismSummary.fileName || summary.sourceSize !== existingRealismSummary.sourceSize ||
+          summary.importedAt !== existingRealismSummary.importedAt ||
+          summary.capturedAt !== existingRealismSummary.capturedAt ||
+          summary.careerLabel !== existingRealismSummary.careerLabel ||
+          summary.status !== existingRealismSummary.status || summary.playerCount !== existingRealismSummary.playerCount ||
+          summary.coverageCount !== existingRealismSummary.coverageCount) {
+        await abort();
+        throw new Error('Saved historical snapshot metadata is incompatible with this version.');
+      }
+      toWrite = [alignEditorToSavedRealism(editor, stored)];
+      upgraded = true;
+    }
+
+    // Capacity applies only to new projections, never to the already present Realism copy.
+    for (const record of toWrite) {
+      const count = await readRequest<number>(tx.objectStore(storeNames(record.mode).summaries).count());
       if (count >= MAX_HISTORICAL_SNAPSHOTS) {
-        tx.abort();
-        await completed.catch(() => undefined);
+        await abort();
         throw new Error('This browser already holds 10 historical snapshots in this mode. Delete one before importing another.');
       }
     }
-    for (const record of records) {
+    for (const record of toWrite) {
       const namesForMode = storeNames(record.mode);
       tx.objectStore(namesForMode.data).add(record);
       tx.objectStore(namesForMode.summaries).add(toHistoricalSnapshotSummary(record));
     }
     await completed;
-    const primary = records.find(record => record.mode === primaryMode);
+    const primary = toWrite.find(record => record.mode === primaryMode);
     if (!primary) throw new Error('The requested historical snapshot mode is missing.');
-    return { status: 'saved', summary: toHistoricalSnapshotSummary(primary) };
+    return { status: upgraded ? 'upgraded' : 'saved', summary: toHistoricalSnapshotSummary(primary) };
   } catch (cause) {
-    if (cause instanceof Error && /10 historical snapshots|incompatible with this version|failed local-storage validation|must be saved with|do not belong|requested historical snapshot mode|duplicate capture/.test(cause.message)) throw cause;
+    if (cause instanceof Error && /10 historical snapshots|incompatible with this version|failed local-storage validation|must be saved with|do not belong|requested historical snapshot mode|Existing Realism capture is incompatible/.test(cause.message)) throw cause;
     if (cause instanceof DOMException && cause.name === 'QuotaExceededError') {
       throw new Error('Browser storage is full. Remove an older historical snapshot or free local storage space, then try again.');
     }
