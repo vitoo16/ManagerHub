@@ -125,6 +125,8 @@ function integer(value: unknown, minimum: number, maximum: number): number {
   return value;
 }
 function boundedText(value: unknown, maximum: number, allowEmpty = false): string {
+  // Deliberately reject control characters from untrusted FM strings and filenames.
+  // oxlint-disable-next-line no-control-regex
   if (typeof value !== 'string' || value.length > maximum || (!allowEmpty && !value.trim()) || /[\u0000-\u001f\u007f-\u009f]/u.test(value)) {
     throw new Error('Capture text is invalid.');
   }
