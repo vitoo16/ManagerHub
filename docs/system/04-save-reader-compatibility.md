@@ -10,6 +10,17 @@
 
 A different independent FM26 `fmf.` save-reader research line exists (see [references](../references.md)). Extension `.fm` is not proof of format compatibility. Separate version-specific adapters.
 
+## Save Library capability evidence (Phase 2, MH-01/MH-05)
+
+The browser's existing read-only `inspectSave` result is now projected through one pure selector, `getSaveInspectionCoverage`. This is an **inspection evidence matrix**, not a registry of verified Football Manager decoders. It is computed on demand from the existing `SaveIdentity` header-family and experimental archive-index metadata; no data schema, saved metadata, worker payload or storage migration was added.
+
+- `afe.` and `fmf.` mean only **header signature observed**. Neither establishes edition, build, player decoding nor CA/PA.
+- The bounded `fmf-index-candidate` directory found inside an `afe.` file remains **experimental directory metadata**; no game-record/member decode is inferred. An absent index reports **not detected by this inspection**, not proof that no internal index exists. A candidate from one family is never transposed to another.
+- Edition/build remain **unverified**. Player identity, attributes/positions, CA/PA, contracts, tactics, matches and finances remain **not decoded from this save**. Save write-back is explicitly **disabled**.
+- The table is bilingual, semantic and derived rather than stored. It does not attach fabricated values to Player Lab, Historical Snapshots, Squad Planner or the future editor.
+
+Unit tests constrain all evidence states and file-family isolation. Desktop/mobile Playwright exercises `afe.`, `fmf.`, unknown signatures, the experimental archive catalogue, reload and Vietnamese copy. These tests validate the display contract and bounded inspection only; full reader acceptance still requires same-build fixture/game-value comparison and parser safeguards.
+
 ## Reader contract
 detect(bytes) -> edition?, build?, family?, confidence, capabilities, diagnostics.
 read(bytes) -> immutable canonical snapshot + per-domain coverage + warnings or typed error.
