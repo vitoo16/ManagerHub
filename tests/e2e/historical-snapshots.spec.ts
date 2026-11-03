@@ -186,6 +186,57 @@ test('imports, browses, saves, reloads and switches safely between Editor and Re
   expect(remaining).toEqual({ editor: 0, realism: 0 });
 });
 
+test('blocks conflicting actions while an IndexedDB open is still pending', async ({ page }) => {
+  await page.goto('/#/history');
+  await importSynthetic(page, 'Editor');
+  await page.getByRole('button', { name: 'Save snapshot locally' }).click();
+  await expect(page.getByRole('button', { name: 'Saved on this browser' })).toBeDisabled();
+
+  // Hold one native IndexedDB open callback. This tests the actual asynchronous
+  // storage boundary without adding a test hook or artificial delay to the app.
+  await page.evaluate(() => {
+    const nativeOpen = IDBFactory.prototype.open;
+    const probe = window as Window & { __releaseHistoricalOpen?: () => void };
+    let holdNext = true;
+    IDBFactory.prototype.open = function(name: string, version?: number) {
+      const request = version === undefined ? nativeOpen.call(this, name) : nativeOpen.call(this, name, version);
+      if (!holdNext || name !== 'managerhub-local') return request;
+      holdNext = false;
+      let callback: ((event: Event) => void) | null = null;
+      Object.defineProperty(request, 'onsuccess', {
+        configurable: true,
+        get: () => callback,
+        set: (handler: typeof callback) => { callback = handler; }
+      });
+      request.addEventListener('success', event => {
+        probe.__releaseHistoricalOpen = () => {
+          IDBFactory.prototype.open = nativeOpen;
+          callback?.(event);
+        };
+      });
+      return request;
+    };
+  });
+
+  await page.getByRole('list', { name: 'Saved historical snapshots' }).getByRole('button', { name: 'Open' }).click();
+  await expect.poll(() => page.evaluate(() =>
+    typeof (window as Window & { __releaseHistoricalOpen?: () => void }).__releaseHistoricalOpen === 'function'
+  )).toBe(true);
+  await expect(page.getByRole('button', { name: 'Realism', exact: true })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Validate and import' })).toBeDisabled();
+  await expect(page.getByRole('list', { name: 'Saved historical snapshots' }).getByRole('button', { name: 'Delete' })).toBeDisabled();
+
+  await page.evaluate(() => {
+    const probe = window as Window & { __releaseHistoricalOpen?: () => void };
+    probe.__releaseHistoricalOpen?.();
+    delete probe.__releaseHistoricalOpen;
+  });
+  await expect(page.getByRole('button', { name: 'Saved on this browser' })).toBeDisabled();
+  await page.getByRole('button', { name: 'Realism', exact: true }).click();
+  await expect(page.locator('.historical-value-row').filter({ hasText: 'Passing' }).locator('strong'))
+    .toHaveText('Hidden in Realism mode');
+});
+
 test('Realism-only imports stay redacted after persistence and do not synthesize an Editor projection', async ({ page }) => {
   await page.goto('/#/history');
   await importSynthetic(page, 'Realism');
