@@ -17,12 +17,12 @@
 **15 project-local skills are checked into `.agents/skills/` (11 pinned upstream + 4 original ManagerHub skills).** No installer is required to retrieve these skill files after cloning. See [installed skills and limitations](.agents/README.md), [upstream SHA lock](.agents/skills-lock.json) and [AGENTS.md](AGENTS.md). The external scripts were not executed, and Impeccable's optional engine/provider hooks require separate reviewed setup; application npm dependencies are not installed by simply cloning. The existing `scripts/install-agent-skills.ps1` is now an optional local refresh/agent-provider setup helper; it may replace vendored copies and should only be run deliberately.
 
 ## Run the actual app (Phase 1 source)
-Requires Node.js 22.12+ and npm with registry access.
+Requires Node.js 22.12+ and npm with registry access. CI uses Node.js 24 and `npm ci` against the committed root `package-lock.json` (npm workspaces); after changing declared dependencies, regenerate the lockfile with `npm install` and commit both the manifest and lockfile. Do not switch package managers solely to regenerate it.
 
 ```bash
 git clone https://github.com/vitoo16/ManagerHub.git
 cd ManagerHub
-npm install
+npm ci
 npm run dev
 # browse http://127.0.0.1:4173/
 npm run typecheck
