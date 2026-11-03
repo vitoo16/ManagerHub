@@ -195,11 +195,9 @@ export default function App() {
         <div className="topbar-right">
           <button className="command-trigger" onClick={() => setCommandOpen(true)} aria-label={t("Open navigation search")}><Icon name="search" size={15}/><span>{t("Quick navigate")}</span><kbd>⌘ K</kbd></button>
           <div className="language-switch" role="group" aria-label={t('Change language')}>
-            <button type="button" lang="vi" aria-label={t('Switch language to Vietnamese')}
-              aria-pressed={i18n.resolvedLanguage === 'vi'}
+            <button type="button" lang="vi" aria-pressed={i18n.resolvedLanguage === 'vi'}
               onClick={() => void setAppLocale('vi')}>VI</button>
-            <button type="button" lang="en" aria-label={t('Switch language to English')}
-              aria-pressed={i18n.resolvedLanguage !== 'vi'}
+            <button type="button" lang="en" aria-pressed={i18n.resolvedLanguage !== 'vi'}
               onClick={() => void setAppLocale('en')}>EN</button>
           </div>
           <button className="icon-action" aria-label={t(theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode')} onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}><Icon name={theme === 'dark' ? 'sun' : 'moon'} size={18}/></button>
