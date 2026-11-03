@@ -22,6 +22,8 @@ function observeRecord(config) {
     const length = header.add(1).readU8();
     if (header.readU8() !== 1 || length === 0 || length > maximum) fail('invalid_name_header');
     const name = header.add(4).readUtf16String(length);
+    // Deliberately reject control characters from untrusted FM strings and filenames.
+    // oxlint-disable-next-line no-control-regex
     if (typeof name !== 'string' || name.length !== length || /[\u0000-\u001f]/u.test(name)) fail('invalid_name');
     return name;
   }
@@ -240,6 +242,8 @@ function checkedConfig(config) {
   const address = Number.parseInt(config.playerAddress.slice(2), 16);
   if (address < 0x10000 || address > 0xfffff000 || address % 4 !== 0) throw new RangeError('Invalid record address');
   for (const name of [config.firstName, config.lastName]) {
+    // Deliberately reject control characters from untrusted FM strings and filenames.
+    // oxlint-disable-next-line no-control-regex
     if (typeof name !== 'string' || name.length === 0 || name.length > 64 || /[\u0000-\u001f]/u.test(name)) throw new RangeError('Invalid expected name');
   }
   const checked = { ...target, expectedId: config.expectedId,
