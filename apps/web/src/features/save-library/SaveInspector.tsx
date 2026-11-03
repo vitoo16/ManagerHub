@@ -1,4 +1,4 @@
-import { memo, useEffect, useId, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
+import { Fragment, memo, useEffect, useId, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   createSaveCompatibilityReport, formatBytes,
