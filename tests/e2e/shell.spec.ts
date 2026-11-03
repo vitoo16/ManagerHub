@@ -48,7 +48,7 @@ test('inspects AFE header locally and never claims full save support', async ({ 
   const coverage = page.locator('.save-coverage');
   await coverage.locator('summary').click();
   await expect(coverage.getByText('Player identity')).toBeVisible();
-  await expect(coverage.getByText('Not decoded')).toBeVisible();
+  await expect(coverage.getByText('Not decoded').first()).toBeVisible();
   await expect(page.getByText(/A container signature is recognized/)).toBeVisible();
   await page.getByText('Technical details').click();
   await expect(page.getByText(/Container family detected; player records/i)).toBeVisible();
