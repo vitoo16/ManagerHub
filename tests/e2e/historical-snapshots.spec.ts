@@ -256,6 +256,26 @@ test('requires fresh delete confirmation after a visibility or selection change'
   await expect(library.getByRole('listitem')).toHaveCount(1);
 });
 
+test('explains shared projection deletion and allows cancelling safely', async ({ page }) => {
+  await page.goto('/#/history');
+  await importSynthetic(page, 'Editor');
+  await page.getByRole('button', { name: 'Save snapshot locally' }).click();
+  await expect(page.getByRole('button', { name: 'Saved on this browser' })).toBeDisabled();
+
+  const library = page.getByRole('list', { name: 'Saved historical snapshots' });
+  await library.getByRole('button', { name: 'Delete', exact: true }).click();
+  await expect(library.getByText('Deleting removes this snapshot and any saved Editor or Realism projection.')).toBeVisible();
+  await library.getByRole('button', { name: 'Cancel', exact: true }).click();
+  await expect(library.getByRole('button', { name: 'Confirm delete' })).toHaveCount(0);
+  await expect(library.getByRole('listitem')).toHaveCount(1);
+
+  await library.getByRole('button', { name: 'Delete', exact: true }).click();
+  await library.getByRole('button', { name: 'Confirm delete' }).click();
+  await expect(page.getByText('No historical snapshots saved')).toBeVisible();
+  await page.getByRole('button', { name: 'Realism', exact: true }).click();
+  await expect(page.getByText('No historical snapshots saved')).toBeVisible();
+});
+
 test('Realism-only imports stay redacted after persistence and do not synthesize an Editor projection', async ({ page }) => {
   await page.goto('/#/history');
   await importSynthetic(page, 'Realism');
@@ -417,6 +437,8 @@ test('fails closed on corrupt historical metadata reported by another tab', asyn
     await expect(page.getByText('A saved snapshot changed or was removed in another tab. The open record was closed; reopen it from the refreshed library if available.')).toBeVisible();
     await expect(page.locator('.historical-value-row')).toHaveCount(0);
     await page.getByRole('button', { name: 'Clear incompatible historical library' }).click();
+    await expect(page.getByText('Clearing permanently deletes every historical Editor and Realism snapshot on this browser.')).toBeVisible();
+    await page.getByRole('button', { name: 'Confirm clear historical library' }).click();
     await expect(page.getByText('No historical snapshots saved')).toBeVisible();
   } finally {
     await otherTab.close();
@@ -622,6 +644,12 @@ test('clears corrupt historical metadata without deleting the existing player li
   await page.reload();
   await expect(page.getByRole('alert')).toContainText('Saved historical snapshot metadata is incompatible with this version.');
   await page.getByRole('button', { name: 'Clear incompatible historical library' }).click();
+  await expect(page.getByRole('button', { name: 'Confirm clear historical library' })).toBeVisible();
+  await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Confirm clear historical library' })).toHaveCount(0);
+  await expect(page.getByRole('alert')).toContainText('Saved historical snapshot metadata is incompatible with this version.');
+  await page.getByRole('button', { name: 'Clear incompatible historical library' }).click();
+  await page.getByRole('button', { name: 'Confirm clear historical library' }).click();
   await expect(page.getByRole('alert')).toHaveCount(0);
   const remaining = await page.evaluate(async () => {
     const request = indexedDB.open('managerhub-local', 4);

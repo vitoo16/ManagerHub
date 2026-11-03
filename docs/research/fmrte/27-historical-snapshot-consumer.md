@@ -78,6 +78,12 @@ The browser-only Historical Snapshots library broadcasts a **versioned invalidat
 Synchronization requires the browser's `BroadcastChannel` API and same-origin, same-storage context; it is notification-based, not a lock or a substitute for IndexedDB transaction checks. Browsers without that API do not receive automatic cross-tab notices; reloading refreshes the local library. Race/last-writer checks remain transactional within IndexedDB. E2E regression covers cross-tab save/delete, invalid metadata fail-closed recovery and retry after a storage-unavailable save failure.
 
 
+## Explicit destructive-action consent
+
+Deleting one saved historical snapshot removes its ID from **both** Editor and Realism stores, if those projections exist. The UI displays this scope and irreversibility inline before enabling a second **Confirm delete** action; **Cancel** leaves all records untouched. A change of visibility mode or selected snapshot resets that pending confirmation. The original wire JSON is not stored by ManagerHub and may be needed for a later reimport.
+
+When schema-incompatible historical metadata triggers recovery, clearing the historical library is a separate **two-step** operation: the user sees that all Editor/Realism historical data on this browser will be removed, while Player Lab and Save Library remain untouched, and can cancel. Recovery runs in the existing four-store IndexedDB transaction. There is no in-app undo/export guarantee for unreadable corrupt entries, so this action requires preserved original source files for restoration.
+
 ## Import and selection async safety
 
 The browser's Historical Snapshots workspace admits only the **latest selection-changing operation** after an async boundary: import, opening a saved record, saving a projection, changing visibility mode, or confirming a deletion. Superseded completions must not overwrite a newer selection or render an Editor record in Realism. Buttons for conflicting library actions are disabled while import, storage reads/writes, or a mode transition is active; a completed imported file stays unsaved if persistence fails.
