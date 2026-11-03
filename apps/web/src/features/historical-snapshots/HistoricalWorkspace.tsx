@@ -10,6 +10,7 @@ import { Button, Icon, SectionHeading, Status } from '@managerhub/ui';
 import { getHistoricalSnapshot } from '@managerhub/storage/historical-live-snapshots';
 import { importHistoricalCapture, type HistoricalImportStage } from '../../import-historical-capture';
 import { useHistoricalSnapshotLibrary } from '../../useHistoricalSnapshotLibrary';
+import { HistoricalCaptureGuide } from './HistoricalCaptureGuide';
 import './historical-workspace.css';
 
 i18n.addResourceBundle('vi', 'translation', historicalVi, true, true);
@@ -384,6 +385,7 @@ export default function HistoricalWorkspace() {
       <SectionHeading id="historical-import-title" eyebrow={t('Local capture import')} title={t('Import a historical capture')}>
         <Status tone="info">{t('Read-only')}</Status>
       </SectionHeading>
+      <HistoricalCaptureGuide/>
       <form onSubmit={event => void onImport(event)} className="historical-import-form">
         <label className="historical-file-picker">
           <span>{t('Address-free wire JSON')}</span>

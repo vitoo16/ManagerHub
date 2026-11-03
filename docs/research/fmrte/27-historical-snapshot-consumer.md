@@ -1,6 +1,6 @@
 # FM2013 historical snapshot consumer
 
-**Implementation status:** historical consumer merged into main in PR #58 (merge commit d918a68); CI passed TypeScript, unit tests, production build/bundle budgets and desktop/mobile Playwright. The local capture-to-wire handoff is being added on feat/fm2013-local-capture-handoff. This remains a historical, read-only path; no product IPC or live-session capability is enabled.
+**Implementation status:** historical consumer merged into main in PR #58 (merge commit d918a68); CI passed TypeScript, unit tests, production build/bundle budgets and desktop/mobile Playwright. The portable local capture-to-wire handoff was merged in PR #59 (merge commit ed668cb); the Historical Snapshots interface now includes a bilingual, keyboard-accessible manual capture guide. This remains a historical, read-only path; no product IPC or live-session capability is enabled.
 
 ## Scope
 
@@ -37,6 +37,11 @@ The CLI requires one exact evidence ID, an unchanged prepared script, a valid un
 **Privacy:** wire export is address-free, not value-redacted. It can contain exact observed ratings and biography. Keep the source file and REA evidence local/private; do not commit or share them. The Historical Snapshots workspace applies Editor/Realism projection before display and persistence. Choosing Realism in the browser does not sanitize the original wire file on disk. The CLI's internal parser validation uses a discarded Editor document only to validate the source schema; its summary is labelled `unprojected_source` and does not claim a Realism projection.
 
 This closes the file handoff only. REA remains an explicit manual step; there is no desktop IPC, automatic process discovery, watcher, loaded-image authentication, currentness proof or career-lineage proof. Captures remain historical and provisional.
+
+
+## In-app manual workflow
+
+The historical import form contains a native HTML disclosure titled **How to create a capture file** (VI/EN). It explains the existing Windows research-only `prepare` → authorized manual REA capture → `export-wire` → browser import sequence with selectable PowerShell commands, PID/evidence placeholders, expiry, SHA-256 comparison and source-file privacy warnings. The guide never initiates process access from the browser. It stays collapsed by default so it does not obscure the regular import flow. A desktop/mobile Playwright test exercises disclosure, English/Vietnamese copy and keyboard close.
 
 ## Privacy boundary
 
