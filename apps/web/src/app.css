@@ -260,3 +260,17 @@
 .skip-link:focus-visible { transform: translateY(0); }
 #main-content { scroll-margin-top: 90px; }
 @media(prefers-reduced-motion:reduce) { .skip-link { transition: none; } }
+
+/* File inspection coverage reflects evidence, never certified gameplay support. */
+.inspection-coverage {margin-top:22px;padding:15px;border:1px solid var(--line);border-radius:14px;background:var(--surface-up);}
+.inspection-coverage h4 {font-size:12px;margin:0 0 7px;}
+.inspection-coverage p {font-size:11px;line-height:1.65;color:var(--text-sub);margin:0 0 12px;}
+.inspection-coverage p:last-child {margin:12px 0 0;}
+.inspection-coverage table {width:100%;border-collapse:collapse;table-layout:fixed;}
+.inspection-coverage th,.inspection-coverage td {padding:9px 6px;text-align:left;font-size:11px;line-height:1.5;border-bottom:1px solid var(--line);overflow-wrap:anywhere;vertical-align:top;}
+.inspection-coverage th:first-child {width:45%;}
+.inspection-coverage thead th {color:var(--text-sub);font-size:10px;}
+.inspection-coverage tbody th {font-weight:600;color:var(--text);}
+.inspection-coverage__state {color:var(--text-sub);}
+.inspection-coverage__state--experimental_index,.inspection-coverage__state--disabled {color:var(--warning);}
+.inspection-coverage__state--signature_observed {color:var(--info);}
