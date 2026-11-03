@@ -1,8 +1,31 @@
 import { memo, useEffect, useId, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { formatBytes, type SaveIdentity } from '@managerhub/domain';
+import { formatBytes, getSaveInspectionCoverage, type SaveIdentity, type SaveInspectionArea, type SaveInspectionEvidence } from '@managerhub/domain';
 import { Button, Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
 import { useSaveInspectionLibrary } from '../../useSaveInspectionLibrary';
+
+const COVERAGE_AREA_LABELS: Record<SaveInspectionArea, string> = {
+  container_signature: 'Container signature',
+  archive_directory: 'Archive directory',
+  edition_build: 'Game edition / build',
+  players: 'Player identities',
+  attributes_positions: 'Attributes & positions',
+  ca_pa: 'Current & potential ability (CA/PA)',
+  contracts: 'Contracts',
+  tactics: 'Tactics',
+  matches: 'Matches',
+  finances: 'Finances',
+  write_back: 'Save editing / write-back'
+};
+
+const COVERAGE_EVIDENCE_LABELS: Record<SaveInspectionEvidence, string> = {
+  signature_observed: 'Header signature observed only',
+  experimental_index: 'Experimental directory metadata',
+  not_detected: 'Not detected by this inspection',
+  unverified: 'Not independently verified',
+  not_decoded: 'Not decoded from this save',
+  disabled: 'Unavailable — writing disabled'
+};
 
 function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, select, onRestoreSaved }: {
   imports: readonly SaveIdentity[]; selected: SaveIdentity | null;
@@ -79,6 +102,24 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
             <dt>{t("SHA-256")}</dt><dd className="mono digest">{selected.sha256 || t('Not calculated')}</dd>
             <dt>{t("Player / CA / PA")}</dt><dd>{t("Not decoded")}</dd>
           </dl>
+          <section className="inspection-coverage" aria-labelledby="save-coverage-title">
+            <h4 id="save-coverage-title">{t('Inspection capability & coverage')}</h4>
+            <p>{t('This report describes this file inspection only. Observing a header or directory does not establish an edition-specific game-data reader.')}</p>
+            <table aria-label={t('Save inspection capability matrix')}>
+              <thead><tr><th scope="col">{t('Data area')}</th><th scope="col">{t('Evidence / support')}</th></tr></thead>
+              <tbody>
+                {getSaveInspectionCoverage(selected).map(row =>
+                  <tr key={row.area}>
+                    <th scope="row">{t(COVERAGE_AREA_LABELS[row.area])}</th>
+                    <td><span className={'inspection-coverage__state inspection-coverage__state--' + row.evidence}>
+                      {t(COVERAGE_EVIDENCE_LABELS[row.evidence])}
+                    </span></td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+            <p>{t('No player, ability, contract, tactic, match or finance value was extracted from this .fm file. Original bytes remain unchanged.')}</p>
+          </section>
           {selected.archiveIndex && <div className="archive-preview">
             <div className="archive-preview__head"><div><strong>{t("Internal archive index")}</strong><small>{t("Experimental metadata discovery · Not decoded gameplay records")}</small></div><Status tone="warning">{selected.archiveIndex.memberCount} {t('entries')}</Status></div>
             {selected.archiveIndex.nestedGroups && selected.archiveIndex.nestedGroups.length > 0 && <p>
