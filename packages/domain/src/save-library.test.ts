@@ -138,8 +138,8 @@ describe('save inspection metadata validation', () => {
     const hex = Array.from({ length: 16 }, (_, i) => i.toString(16).padStart(2, '0'));
     const probe = {
       filename: 'game_info.dat', absoluteOffset: 18, sampleBytes: 16,
-      prefixHex: hex.join(' '), prefixKind: 'unknown',
-      afterFirstEightBytesHex: hex.slice(8).join(' '), afterFirstEightBytesKind: 'unknown',
+      prefixHex: hex.join(' '), prefixKind: 'unknown' as const,
+      afterFirstEightBytesHex: hex.slice(8).join(' '), afterFirstEightBytesKind: 'unknown' as const,
       storedBytes: 128, reportedUncompressedBytes: 256
     };
     const indexed = save({ archiveIndex: {
@@ -180,13 +180,15 @@ describe('save inspection metadata validation', () => {
     const gap = {
       afterMember: 'a.dat', beforeMember: 'b.dat', sizeBytes: 50,
       markerMatches: 0, firstMarkerAt: null, mostCommonMarkerDistance: null,
-      mostCommonDistanceOccurrences: 0, status: 'sampled'
+      mostCommonDistanceOccurrences: 0, status: 'sampled' as const
     };
     const raw = save({ archiveIndex: { ...archive, gapObservations: [gap] } });
     expect(isSaveInspectionResult(raw)).toBe(true);
-    expect(isSaveInspectionResult(save({ archiveIndex: {
-      ...archive, gapObservations: [{ ...gap, extraData: new Uint8Array([9]) }]
-    } }))).toBe(false);
+    expect(isSaveInspectionResult({
+      ...raw, archiveIndex: {
+        ...archive, gapObservations: [{ ...gap, extraData: new Uint8Array([9]) }]
+      }
+    })).toBe(false);
     expect(isSaveInspectionResult(save({ archiveIndex: {
       ...archive, gapObservations: [{ ...gap, markerMatches: -1 }]
     } }))).toBe(false);
