@@ -22,38 +22,26 @@ function summarizeViolations(violations: Awaited<ReturnType<AxeBuilder['analyze'
   }));
 }
 
-test('every workspace meets the automated WCAG 2.2 A/AA accessibility baseline in both themes', async ({ page }) => {
-  test.setTimeout(120_000);
-  const findings: Array<{
-    theme: 'dark' | 'light';
-    workspace: string;
-    violation: ReturnType<typeof summarizeViolations>[number];
-  }> = [];
-
-  for (const theme of ['dark', 'light'] as const) {
-    await page.goto('/#/' + WORKSPACES[0]);
-    const currentTheme = await page.locator('html').getAttribute('data-theme');
-    if (currentTheme !== theme) {
-      await page.getByRole('button', { name: /Switch to (light|dark) mode/ }).click();
-    }
-    await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
-
-    for (const workspace of WORKSPACES) {
+for (const theme of ['dark', 'light'] as const) {
+  for (const workspace of WORKSPACES) {
+    test(workspace + ' workspace meets WCAG 2.2 A/AA (' + theme + ')', async ({ page }) => {
+      test.setTimeout(60_000);
       await page.goto('/#/' + workspace);
-      await expect(page.locator('#main-content h1').first(), theme + ' ' + workspace + ' workspace heading').toBeVisible();
+
+      if (theme === 'light') {
+        await page.getByRole('button', { name: 'Switch to light mode' }).click();
+      }
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+      await expect(page.locator('#main-content h1').first(), workspace + ' workspace heading').toBeVisible();
 
       const results = await new AxeBuilder({ page }).withTags(WCAG_AA_TAGS).analyze();
-      findings.push(...summarizeViolations(results.violations).map(violation => ({
-        theme,
-        workspace,
-        violation
-      })));
-    }
+      expect(
+        summarizeViolations(results.violations),
+        theme + ' ' + workspace + ' has WCAG A/AA accessibility violations'
+      ).toEqual([]);
+    });
   }
-
-  expect(findings, 'WCAG 2.2 A/AA violations by theme and workspace').toEqual([]);
-});
-
+}
 test('skip link is the first keyboard stop and moves focus to main content', async ({ page }) => {
   await page.goto('/');
   await page.keyboard.press('Tab');
