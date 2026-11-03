@@ -193,8 +193,7 @@ export default function App() {
           <div className="topbar-breadcrumb"><span>{t("ManagerHub")}</span><Icon name="chevron" size={14}/><strong>{t(activeItem?.title ?? 'Overview')}</strong></div>
         </div>
         <div className="topbar-right">
-          <button className="command-trigger" onClick={() => setCommandOpen(true)}
-            aria-label={t("Quick navigate") + " ⌘ K"}>
+          <button className="command-trigger" onClick={() => setCommandOpen(true)}>
             <Icon name="search" size={15}/><span>{t("Quick navigate")}</span>
           </button>
           <div className="language-switch" role="group" aria-label={t('Change language')}>
