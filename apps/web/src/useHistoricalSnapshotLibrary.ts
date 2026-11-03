@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import type {
   HistoricalSnapshotMode, HistoricalSnapshotRecord, HistoricalSnapshotSummary
 } from '@managerhub/domain';
+import { announceHistoricalLibraryCommit, onHistoricalLibraryCommit } from './historical-library-sync';
 import {
   clearHistoricalSnapshotLibrary, deleteHistoricalSnapshot, getHistoricalSnapshot,
   listHistoricalSnapshotSummaries, saveEditorHistoricalSnapshotPair, saveRealismHistoricalSnapshot,
@@ -17,6 +18,9 @@ export function useHistoricalSnapshotLibrary(mode: HistoricalSnapshotMode) {
   const [activity, setActivity] = useState<Activity>(null);
   const [error, setError] = useState<string | null>(null);
   const [canClearIncompatible, setCanClearIncompatible] = useState(false);
+  const [externalRevision, setExternalRevision] = useState(0);
+
+  useEffect(() => onHistoricalLibraryCommit(() => setExternalRevision(value => value + 1)), []);
 
   const reload = useCallback(async () => {
     const rows = await listHistoricalSnapshotSummaries(mode);
@@ -45,7 +49,7 @@ export function useHistoricalSnapshotLibrary(mode: HistoricalSnapshotMode) {
       if (active) setLoading(false);
     });
     return () => { active = false; };
-  }, [mode]);
+  }, [mode, externalRevision]);
 
   const save = useCallback(async (
     record: HistoricalSnapshotRecord, pairedRecord: HistoricalSnapshotRecord | null
@@ -59,6 +63,7 @@ export function useHistoricalSnapshotLibrary(mode: HistoricalSnapshotMode) {
           ? await saveEditorHistoricalSnapshotPair(record, pairedRecord)
           : (() => { throw new Error('The separately redacted Realism projection is missing. Reimport this capture before saving.'); })()
         : await saveRealismHistoricalSnapshot(record);
+      if (result.status !== 'duplicate') announceHistoricalLibraryCommit();
       try { await reload(); } catch (cause) { setError(message(cause)); }
       return result;
     } catch (cause) {
@@ -89,6 +94,7 @@ export function useHistoricalSnapshotLibrary(mode: HistoricalSnapshotMode) {
     setError(null);
     try {
       await deleteHistoricalSnapshot(id);
+      announceHistoricalLibraryCommit();
       try { await reload(); } catch (cause) { setError(message(cause)); }
       return true;
     } catch (cause) {
@@ -105,6 +111,7 @@ export function useHistoricalSnapshotLibrary(mode: HistoricalSnapshotMode) {
     setCanClearIncompatible(false);
     try {
       await clearHistoricalSnapshotLibrary();
+      announceHistoricalLibraryCommit();
       await reload();
       return true;
     } catch (cause) {
