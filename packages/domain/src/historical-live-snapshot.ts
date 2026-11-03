@@ -68,6 +68,8 @@ function exactKeys(value: unknown, keys: readonly string[]): value is UnknownRec
 function safeText(value: unknown, max: number, allowEmpty = false): value is string {
   return typeof value === 'string' && value.length <= max &&
     (allowEmpty || value.trim().length > 0) &&
+    // Deliberately reject control characters from untrusted FM strings and filenames.
+    // oxlint-disable-next-line no-control-regex
     !/[\u0000-\u001f\u007f-\u009f]/u.test(value);
 }
 
