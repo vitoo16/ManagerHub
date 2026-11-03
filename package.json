@@ -26,6 +26,7 @@
     "format:check": "prettier --check \"package.json\" \"package-lock.json\" \"apps/*/package.json\" \"packages/*/package.json\" \".oxlintrc.json\" \".prettierrc.json\""
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
     "@playwright/test": "1.64.1",
     "@types/node": "^24.9.1",
     "@types/react": "^19.2.0",
