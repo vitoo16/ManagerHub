@@ -25,12 +25,16 @@ cd ManagerHub
 npm ci
 npm run dev
 # browse http://127.0.0.1:4173/
+npm run lint
+npm run format:check
 npm run typecheck
 npm run test
 npm run build
 npx playwright install chromium
 npm run test:e2e
 ```
+
+**Quality tooling:** The project pins `oxlint` and Prettier. `npm run lint` checks first-party application, package, test and research-script sources; `npm run format:check` currently checks workspace JSON manifests and formatter/linter configs, **not all legacy TypeScript/TSX/CSS/Markdown formatting**. TypeScript 7.0.2 currently conflicts with `typescript-eslint@8.72.1`'s declared peer ceiling below 6.1, so we did not force unsupported ESLint TypeScript parsing. That compatibility and broader format coverage remain open engineering tasks. Vendored `.agents/` source is excluded from application formatting.
 
 The Save Library recognizes .fm container signatures, optional SHA-256 and an **experimental bounded listing of internal archive member names** when structurally available. You may explicitly save the resulting inspection metadata to this browser and restore it after reload; **the original .fm bytes are never persisted or uploaded**. **Player Lab** imports user-exported **HTML/CSV/TSV/TXT**, analyzes visible 1–20 attributes and displays provisional role-fit scores and charts. The app does **not** decode save players or CA/PA. The Tauri desktop host and Rust parser have not been built. See [implementation evidence/limits](docs/implementation/06-code-started.md).
 
