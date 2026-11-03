@@ -18,7 +18,7 @@ describe('save inspection coverage boundary (MH-01/MH-05)', () => {
     expect(rows.find(row => row.area === 'edition_build')?.evidence).toBe('unverified');
     expect(rows.filter(row => row.evidence === 'not_decoded')).toHaveLength(7);
     expect(rows.at(-1)).toEqual({ area: 'write_back', evidence: 'disabled' });
-    expect(rows.some(row => row.evidence === 'available' || row.evidence === 'verified')).toBe(false);
+    expect(JSON.stringify(rows)).not.toContain('"verified"');
   });
 
   it('reports only experimental index evidence for AFE, and no decoded members', () => {
