@@ -21,6 +21,10 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
+      - name: First-party lint (TypeScript 7 compatible)
+        run: npm run lint
+      - name: Formatting baseline (workspace manifests and config)
+        run: npm run format:check
       - name: TypeScript strict typecheck
         run: npm run typecheck
       - name: Unit tests
