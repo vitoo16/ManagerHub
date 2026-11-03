@@ -50,6 +50,19 @@ ManagerHub/
 └── AGENTS.md
 ```
 
+## Skill activation: smallest relevant set
+
+These 15 vendored skills are **optional task-specific references**, not 15 global instructions. Their files and libraries are not meant to be loaded into every coding session.
+
+1. Start with the root [AGENTS.md](../AGENTS.md), relevant source and tests. Read the applicable project contract before looking up vendor skill advice.
+2. Select a **primary skill** matching the actual task: `managerhub-save-safety` for save/reader/writer safety, `managerhub-football-intelligence` for scoring/tactics, `managerhub-data-ux` for charts, `managerhub-motion-glass` for glass/motion, or the relevant Vercel React skill for component performance.
+3. Add complementary third-party skills **only where their particular rules apply**. For example, Taste's app-screen guidance may complement a UI composition task; GSAP guidance is irrelevant to binary parser work.
+4. Read the selected `SKILL.md` and only the necessary referenced sections. Do **not** recursively preload Taste galleries, Impeccable reference libraries, or compiled vendor `AGENTS.md` files.
+5. If guidance overlaps or conflicts, product/data/safety contracts and the [engineering charter](../docs/implementation/00-execution-charter.md) take precedence. The [seven-phase plan](../docs/implementation/01-full-delivery-plan.md) controls scope, and the [acceptance ledger](../docs/implementation/05-feature-acceptance-ledger.md) tracks verified status.
+6. Do not execute vendored scripts, installers, downloads or network-capable engines merely because a skill recommends them. Review commands and permissions before use.
+
+Skill routing changes must not silently alter the product roadmap, source architecture or installed skill versions.
+
 ## Using the skills
 
 For agents recognizing project-local `.agents/skills/` (including Codex), clone the repo and use the skill via the agent's skill selector or its name. For coding agents that read other locations (`.claude/skills/`, `.cursor/skills/`, `.github/skills/`), configure the agent to scan `.agents/skills/` or create **links** rather than duplicating source; verify your agent's current project-scope skill search paths. Always start with root `AGENTS.md`.
