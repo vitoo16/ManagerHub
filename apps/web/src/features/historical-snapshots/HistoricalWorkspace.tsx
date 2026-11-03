@@ -58,9 +58,9 @@ function progressCopy(stage: HistoricalImportStage, t: (key: string) => string):
   return t(labels[stage] ?? 'Checking snapshot provenance and privacy…');
 }
 
-const SnapshotList = memo(function SnapshotList({ items, loading, disabled, selectedId, pendingDelete, onOpen, onDelete }:
+const SnapshotList = memo(function SnapshotList({ items, loading, disabled, selectedId, pendingDelete, onOpen, onDelete, onCancelDelete }:
   { items: readonly HistoricalSnapshotSummary[]; loading: boolean; disabled: boolean; selectedId: string | null; pendingDelete: string | null;
-    onOpen: (id: string) => void; onDelete: (id: string) => void }) {
+    onOpen: (id: string) => void; onDelete: (id: string) => void; onCancelDelete: () => void }) {
   const { t, i18n } = useTranslation();
   return <section className="historical-panel historical-library" aria-labelledby="historical-library-title">
     <SectionHeading id="historical-library-title" eyebrow={t('Local historical library')} title={t('Saved snapshots')}/>
@@ -87,7 +87,11 @@ const SnapshotList = memo(function SnapshotList({ items, loading, disabled, sele
           <div className="historical-snapshot-actions">
             <Button variant="quiet" onClick={() => onOpen(item.id)} disabled={disabled}>{t('Open')}</Button>
             <Button variant="quiet" onClick={() => onDelete(item.id)} disabled={disabled}>{pendingDelete === item.id ? t('Confirm delete') : t('Delete')}</Button>
+            {pendingDelete === item.id && <Button variant="quiet" onClick={onCancelDelete} disabled={disabled}>{t('Cancel')}</Button>}
           </div>
+          {pendingDelete === item.id && <p className="historical-destructive-warning" role="status">
+            {t('Deleting removes this snapshot and any saved Editor or Realism projection. This cannot be undone; keep the source JSON to reimport.')}
+          </p>}
         </li>)}
       </ul>}
   </section>;
@@ -203,10 +207,15 @@ export default function HistoricalWorkspace() {
   const [visibleLimit, setVisibleLimit] = useState(PAGE_SIZE);
   const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+  const [pendingClear, setPendingClear] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   // Only the latest selection-changing user action may publish an async result.
   const selectionRevisionRef = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!library.canClearIncompatible) setPendingClear(false);
+  }, [library.canClearIncompatible]);
   const appliedExternalRevision = useRef(0);
 
   useEffect(() => () => {
@@ -361,6 +370,7 @@ export default function HistoricalWorkspace() {
     if (next === mode || switchingMode || library.activity !== null) return;
     const revision = ++selectionRevisionRef.current;
     setPendingDelete(null);
+    setPendingClear(false);
     setSwitchingMode(true);
     try {
       const pendingImport = abortRef.current;
@@ -470,8 +480,15 @@ export default function HistoricalWorkspace() {
       {importing && <p className="historical-progress" role="status" aria-live="polite">{progressCopy(stage, t)}</p>}
       {importError && <div className="inline-alert" role="alert"><Icon name="warning" size={16}/>{t(importError)}</div>}
       {library.error && <div className="inline-alert" role="alert"><Icon name="warning" size={16}/>{t(library.error)}
-        {library.canClearIncompatible && <Button variant="quiet" onClick={() => void library.clearIncompatible()}>{t('Clear incompatible historical library')}</Button>}
-        <Button variant="quiet" onClick={library.clearError}>{t('Dismiss')}</Button>
+        {library.canClearIncompatible && (pendingClear ? <div className="historical-clear-confirmation">
+          <p>{t('Clearing permanently deletes every historical Editor and Realism snapshot on this browser. Player Lab and Save Library are not affected. Keep the original source JSON files to restore these snapshots.')}</p>
+          <Button variant="quiet" disabled={library.activity !== null} onClick={() => {
+            setPendingClear(false);
+            void library.clearIncompatible();
+          }}>{t('Confirm clear historical library')}</Button>
+          <Button variant="quiet" disabled={library.activity !== null} onClick={() => setPendingClear(false)}>{t('Cancel')}</Button>
+        </div> : <Button variant="quiet" onClick={() => setPendingClear(true)}>{t('Clear incompatible historical library')}</Button>)}
+        <Button variant="quiet" onClick={() => { setPendingClear(false); library.clearError(); }}>{t('Dismiss')}</Button>
       </div>}
       {notice && <p className="historical-notice" role="status">{notice}</p>}
       <p className="historical-footnote">{t('Only valid address-free wire JSON for the supported FM2013 build is accepted. Optional biography and position fields may remain unknown. The source file is hashed and parsed in a Web Worker; raw wire data is never persisted. Unsupported builds, truncated transport and unrecognized fields are rejected.')}</p>
@@ -479,7 +496,8 @@ export default function HistoricalWorkspace() {
 
     <div className="historical-library-layout">
       <SnapshotList items={library.items} loading={library.loading} disabled={importing || switchingMode || library.activity !== null || library.error !== null} selectedId={activeId}
-        pendingDelete={pendingDelete} onOpen={id => void onOpenSaved(id)} onDelete={id => void onDelete(id)}/>
+        pendingDelete={pendingDelete} onOpen={id => void onOpenSaved(id)} onDelete={id => void onDelete(id)}
+        onCancelDelete={() => setPendingDelete(null)}/>
       <section className="historical-detail-column">
         {!record ? <div className="historical-panel historical-empty historical-detail-empty">
           <Icon name="history" size={24}/>
