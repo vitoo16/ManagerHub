@@ -78,6 +78,12 @@ The browser-only Historical Snapshots library broadcasts a **versioned invalidat
 Synchronization requires the browser's `BroadcastChannel` API and same-origin, same-storage context; it is notification-based, not a lock or a substitute for IndexedDB transaction checks. Browsers without that API do not receive automatic cross-tab notices; reloading refreshes the local library. Race/last-writer checks remain transactional within IndexedDB. E2E regression covers cross-tab save/delete, invalid metadata fail-closed recovery and retry after a storage-unavailable save failure.
 
 
+## Import and selection async safety
+
+The browser's Historical Snapshots workspace admits only the **latest selection-changing operation** after an async boundary: import, opening a saved record, saving a projection, changing visibility mode, or confirming a deletion. Superseded completions must not overwrite a newer selection or render an Editor record in Realism. Buttons for conflicting library actions are disabled while import, storage reads/writes, or a mode transition is active; a completed imported file stays unsaved if persistence fails.
+
+The worker response is treated as untrusted transport even though the worker runs locally: validate its discriminant and shape, the requested snapshot ID/career label/capture time, the mode, and matching Editor/Realism projection metadata before admitting it. Invalid replies fail closed, terminate the worker and do not reach local storage. Aborts race-safe across listener registration and ignore any queued progress after settlement. This is a browser-side safety improvement, **not** a native process bridge or proof of runtime capture authentication.
+
 ## Evidence and limitations
 
 live_game identifies the source category; it does not mean a game is currently connected. Capture time and career label are caller-declared. PID and executable hash in the parser snapshot do not prove loaded-image authentication, currentness, career lineage or roster completeness. All observed fields remain provisional.
