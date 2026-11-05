@@ -119,6 +119,7 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
             <dt>{t("Size")}</dt><dd>{formatBytes(selected.size)}</dd>
             <dt>{t("Header bytes")}</dt><dd className="mono">{selected.signature}</dd>
             <dt>{t("SHA-256")}</dt><dd className="mono digest">{selected.sha256 || t('Not calculated')}</dd>
+            {!selected.sha256 && <><dt>{t('Identification')}</dt><dd>{t('Unique inspection record; file duplicates cannot be detected')}</dd></>}
             <dt>{t("Player / CA / PA")}</dt><dd>{t("Not decoded")}</dd>
           </dl>
           <details className="inspection-technical save-coverage">

@@ -1,10 +1,10 @@
-import type { ArchiveIndex, ArchiveMember } from './archive';
+import type { ArchiveIndex } from './archive';
+import { isSafeArchiveIndexMetadata, OBSERVED_MEMBER_DATA_BASE_BYTES } from './archive-metadata';
 
 /**
  * Experimental, opt-in AFE codec hypothesis validation.
  * It never returns decompressed content and does not infer game edition or CA/PA.
  */
-const OBSERVED_MEMBER_BASE = 18;
 const MAX_MEMBER_STORED_BYTES = 256 * 1024;
 const MAX_DECODED_BYTES = 2 * 1024 * 1024;
 const MAX_MEMBERS_TO_CHECK = 4;
@@ -63,6 +63,10 @@ async function decodeLengthOnly(bytes: Uint8Array, codec: CandidateCodec): Promi
         break;
       }
       outputBytes += item.value.byteLength;
+      if (outputBytes > MAX_DECODED_BYTES) {
+        outcome = { status: 'output_limit_exceeded', outputBytes: null };
+        break;
+      }
       if (codec === 'deflate') {
         for (const byte of item.value) {
           adlerA = (adlerA + byte) % 65521;
@@ -76,10 +80,6 @@ async function decodeLengthOnly(bytes: Uint8Array, codec: CandidateCodec): Promi
           }
         }
       }
-      if (outputBytes > MAX_DECODED_BYTES) {
-        outcome = { status: 'output_limit_exceeded', outputBytes: null };
-        break;
-      }
     }
   } catch {
     outcome = { status: 'invalid_stream', outputBytes: null };
@@ -91,13 +91,6 @@ async function decodeLengthOnly(bytes: Uint8Array, codec: CandidateCodec): Promi
   return outcome;
 }
 
-function memberFits(member: ArchiveMember, boundary: number): boolean {
-  return Number.isSafeInteger(member.offset) && Number.isSafeInteger(member.storedBytes) &&
-    Number.isSafeInteger(member.reportedUncompressedBytes) &&
-    member.offset >= 0 && member.storedBytes > 0 && member.reportedUncompressedBytes > 0 &&
-    member.offset <= boundary && member.storedBytes <= boundary - member.offset;
-}
-
 /**
  * Tests small members only: 4 members x 3 offsets x 3 codecs, each input <= 256 KiB,
  * each output <= 2 MiB. Exact size agreement is a hypothesis, never field verification.
@@ -106,15 +99,13 @@ export async function validateMemberCodecCandidates(
   file: File, index: ArchiveIndex
 ): Promise<MemberCodecValidation> {
   const empty: MemberCodecValidation = { inspectedMembers: 0, skippedOversizedMembers: 0, trials: [] };
-  if (!Number.isSafeInteger(index.directoryOffset) ||
-      index.directoryOffset > file.size || index.directoryOffset <= OBSERVED_MEMBER_BASE) return empty;
+  if (!file || !Number.isSafeInteger(file.size) ||
+      !isSafeArchiveIndexMetadata(index, file.size)) return empty;
   if (typeof DecompressionStream === 'undefined') return empty;
-  const boundary = index.directoryOffset - OBSERVED_MEMBER_BASE;
   let inspectedMembers = 0;
   let skippedOversizedMembers = 0;
   const trials: MemberCodecTrial[] = [];
   for (const member of index.members) {
-    if (!memberFits(member, boundary)) continue;
     if (member.storedBytes > MAX_MEMBER_STORED_BYTES ||
         member.reportedUncompressedBytes > MAX_DECODED_BYTES) {
       skippedOversizedMembers++;
@@ -122,7 +113,7 @@ export async function validateMemberCodecCandidates(
     }
     if (inspectedMembers >= MAX_MEMBERS_TO_CHECK) break;
     inspectedMembers++;
-    const start = OBSERVED_MEMBER_BASE + member.offset;
+    const start = OBSERVED_MEMBER_DATA_BASE_BYTES + member.offset;
     const bytes = new Uint8Array(await file.slice(start, start + member.storedBytes).arrayBuffer());
     for (const skippedBytes of START_OFFSETS) {
       if (skippedBytes >= bytes.length) continue;
