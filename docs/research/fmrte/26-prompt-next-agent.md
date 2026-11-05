@@ -55,7 +55,7 @@ Tiếp tục B1 corpus/detection, B2 adapter research/framework và B5 verificat
 
 Ưu tiên theo thứ tự:
 
-1. Review/finalize PR #75 (Save Library identity/persistence) và #76 (archive parser) theo exact current heads. Kiểm tra ID/hash binding, secure random fallback, legacy record compatibility, file/directory/member bounds, AFE family binding, unsafe labels, malformed UTF-16 và mutation tests.
+1. Review/finalize PR #76 (archive parser) and PR #75 (Save Library identity/persistence) in dependency order and against exact current heads. Verify ID/hash binding, secure random fallback, legacy record compatibility, file/directory/member bounds, AFE family binding, unsafe labels, malformed UTF-16, mutation tests, and the strict ephemeral-vs-persisted schema boundary.
 2. Kiểm tra parser input boundaries, candidate-count/decompression/member/name bounds, duplicate/overlap rules, worker timeout/cancellation và persistence validator. Mọi exported helper nhận input untrusted phải fail closed hoặc có typed error.
 3. Mở rộng portable synthetic fixture corpus và deterministic fuzz/property tests. Test malformed/truncated/oversized/mutated input, offset overflow, duplicate names, overlapping extents, bad encoding, decompression cap và marker-heavy tails.
 4. Chỉ nghiên cứu member payload codec khi có raw sample được người dùng cho phép dùng, byte-level evidence lặp lại và đối chiếu nhiều member. Không đoán codec từ prefix hoặc tên file.
