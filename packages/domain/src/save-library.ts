@@ -85,6 +85,10 @@ export function isSaveInspectionResult(value: unknown): value is SaveIdentity {
   // The existing persisted validator owns all common record/index rules.
   if (!isSaveIdentity({ ...value, archiveIndex: catalogue }) ||
       value.detectedFamily !== 'afe') return false;
+  // New worker results without a content hash must carry a fresh CSPRNG record key.
+  // Legacy metadata-derived IDs remain readable through isSaveIdentity for existing IndexedDB rows.
+  if (value.sha256 === null &&
+      (typeof value.id !== 'string' || !/^inspection:[a-f0-9]{32}$/.test(value.id))) return false;
   const members = catalogue.members as ArchiveMember[];
   const isHexBytes = (input: unknown, size: number): boolean => {
     if (typeof input !== 'string') return false;
