@@ -236,6 +236,8 @@ describe('save inspection metadata validation', () => {
     } });
     expect(isSaveIdentity(indexed)).toBe(false); // ephemerals must not enter IndexedDB
     expect(isSaveInspectionResult(indexed)).toBe(true);
+    expect(isSaveIdentity({ ...indexed, archiveIndex: { ...indexed.archiveIndex!, probes: undefined } })).toBe(false);
+    expect(isSaveIdentity({ ...indexed, archiveIndex: { ...indexed.archiveIndex!, gapObservations: [] } })).toBe(false);
     const persisted = toPersistedSaveIdentity(indexed);
     expect(isSaveIdentity(persisted)).toBe(true);
     expect(JSON.stringify(persisted)).not.toContain(probe.prefixHex);
@@ -269,6 +271,7 @@ describe('save inspection metadata validation', () => {
       mostCommonDistanceOccurrences: 0, status: 'sampled' as const
     };
     const raw = save({ archiveIndex: { ...archive, gapObservations: [gap] } });
+    expect(isSaveIdentity(raw)).toBe(false); // even valid ephemeral gaps are never persisted
     expect(isSaveInspectionResult(raw)).toBe(true);
     expect(isSaveInspectionResult({
       ...raw, archiveIndex: {
