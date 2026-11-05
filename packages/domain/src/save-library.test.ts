@@ -240,6 +240,7 @@ describe('save inspection metadata validation', () => {
       ...indexed, archiveIndex: { ...indexed.archiveIndex!, probes: undefined }
     };
     expect(isSaveIdentity(undefinedProbeField)).toBe(false);
+    expect(isSaveInspectionResult(undefinedProbeField)).toBe(false);
     expect(isSaveIdentity({ ...indexed, archiveIndex: { ...indexed.archiveIndex!, gapObservations: [] } })).toBe(false);
     const persisted = toPersistedSaveIdentity(indexed);
     expect(isSaveIdentity(persisted)).toBe(true);
@@ -276,6 +277,10 @@ describe('save inspection metadata validation', () => {
     const raw = save({ archiveIndex: { ...archive, gapObservations: [gap] } });
     expect(isSaveIdentity(raw)).toBe(false); // even valid ephemeral gaps are never persisted
     expect(isSaveInspectionResult(raw)).toBe(true);
+    const undefinedGapField: unknown = {
+      ...raw, archiveIndex: { ...raw.archiveIndex!, gapObservations: undefined }
+    };
+    expect(isSaveInspectionResult(undefinedGapField)).toBe(false);
     expect(isSaveInspectionResult({
       ...raw, archiveIndex: {
         ...archive, gapObservations: [{ ...gap, extraData: new Uint8Array([9]) }]
