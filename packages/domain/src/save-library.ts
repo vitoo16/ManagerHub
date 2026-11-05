@@ -61,6 +61,10 @@ export function isSaveIdentity(value: unknown): value is SaveIdentity {
       !warnings.every(warning => typeof warning === 'string' && warning.length <= 1024) ||
       !(archiveIndex === null || isSafeArchiveIndexMetadata(archiveIndex, size))) return false;
   if (detectSaveFamilyFromSignature(signature) !== detectedFamily) return false;
+  // Persisted records must never contain short-lived binary-derived diagnostics.
+  // isSafeArchiveIndexMetadata intentionally accepts these fields for worker consumers.
+  if (archiveIndex !== null &&
+      (Object.hasOwn(archiveIndex, 'probes') || Object.hasOwn(archiveIndex, 'gapObservations'))) return false;
   if (archiveIndex !== null && detectedFamily !== 'afe') return false;
   if (detectedFamily === null && support !== 'unrecognized') return false;
   if (detectedFamily !== null && support !== 'signature_only') return false;
