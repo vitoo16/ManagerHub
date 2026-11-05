@@ -92,7 +92,7 @@ Private save samples/evidence không được commit hoặc upload. Nếu không
 
 Acceptance cho bước tiếp theo: deterministic bounded parser; malformed inputs không crash; member extents nằm trong file và trước directory; no duplicate/overlap; output chỉ là metadata structural; CI/test evidence gắn với commit cụ thể; compatibility registry vẫn empty cho đến khi exact-build decoder được kiểm chứng.
 
-**Latest CI blocker (2026-11-05):** PR #75 head `4a2383b`, PR #76 head `c932a3e`, and PR #77 documentation head `96a2359` all have workflow runs whose jobs end before runner assignment (`runner_id=0`, empty runner name, zero steps). Re-running failed jobs reproduces the same result; job-log retrieval returns `BlobNotFound`. No command or test step ran, so this is not a code-level test result. The root cause is not established; do not attribute it to GitHub-wide or account-specific infrastructure without evidence. Restore real runner execution and validate exact heads before merge.
+**Latest CI blocker (2026-11-05):** PR #75 head `9ad3222` and PR #76 head `c932a3e` both have exact-head workflow attempts whose jobs end before runner assignment (`runner_id=0`, empty runner name, zero steps). Re-running failed jobs reproduces the same result; job-log retrieval returns `BlobNotFound`. PR #77 documentation-only runs show the same pattern. No command or test step ran, so this is not a code-level test result. The root cause is not established; do not attribute it to GitHub-wide or account-specific infrastructure without evidence. Restore real runner execution and validate exact heads before merge.
 
 ## 5. Tool và evidence khi không có Computer Use
 
