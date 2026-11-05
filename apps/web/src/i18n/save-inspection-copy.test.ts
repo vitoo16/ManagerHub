@@ -49,6 +49,7 @@ describe('save inspection onboarding copy', () => {
       'Could not access saved save metadata. Your original save remains untouched.',
       'Clear incompatible saved metadata',
       'This will permanently clear all saved Save Library inspection metadata from this browser. Player exports and historical snapshots will remain untouched. Continue?',
+      'Remove saved inspection metadata for "{{fileName}}" from this browser? The original .fm file will remain untouched. This cannot be undone. Continue?',
       'Saved save inspection metadata is incompatible with this version. Clear the incompatible save metadata to continue; player exports will be preserved.',
       'Unable to clear saved inspection metadata. Check browser storage permissions and try again.'
     ];
