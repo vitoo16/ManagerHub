@@ -1,7 +1,7 @@
 import { inspectArchiveIndex, probeMemberEnvelopes } from './archive';
 import { inspectUnindexedGaps } from './archive-gaps';
 import { detectSaveFamily } from './save-signature';
-import type { SaveIdentity } from './types';
+import type { SaveInspectionResult } from './save-library';
 export { detectSaveFamily };
 export type { SaveFamily } from './save-signature';
 
@@ -33,7 +33,7 @@ export function formatBytes(bytes: number): string {
   return size.toFixed(size >= 100 ? 0 : 1) + ' ' + units[unit];
 }
 
-export async function inspectSave(file: File): Promise<SaveIdentity> {
+export async function inspectSave(file: File): Promise<SaveInspectionResult> {
   if (!file.name.toLowerCase().endsWith('.fm')) {
     throw new Error('Select a Football Manager .fm save file.');
   }
