@@ -8,11 +8,16 @@ import {
 import type { ArchiveIndex, ArchiveMember, MemberEnvelopeProbe } from './archive';
 import { detectSaveFamilyFromSignature } from './save-signature';
 import type { UnindexedGapObservation } from './archive-gaps';
-import type { SaveIdentity } from './types';
+import type { PersistedArchiveIndex, SaveIdentity } from './types';
 
 /** Keep only small, user-selected inspection metadata; never persist .fm bytes. */
 export const MAX_SAVED_SAVE_INSPECTIONS = 50;
 const MAX_INSPECTION_BYTES = 256 * 1024 * 1024;
+
+/** In-memory worker result; unlike SaveIdentity it may carry bounded ephemeral diagnostics. */
+export type SaveInspectionResult = Omit<SaveIdentity, 'archiveIndex'> & {
+  readonly archiveIndex: ArchiveIndex | null;
+};
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -76,7 +81,7 @@ export function isSaveIdentity(value: unknown): value is SaveIdentity {
  * short-lived bounded archive diagnostics. Unknown keys or binary payloads
  * never enter React state, and the canonical stored schema remains unchanged.
  */
-export function isSaveInspectionResult(value: unknown): value is SaveIdentity {
+export function isSaveInspectionResult(value: unknown): value is SaveInspectionResult {
   if (!isRecord(value)) return false;
   const index = value.archiveIndex;
   if (index === null) {
@@ -190,8 +195,8 @@ export function isSaveInspectionResult(value: unknown): value is SaveIdentity {
  * In particular, member-prefix hex samples must never enter IndexedDB.
  * Only the validated directory catalogue and ordinary identity fields survive.
  */
-export function toPersistedSaveIdentity(identity: SaveIdentity): SaveIdentity {
-  const archiveIndex: ArchiveIndex | null = identity.archiveIndex === null ? null : {
+export function toPersistedSaveIdentity(identity: SaveInspectionResult): SaveIdentity {
+  const archiveIndex: PersistedArchiveIndex | null = identity.archiveIndex === null ? null : {
     family: identity.archiveIndex.family,
     evidence: identity.archiveIndex.evidence,
     memberCount: identity.archiveIndex.memberCount,
