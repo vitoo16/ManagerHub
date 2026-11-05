@@ -573,7 +573,7 @@ test('save inspection metadata library enforces its 50-record limit', async ({ p
 });
 
 
-test('incompatible save metadata can be cleared without deleting the player library', async ({ page }) => {
+test('incompatible save metadata can be cleared without deleting player or historical libraries', async ({ page }) => {
   await page.goto('/#/saves');
   await expect(page.getByRole('heading', { name: 'Save Library' })).toBeVisible();
   await expect(page.getByText('Session only')).toBeVisible();
@@ -586,7 +586,10 @@ test('incompatible save metadata can be cleared without deleting the player libr
     });
     try {
       await new Promise<void>((resolve, reject) => {
-        const tx = db.transaction(['save-inspections', 'player-export-summaries'], 'readwrite');
+        const tx = db.transaction([
+          'save-inspections', 'player-export-summaries',
+          'historical-editor-snapshots', 'historical-realism-snapshots'
+        ], 'readwrite');
         tx.objectStore('save-inspections').put({
           id: 'corrupt-record',
           name: 'legacy-career.fm',
@@ -612,6 +615,8 @@ test('incompatible save metadata can be cleared without deleting the player libr
           playerCount: 1,
           attributeCount: 2
         });
+        tx.objectStore('historical-editor-snapshots').put({ id: 'preserved-editor-snapshot' });
+        tx.objectStore('historical-realism-snapshots').put({ id: 'preserved-realism-snapshot' });
         tx.oncomplete = () => resolve();
         tx.onerror = () => reject(tx.error);
         tx.onabort = () => reject(tx.error);
@@ -656,6 +661,8 @@ test('incompatible save metadata can be cleared without deleting the player libr
       return {
         saveCount: await count('save-inspections'),
         playerSummaryCount: await count('player-export-summaries'),
+        editorSnapshotCount: await count('historical-editor-snapshots'),
+        realismSnapshotCount: await count('historical-realism-snapshots'),
         names: Array.from(db.objectStoreNames)
       };
     } finally {
@@ -664,6 +671,8 @@ test('incompatible save metadata can be cleared without deleting the player libr
   });
   expect(stores.saveCount).toBe(0);
   expect(stores.playerSummaryCount).toBe(1);
+  expect(stores.editorSnapshotCount).toBe(1);
+  expect(stores.realismSnapshotCount).toBe(1);
   expect(stores.names).toContain('player-exports');
 });
 
