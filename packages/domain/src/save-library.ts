@@ -95,6 +95,8 @@ export function isSaveInspectionResult(value: unknown): value is SaveInspectionR
   ])) return false;
 
   const { probes, gapObservations, ...catalogue } = index;
+  if ((Object.hasOwn(index, 'probes') && probes === undefined) ||
+      (Object.hasOwn(index, 'gapObservations') && gapObservations === undefined)) return false;
   // The existing persisted validator owns all common record/index rules.
   if (!isSaveIdentity({ ...value, archiveIndex: catalogue }) ||
       value.detectedFamily !== 'afe') return false;
