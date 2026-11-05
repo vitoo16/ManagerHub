@@ -67,6 +67,9 @@ export function isSafeArchiveIndexMetadata(value: unknown, fileSize: number): va
       ]) || value.family !== 'fmf-index-candidate' || value.evidence !== 'experimental') return false;
 
   const { memberCount, directoryOffset, members, nestedGroups } = value;
+  if ((Object.hasOwn(value, 'nestedGroups') && nestedGroups === undefined) ||
+      (Object.hasOwn(value, 'probes') && value.probes === undefined) ||
+      (Object.hasOwn(value, 'gapObservations') && value.gapObservations === undefined)) return false;
   if (!isSafeNonNegativeInteger(directoryOffset) ||
       directoryOffset <= OBSERVED_MEMBER_DATA_BASE_BYTES || directoryOffset > fileSize ||
       !isSafeNonNegativeInteger(memberCount) || memberCount < 1 || memberCount > MAX_ARCHIVE_MEMBERS ||
