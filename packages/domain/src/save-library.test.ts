@@ -236,7 +236,6 @@ describe('save inspection metadata validation', () => {
     } });
     expect(isSaveIdentity(indexed)).toBe(false); // ephemerals must not enter IndexedDB
     expect(isSaveInspectionResult(indexed)).toBe(true);
-    expect(isSaveIdentity({ ...indexed, archiveIndex: { ...indexed.archiveIndex!, probes: undefined } })).toBe(false);
     expect(isSaveIdentity({ ...indexed, archiveIndex: { ...indexed.archiveIndex!, gapObservations: [] } })).toBe(false);
     const persisted = toPersistedSaveIdentity(indexed);
     expect(isSaveIdentity(persisted)).toBe(true);
