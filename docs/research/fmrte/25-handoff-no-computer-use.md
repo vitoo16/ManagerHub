@@ -92,7 +92,7 @@ Private save samples/evidence không được commit hoặc upload. Nếu không
 
 Acceptance cho bước tiếp theo: deterministic bounded parser; malformed inputs không crash; member extents nằm trong file và trước directory; no duplicate/overlap; output chỉ là metadata structural; CI/test evidence gắn với commit cụ thể; compatibility registry vẫn empty cho đến khi exact-build decoder được kiểm chứng.
 
-**Latest CI blocker (2026-11-05):** PR #75 head `d693784` / run `42073731265` and PR #76 head `c932a3e` / run `42054005159` (attempt 2) both end before runner assignment (`runner_id=0`, empty runner name, zero steps). PR #77's documentation-only workflow shows the same pattern; see its PR description for the latest exact head and run. Job-log retrieval returns `BlobNotFound`; no command or test step ran. This is not a code-level test result. The root cause is not established; do not attribute it to GitHub-wide or account-specific infrastructure without evidence. Restore real runner execution and validate exact code heads before merge.
+**Latest CI blocker (2026-11-05):** PR #75 head `69fd9b1` / run `42074331446` and PR #76 head `c932a3e` / run `42054005159` (attempt 2) both end before runner assignment (`runner_id=0`, empty runner name, zero steps). PR #77's documentation-only workflow shows the same pattern; see its PR description for the latest exact head and run. Job-log retrieval returns `BlobNotFound`; no command or test step ran. This is not a code-level test result. The root cause is not established; do not attribute it to GitHub-wide or account-specific infrastructure without evidence. Restore real runner execution and validate exact code heads before merge.
 
 ## 5. Tool và evidence khi không có Computer Use
 
