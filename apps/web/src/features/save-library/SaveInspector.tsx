@@ -77,6 +77,10 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
     const message = t('This will permanently clear all saved Save Library inspection metadata from this browser. Player exports and historical snapshots will remain untouched. Continue?');
     if (window.confirm(message)) void saveLibrary.clearIncompatible();
   };
+  const confirmRemoveSavedMetadata = (id: string, name: string) => {
+    const message = t('Remove saved inspection metadata for "{{fileName}}" from this browser? The original .fm file will remain untouched. This cannot be undone. Continue?', { fileName: name });
+    if (window.confirm(message)) void saveLibrary.remove(id);
+  };
   return <div className="view-flow">
     <div className="page-title"><div className="mh-eyebrow">{t("GAME DATA / LOCAL FILES")}</div><h1>{t("Save Library")}</h1><p>{t("Choose a .fm save to check its file type. To analyze players today, export a squad list as HTML or CSV and open Player Lab.")}</p></div>
     <Surface className={'file-drop ' + (drag ? 'file-drop--drag' : '')} onDragOver={e => {e.preventDefault(); setDrag(true);}} onDragLeave={() => setDrag(false)} onDrop={handleDrop}>
@@ -182,7 +186,10 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
           <div className="save-metadata-actions">
             <Button variant={isSelectedSaved ? 'quiet' : 'primary'}
               disabled={saveLibrary.loading || saveLibrary.activity !== null}
-              onClick={() => { void (isSelectedSaved ? saveLibrary.remove(selected.id) : saveLibrary.save(selected)); }}>
+              onClick={() => {
+                if (isSelectedSaved) confirmRemoveSavedMetadata(selected.id, selected.name);
+                else void saveLibrary.save(selected);
+              }}>
               {t(isSelectedSaved ? 'Remove saved metadata' : 'Save inspection metadata on this browser')}
             </Button>
             <p>{t("Only inspection metadata is saved in this browser. The original .fm file bytes are never stored or uploaded.")}</p>
