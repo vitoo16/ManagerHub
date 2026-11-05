@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { inspectArchiveIndex, parseArchiveDirectory, parseArchiveDirectoryDetails, probeMemberEnvelopes, MAX_MEMBER_PREFIX_PROBES, summarizeMemberConsistency } from './archive';
+import { inspectArchiveIndex, parseArchiveDirectory, parseArchiveDirectoryDetails, probeMemberEnvelopes, MAX_MEMBER_PREFIX_PROBES, summarizeMemberConsistency, isSafeArchiveIndexMetadata, isSafeArchiveLabel, OBSERVED_MEMBER_DATA_BASE_BYTES, type ArchiveIndex } from './archive';
+import { validateMemberCodecCandidates } from './archive-codec';
+import { inspectUnindexedGaps } from './archive-gaps';
 import { detectSaveFamily } from './save';
 
 function syntheticIndex() {
@@ -81,6 +83,124 @@ describe('bounded AFE/FM directory catalogue parser', () => {
   it('rejects member extents past the archive boundary', () => {
     expect(parseArchiveDirectory(syntheticIndex(), 64)).toBeNull();
   });
+  it('rejects non-integer, negative, or non-finite archive boundaries', () => {
+    for (const boundary of [Number.NaN, Number.POSITIVE_INFINITY, -1, 63.5]) {
+      expect(parseArchiveDirectory(syntheticIndex(), boundary)).toBeNull();
+    }
+  });
+
+  it('rejects path separators and control characters in archive labels', () => {
+    for (const code of [0x2f, 0x5c, 0x1f, 0x7f, 0x85]) {
+      const bytes = syntheticIndex();
+      bytes[12] = code;
+      bytes[13] = 0;
+      expect(parseArchiveDirectory(bytes, 1000)).toBeNull();
+    }
+  });
+
+  it('returns null rather than throwing for malformed UTF-16LE member names', () => {
+    const malformed = syntheticIndex();
+    // Replace the first UTF-16LE character with an unpaired high surrogate.
+    malformed[12] = 0x00;
+    malformed[13] = 0xd8;
+    expect(() => parseArchiveDirectory(malformed, 1000)).not.toThrow();
+    expect(parseArchiveDirectory(malformed, 1000)).toBeNull();
+  });
+
+  it('does not throw on deterministic mutations of valid directory input', () => {
+    let state = 0x4d484255;
+    const next = () => {
+      state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+      return state;
+    };
+    const boundaries = [1000, 64, 0, -1, Number.NaN, Number.POSITIVE_INFINITY, 63.5];
+
+    for (let iteration = 0; iteration < 256; iteration++) {
+      const bytes = syntheticIndex();
+      const mutationCount = 1 + (next() % 8);
+      for (let mutation = 0; mutation < mutationCount; mutation++) {
+        const position = next() % bytes.length;
+        bytes[position] = next() & 0xff;
+      }
+      const boundary = boundaries[next() % boundaries.length]!;
+      expect(() => parseArchiveDirectoryDetails(bytes, boundary)).not.toThrow();
+      const parsed = parseArchiveDirectoryDetails(bytes, boundary);
+      if (!parsed) continue;
+
+      const archiveIndex = {
+        family: 'fmf-index-candidate' as const,
+        evidence: 'experimental' as const,
+        memberCount: parsed.members.length,
+        directoryOffset: boundary + OBSERVED_MEMBER_DATA_BASE_BYTES,
+        members: parsed.members,
+        nestedGroups: parsed.nestedGroups
+      };
+      expect(isSafeArchiveIndexMetadata(archiveIndex, boundary + OBSERVED_MEMBER_DATA_BASE_BYTES)).toBe(true);
+      expect(Number.isSafeInteger(boundary)).toBe(true);
+      const filenames = new Set<string>();
+      const ordered = [...parsed.members].sort((left, right) => left.offset - right.offset);
+      for (const member of ordered) {
+        expect(filenames.has(member.filename)).toBe(false);
+        filenames.add(member.filename);
+        expect(member.offset).toBeGreaterThanOrEqual(0);
+        expect(member.storedBytes).toBeGreaterThan(0);
+        expect(member.offset + member.storedBytes).toBeLessThanOrEqual(boundary);
+      }
+      for (let i = 1; i < ordered.length; i++) {
+        expect(ordered[i - 1]!.offset + ordered[i - 1]!.storedBytes)
+          .toBeLessThanOrEqual(ordered[i]!.offset);
+      }
+    }
+  });
+
+  it('rejects undefined-valued own properties for optional archive metadata arrays', () => {
+    const valid = {
+      family: 'fmf-index-candidate' as const,
+      evidence: 'experimental' as const,
+      memberCount: 1,
+      directoryOffset: 64,
+      members: [{ filename: 'a.dat', offset: 0, storedBytes: 8, reportedUncompressedBytes: 8 }]
+    };
+    expect(isSafeArchiveIndexMetadata({ ...valid, nestedGroups: undefined }, 128)).toBe(false);
+    expect(isSafeArchiveIndexMetadata({ ...valid, probes: undefined }, 128)).toBe(false);
+    expect(isSafeArchiveIndexMetadata({ ...valid, gapObservations: undefined }, 128)).toBe(false);
+    expect(isSafeArchiveIndexMetadata(valid, 128)).toBe(true);
+  });
+
+  it('fails closed for invalid shared metadata bounds and malformed archive indexes', async () => {
+    expect(isSafeArchiveLabel('x', Number.NaN)).toBe(false);
+    expect(isSafeArchiveLabel('x', Number.POSITIVE_INFINITY)).toBe(false);
+    expect(isSafeArchiveLabel('x', 0)).toBe(false);
+    expect(parseArchiveDirectoryDetails(new Uint8Array(512 * 1024 + 1), 1000)).toBeNull();
+    expect(parseArchiveDirectoryDetails(null as unknown as Uint8Array, 1000)).toBeNull();
+    await expect(inspectArchiveIndex(null as unknown as File)).resolves.toBeNull();
+
+    const sparseMembers: unknown[] = [];
+    sparseMembers.length = 1;
+    const malformed = {
+      family: 'fmf-index-candidate',
+      evidence: 'experimental',
+      memberCount: 1,
+      directoryOffset: 64,
+      members: sparseMembers
+    } as unknown as ArchiveIndex;
+    const file = new File([new Uint8Array(128)], 'malformed-index.fm');
+    expect(isSafeArchiveIndexMetadata(malformed, file.size)).toBe(false);
+    await expect(probeMemberEnvelopes(file, malformed)).resolves.toEqual([]);
+    await expect(inspectUnindexedGaps(file, malformed)).resolves.toEqual([]);
+    await expect(validateMemberCodecCandidates(file, malformed)).resolves.toEqual({
+      inspectedMembers: 0, skippedOversizedMembers: 0, trials: []
+    });
+    expect(summarizeMemberConsistency(malformed, [])).toEqual({
+      observedMembers: 0, contiguousPairs: 0, discontinuousPairs: 0,
+      overlappingPairs: 0, repeatedEightBytePrefixes: 0, referenceEightBytePrefix: null
+    });
+    expect(summarizeMemberConsistency(null as unknown as ArchiveIndex, [])).toEqual({
+      observedMembers: 0, contiguousPairs: 0, discontinuousPairs: 0,
+      overlappingPairs: 0, repeatedEightBytePrefixes: 0, referenceEightBytePrefix: null
+    });
+  });
+
   it('rejects truncated directory data', () => {
     expect(parseArchiveDirectory(syntheticIndex().subarray(0, 16), 1000)).toBeNull();
   });
@@ -271,6 +391,41 @@ describe('bounded AFE/FM directory catalogue parser', () => {
       overlappingPairs: 0, repeatedEightBytePrefixes: 2,
       referenceEightBytePrefix: '10 00 00 00 10 00 00 00'
     });
+  });
+
+  it('bounds decompressed directory output and ignores candidates outside the bounded tail scan', async () => {
+    const marker = Uint8Array.from([2, 1, 102, 109, 102, 46, 4, 0, 0]);
+    const prefix = new Uint8Array(1024);
+    prefix.set([2, 1, 97, 102, 101, 46]);
+
+    const oversizedOutput = new Uint8Array(512 * 1024 + 1);
+    const bombStream = new Blob([oversizedOutput]).stream().pipeThrough(new CompressionStream('deflate'));
+    const bombCompressed = new Uint8Array(await new Response(bombStream).arrayBuffer());
+    const bombBytes = new Uint8Array(prefix.length + marker.length + bombCompressed.length);
+    bombBytes.set(prefix);
+    bombBytes.set(marker, prefix.length);
+    bombBytes.set(bombCompressed, prefix.length + marker.length);
+    await expect(inspectArchiveIndex(new File([bombBytes], 'synthetic-decompression-bomb.fm')))
+      .resolves.toBeNull();
+
+    let state = 0x4d484255;
+    const incompressible = new Uint8Array(70 * 1024);
+    for (let index = 0; index < incompressible.length; index++) {
+      state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+      incompressible[index] = state >>> 24;
+    }
+    const largeStream = new Blob([incompressible]).stream().pipeThrough(new CompressionStream('deflate'));
+    const largeCompressed = new Uint8Array(await new Response(largeStream).arrayBuffer());
+    expect(largeCompressed.byteLength).toBeGreaterThan(64 * 1024);
+    const largeBytes = new Uint8Array(prefix.length + marker.length + largeCompressed.length);
+    // The candidate now begins before the final 64 KiB search window. This
+    // verifies the parser does not widen its bounded tail scan for large blobs.
+    expect(largeBytes.length - 64 * 1024).toBeGreaterThan(prefix.length);
+    largeBytes.set(prefix);
+    largeBytes.set(marker, prefix.length);
+    largeBytes.set(largeCompressed, prefix.length + marker.length);
+    await expect(inspectArchiveIndex(new File([largeBytes], 'synthetic-oversized-index.fm')))
+      .resolves.toBeNull();
   });
 
   it('safely ignores marker-heavy tails with many invalid candidates', async () => {

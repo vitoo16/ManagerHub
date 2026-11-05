@@ -12,6 +12,8 @@ describe('save inspection onboarding copy', () => {
       .toBe('Background save inspection failed. Please try the file again.');
     expect(readableSaveInspectionError(new Error('Unable to start background save inspection.')))
       .toBe('Unable to start background save inspection.');
+    expect(readableSaveInspectionError(new Error('Cryptographic random IDs are unavailable for unhashed save inspection.')))
+      .toBe('This browser cannot create a safe inspection ID. Use a browser with cryptographic random number support.');
   });
 
   it('does not expose unknown technical exceptions as user-facing errors', () => {
@@ -26,6 +28,7 @@ describe('save inspection onboarding copy', () => {
       'This file is empty or larger than 256 MB. Choose a valid .fm save file up to 256 MB and try again.',
       'Background save inspection failed. Please try the file again.',
       'Unable to start background save inspection.',
+      'This browser cannot create a safe inspection ID. Use a browser with cryptographic random number support.',
       "We couldn't inspect this save file. Check that it is a valid .fm file and try again."
     ];
     for (const key of keys) expect(vi[key as keyof typeof vi]).toBeTruthy();
@@ -45,6 +48,8 @@ describe('save inspection onboarding copy', () => {
       'Unable to save inspection metadata locally. Check browser storage permissions and available disk space.',
       'Could not access saved save metadata. Your original save remains untouched.',
       'Clear incompatible saved metadata',
+      'This will permanently clear all saved Save Library inspection metadata from this browser. Player exports and historical snapshots will remain untouched. Continue?',
+      'Remove saved inspection metadata for "{{fileName}}" from this browser? The original .fm file will remain untouched. This cannot be undone. Continue?',
       'Saved save inspection metadata is incompatible with this version. Clear the incompatible save metadata to continue; player exports will be preserved.',
       'Unable to clear saved inspection metadata. Check browser storage permissions and try again.'
     ];

@@ -1,9 +1,9 @@
 import { inspectSave } from '@managerhub/domain';
 import { isSaveInspectionResult } from '@managerhub/domain/save-library';
-import type { SaveIdentity } from '@managerhub/domain';
+import type { SaveInspectionResult } from '@managerhub/domain/save-library';
 
 interface Request { readonly file: File; }
-type Response = { readonly ok: true; readonly result: SaveIdentity }
+type Response = { readonly ok: true; readonly result: SaveInspectionResult }
   | { readonly ok: false; readonly error: string };
 
 const workerScope = self as unknown as {

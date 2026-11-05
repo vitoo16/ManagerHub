@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { createDefaultSquadPlans, type SquadPlanKey, type SquadPlans } from '@managerhub/domain/squad-scenarios';
 import type { SaveIdentity, WorkspaceKey } from '@managerhub/domain/types';
+import type { SaveInspectionResult } from '@managerhub/domain/save-library';
 import type { PlayerDataset } from '@managerhub/domain';
 import { Icon, Status } from '@managerhub/ui';
 import { useReducedMotion, useWorkspaceTransition } from '@managerhub/motion';
@@ -91,7 +92,7 @@ export default function App() {
   const [commandOpen, setCommandOpen] = useState(false);
   const [theme, setTheme] = useState<Theme>(() => loadPreference('mh-theme', 'dark', ['dark', 'light']));
   const [glass, setGlass] = useState(() => loadPreference('mh-glass', 'on', ['on', 'off']));
-  const [imports, setImports] = useState<SaveIdentity[]>([]);
+  const [imports, setImports] = useState<SaveInspectionResult[]>([]);
   const [playerDataset, setPlayerDataset] = useState<PlayerDataset | null>(null);
   const [squadPlans, setSquadPlans] = useState<SquadPlans>(createDefaultSquadPlans);
   const [activeSquadPlan, setActiveSquadPlan] = useState<SquadPlanKey>('A');

@@ -1,22 +1,24 @@
 import { inspectArchiveIndex, probeMemberEnvelopes } from './archive';
 import { inspectUnindexedGaps } from './archive-gaps';
-import type { SaveIdentity } from './types';
+import { detectSaveFamily } from './save-signature';
+import type { SaveInspectionResult } from './save-library';
+export { detectSaveFamily };
+export type { SaveFamily } from './save-signature';
 
 const MAX_INSPECTION_BYTES = 256 * 1024 * 1024;
 const MAX_HASH_BYTES = 64 * 1024 * 1024;
 
-export type SaveFamily = 'afe' | 'fmf' | null;
+/** Give un-hashed inspections a unique record key, never a metadata pseudo-fingerprint. */
+function createUnhashedInspectionId(): string {
+  if (typeof crypto === 'undefined' || typeof crypto.getRandomValues !== 'function') {
+    throw new Error('Cryptographic random IDs are unavailable for unhashed save inspection.');
+  }
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  return 'inspection:' + Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
+}
 
 export function getSignature(bytes: Uint8Array): string {
   return Array.from(bytes.subarray(0, 12), byte => byte.toString(16).padStart(2, '0')).join(' ').toUpperCase();
-}
-
-export function detectSaveFamily(bytes: Uint8Array): SaveFamily {
-  const magic = Array.from(bytes.subarray(2, 6));
-  const header = String.fromCharCode(...magic);
-  if (bytes.length >= 6 && header === 'afe.') return 'afe';
-  if (bytes.length >= 6 && header === 'fmf.') return 'fmf';
-  return null;
 }
 
 export function formatBytes(bytes: number): string {
@@ -31,7 +33,7 @@ export function formatBytes(bytes: number): string {
   return size.toFixed(size >= 100 ? 0 : 1) + ' ' + units[unit];
 }
 
-export async function inspectSave(file: File): Promise<SaveIdentity> {
+export async function inspectSave(file: File): Promise<SaveInspectionResult> {
   if (!file.name.toLowerCase().endsWith('.fm')) {
     throw new Error('Select a Football Manager .fm save file.');
   }
@@ -58,7 +60,7 @@ export async function inspectSave(file: File): Promise<SaveIdentity> {
         gapObservations: await inspectUnindexedGaps(file, detectedArchiveIndex) }
     : null;
   if (archiveIndex) warnings.push('Experimental archive directory catalogue recognized; member contents and game records are NOT decoded.');
-  const id = sha256 ?? [file.name, file.size, file.lastModified].join(':');
+  const id = sha256 ?? createUnhashedInspectionId();
   return {
     id, name: file.name, importedAt: new Date().toISOString(), lastModified: file.lastModified,
     size: file.size, sha256, signature: getSignature(head), detectedFamily: family,
