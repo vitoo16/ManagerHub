@@ -6,6 +6,7 @@ import {
 } from '@managerhub/domain';
 import { Button, Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
 import { useSaveInspectionLibrary } from '../../useSaveInspectionLibrary';
+import type { SaveInspectionResult } from '@managerhub/domain/save-library';
 
 const SAVE_DOMAIN_LABELS: Record<SaveDataDomain, string> = {
   player_identity: 'Player identity',
@@ -41,7 +42,7 @@ function coverageStateLabel(state: SaveCoverageState): string {
 }
 
 function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, select, onRestoreSaved }: {
-  imports: readonly SaveIdentity[]; selected: SaveIdentity | null;
+  imports: readonly SaveInspectionResult[]; selected: SaveInspectionResult | null;
   onInspect: (file: File) => Promise<void>; onRemove: (id: string) => void;
   busy: boolean; error: string | null; select: (id: string) => void;
   onRestoreSaved: (records: readonly SaveIdentity[]) => void;
