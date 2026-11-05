@@ -153,6 +153,20 @@ describe('bounded AFE/FM directory catalogue parser', () => {
     }
   });
 
+  it('rejects undefined-valued own properties for optional archive metadata arrays', () => {
+    const valid = {
+      family: 'fmf-index-candidate' as const,
+      evidence: 'experimental' as const,
+      memberCount: 1,
+      directoryOffset: 64,
+      members: [{ filename: 'a.dat', offset: 0, storedBytes: 8, reportedUncompressedBytes: 8 }]
+    };
+    expect(isSafeArchiveIndexMetadata({ ...valid, nestedGroups: undefined }, 128)).toBe(false);
+    expect(isSafeArchiveIndexMetadata({ ...valid, probes: undefined }, 128)).toBe(false);
+    expect(isSafeArchiveIndexMetadata({ ...valid, gapObservations: undefined }, 128)).toBe(false);
+    expect(isSafeArchiveIndexMetadata(valid, 128)).toBe(true);
+  });
+
   it('fails closed for invalid shared metadata bounds and malformed archive indexes', async () => {
     expect(isSafeArchiveLabel('x', Number.NaN)).toBe(false);
     expect(isSafeArchiveLabel('x', Number.POSITIVE_INFINITY)).toBe(false);
