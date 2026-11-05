@@ -1,5 +1,6 @@
 import { MAX_SAVED_SAVE_INSPECTIONS, isSaveIdentity, isSaveInspectionResult, toPersistedSaveIdentity } from '@managerhub/domain/save-library';
 import type { SaveIdentity } from '@managerhub/domain/types';
+import type { SaveInspectionResult } from '@managerhub/domain/save-library';
 import { SAVE_INSPECTIONS, openDatabase, readRequest, transactionCompleted } from './database';
 
 /** Return only validated metadata; original .fm file bytes are never stored. */
@@ -16,7 +17,7 @@ export async function listSavedSaveInspections(): Promise<SaveIdentity[]> {
 }
 
 /** Explicit user action; persists the validated inspection record, never the source file. */
-export async function saveSaveInspectionMetadata(identity: SaveIdentity): Promise<SaveIdentity> {
+export async function saveSaveInspectionMetadata(identity: SaveInspectionResult): Promise<SaveIdentity> {
   // Validate the untrusted worker/UI result before projecting away ephemeral diagnostics.
   // Otherwise malformed arrays could throw inside toPersistedSaveIdentity before this boundary rejects them.
   if (!isSaveInspectionResult(identity)) {
