@@ -307,7 +307,7 @@ describe('save inspection metadata validation', () => {
     expect(isSaveInspectionResult(save({ archiveIndex: largeGapArchive, size: 2_100_200 }))).toBe(true);
   });
 
-  it('keeps un-hashed record identity separate from content fingerprints and reads legacy IDs', () => {
+  it('requires fresh cryptographic IDs for new unhashed worker results but reads legacy stored IDs', () => {
     const first = save({ id: 'inspection:' + '1'.repeat(32), sha256: null });
     const second = save({ id: 'inspection:' + '2'.repeat(32), sha256: null });
     expect(isSaveIdentity(toPersistedSaveIdentity(first))).toBe(true);
@@ -315,6 +315,8 @@ describe('save inspection metadata validation', () => {
     expect(first.id).not.toBe(second.id);
     expect(first.sha256).toBe(null);
     expect(second.sha256).toBe(null);
+    expect(isSaveInspectionResult(first)).toBe(true);
+    expect(isSaveInspectionResult({ ...first, id: 'career.fm:6:1790000000000' })).toBe(false);
     expect(isSaveIdentity(save({ id: 'career.fm:6:1790000000000', sha256: null }))).toBe(true);
   });
 
