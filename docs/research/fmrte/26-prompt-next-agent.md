@@ -1,93 +1,82 @@
-# Prompt tiếp quản — không có Computer Use
+# Prompt tiếp quản — Phase 2 sau Historical Snapshot Consumer
 
-Copy nguyên block dưới cho model coding tiếp theo. Prompt không yêu cầu một model cụ thể; agent phải kiểm tra tool thực có và báo giới hạn thay vì giả định.
+Copy block dưới cho coding agent tiếp theo. Prompt yêu cầu kiểm tra repository thật, thực thi code đến acceptance và báo đúng evidence; không giả định model có Computer Use, REA, private files hoặc quyền merge.
 
 ```text
-Bạn tiếp tục phát triển ManagerHub từ repository https://github.com/vitoo16/ManagerHub,
-nhánh research/fmrte-static. Code research baseline là7588216; lấy cả các commit
-handoff mới hơn trên nhánh. Không merge main hoặc force-push.
+Bạn tiếp tục phát triển ManagerHub:
+https://github.com/vitoo16/ManagerHub
 
-Đây là yêu cầu thực thi code đến acceptance, không chỉ lập plan. Tôi không có
-nhu cầu điều khiển native FM/FMRTE trong gói việc này. Bạn có thể không có
-Computer Use; dùng filesystem/shell/test/browser automation thực có. Không
-claim đã chụp màn hình/test khi chưa thực hiện. Không thay phạm vi27 module
-thành MVP và không đánh dấu phase/module hoàn thành vượt bằng chứng.
+## 1. Baseline và quy trình bắt buộc
 
-Trước khi sửa:
-- Kiểm tra git status, bảo toàn mọi thay đổi người dùng; không reset/clean.
-- Đọc AGENTS.md và execution charter/kế hoạch7phase ở docs/implementation/.
-- Đọc docs/research/fmrte/25-handoff-no-computer-use.md, reports20/22/23/24,
-  evidence-manifest.json, domain schema/provenance và compatibility specs.
-- Áp dụng các skill liên quan thực sự cài sẵn: save-safety cho ingestion,
-  data-ux/football-intelligence khi có analytics, app-screen UI/motion/React
-  skills theo AGENTS khi thay UI. Không dùng marketing landing workflow.
-- Inspect code hiện có trước khi thiết kế thêm abstractions. Chốt interface,
-  file ownership/task map và review độc lập theo repository policy.
+- Bắt đầu bằng fetch và kiểm tra trạng thái GitHub; dùng main mới nhất làm product baseline.
+- Không mặc định checkout `research/fmrte-static`: đây là nhánh nghiên cứu lịch sử, không phải baseline sản phẩm.
+- Đọc root AGENTS.md trước; sau đó chỉ đọc phần liên quan của:
+  - docs/implementation/00-execution-charter.md
+  - docs/implementation/01-full-delivery-plan.md
+  - docs/implementation/05-feature-acceptance-ledger.md
+  - docs/system/03-domain-schema-and-provenance.md
+  - docs/system/04-save-reader-compatibility.md
+  - .agents/skills/managerhub-save-safety/SKILL.md
+  - docs/research/fmrte/25-handoff-no-computer-use.md
+- Kiểm tra PR đang mở #75, #76 và #77, exact head SHA, diff, review threads và CI. PR #75 là stacked dependency trên parser foundation #76; merge #76 trước rồi refresh #75. Nếu job có `runner_id=0`, không có steps và logs trả `BlobNotFound`, đó là failure trước runner assignment, không phải kết quả test code; không dựa vào CI của commit cũ. Chỉ merge khi CI chạy thật trên exact head.
+- Đọc docs/research/fmrte/28-save-fixture-corpus.md để biết test fixtures nào đã tồn tại và đâu là blocker evidence; không tạo fixture trùng hoặc gán synthetic evidence thành real build evidence.
+- Không merge PR, đóng PR hoặc thay đổi main nếu chưa có phê duyệt rõ ràng. Không force-push. Dùng branch riêng và PR có mô tả WHAT/WHY/evidence/tests/limits.
+- Không reset/clean checkout có thay đổi người dùng; không ghi đè private data.
 
-Trạng thái đã chứng minh:
-- Reader research exact FM2013 13.3.3f359652:4036Player+22PlayerStaff=4058,
-  49ordinary attrs,15position bytes,DOB,primaryNation,gameDate; calendarAge là
-  derived_model có policy riêng, không ActualAge/FMRTE-engine equivalence.
-- Shared strict parser trả immutable GameSnapshot, live_game/provisional,
-  roster/currentness/career identity không verified. Ticket10min binds
-  UUID/PID/creation FILETIME/path/hash/scriptSHA; real local workflow đã qua
-  Editor/Realism. Output luôn historical_capture, không current/live watcher.
-- Realism lọc49attrs/15familiarity và suppliedDOB/nation/derivedage trước
-  return/serialize; scouting knowledge chưa decode. CA/PA/contract canonical
-  vẫn null. Không tự mở chúng từ một vài reference matches.
-- Không có Tauri/Rust host, product IPC, historical live-snapshot consumer/UI
-  hoàn chỉnh, offline .fm player decoder hoặc certified writer.
-- Baseline npm run check:128Vitest+98Node=226,TypeScript/build/budgets qua.
-  Đây là baseline cần tái kiểm tra, không phải kết quả của lượt chạy của bạn.
+Dự án là full product 27 modules theo 7 integration phases, không MVP. Plan quy định scope; execution charter quy định engineering/security; acceptance ledger là trạng thái thực tế. Không tự sửa roadmap chỉ để khớp tiến độ.
 
-GÓI VIỆC BÂY GIỜ:
-Implement consumer snapshot lịch sử end-to-end trong shared web UI hiện có:
-user chọn address-free wire JSON, chọn mode, parse trong worker bằng
-parseFm2013LiveCapture, thấy coverage/provenance/unknown, duyệt/search player,
-lưu local, reload và mở lại. Tái sử dụng code ở domain và worker patterns.
-Chưa import normalized wrapper bất kỳ bằng type assertion; mọi data từ file
-hoặc persistence đều untrusted và phải có validation/privacy contract rõ.
+## 2. Những gì đã triển khai — không làm lại
 
-Yêu cầu triển khai:
-1. Historical store/schema riêng với validation/versioning; không cast vào
-   PlayerDataset hoặc nới export-only player-library. Không tự merge career.
-2. Worker bounded input/cancel/error/partial/empty/rejected; không Node,
-   PowerShell, Frida, handles hoặc process APIs trong browser. Không persist
-   raw exact-value wire trong luồng Realism.
-3. Nối navigation/state thật; VI/EN, source/build/mode/time/missing reasons,
-   history label rõ. Nút nào thêm phải có hành vi và error state thực.
-4. Privacy ở data/store/query/export/reload/mode-switch; Editor data đã lưu
-   không được rò vào Realism. Unknown khác zero, tuổi phải label derived.
-5. Persistence phải xét payload hàng chục MiB, quota/corruption/duplicate
-   imports/removal; không chọn localStorage chỉ vì tiện. Bám architecture/ADR
-   và reuse; không thêm competing backend/framework không cần thiết.
-6. Không nối live fields sang eCA/roles/squad optimizer trước khi có projection
-   edition-aware/eligibility/calibration đúng. PrimaryNation không có nghĩa
-   mọi citizenship; club relation không chứng minh current employment/loan.
-7. Unit/integration cho schema/worker/store/privacy/errors; Playwright cho
-   import→browse→persist→reload→switch mode. Kiểm tra VI/EN, keyboard,
-   reduced motion, desktop/mobile/200%zoom và source badges theo skills.
-   Synthetic fixtures ghi rõ trong tests, không fake production roster.
-8. Chạy npm run check và các check UI/E2E thực sự liên quan; báo command,
-   pass/fail/skipped và lý do chưa chạy. Update ledger/compat/docs đúng scope;
-   commit chức năng nối thật, không dừng ở plan hoặc stub.
+- Historical Snapshot Consumer đã merge vào main qua PR #58; local capture-to-wire handoff qua PR #59.
+- Shared worker import dùng strict `parseFm2013LiveCapture`, bounded input và typed errors.
+- Historical snapshot có schema/version validation, immutable Editor/Realism projections, store IndexedDB tách biệt, reload validation, search/browse và provenance/coverage.
+- Đây là historical capture, không phải live watcher, product IPC hoặc authenticated current-game state.
+- `PlayerDataset`/player-library hiện tại vẫn là export-only; không cast live snapshot sang đó.
+- Save Library hiện chỉ làm local read-only metadata inspection, SHA-256 khi khả dụng, signature/container observations và experimental archive directory catalogue. Original .fm bytes không được persist.
+- Reuse `packages/domain/src/archive.ts`, `archive-metadata.ts`, `archive-codec.ts`, `archive-gaps.ts`, `save.ts`, `save-signature.ts`, `save-library.ts` and `packages/storage/src/save-inspections.ts`. The shared `isSafeArchiveIndexMetadata()` contract owns member/name/file bounds and overlap checks across parser, gap, codec and persistence consumers. Keep the TypeScript `SaveInspectionResult`/`ArchiveIndex` in-memory types separate from `SaveIdentity`/`PersistedArchiveIndex` persisted types. Keep `isSaveInspectionResult()` (ephemeral worker result) separate from `isSaveIdentity()` (persisted IndexedDB schema): the worker-result guard must reject undefined-valued own diagnostic properties; the persisted guard must reject `probes` and `gapObservations` keys entirely, including empty/undefined own properties. Save Library validates each ephemeral gap observation against adjacent sorted members, exact gap size, shared sample thresholds and marker-count bounds. Codec trials are bounded length-only hypotheses; do not duplicate them or treat size match as payload decoding.
+- Compatibility profile registry vẫn empty; không có offline .fm player decoder, verified CA/PA reader hoặc certified writer.
 
-Private artifacts không ởGit. Localroot hiện tại:
-<LOCAL_USER_PROFILE>\.codex\visualizations\2026\10\30\01a18c2c-5b30-7ac2-841d-290449543b12
-Có wire thật fm13-dated-wire.json/fm13-biography-wire.json cho local manual
-validation nếu máy này còn file. Không commit/upload chúng, screenshots thật,
-CIL, memory data, binaries, save hoặc license. Clone máy khác có thể thiếu
-toàn bộ raw evidence: báo rõ và vẫn làm portable tests, không fabricate.
+## 3. Bằng chứng FM2013 và giới hạn phải giữ
 
-Không cần REA để code consumer trên contract hiện có. Nếu mở rộng field/runtime:
-discover MCP REA/tool schemas thật; user yêu cầu nếu không kết nối được thì
-dừng phần REA và báo. Không có Computer Use không ngăn static/Frida nếu tool
-được cấp, nhưng không được bịa UI reference. Không hardcode PID cũ; sandbox
-not-found không chứng minh process đã đóng toàn máy. Không fake creation time,
-không tự reinstall/configure/privilege fallback. Native UI validation mới,
-writer,build khác,career lineage và offline codec giữ gate riêng.
+Exact research target: FM2013 build `13.3.3f359652` cùng FMRTE13 `13.3.3.62`. Các capture lịch sử có 4,036 Player + 22 PlayerStaff = 4,058 observed records; 49 ordinary attributes, 15 position bytes, biography và game date đã được nghiên cứu. Đây không phải bằng chứng toàn bộ career/database hay mọi build.
 
-Kết thúc với: thay đổi cụ thể, acceptance đã đạt, tests chạy thật, giới hạn,
-commit/branch. Không tự push nếu chưa được tôi yêu cầu cho các commit mới.
-Không claim27modules/product reader/editor certified chỉ vì consumer xong.
+- Ordinary attributes và một số biography fields ở Editor vẫn provisional; Realism redacts exact values trước return/serialization.
+- `calendarAge` là `derived_model` có policy/version riêng, không phải ActualAge hay FMRTE-engine equivalence.
+- CA/PA canonical vẫn null; một số reference matches không đủ để bật reader.
+- Club link không chứng minh current employment/loan; primary nation không chứng minh citizenship hoặc eligibility.
+- Career lineage, atomic capture, loaded image authentication và product IPC vẫn chưa được chứng nhận.
+- FMRTE26 research là nhánh riêng; không chuyển offsets, role semantics hoặc build assumptions giữa editions.
+- AFE signature và trailing FMF directory marker là structural observations. 18-byte payload base chỉ là một layout observation trong sample, không phải universal format rule.
+- Prefix `zlib_candidate`, repeated marker, member name hoặc directory catalogue không chứng minh payload codec hay player records.
+
+## 4. Gói việc được giao: Phase 2 save compatibility
+
+Tiếp tục B1 corpus/detection, B2 adapter research/framework và B5 verification trong Phase 2. Không mở decoder hoặc profile production chỉ để tăng số tính năng.
+
+Ưu tiên theo thứ tự:
+
+1. Review/finalize PR #76 (archive parser) and PR #75 (Save Library identity/persistence) in dependency order and against exact current heads. Verify ID/hash binding, secure random fallback, legacy record compatibility, file/directory/member bounds, AFE family binding, unsafe labels, malformed UTF-16, mutation tests, and the strict ephemeral-vs-persisted schema boundary.
+2. Kiểm tra parser input boundaries, candidate-count/decompression/member/name bounds, duplicate/overlap rules, worker timeout/cancellation và persistence validator. Mọi exported helper nhận input untrusted phải fail closed hoặc có typed error.
+3. Mở rộng portable synthetic fixture corpus và deterministic fuzz/property tests. Test malformed/truncated/oversized/mutated input, offset overflow, duplicate names, overlapping extents, bad encoding, decompression cap và marker-heavy tails.
+4. Chỉ nghiên cứu member payload codec khi có raw sample được người dùng cho phép dùng, byte-level evidence lặp lại và đối chiếu nhiều member. Không đoán codec từ prefix hoặc tên file.
+5. Khi có verified exact-build decoder: giữ adapter versioned, immutable snapshot, per-domain coverage, source/provenance và unknown/null. Kiểm chứng field với same-build game values trước khi đăng ký profile.
+6. Cập nhật compatibility docs/acceptance ledger chỉ với evidence đã quan sát. Không đánh dấu MH-01/MH-05 hoặc Phase 2 Complete khi còn thiếu corpus, field verification hoặc unsupported/error UX.
+
+## 5. Safety và architecture
+
+- Save files là untrusted binary. Read-only immutable; không write-back, patch, mutate game process hoặc bypass platform protections.
+- Không upload save/raw wire/private Evidence, screenshots, CIL, memory data, binaries hoặc license lên Git/cloud.
+- Không dùng filename/size/mtime làm content fingerprint. Tách record identity và content hash.
+- Không dùng localStorage cho payload lớn; không thêm backend/framework/package manager/runtime mới nếu chưa có ADR và measurable benefit.
+- Giữ VI/EN i18n. Chỉ dùng skills liên quan; save work dùng managerhub-save-safety. Không load toàn bộ vendored skills.
+- Nếu thiếu private fixture hoặc native UI evidence, chạy portable tests và ghi blocker; không fabricate real fixture, process identity, screenshot hay game reference.
+- Không claim React/browser test chứng minh native Windows, FMRTE, game-load hoặc writer behavior.
+
+## 6. Validation và kết thúc
+
+- Chạy các check liên quan trên exact branch/head: npm ci khi lockfile/dependency environment yêu cầu; npm run check; npm run test:e2e cho UI/critical journey changes.
+- Báo command cụ thể, pass/fail/skipped, CI run URL/SHA, tests count nếu được tool xác nhận. Không ghi “all tests passed” nếu browser/E2E chưa xong.
+- Mỗi PR mô tả scope, risk, reused abstractions, migration/backward compatibility, tests và unsupported limits.
+- Cuối lượt báo: code paths thay đổi, acceptance đạt/chưa đạt, exact commits/PRs, CI, blockers và next bounded task.
+- Không tuyên bố hoàn thành 27 modules, offline decoder, CA/PA, writer hoặc phase chỉ vì structural parser tests xanh.
 ```
