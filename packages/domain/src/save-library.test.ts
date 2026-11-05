@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { isSaveIdentity, isSaveInspectionResult, MAX_SAVED_SAVE_INSPECTIONS, toPersistedSaveIdentity } from './save-library';
-import type { ArchiveMember, MemberEnvelopeProbe } from './archive';
+import { isSaveIdentity, isSaveInspectionResult, MAX_SAVED_SAVE_INSPECTIONS, toPersistedSaveIdentity, type SaveInspectionResult } from './save-library';
+import type { ArchiveIndex, ArchiveMember, MemberEnvelopeProbe } from './archive';
 import type { UnindexedGapObservation } from './archive-gaps';
 import type { SaveIdentity } from './types';
 
-function save(overrides: Partial<SaveIdentity> = {}): SaveIdentity {
+function save(overrides: Partial<Omit<SaveInspectionResult, 'archiveIndex'>> & { readonly archiveIndex?: ArchiveIndex | null } = {}): SaveInspectionResult {
   return {
     id: 'a'.repeat(64),
     name: 'career.fm',
