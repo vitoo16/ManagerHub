@@ -75,7 +75,11 @@ export function isSaveIdentity(value: unknown): value is SaveIdentity {
 export function isSaveInspectionResult(value: unknown): value is SaveIdentity {
   if (!isRecord(value)) return false;
   const index = value.archiveIndex;
-  if (index === null) return isSaveIdentity(value);
+  if (index === null) {
+    if (!isSaveIdentity(value)) return false;
+    return value.sha256 !== null ||
+      (typeof value.id === 'string' && /^inspection:[a-f0-9]{32}$/.test(value.id));
+  }
   if (!isRecord(index) || !hasOnlyKeys(index, [
     'family', 'evidence', 'memberCount', 'directoryOffset',
     'members', 'nestedGroups', 'probes', 'gapObservations'
