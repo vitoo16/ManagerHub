@@ -1,3 +1,19 @@
+import {
+  isSafeArchiveIndexMetadata,
+  isSafeArchiveLabel,
+  OBSERVED_MEMBER_DATA_BASE_BYTES,
+  MAX_ARCHIVE_MEMBERS,
+  MAX_ARCHIVE_GROUPS,
+  MAX_ARCHIVE_COMPONENT_NAME_CHARS,
+  MAX_MEMBER_PREFIX_PROBES
+} from './archive-metadata';
+export {
+  isSafeArchiveIndexMetadata,
+  isSafeArchiveLabel,
+  OBSERVED_MEMBER_DATA_BASE_BYTES,
+  MAX_MEMBER_PREFIX_PROBES
+} from './archive-metadata';
+
 /**
  * Experimental, read-only inspection of a trailing FMF directory observed in
  * one AFE-family save. NOT a game database decoder or compatibility guarantee.
@@ -22,25 +38,21 @@ export interface ArchiveIndex {
 }
 
 const SEARCH_TAIL_BYTES = 64 * 1024;
-const MAX_INDEX_COMPRESSED = 64 * 1024;
+const MAX_INDEX_COMPRESSED = SEARCH_TAIL_BYTES;
 const MAX_INDEX_DECOMPRESSED = 512 * 1024;
-const MAX_MEMBERS = 1024;
-const MAX_GROUPS = 16;
-// Limit random-access file reads when a nested catalogue exposes hundreds of members.
-export const MAX_MEMBER_PREFIX_PROBES = 32;
 // Prevent adversarial marker-heavy files from triggering unbounded inflate attempts.
 const MAX_INDEX_CANDIDATES = 32;
-const MAX_NAME_CHARS = 256;
+
 // In the one observed AFE save, member offsets are relative to byte 18;
 // the trailing directory begins after the final member extent. Keep this
 // experimental layout assumption explicit until independently verified.
-const OBSERVED_MEMBER_DATA_BASE_BYTES = 18;
 
 export function parseArchiveDirectoryDetails(bytes: Uint8Array, boundary: number): {
   members: readonly ArchiveMember[];
   nestedGroups: readonly { name: string; memberCount: number }[];
 } | null {
-  if (bytes.byteLength < 8) return null;
+  if (!(bytes instanceof Uint8Array) || !Number.isSafeInteger(boundary) || boundary < 0 ||
+      bytes.byteLength < 8 || bytes.byteLength > MAX_INDEX_DECOMPRESSED) return null;
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   let cursor = 0;
   function readU32(): number | null {
@@ -51,19 +63,22 @@ export function parseArchiveDirectoryDetails(bytes: Uint8Array, boundary: number
   }
   function readText(): string | null {
     const size = readU32();
-    if (size === null || size < 1 || size > MAX_NAME_CHARS || cursor + size * 2 + 2 > bytes.byteLength) return null;
-    const text = new TextDecoder('utf-16le', { fatal: true }).decode(bytes.subarray(cursor, cursor + size * 2));
+    if (size === null || size < 1 || size > MAX_ARCHIVE_COMPONENT_NAME_CHARS || cursor + size * 2 + 2 > bytes.byteLength) return null;
+    let text: string;
+    try {
+      text = new TextDecoder('utf-16le', { fatal: true }).decode(bytes.subarray(cursor, cursor + size * 2));
+    } catch {
+      return null;
+    }
     cursor += size * 2;
     if (view.getUint16(cursor, true) !== 0) return null;
     cursor += 2;
-    // Deliberately reject control characters from untrusted FM strings and filenames.
-    // oxlint-disable-next-line no-control-regex
-    if (!text || /[\\/\x00-\x1f]/.test(text)) return null;
+    if (!isSafeArchiveLabel(text, MAX_ARCHIVE_COMPONENT_NAME_CHARS)) return null;
     return text;
   }
   if (readU32() !== 0) return null;
   const count = readU32();
-  if (count === null || count < 1 || count > MAX_MEMBERS) return null;
+  if (count === null || count < 1 || count > MAX_ARCHIVE_MEMBERS) return null;
   const members: ArchiveMember[] = [];
   for (let i = 0; i < count; i++) {
     const stem = readText();
@@ -82,12 +97,12 @@ export function parseArchiveDirectoryDetails(bytes: Uint8Array, boundary: number
   const nestedGroups: { name: string; memberCount: number }[] = [];
   if (cursor < bytes.byteLength) {
     const groupCount = readU32();
-    if (groupCount === null || groupCount > MAX_GROUPS) return null;
+    if (groupCount === null || groupCount > MAX_ARCHIVE_GROUPS) return null;
     for (let group = 0; group < groupCount; group++) {
       const groupName = readText();
       const childCount = readU32();
       if (groupName === null || childCount === null || childCount < 1 ||
-          childCount > MAX_MEMBERS - members.length) return null;
+          childCount > MAX_ARCHIVE_MEMBERS - members.length) return null;
       nestedGroups.push({ name: groupName, memberCount: childCount });
       for (let j = 0; j < childCount; j++) {
         const stem = readText();
@@ -161,6 +176,7 @@ async function inflateIndexBlob(blob: Blob): Promise<Uint8Array> {
 }
 
 export async function inspectArchiveIndex(file: File): Promise<ArchiveIndex | null> {
+  if (!file || !Number.isSafeInteger(file.size) || file.size < 0 || typeof file.slice !== 'function') return null;
   const tailStart = Math.max(0, file.size - SEARCH_TAIL_BYTES);
   const tail = new Uint8Array(await file.slice(tailStart).arrayBuffer());
   // Only inspect the final self-contained candidate. This marker may occur
@@ -210,15 +226,9 @@ export async function probeMemberEnvelopes(
   file: File,
   index: ArchiveIndex
 ): Promise<readonly MemberEnvelopeProbe[]> {
-  const memberDataBoundary = index.directoryOffset - OBSERVED_MEMBER_DATA_BASE_BYTES;
-  if (memberDataBoundary <= 0 || index.directoryOffset > file.size) return [];
+  if (!file || !Number.isSafeInteger(file.size) || !isSafeArchiveIndexMetadata(index, file.size)) return [];
   const probes: MemberEnvelopeProbe[] = [];
   for (const member of index.members.slice(0, MAX_MEMBER_PREFIX_PROBES)) {
-    if (!Number.isSafeInteger(member.offset) || !Number.isSafeInteger(member.storedBytes) ||
-        member.offset < 0 || member.storedBytes < 1 ||
-        member.offset > memberDataBoundary || member.storedBytes > memberDataBoundary - member.offset) {
-      continue;
-    }
     const absoluteOffset = OBSERVED_MEMBER_DATA_BASE_BYTES + member.offset;
     if (absoluteOffset >= file.size) continue;
     const sample = new Uint8Array(await file.slice(
@@ -265,10 +275,26 @@ export interface ArchiveMemberConsistency {
   readonly referenceEightBytePrefix: string | null;
 }
 
+function isSafePrefixProbe(value: unknown): value is MemberEnvelopeProbe {
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) return false;
+  const probe = value as Partial<MemberEnvelopeProbe>;
+  const sampleBytes = probe.sampleBytes;
+  if (!isSafeArchiveLabel(probe.filename, 512) || typeof sampleBytes !== 'number' ||
+      !Number.isSafeInteger(sampleBytes) || sampleBytes < 8 || sampleBytes > 16 ||
+      typeof probe.prefixHex !== 'string' || probe.prefixHex.length > 47) return false;
+  const bytes = probe.prefixHex.split(' ');
+  return bytes.length === sampleBytes && bytes.every(byte => /^[0-9a-f]{2}$/.test(byte));
+}
+
 export function summarizeMemberConsistency(
   index: ArchiveIndex,
   probes: readonly MemberEnvelopeProbe[]
 ): ArchiveMemberConsistency {
+  const empty: ArchiveMemberConsistency = {
+    observedMembers: 0, contiguousPairs: 0, discontinuousPairs: 0,
+    overlappingPairs: 0, repeatedEightBytePrefixes: 0, referenceEightBytePrefix: null
+  };
+  if (!index || !isSafeArchiveIndexMetadata(index, index.directoryOffset)) return empty;
   const ordered = [...index.members].sort((a, b) => a.offset - b.offset);
   let contiguousPairs = 0;
   let discontinuousPairs = 0;
@@ -282,11 +308,15 @@ export function summarizeMemberConsistency(
     else if (previousEnd < current.offset) discontinuousPairs++;
     else overlappingPairs++;
   }
-  const referenceEightBytePrefix = probes.find(p => p.sampleBytes >= 8)?.prefixHex
+  const safeProbes = Array.isArray(probes)
+    ? probes.slice(0, MAX_MEMBER_PREFIX_PROBES).filter(isSafePrefixProbe)
+      .filter(probe => index.members.some(member => member.filename === probe.filename))
+    : [];
+  const referenceEightBytePrefix = safeProbes.find(probe => probe.sampleBytes >= 8)?.prefixHex
     .split(' ').slice(0, 8).join(' ') ?? null;
   const repeatedEightBytePrefixes = referenceEightBytePrefix === null ? 0 :
-    probes.filter(p => p.sampleBytes >= 8 &&
-      p.prefixHex.split(' ').slice(0, 8).join(' ') === referenceEightBytePrefix).length;
+    safeProbes.filter(probe =>
+      probe.prefixHex.split(' ').slice(0, 8).join(' ') === referenceEightBytePrefix).length;
   return {
     observedMembers: ordered.length,
     contiguousPairs,
