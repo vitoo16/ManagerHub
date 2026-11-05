@@ -18,7 +18,7 @@ https://github.com/vitoo16/ManagerHub
   - docs/system/04-save-reader-compatibility.md
   - .agents/skills/managerhub-save-safety/SKILL.md
   - docs/research/fmrte/25-handoff-no-computer-use.md
-- Kiểm tra PR đang mở #75 và #76, exact head SHA, diff, review threads và CI. PR #75 là stacked dependency trên parser foundation #76; merge #76 trước rồi refresh #75. Nếu job có `runner_id=0`, không có steps và logs trả `BlobNotFound`, đó là failure trước runner allocation, không phải kết quả test code; không dựa vào CI của commit cũ.
+- Kiểm tra PR đang mở #75, #76 và #77, exact head SHA, diff, review threads và CI. PR #75 là stacked dependency trên parser foundation #76; merge #76 trước rồi refresh #75. Nếu job có `runner_id=0`, không có steps và logs trả `BlobNotFound`, đó là failure trước runner assignment, không phải kết quả test code; không dựa vào CI của commit cũ. Chỉ merge khi CI chạy thật trên exact head.
 - Đọc docs/research/fmrte/28-save-fixture-corpus.md để biết test fixtures nào đã tồn tại và đâu là blocker evidence; không tạo fixture trùng hoặc gán synthetic evidence thành real build evidence.
 - Không merge PR, đóng PR hoặc thay đổi main nếu chưa có phê duyệt rõ ràng. Không force-push. Dùng branch riêng và PR có mô tả WHAT/WHY/evidence/tests/limits.
 - Không reset/clean checkout có thay đổi người dùng; không ghi đè private data.
