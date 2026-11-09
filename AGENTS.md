@@ -21,7 +21,7 @@ This file routes coding agents to **one source of truth per concern**. It is not
 | Visual design and motion | [Design system](docs/product/02-design-system.md) and [Liquid Glass/motion spec](docs/implementation/03-liquid-glass-motion-spec.md) |
 | Football semantics and data/provenance | [Business docs](docs/business/README.md) and [System docs](docs/system/README.md) |
 | Optional task-oriented instructions | [Agent phase prompt templates](docs/implementation/02-agent-prompts.md) |
-| Installed skills and their source/activation rules | [Skill registry](.agents/README.md) and [source manifest](.agents/SKILLS-SOURCES.md) |
+| FM27 public editor design research, FM2013 adaptation RFC, and agent review forum | [FM27 reference study](docs/research/fm27-editor/README.md) and [discussion #78](https://github.com/vitoo16/ManagerHub/issues/78) |\n| Installed skills and their source/activation rules | [Skill registry](.agents/README.md) and [source manifest](.agents/SKILLS-SOURCES.md) |
 
 **Conflict resolution:** Protect user data, source truth and explicit user requirements first. For implementation status, inspect current code/tests/CI and compare with the acceptance ledger; do not treat historical plans or old prompt examples as evidence of shipped functionality. The delivery plan owns phase scope; the engineering charter owns engineering standards; the relevant product/domain spec owns its subject. If real contradictions remain, document and resolve them narrowly rather than silently rewriting the roadmap.
 
