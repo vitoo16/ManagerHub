@@ -24,6 +24,25 @@ describe('FM2013 local capture ticket admission', () => {
     expect(ticket).not.toHaveProperty('careerId'); expect(validate(ticket)).not.toHaveProperty('current');
     expect(validate(ticket)).not.toHaveProperty('verified');
   });
+  it('limits observer-backed capture tickets to signed process IDs without claiming live authorization', () => {
+    for (const pid of [1, 0x7fffffff]) {
+      const process = { ...identity, pid };
+      const selected = createFm2013CaptureTicket(process, id, issued);
+      expect(selected.process.pid).toBe(pid);
+      expect(validateFm2013CaptureAdmission(selected, { status: 'observed', process }, { captureId: id, pid }, now))
+        .toEqual({ status: 'admitted', reason: null });
+      expect(selected).not.toHaveProperty('liveAuthorized');
+    }
+    for (const pid of [0, -1, 0x80000000, 0xffffffff, 0x1_0000_0000, 1.5]) {
+      const process = { ...identity, pid };
+      expect(() => createFm2013CaptureTicket(process, id, issued)).toThrow(TypeError);
+      expect(validateFm2013CaptureAdmission({ ...make(), process }, observed, binding, now))
+        .toEqual({ status: 'rejected', reason: 'invalid_ticket' });
+      expect(validateFm2013CaptureAdmission(make(), { status: 'observed', process }, binding, now))
+        .toEqual({ status: 'rejected', reason: 'invalid_observation' });
+    }
+  });
+
   it('rejects exited/denied/unobservable processes without silently retargeting', () => {
     for (const status of ['process_not_found', 'access_denied', 'observation_failed', 'unsupported_build'] as const) {
       expect(validate(make(), { status })).toEqual({ status: 'rejected', reason: status });

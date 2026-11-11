@@ -100,5 +100,7 @@ test('prepare binds RTTI file proofs to the observed executable path and rejects
 test('unobserved prepare targets never fabricate a ticket or script',async()=>fixture(async({dir})=>{
  const ticket=join(dir,'not-created.json'),script=join(dir,'not-created.js');
  await assert.rejects(prepareFm2013Session({pid:'100',ticket,script},{observe:async()=>({status:'process_not_found'})}),/process_not_found/u);
+ await assert.rejects(prepareFm2013Session({pid:'2147483648',ticket,script},
+  {observe:async()=>{throw Error('invalid PID must fail before process observation');}}),/invalid_prepare_arguments/u);
  await assert.rejects(readFile(ticket),{code:'ENOENT'});await assert.rejects(readFile(script),{code:'ENOENT'});
 }));

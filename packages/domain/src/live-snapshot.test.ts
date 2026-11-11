@@ -87,6 +87,24 @@ describe('FM2013 live capture admission', () => {
     ]) { const input = capture(); mutate(input); expect(parse(input).status).toBe('rejected'); }
   });
 
+  it('preserves the full 32-bit historical wire PID range without granting a live read session', () => {
+    for (const pid of [1, 0x7fffffff, 0x80000000, 0xffffffff]) {
+      const value = capture();
+      value.target.pid = pid;
+      const result = parse(value);
+      expect(result.status).toBe('ready');
+      expect(result.snapshot?.sourceIdentity.targetPid).toBe(pid);
+      expect(result.snapshot?.sourceIdentity.runtimeImageBytesAuthenticated).toBe(false);
+      expect(result.snapshot?.verification).toBe('provisional');
+      expect(result.snapshot?.rosterCompleteness).toBe('unverified');
+    }
+    for (const pid of [0, -1, 1.5, 0x1_0000_0000]) {
+      const value = capture();
+      value.target.pid = pid;
+      expect(parse(value)).toMatchObject({ status: 'rejected', snapshot: null });
+    }
+  });
+
   it('rejects duplicate native passes and IDs within or across kinds', () => {
     const duplicateKind = capture(); duplicateKind.passes[1] = pass();
     expect(parse(duplicateKind).status).toBe('rejected');
