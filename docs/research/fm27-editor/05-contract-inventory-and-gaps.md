@@ -34,9 +34,16 @@ This report makes the [integration RFC](02-integration-rfc.md) actionable withou
 
 **G7 — Recovery and unsafe edits.** No native writer or memory allocation design is approved. A future journal needs exact session/record IDs as well as old/new bytes, not reusable address alone; the prior successful local session study is read-only.
 
-## Specific cross-contract question (requires test, not speculative fix)
+## PID contract finding — clarified after cross-file trace (pending test execution)
 
-`live-session.ts` validates capture ticket PIDs in the signed 31-bit interval **1..0x7fffffff**, while `live-snapshot.ts` accepts `target.pid` in **1..0xffffffff**. A Windows PID is modeled as a 32-bit identifier in external Windows APIs; these contracts are not numerically identical. Decide whether intentionally restricting tickets is justified; test a high-bit PID in both paths and resolve or document it before a shared IPC session contract is certified. Do **not** quietly loosen validation in a docs-only PR.
+The two PID validators serve **different trust boundaries**, and the apparently mismatched numeric ranges should **not** be automatically unified:
+
+- **Observer-backed local process sessions:** `live-session.ts` accepts **1..0x7fffffff**; both `scripts/fm2013-process-observer.mjs` and `scripts/fm2013-local-session.mjs` enforce the same upper bound. The local observer currently invokes PowerShell `Get-Process -Id`, which consumes an integer process identifier; it is not a generic Windows DWORD process accessor. The observer already has a negative test for `0x80000000`.
+- **Address-free historical capture input:** `live-snapshot.ts` validates the incoming transport `target.pid` as **1..0xffffffff**, but does **not** authorize an attach, verify current session status, or certify the historical caller's process identity. Widening the historical field is not evidence that a local observer can safely open the same PID.
+- **Correct response:** Preserve these as distinct contracts in the current implementation. New [test-only PR #82](https://github.com/vitoo16/ManagerHub/pull/82) locks maximum/minimum and negative cases in existing local-session, live-snapshot and observer tests. **Tests are not confirmed run** until the CI runner blocker [#80](https://github.com/vitoo16/ManagerHub/issues/80) is resolved.
+- **Future ADR:** A production native adapter may choose a different Windows process API with a documented PID contract. Such a change requires its own schema version, backend and test review, not an undocumented widening of existing research ticket acceptance.
+
+This resolves the static **why the two ranges coexist**; it does **not** certify historical high-bit PID values as OS-observed or approve any new live session capability.
 
 ## Narrow next PR proposal (subject to #78 and CI #80)
 
