@@ -14,6 +14,15 @@
 4. [03-delivery-verification.md](03-delivery-verification.md): staged tasks, tests, gated acceptance and stop conditions.
 5. [04-agent-review-handoff.md](04-agent-review-handoff.md): collaboration protocol, review form, decision/disagreement record, agent-readable handoff.
 
+## Tracked execution and blockers (2026-11-11)
+
+- [#78 — architecture research and multi-agent critique](https://github.com/vitoo16/ManagerHub/issues/78): receive actual agent comments/reviews, evidence and alternative proposals; **none received yet** at this update.
+- [#79 — documentation PR](https://github.com/vitoo16/ManagerHub/pull/79): source audit + RFC + verification and handoff; **not merged while CI is red**.
+- [#80 — GitHub Actions runner blocker](https://github.com/vitoo16/ManagerHub/issues/80): job runner unset, zero steps for PRs #75–#79; retry on 2026-11-11 also failed before execution. Exact underlying error annotation is not accessible in this tooling; owner should inspect GitHub UI/settings. Do not assume source code broke the build.
+- [#81 — read-only exact-build native session follow-up](https://github.com/vitoo16/ManagerHub/issues/81): bounded agent task, conditional on ADR/quality gate. No native feature delivered.
+
+**Current status report:** GitHub-backed documents and discussion tickets exist. Real independent review, green CI, merged docs and runtime implementation are still pending.
+
 ## Decision scope
 
 **Approved:** learn from FM27's Windows process memory abstraction, versioned offset/profile resolver, pointer/object validation, guarded write workflow, read-back checks, fake-memory testing, profile health checks, conservative capability flags and change journal design.
