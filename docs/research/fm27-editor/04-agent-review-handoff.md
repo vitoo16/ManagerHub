@@ -49,6 +49,13 @@ Keep a growing record in this file or a linked ADR, with columns:
 | D-04 | GPL reuse | Clean-room design / compliant GPL distribution | [audit](01-source-audit.md) | No source copy approved | OPEN FOR LICENSE REVIEW |
 | D-05 | Session freshness and career lineage | process identity + verified career / historical-only | existing [live contract](../fmrte/20-fm2013-live-snapshot-contract.md) | Historical is established; currentness needs evidence | OPEN |
 
+## Live work queue and incidents — 2026-11-11
+
+- **Discussion:** [#78](https://github.com/vitoo16/ManagerHub/issues/78), archive actual agent feedback and disputed claims before ADR decisions.
+- **Documentation:** [PR #79](https://github.com/vitoo16/ManagerHub/pull/79), 8 files added/modified. Branch static link inspection checked 115 relative links and found no missing file targets (directory links may be valid).
+- **CI blocker:** [#80](https://github.com/vitoo16/ManagerHub/issues/80), workflow [run #42698928326](https://github.com/vitoo16/ManagerHub/actions/runs/42698928326) failed **twice** before runner assignment; code-quality and browser report failure, `runner_id: 0`, `steps: []`. Similar immediate failures on PRs #75–#77. Cause unknown. Do **not** call tests successful, blindly change CI security policy or merge on red.
+- **Next code integration:** [#81](https://github.com/vitoo16/ManagerHub/issues/81), read-only FM2013 native session contract/ADR, bounded scope and tests. Block unsafe native writing until separate certification.
+
 ## Continuation task order for the next agent
 
 1. Check latest main/branch/PR and read Issue #78; do not repeat old proposals if answered.
