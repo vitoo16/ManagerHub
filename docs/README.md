@@ -29,7 +29,7 @@
 - [S09 Security, privacy and tests](system/09-security-privacy-and-testing.md)
 - [S10 API and workflows](system/10-api-and-workflow-contracts.md)
 
-## Engineering (AI agents)
+## New cross-edition native-adapter research (design reference only)\n- [FM27 Editor pinned source audit and FM2013 adaptation RFC](research/fm27-editor/README.md): design, evidence, independent review protocol and [issue #78](https://github.com/vitoo16/ManagerHub/issues/78). No native reader/writer is certified by this documentation.\n\n## Engineering (AI agents)
 - [Research and curated skill selection](engineering/agent-skills-research.md)
 - [Agent workflow root](../AGENTS.md)
 - [Three in-repo original project skills](../.agents/skills/)

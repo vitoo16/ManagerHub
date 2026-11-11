@@ -1,4 +1,4 @@
-# FMRTE research summary — 2026-11-01
+# FMRTE research summary — 2026-11-01\n\n**2026-11-10 additional public reference:** Independent FM27 in-game editor architecture has been studied for *design patterns only*. The pinned [FM27 source audit, adaptation RFC, verification gates and agent handoff](../fm27-editor/README.md) are subject to [multi-agent issue #78](https://github.com/vitoo16/ManagerHub/issues/78). No FM27 offset or write method is valid for FM2013 without its own evidence. No new native product capability is certified.
 
 **Tích hợp:** research baseline FMRTE/FM2013 đã được merge vào main tại 1cd994c. [Handoff không có Computer Use](25-handoff-no-computer-use.md) ghi các ranh giới và private-artifact limits. [Historical snapshot consumer](27-historical-snapshot-consumer.md) mô tả import worker, schema riêng, IndexedDB, mode privacy và acceptance đang được kiểm thử.
 
