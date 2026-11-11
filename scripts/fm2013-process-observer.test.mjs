@@ -29,6 +29,19 @@ test('observer binds an exact-build PID to the same opaque start identity across
   }
 });
 
+test('observer can query the maximum signed PowerShell PID but rejects unsigned-only IDs', async () => {
+  const signedMaximum = 0x7fffffff, target = { ...identity, pid: signedMaximum }, f = fixture([target, target]);
+  assert.deepEqual(await observeFm2013Process(signedMaximum, f.options), { status: 'observed', process: {
+    pid: signedMaximum, startedAtFileTime: identity.startedAtFileTime, imagePath, binarySha256: profile.binarySha256,
+  } });
+  assert.equal(f.calls.length, 2);
+  assert.match(f.calls[0][1][3], /Get-Process -Id 2147483647 /u);
+  const aboveMaximum = fixture();
+  assert.deepEqual(await observeFm2013Process(0x80000000, aboveMaximum.options),
+    { status: 'observation_failed', reason: 'invalid_pid' });
+  assert.equal(aboveMaximum.calls.length, 0);
+});
+
 test('observer refuses PID reuse, exit and path changes after hashing', async () => {
   for (const changed of [
     { ...identity, startedAtFileTime: '134063484000000001' },
