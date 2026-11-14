@@ -6,8 +6,12 @@ on:
 
 # New pushes supersede older unmerged CI jobs to reduce wasted runtime.
 concurrency:
-  group: managerhub-checks-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: managerhub-checks-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  # Preserve main branch verification; cancel only superseded revisions of one PR.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
 
 jobs:
   code-quality:
@@ -43,6 +47,11 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
+      - name: Restore Playwright browser cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: managerhub-playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
       - name: Install browser
         run: npx playwright install --with-deps chromium
       - name: E2E / desktop and mobile
