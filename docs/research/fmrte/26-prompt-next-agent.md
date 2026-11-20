@@ -18,7 +18,7 @@ https://github.com/vitoo16/ManagerHub
   - docs/system/04-save-reader-compatibility.md
   - .agents/skills/managerhub-save-safety/SKILL.md
   - docs/research/fmrte/25-handoff-no-computer-use.md
-- Kiểm tra PR đang mở #75, #76 và #77, exact head SHA, diff, review threads và CI. PR #75 là stacked dependency trên parser foundation #76; merge #76 trước rồi refresh #75. Nếu job có `runner_id=0`, không có steps và logs trả `BlobNotFound`, đó là failure trước runner assignment, không phải kết quả test code; không dựa vào CI của commit cũ. Chỉ merge khi CI chạy thật trên exact head.
+- Kiểm tra `main` hiện tại và PR mới nhất. Tại mốc 21/11/2026, #85 và #75 đã merge theo thứ tự đó; #76 đóng vì trùng #75; #82, #77, #79 đã merge vào `main` tại `0d8fac2`; #83 đóng không merge vì không còn phù hợp Local CI. [PR #86](https://github.com/vitoo16/ManagerHub/pull/86) là native-side read-only guard đang cần review/Local CI. Không lặp lại chuỗi merge #76→#75. Nếu GitHub-hosted job không có runner/steps thì không suy thành lỗi code; dùng Local CI đúng SHA và ghi `acceptanceEligible`/log SHA256; không lấy PASS của commit cũ cho PR mới.
 - Đọc docs/research/fmrte/28-save-fixture-corpus.md để biết test fixtures nào đã tồn tại và đâu là blocker evidence; không tạo fixture trùng hoặc gán synthetic evidence thành real build evidence.
 - Không merge PR, đóng PR hoặc thay đổi main nếu chưa có phê duyệt rõ ràng. Không force-push. Dùng branch riêng và PR có mô tả WHAT/WHY/evidence/tests/limits.
 - Không reset/clean checkout có thay đổi người dùng; không ghi đè private data.
@@ -55,7 +55,7 @@ Tiếp tục B1 corpus/detection, B2 adapter research/framework và B5 verificat
 
 Ưu tiên theo thứ tự:
 
-1. Review/finalize PR #76 (archive parser) and PR #75 (Save Library identity/persistence) in dependency order and against exact current heads. Verify ID/hash binding, secure random fallback, legacy record compatibility, file/directory/member bounds, AFE family binding, unsafe labels, malformed UTF-16, mutation tests, and the strict ephemeral-vs-persisted schema boundary.
+1. Đọc và giữ nguyên phần Save Library hardening đã merge (#75), gồm ID/hash binding, secure random fallback, legacy record compatibility, file/directory/member bounds, AFE family binding, unsafe labels, malformed UTF-16, mutation tests, và ranh giới persisted-vs-worker. **Không tái triển khai lại #75/#76**. Tiếp tục kiểm thử riêng các khoảng trống parser và native reader theo Issue #81/PR #86 mà không bật writer.
 2. Kiểm tra parser input boundaries, candidate-count/decompression/member/name bounds, duplicate/overlap rules, worker timeout/cancellation và persistence validator. Mọi exported helper nhận input untrusted phải fail closed hoặc có typed error.
 3. Mở rộng portable synthetic fixture corpus và deterministic fuzz/property tests. Test malformed/truncated/oversized/mutated input, offset overflow, duplicate names, overlapping extents, bad encoding, decompression cap và marker-heavy tails.
 4. Chỉ nghiên cứu member payload codec khi có raw sample được người dùng cho phép dùng, byte-level evidence lặp lại và đối chiếu nhiều member. Không đoán codec từ prefix hoặc tên file.
@@ -74,7 +74,7 @@ Tiếp tục B1 corpus/detection, B2 adapter research/framework và B5 verificat
 
 ## 6. Validation và kết thúc
 
-- Chạy các check liên quan trên exact branch/head: npm ci khi lockfile/dependency environment yêu cầu; npm run check; npm run test:e2e cho UI/critical journey changes.
+- Chạy trên branch/commit chính xác: Node24 `node scripts/local-ci.mjs --profile quick`, rồi Full/Release nếu scope yêu cầu; kiểm tra `summary.source.gitHead` và `acceptanceEligible` cùng hash log. `npm run check` không thay thế Playwright. Không đổi quality gate hoặc chế kết quả từ CI cũ.
 - Báo command cụ thể, pass/fail/skipped, CI run URL/SHA, tests count nếu được tool xác nhận. Không ghi “all tests passed” nếu browser/E2E chưa xong.
 - Mỗi PR mô tả scope, risk, reused abstractions, migration/backward compatibility, tests và unsupported limits.
 - Cuối lượt báo: code paths thay đổi, acceptance đạt/chưa đạt, exact commits/PRs, CI, blockers và next bounded task.
