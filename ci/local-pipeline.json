@@ -1,0 +1,76 @@
+{
+  "repository": "vitoo16/ManagerHub",
+  "nodeMajor": 24,
+  "stages": [
+    {
+      "id": "install",
+      "command": "npm ci --no-audit --no-fund"
+    },
+    {
+      "id": "lint",
+      "command": "npm run lint"
+    },
+    {
+      "id": "format",
+      "command": "npm run format:check"
+    },
+    {
+      "id": "typecheck",
+      "command": "npm run typecheck"
+    },
+    {
+      "id": "unit-and-node",
+      "command": "npm run test"
+    },
+    {
+      "id": "build-budget",
+      "command": "npm run build"
+    },
+    {
+      "id": "playwright-install",
+      "command": "npx playwright install chromium"
+    },
+    {
+      "id": "desktop-mobile-e2e",
+      "command": "npm run test:e2e"
+    },
+    {
+      "id": "stage-release",
+      "command": "node scripts/local-stage-release.mjs"
+    }
+  ],
+  "profiles": {
+    "quick": [
+      "install",
+      "lint",
+      "format",
+      "typecheck",
+      "unit-and-node",
+      "build-budget"
+    ],
+    "full": [
+      "install",
+      "lint",
+      "format",
+      "typecheck",
+      "unit-and-node",
+      "build-budget",
+      "playwright-install",
+      "desktop-mobile-e2e"
+    ],
+    "release": [
+      "install",
+      "lint",
+      "format",
+      "typecheck",
+      "unit-and-node",
+      "build-budget",
+      "playwright-install",
+      "desktop-mobile-e2e",
+      "stage-release"
+    ]
+  },
+  "releaseOutputs": [
+    "apps/web/dist"
+  ]
+}

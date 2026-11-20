@@ -1,8 +1,7 @@
 name: ManagerHub checks
+# Local-first: no automatic GitHub-hosted minutes. Manual fallback only.
 on:
-  push:
-    branches: [main]
-  pull_request:
+  workflow_dispatch:
 
 # New pushes supersede older unmerged CI jobs to reduce wasted runtime.
 concurrency:

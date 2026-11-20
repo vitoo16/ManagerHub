@@ -360,7 +360,7 @@ test('reimporting a saved Realism-only source adds Editor without overwriting it
   expect(after).toMatchObject({
     editorCount: 1, realismCount: 1,
     editorCareer: 'Synthetic FM2013 career', editorPassing: 15, realismPassing: null,
-    editorCapturedAt: '2026-10-31T09:00:00.000Z'
+    editorCapturedAt: JSON.parse(originalRealism as string).snapshot.capturedAt
   });
   expect(after.editorId).toBe(after.realismId);
   expect(after.editorPlayerId).toBe(after.realismPlayerId);
