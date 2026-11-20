@@ -1,4 +1,4 @@
-import type { SaveIdentity } from '@managerhub/domain';
+import type { SaveInspectionResult } from '@managerhub/domain/save-library';
 
 const INSPECTION_TIMEOUT_MS = 45_000;
 const RESULT_KEYS = [
@@ -15,7 +15,7 @@ function record(value: unknown): value is Record<string, unknown> {
  * Untrusted .fm inspections stay in a bounded Web Worker. A stalled, aborted or
  * malformed result never becomes application state, even after a later import.
  */
-export async function inspectSaveInWorker(file: File, signal?: AbortSignal): Promise<SaveIdentity> {
+export async function inspectSaveInWorker(file: File, signal?: AbortSignal): Promise<SaveInspectionResult> {
   if (signal?.aborted) throw new DOMException('Save inspection cancelled.', 'AbortError');
   if (typeof Worker === 'undefined') {
     throw new Error('Background save inspection requires Web Workers.');
@@ -35,7 +35,7 @@ export async function inspectSaveInWorker(file: File, signal?: AbortSignal): Pro
       () => finish(new Error('Background save inspection exceeded 45 seconds.')),
       INSPECTION_TIMEOUT_MS
     );
-    const finish = (cause?: Error, result?: SaveIdentity) => {
+    const finish = (cause?: Error, result?: SaveInspectionResult) => {
       if (settled) return;
       settled = true;
       clearTimeout(timer);
@@ -84,7 +84,7 @@ export async function inspectSaveInWorker(file: File, signal?: AbortSignal): Pro
         finish(new Error('Background save inspection returned an invalid result.'));
         return;
       }
-      finish(undefined, result as unknown as SaveIdentity);
+      finish(undefined, result as unknown as SaveInspectionResult);
     };
     worker.onerror = () => finish(new Error('Background save inspection failed. Please try the file again.'));
     worker.onmessageerror = () => finish(new Error('Background save inspection returned an invalid result.'));

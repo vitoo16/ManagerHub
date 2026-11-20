@@ -13,6 +13,8 @@ const SAVE_ERROR_GUIDANCE: readonly (readonly [RegExp, string])[] = [
     'Background save inspection failed. Please try the file again.'],
   [/Unable to start background save inspection/i,
     'Unable to start background save inspection.'],
+  [/Cryptographic random IDs are unavailable/i,
+    'This browser cannot create a safe inspection ID. Use a browser with cryptographic random number support.'],
   [/Unable to inspect file/i,
     "We couldn't inspect this save file. Check that it is a valid .fm file and try again."]
 ];

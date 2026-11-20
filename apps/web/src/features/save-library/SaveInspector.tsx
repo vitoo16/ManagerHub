@@ -6,6 +6,7 @@ import {
 } from '@managerhub/domain';
 import { Button, Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
 import { useSaveInspectionLibrary } from '../../useSaveInspectionLibrary';
+import type { SaveInspectionResult } from '@managerhub/domain/save-library';
 
 const SAVE_DOMAIN_LABELS: Record<SaveDataDomain, string> = {
   player_identity: 'Player identity',
@@ -41,7 +42,7 @@ function coverageStateLabel(state: SaveCoverageState): string {
 }
 
 function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, select, onRestoreSaved }: {
-  imports: readonly SaveIdentity[]; selected: SaveIdentity | null;
+  imports: readonly SaveInspectionResult[]; selected: SaveInspectionResult | null;
   onInspect: (file: File) => Promise<void>; onRemove: (id: string) => void;
   busy: boolean; error: string | null; select: (id: string) => void;
   onRestoreSaved: (records: readonly SaveIdentity[]) => void;
@@ -72,6 +73,14 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
     const file = event.dataTransfer.files[0];
     if (file && !busy) void onInspect(file);
   };
+  const confirmClearIncompatible = () => {
+    const message = t('This will permanently clear all saved Save Library inspection metadata from this browser. Player exports and historical snapshots will remain untouched. Continue?');
+    if (window.confirm(message)) void saveLibrary.clearIncompatible();
+  };
+  const confirmRemoveSavedMetadata = (id: string, name: string) => {
+    const message = t('Remove saved inspection metadata for "{{fileName}}" from this browser? The original .fm file will remain untouched. This cannot be undone. Continue?', { fileName: name });
+    if (window.confirm(message)) void saveLibrary.remove(id);
+  };
   return <div className="view-flow">
     <div className="page-title"><div className="mh-eyebrow">{t("GAME DATA / LOCAL FILES")}</div><h1>{t("Save Library")}</h1><p>{t("Choose a .fm save to check its file type. To analyze players today, export a squad list as HTML or CSV and open Player Lab.")}</p></div>
     <Surface className={'file-drop ' + (drag ? 'file-drop--drag' : '')} onDragOver={e => {e.preventDefault(); setDrag(true);}} onDragLeave={() => setDrag(false)} onDrop={handleDrop}>
@@ -86,7 +95,7 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
     {error && <div role="alert" className="inline-alert"><Icon name="warning" size={18}/><span>{t(error)}</span><button aria-label={t("Choose another file")} onClick={openPicker}>{t("Choose another file")}</button></div>}
     {saveLibrary.error && <div role="alert" className="inline-alert"><Icon name="warning" size={18}/><span>{t(saveLibrary.error)}</span>
       {saveLibrary.canClearIncompatible
-        ? <button disabled={saveLibrary.activity !== null} onClick={() => { void saveLibrary.clearIncompatible(); }}>{t("Clear incompatible saved metadata")}</button>
+        ? <button disabled={saveLibrary.activity !== null} onClick={confirmClearIncompatible}>{t("Clear incompatible saved metadata")}</button>
         : <button aria-label={t("Dismiss saved metadata error")} onClick={saveLibrary.clearError}><Icon name="close" size={15}/></button>}
     </div>}
     <SectionHeading eyebrow={t("IMPORTED METADATA ONLY")} title={t('Inspected files')+' ('+imports.length+')'}>
@@ -119,6 +128,7 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
             <dt>{t("Size")}</dt><dd>{formatBytes(selected.size)}</dd>
             <dt>{t("Header bytes")}</dt><dd className="mono">{selected.signature}</dd>
             <dt>{t("SHA-256")}</dt><dd className="mono digest">{selected.sha256 || t('Not calculated')}</dd>
+            {!selected.sha256 && <><dt>{t('Identification')}</dt><dd>{t('Unique inspection record; file duplicates cannot be detected')}</dd></>}
             <dt>{t("Player / CA / PA")}</dt><dd>{t("Not decoded")}</dd>
           </dl>
           <details className="inspection-technical save-coverage">
@@ -176,7 +186,10 @@ function SaveInspector({ imports, selected, onInspect, onRemove, busy, error, se
           <div className="save-metadata-actions">
             <Button variant={isSelectedSaved ? 'quiet' : 'primary'}
               disabled={saveLibrary.loading || saveLibrary.activity !== null}
-              onClick={() => { void (isSelectedSaved ? saveLibrary.remove(selected.id) : saveLibrary.save(selected)); }}>
+              onClick={() => {
+                if (isSelectedSaved) confirmRemoveSavedMetadata(selected.id, selected.name);
+                else void saveLibrary.save(selected);
+              }}>
               {t(isSelectedSaved ? 'Remove saved metadata' : 'Save inspection metadata on this browser')}
             </Button>
             <p>{t("Only inspection metadata is saved in this browser. The original .fm file bytes are never stored or uploaded.")}</p>

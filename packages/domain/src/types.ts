@@ -1,4 +1,7 @@
 import type { ArchiveIndex } from './archive';
+
+/** Archive catalogue fields safe for long-lived IndexedDB records. */
+export type PersistedArchiveIndex = Omit<ArchiveIndex, 'probes' | 'gapObservations'>;
 export type SourceStatus = 'verified' | 'provisional' | 'unsupported';
 export type MissingReason = 'not_present' | 'not_decoded' | 'not_verified' | 'incompatible_build' | 'redacted' | 'not_applicable';
 export type SourceKind = 'decoded_save' | 'live_game' | 'game_export' | 'manual' | 'derived_model' | 'scenario';
@@ -26,7 +29,7 @@ export interface SaveIdentity {
   readonly support: 'signature_only' | 'unrecognized';
   readonly inspectionStatus: 'inspected' | 'rejected';
   readonly warnings: readonly string[];
-  readonly archiveIndex: ArchiveIndex | null;
+  readonly archiveIndex: PersistedArchiveIndex | null;
 }
 
 export type MetricKind = 'actual_ca' | 'estimated_ca' | 'role_fit' | 'tactical_fit' | 'performance';

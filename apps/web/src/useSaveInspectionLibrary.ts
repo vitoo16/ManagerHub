@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { SaveIdentity } from '@managerhub/domain';
+import type { SaveInspectionResult } from '@managerhub/domain/save-library';
 import {
   clearSavedSaveInspectionMetadata, deleteSavedSaveInspectionMetadata,
   listSavedSaveInspections, saveSaveInspectionMetadata
@@ -35,7 +36,7 @@ export function useSaveInspectionLibrary() {
     return () => { active = false; };
   }, []);
 
-  const save = useCallback(async (identity: SaveIdentity): Promise<boolean> => {
+  const save = useCallback(async (identity: SaveInspectionResult): Promise<boolean> => {
     setActivity('saving');
     setError(null);
     setCanClearIncompatible(false);

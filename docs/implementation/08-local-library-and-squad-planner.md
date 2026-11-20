@@ -26,6 +26,10 @@ The Save Library can explicitly save a validated SaveIdentity after inspecting a
 - The schema upgrade creates the new store only when absent and preserves the existing player-export stores and records.
 - Metadata is validated when written and read, including size, hash, archive member count and offset bounds.
 - If a future or damaged record is incompatible, the Save Library offers a targeted recovery action that clears only the save-inspection metadata store; saved player exports remain untouched.
+- The persisted type is `SaveIdentity` with `PersistedArchiveIndex`; bounded member-prefix probes and unindexed-gap observations belong only to the in-memory `SaveInspectionResult` and are validated before projection. They are never stored.
+- If SHA-256 is unavailable, each inspection receives a fresh cryptographic record ID; it is not a content fingerprint and cannot detect duplicates.
+- Removing one saved record requires confirmation and removes only that browser metadata; the original `.fm` file remains untouched.
+- If the saved catalogue is incompatible, recovery requires confirmation and clears the entire `save-inspections` store. Player exports and Editor/Realism historical snapshots remain untouched.
 - The .fm file bytes are never stored or uploaded. Metadata persistence does not make the format parser more capable: edition/build and player/CA/PA data remain unverified.
 
 ## Squad Planner — strict, evidence-aware 11-player draft

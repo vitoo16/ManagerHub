@@ -1,14 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { isSaveIdentity, isSaveInspectionResult, MAX_SAVED_SAVE_INSPECTIONS, toPersistedSaveIdentity } from './save-library';
-import type { SaveIdentity } from './types';
+import { isSaveIdentity, isSaveInspectionResult, MAX_SAVED_SAVE_INSPECTIONS, toPersistedSaveIdentity, type SaveInspectionResult } from './save-library';
+import type { ArchiveIndex, ArchiveMember, MemberEnvelopeProbe } from './archive';
+import type { UnindexedGapObservation } from './archive-gaps';
 
-function save(overrides: Partial<SaveIdentity> = {}): SaveIdentity {
+function save(overrides: Partial<Omit<SaveInspectionResult, 'archiveIndex'>> & { readonly archiveIndex?: ArchiveIndex | null } = {}): SaveInspectionResult {
   return {
     id: 'a'.repeat(64),
     name: 'career.fm',
     importedAt: '2026-10-29T12:00:00.000Z',
     lastModified: 1_790_000_000_000,
-    size: 6,
+    size: overrides.archiveIndex === null || overrides.archiveIndex === undefined ? 6 : 512,
     sha256: 'a'.repeat(64),
     signature: '02 01 61 66 65 2E',
     detectedFamily: 'afe',
@@ -25,6 +26,13 @@ function save(overrides: Partial<SaveIdentity> = {}): SaveIdentity {
 describe('save inspection metadata validation', () => {
   it('accepts a bounded, truthful signature-only inspection record', () => {
     expect(isSaveIdentity(save())).toBe(true);
+  });
+
+  it('requires a declared SHA-256 fingerprint to be the record identity', () => {
+    const hash = 'b'.repeat(64);
+    expect(isSaveIdentity(save({ id: hash, sha256: hash }))).toBe(true);
+    expect(isSaveIdentity(save({ id: 'a'.repeat(64), sha256: hash }))).toBe(false);
+    expect(isSaveIdentity(save({ id: 'inspection:' + 'c'.repeat(32), sha256: null }))).toBe(true);
   });
 
   it('accepts an experimentally indexed archive only when all member bounds are valid', () => {
@@ -48,6 +56,39 @@ describe('save inspection metadata validation', () => {
     }))).toBe(false);
   });
 
+  it('requires the persisted archive directory and member extents to fit the original file', () => {
+    const validArchive = {
+      family: 'fmf-index-candidate' as const,
+      evidence: 'experimental' as const,
+      memberCount: 1,
+      directoryOffset: 256,
+      members: [{ filename: 'game_info.dat', offset: 0, storedBytes: 128, reportedUncompressedBytes: 256 }]
+    };
+    expect(isSaveIdentity(save({ archiveIndex: validArchive }))).toBe(true);
+    expect(isSaveIdentity(save({ archiveIndex: validArchive, detectedFamily: 'fmf' }))).toBe(false);
+    expect(isSaveIdentity(save({ archiveIndex: validArchive, detectedFamily: null, support: 'unrecognized' }))).toBe(false);
+    expect(isSaveIdentity(save({ archiveIndex: validArchive, size: 255 }))).toBe(false);
+    expect(isSaveIdentity(save({ archiveIndex: {
+      ...validArchive,
+      members: [{ filename: 'game_info.dat', offset: 0, storedBytes: 128, reportedUncompressedBytes: 0x1_0000_0000 }]
+    } }))).toBe(false);
+    expect(isSaveIdentity(save({ archiveIndex: { ...validArchive, directoryOffset: 18 } }))).toBe(false);
+    expect(isSaveIdentity(save({ archiveIndex: {
+      ...validArchive,
+      members: [{ filename: 'game_info.dat', offset: 231, storedBytes: 8, reportedUncompressedBytes: 8 }]
+    } }))).toBe(false);
+    expect(isSaveIdentity(save({ archiveIndex: {
+      ...validArchive,
+      members: [{ filename: 'game_info.dat', offset: 230, storedBytes: 8, reportedUncompressedBytes: 8 }]
+    } }))).toBe(true);
+    for (const filename of ['../game_info.dat', 'folder\\\\game_info.dat', 'bad\u0001name.dat']) {
+      expect(isSaveIdentity(save({ archiveIndex: {
+        ...validArchive,
+        members: [{ filename, offset: 0, storedBytes: 8, reportedUncompressedBytes: 8 }]
+      } }))).toBe(false);
+    }
+  });
+
   it('rejects overlapping and duplicate archive entries at the storage boundary', () => {
     const entry = (filename: string, offset: number) => ({
       filename, offset, storedBytes: 20, reportedUncompressedBytes: 40
@@ -67,10 +108,54 @@ describe('save inspection metadata validation', () => {
     ]) }))).toBe(true);
   });
 
+  it('binds the declared container family to the observed signature bytes', () => {
+    expect(isSaveIdentity(save({ detectedFamily: 'afe', signature: '02 01 66 6D 66 2E' }))).toBe(false);
+    expect(isSaveIdentity(save({ detectedFamily: null, support: 'unrecognized', signature: '02 01 78 78 78 78' }))).toBe(true);
+    expect(isSaveIdentity(save({
+      detectedFamily: null, support: 'unrecognized', signature: '02 01 61 66 65 2E'
+    }))).toBe(false);
+    expect(isSaveIdentity(save({
+      detectedFamily: 'fmf', support: 'signature_only', signature: '02 01 66 6D 66 2E'
+    }))).toBe(true);
+  });
+
   it('rejects invalid family/status combinations and malformed hashes', () => {
     expect(isSaveIdentity(save({ detectedFamily: null, support: 'signature_only' }))).toBe(false);
     expect(isSaveIdentity(save({ sha256: 'not-a-hash' }))).toBe(false);
     expect(isSaveIdentity({ ...save(), detectedFamily: 'guessed-family' })).toBe(false);
+  });
+
+  it('rejects sparse arrays at every persisted and ephemeral metadata boundary without throwing', () => {
+    const validArchive = {
+      family: 'fmf-index-candidate' as const,
+      evidence: 'experimental' as const,
+      memberCount: 1,
+      directoryOffset: 256,
+      members: [{ filename: 'game_info.dat', offset: 0, storedBytes: 128, reportedUncompressedBytes: 256 }]
+    };
+    const sparseMembers: ArchiveMember[] = [];
+    sparseMembers.length = 1;
+    const sparseGroups: { name: string; memberCount: number }[] = [];
+    sparseGroups.length = 1;
+    const sparseWarnings: string[] = [];
+    sparseWarnings.length = 1;
+    const sparseProbes: MemberEnvelopeProbe[] = [];
+    sparseProbes.length = 1;
+    const sparseGaps: UnindexedGapObservation[] = [];
+    sparseGaps.length = 1;
+
+    expect(() => isSaveIdentity(save({ archiveIndex: { ...validArchive, members: sparseMembers } }))).not.toThrow();
+    expect(isSaveIdentity(save({ archiveIndex: { ...validArchive, members: sparseMembers } }))).toBe(false);
+    expect(isSaveIdentity(save({ archiveIndex: { ...validArchive, nestedGroups: sparseGroups } }))).toBe(false);
+    expect(isSaveIdentity(save({ warnings: sparseWarnings }))).toBe(false);
+
+    const indexed = save({ archiveIndex: validArchive });
+    expect(isSaveInspectionResult({
+      ...indexed, archiveIndex: { ...validArchive, probes: sparseProbes }
+    })).toBe(false);
+    expect(isSaveInspectionResult({
+      ...indexed, archiveIndex: { ...validArchive, gapObservations: sparseGaps }
+    })).toBe(false);
   });
 
   it('rejects invalid sizes, warning payloads and inconsistent archive counts', () => {
@@ -150,6 +235,13 @@ describe('save inspection metadata validation', () => {
     } });
     expect(isSaveIdentity(indexed)).toBe(false); // ephemerals must not enter IndexedDB
     expect(isSaveInspectionResult(indexed)).toBe(true);
+    expect(isSaveIdentity({ ...indexed, archiveIndex: { ...indexed.archiveIndex!, probes: [] } })).toBe(false);
+    const undefinedProbeField: unknown = {
+      ...indexed, archiveIndex: { ...indexed.archiveIndex!, probes: undefined }
+    };
+    expect(isSaveIdentity(undefinedProbeField)).toBe(false);
+    expect(isSaveInspectionResult(undefinedProbeField)).toBe(false);
+    expect(isSaveIdentity({ ...indexed, archiveIndex: { ...indexed.archiveIndex!, gapObservations: [] } })).toBe(false);
     const persisted = toPersistedSaveIdentity(indexed);
     expect(isSaveIdentity(persisted)).toBe(true);
     expect(JSON.stringify(persisted)).not.toContain(probe.prefixHex);
@@ -183,7 +275,12 @@ describe('save inspection metadata validation', () => {
       mostCommonDistanceOccurrences: 0, status: 'sampled' as const
     };
     const raw = save({ archiveIndex: { ...archive, gapObservations: [gap] } });
+    expect(isSaveIdentity(raw)).toBe(false); // even valid ephemeral gaps are never persisted
     expect(isSaveInspectionResult(raw)).toBe(true);
+    const undefinedGapField: unknown = {
+      ...raw, archiveIndex: { ...raw.archiveIndex!, gapObservations: undefined }
+    };
+    expect(isSaveInspectionResult(undefinedGapField)).toBe(false);
     expect(isSaveInspectionResult({
       ...raw, archiveIndex: {
         ...archive, gapObservations: [{ ...gap, extraData: new Uint8Array([9]) }]
@@ -195,6 +292,43 @@ describe('save inspection metadata validation', () => {
     expect(isSaveInspectionResult(save({ archiveIndex: {
       ...archive, gapObservations: [{ ...gap, afterMember: 'missing.dat' }]
     } }))).toBe(false);
+    expect(isSaveInspectionResult(save({ archiveIndex: {
+      ...archive, gapObservations: [{ ...gap, sizeBytes: 49 }]
+    } }))).toBe(false);
+    expect(isSaveInspectionResult(save({ archiveIndex: {
+      ...archive, gapObservations: [{ ...gap, status: 'too_large' }]
+    } }))).toBe(false);
+    expect(isSaveInspectionResult(save({ archiveIndex: {
+      ...archive, gapObservations: [{ ...gap, markerMatches: 99 }]
+    } }))).toBe(false);
+
+    const largeGapArchive = {
+      family: 'fmf-index-candidate' as const, evidence: 'experimental' as const,
+      memberCount: 2, directoryOffset: 2_100_118,
+      members: [
+        { filename: 'a.dat', offset: 0, storedBytes: 50, reportedUncompressedBytes: 100 },
+        { filename: 'b.dat', offset: 2_100_050, storedBytes: 50, reportedUncompressedBytes: 100 }
+      ],
+      gapObservations: [{
+        afterMember: 'a.dat', beforeMember: 'b.dat', sizeBytes: 2_100_000,
+        markerMatches: null, firstMarkerAt: null, mostCommonMarkerDistance: null,
+        mostCommonDistanceOccurrences: 0, status: 'too_large' as const
+      }]
+    };
+    expect(isSaveInspectionResult(save({ archiveIndex: largeGapArchive, size: 2_100_200 }))).toBe(true);
+  });
+
+  it('requires fresh cryptographic IDs for new unhashed worker results but reads legacy stored IDs', () => {
+    const first = save({ id: 'inspection:' + '1'.repeat(32), sha256: null });
+    const second = save({ id: 'inspection:' + '2'.repeat(32), sha256: null });
+    expect(isSaveIdentity(toPersistedSaveIdentity(first))).toBe(true);
+    expect(isSaveIdentity(toPersistedSaveIdentity(second))).toBe(true);
+    expect(first.id).not.toBe(second.id);
+    expect(first.sha256).toBe(null);
+    expect(second.sha256).toBe(null);
+    expect(isSaveInspectionResult(first)).toBe(true);
+    expect(isSaveInspectionResult({ ...first, id: 'career.fm:6:1790000000000' })).toBe(false);
+    expect(isSaveIdentity(save({ id: 'career.fm:6:1790000000000', sha256: null }))).toBe(true);
   });
 
   it('keeps the local inspection catalogue bounded', () => {
