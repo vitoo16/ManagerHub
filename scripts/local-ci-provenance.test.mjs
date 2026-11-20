@@ -9,7 +9,14 @@ import test from 'node:test';
 
 const sourceScript = fileURLToPath(new URL('./local-ci.mjs', import.meta.url));
 const sha = (bytes) => createHash('sha256').update(bytes).digest('hex');
-const git = (root, args) => execFileSync('git', args, { cwd: root, encoding: 'utf8', windowsHide: true }).trim();
+const fixtureEnv = { ...process.env };
+const localGitVariables = execFileSync('git', ['rev-parse', '--local-env-vars'], {
+  encoding: 'utf8', windowsHide: true,
+}).trim().split(/\r?\n/u);
+for (const name of localGitVariables) delete fixtureEnv[name];
+const git = (root, args) => execFileSync('git', args, {
+  cwd: root, encoding: 'utf8', windowsHide: true, env: fixtureEnv,
+}).trim();
 
 function fixture(run, stageCommand = 'node --version') {
   const root = mkdtempSync(join(tmpdir(), 'managerhub-ci-provenance-'));
@@ -39,7 +46,7 @@ const latest = (root, profile) => {
   return { runDir, summary: JSON.parse(readFileSync(join(runDir, 'summary.json'), 'utf8')) };
 };
 const launch = (root, profile) => spawnSync(process.execPath, [join(root, 'scripts', 'local-ci.mjs'), '--profile', profile],
-  { cwd: root, encoding: 'utf8', windowsHide: true });
+  { cwd: root, encoding: 'utf8', windowsHide: true, env: fixtureEnv });
 
 test('clean Local CI embeds exact commit, lockfile/profile hashes and stage log checksum', () => fixture(root => {
   const head = git(root, ['rev-parse', 'HEAD']);
