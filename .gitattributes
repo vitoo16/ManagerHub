@@ -1,0 +1,8 @@
+package.json text eol=lf
+package-lock.json text eol=lf
+apps/*/package.json text eol=lf
+packages/*/package.json text eol=lf
+.oxlintrc.json text eol=lf
+.prettierrc.json text eol=lf
+scripts/local-ci.mjs text eol=lf
+scripts/local-stage-release.mjs text eol=lf
