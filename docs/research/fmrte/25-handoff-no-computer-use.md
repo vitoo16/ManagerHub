@@ -1,10 +1,10 @@
 # Handoff — phát triển tiếp không cần Computer Use
 
-Ngày cập nhật: 2026-11-05, Asia/Bangkok. Repo: https://github.com/vitoo16/ManagerHub. Baseline sản phẩm là `main` tại `edad9fd637863f7f9c5da9381e6331792cc63c65`; nhánh `research/fmrte-static` là nhánh nghiên cứu lịch sử, không mặc định là baseline mới nhất. Đây là bàn giao phát triển phần mềm từ evidence đã có, không phải chứng nhận reader/editor sản phẩm hoặc hoàn thành 27 module.
+Ngày cập nhật: 2026-11-21, Asia/Ho_Chi_Minh. Repo: https://github.com/vitoo16/ManagerHub. Baseline đã đối chiếu là `main` tại `0d8fac2f5d5bd0256709abda0a01850fceb3ce5f` (sau merge #82/#77/#79); **luôn fetch lại `main` và đọc PR mới nhất trước khi làm**. Nhánh `research/fmrte-static` là lịch sử nghiên cứu. Không diễn giải việc merge tài liệu hoặc test là chứng nhận reader/editor hoặc hoàn thành 27 module.
 
 ## 1. Bắt đầu trên đúng checkout
 
-Yêu cầu Node >=22.12.0. Trên Windows PowerShell, dùng `npm.cmd` thay `npm` nếu execution policy chặn shim `.ps1`. Bắt đầu từ `main` hiện tại, không checkout nhánh nghiên cứu cũ chỉ vì tài liệu lịch sử nhắc đến nó.
+Yêu cầu công cụ Node >=22.12.0 theo package engine; **Local CI chính thức yêu cầu Node 24** theo `ci/local-pipeline.json`. Trên Windows PowerShell, dùng `npm.cmd` nếu execution policy chặn shim `.ps1`. Bắt đầu từ `main` mới nhất; chạy Local CI bằng `scripts/local-ci.mjs` theo `docs/engineering/LOCAL_CI.md` khi cần Quick/Full/Release, không thay thế bằng các test của commit khác.
 
 ```powershell
 git fetch origin
@@ -84,7 +84,7 @@ Mục tiêu tiếp theo vẫn là **B1 corpus + detection, B2 adapter research/f
 4. **Exact-build coverage:** edition/build phải được xác minh độc lập. AFE/FMF family signature không phải build identity. Không đăng ký production profile khi chưa có per-domain reference và same-build game comparison.
 5. **Persistence integrity:** mọi IndexedDB record và worker result là untrusted; kiểm tra ID/hash consistency, file-size/directory/member extents, duplicate identity và migration. Original save bytes không được persist hoặc mutate.
 
-Các PR hardening đang mở tại thời điểm cập nhật: [#76](https://github.com/vitoo16/ManagerHub/pull/76) là parser/validator foundation; [#75](https://github.com/vitoo16/ManagerHub/pull/75) là Save Library identity/persistence và cố ý mang cùng archive foundation như một stacked dependency. Merge #76 trước #75, rồi refresh/rebase #75 để diff còn lại chỉ là persistence work. Kiểm tra trạng thái head/CI mới nhất; không dựa vào CI của commit cũ và không merge nếu chưa có quyền phê duyệt rõ ràng.
+**Trạng thái PR đã tích hợp (21/11/2026):** [#76](https://github.com/vitoo16/ManagerHub/pull/76) đã đóng do toàn bộ nội dung được bao phủ bởi [#75](https://github.com/vitoo16/ManagerHub/pull/75). PR #85 (Local CI provenance) được merge trước #75 (Save Library archive hardening). Sau đó #82 (PID boundary tests), #77 (handoff) và #79 (FM27 research) đều đã merge vào `main` tại `0d8fac2`. **Không thực hiện lại thứ tự merge #76 → #75.** Công việc triển khai tiếp theo là [#81](https://github.com/vitoo16/ManagerHub/issues/81) và [PR #86](https://github.com/vitoo16/ManagerHub/pull/86) cho native-side read-only guard, chưa phải live reader được chứng nhận.
 
 ### Blocker và acceptance
 
@@ -92,7 +92,7 @@ Private save samples/evidence không được commit hoặc upload. Nếu không
 
 Acceptance cho bước tiếp theo: deterministic bounded parser; malformed inputs không crash; member extents nằm trong file và trước directory; no duplicate/overlap; output chỉ là metadata structural; CI/test evidence gắn với commit cụ thể; compatibility registry vẫn empty cho đến khi exact-build decoder được kiểm chứng.
 
-**Latest CI blocker (2026-11-05):** PR #75 head `69fd9b1` / run `42074331446` and PR #76 head `c932a3e` / run `42054005159` (attempt 2) both end before runner assignment (`runner_id=0`, empty runner name, zero steps). PR #77's documentation-only workflow shows the same pattern; see its PR description for the latest exact head and run. Job-log retrieval returns `BlobNotFound`; no command or test step ran. This is not a code-level test result. The same workflow succeeded on the `main` push at `edad9fd` (run `41675620928`, both jobs assigned GitHub-hosted runners); these are same-repository, non-fork PRs. This narrows the failure to the `pull_request` execution path, but does not establish why. The official [GitHub Status history](https://www.githubstatus.com/history) showed no Nov 5 incident at the time of this check; Nov 4 Actions incidents were marked resolved. This does not rule out a repository policy or PR-event-specific issue. Restore real runner execution and validate exact code heads before merge.
+**CI status (updated 21/11/2026):** GitHub-hosted Actions từng thất bại trước runner ở PR #75–#79, được theo dõi trong [#80](https://github.com/vitoo16/ManagerHub/issues/80); đó là sự cố lịch sử chưa được kết luận chính xác, không phải bằng chứng test code lỗi. Local CI Windows đã được chủ repository ghi nhận cho #85 head `724be37` và #75 head `efde1c4`: Quick 6/6, Full 8/8, Release 9/9, Playwright desktop/mobile 112/112; cả hai đã merge vào `main`. Các bản báo cáo giữ trong bình luận PR, log gốc vẫn ở máy local. **Chưa thay bằng kết quả chạy trên merge SHA hoặc PR #86**: yêu cầu clean exact-head Local CI với `acceptanceEligible=true` trước mọi kết luận nghiệm thu. Không khôi phục GitHub-hosted triggers tự động ngoài quyết định DevOps mới.
 
 ## 5. Tool và evidence khi không có Computer Use
 
