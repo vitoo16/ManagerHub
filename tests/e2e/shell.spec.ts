@@ -449,12 +449,15 @@ test('save inspection metadata is opt-in, survives reload, and never stores the 
   expect(stored.stores).toContain('player-exports');
   expect(stored.stores).toContain('player-export-summaries');
 
-  const removeDialogPromise = page.waitForEvent('dialog');
+  const removeDialogPromise = page.waitForEvent('dialog').then(async dialog => {
+    const result = { type: dialog.type(), message: dialog.message() };
+    await dialog.accept();
+    return result;
+  });
   await page.getByRole('button', { name: 'Xóa thông tin save đã lưu' }).click();
   const removeDialog = await removeDialogPromise;
-  expect(removeDialog.type()).toBe('confirm');
-  expect(removeDialog.message()).toContain('Tệp .fm gốc sẽ không bị thay đổi.');
-  await removeDialog.accept();
+  expect(removeDialog.type).toBe('confirm');
+  expect(removeDialog.message).toContain('Tệp .fm gốc sẽ không bị thay đổi.');
   await expect(page.getByText('Chỉ trong phiên hiện tại')).toBeVisible();
   await page.reload();
   await expect(page.getByText('Chưa có file save nào')).toBeVisible();
@@ -630,19 +633,25 @@ test('incompatible save metadata can be cleared without deleting player or histo
   await expect(page.getByRole('alert')).toContainText(
     'Saved save inspection metadata is incompatible with this version. Clear the incompatible save metadata to continue; player exports will be preserved.'
   );
-  const cancelClearPromise = page.waitForEvent('dialog');
+  const cancelClearPromise = page.waitForEvent('dialog').then(async dialog => {
+    const result = { type: dialog.type(), message: dialog.message() };
+    await dialog.dismiss();
+    return result;
+  });
   await page.getByRole('button', { name: 'Clear incompatible saved metadata' }).click();
   const cancelClearDialog = await cancelClearPromise;
-  expect(cancelClearDialog.type()).toBe('confirm');
-  expect(cancelClearDialog.message()).toContain('all saved Save Library inspection metadata');
-  await cancelClearDialog.dismiss();
+  expect(cancelClearDialog.type).toBe('confirm');
+  expect(cancelClearDialog.message).toContain('all saved Save Library inspection metadata');
   await expect(page.getByRole('alert')).toBeVisible();
 
-  const acceptClearPromise = page.waitForEvent('dialog');
+  const acceptClearPromise = page.waitForEvent('dialog').then(async dialog => {
+    const message = dialog.message();
+    await dialog.accept();
+    return message;
+  });
   await page.getByRole('button', { name: 'Clear incompatible saved metadata' }).click();
-  const acceptClearDialog = await acceptClearPromise;
-  expect(acceptClearDialog.message()).toContain('Player exports and historical snapshots will remain untouched.');
-  await acceptClearDialog.accept();
+  const acceptClearMessage = await acceptClearPromise;
+  expect(acceptClearMessage).toContain('Player exports and historical snapshots will remain untouched.');
   await expect(page.getByRole('alert')).toHaveCount(0);
   await expect(page.getByText('No files inspected yet')).toBeVisible();
 
