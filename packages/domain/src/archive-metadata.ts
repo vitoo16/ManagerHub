@@ -16,9 +16,14 @@ export type ArchiveIndexMetadata = Pick<ArchiveIndex,
 export function isSafeArchiveLabel(value: unknown, maxLength: number): value is string {
   if (typeof value !== 'string' || !Number.isSafeInteger(maxLength) ||
       maxLength < 1 || value.length < 1 || value.length > maxLength) return false;
-  for (const character of value) {
-    const code = character.charCodeAt(0);
-    if (code <= 0x1f || (code >= 0x7f && code <= 0x9f) || character === '/' || character === '\\') return false;
+  for (let index = 0; index < value.length; index++) {
+    const code = value.charCodeAt(index);
+    if (code <= 0x1f || (code >= 0x7f && code <= 0x9f) || code === 0x2f || code === 0x5c) return false;
+    // Reject lone UTF-16 surrogates in metadata; preserve properly paired Unicode labels.
+    if (code >= 0xd800 && code <= 0xdbff) {
+      const low = value.charCodeAt(++index);
+      if (!(low >= 0xdc00 && low <= 0xdfff)) return false;
+    } else if (code >= 0xdc00 && code <= 0xdfff) return false;
   }
   return true;
 }
@@ -28,7 +33,8 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function hasOnlyKeys(value: Record<string, unknown>, allowed: readonly string[]): boolean {
-  return Object.keys(value).every(key => allowed.includes(key));
+  // Non-enumerable and symbol properties are still extra own data on untrusted objects.
+  return Reflect.ownKeys(value).every(key => typeof key === 'string' && allowed.includes(key));
 }
 
 function isDenseArray<T>(value: unknown, maxLength: number): value is T[] {
