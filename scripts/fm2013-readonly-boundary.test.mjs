@@ -56,6 +56,10 @@ test('explicit host consent and exact process identity are prerequisites to any 
   const input = request(); input.process.binarySha256 = '0'.repeat(64);
   assert.equal((await probeFm2013ReadOnly(input, bad.host)).reason, 'unsupported_build');
   assert.equal(bad.calls.consent, 0);
+  const highPid = fixture();
+  const high = request(); high.process.pid = 0x80000000;
+  assert.equal((await probeFm2013ReadOnly(high, highPid.host)).reason, 'unsupported_build');
+  assert.equal(highPid.calls.consent, 0);
   const moved = fixture({ observations: [{ status: 'observed', process: { ...process, startedAtFileTime: '134064000000000002' } }] });
   assert.equal((await probeFm2013ReadOnly(request(), moved.host)).reason, 'process_identity_changed');
   assert.equal(moved.calls.open, 0);
@@ -132,7 +136,7 @@ test('changed or missing process after memory read never yields successful data'
   }
 });
 
-test('open, read and close failures cannot leak exception text or leave read access active', async () => {
+test('open, read and close failures do not expose sampled bytes or private error strings', async () => {
   for (const options of [{ openError: true }, { readError: true }, { closeError: true }]) {
     const f = fixture(options), result = await probeFm2013ReadOnly(request(), f.host);
     assert.equal(result.status, 'rejected');
