@@ -1,6 +1,6 @@
 # FMRTE research summary — 2026-11-01
 
-**Tích hợp:** research baseline FMRTE/FM2013 đã được merge vào main tại 1cd994c. [Handoff không có Computer Use](25-handoff-no-computer-use.md) ghi các ranh giới và private-artifact limits. [Historical snapshot consumer](27-historical-snapshot-consumer.md) mô tả import worker, schema riêng, IndexedDB, mode privacy và acceptance đang được kiểm thử.
+**Tích hợp:** research baseline FMRTE/FM2013 đã được merge vào main tại 1cd994c. [Handoff không có Computer Use](25-handoff-no-computer-use.md) ghi các ranh giới và private-artifact limits. [Historical snapshot consumer](27-historical-snapshot-consumer.md) mô tả import worker, schema riêng, IndexedDB, mode privacy và acceptance đang được kiểm thử. [Save-format fixture corpus](28-save-fixture-corpus.md) inventories synthetic regression coverage and the remaining real-build evidence gaps.
 
 **Latest lifecycle result:** [local capture tickets and process-instance admission](24-fm2013-local-session-lifecycle.md) connect actual host OS queries, a prepared read-only script, complete REA capture and fresh Editor/Realism finalization for4,058 records. PID plus opaque creation FILETIME/path/hash and a ten-minute UUID binding reject tested stale-instance/token cases before output. Files are explicitly historical, with unverified currentness/authentication/career lineage. Full checks pass226 tests/build; no product watcher or IPC service is added.
 

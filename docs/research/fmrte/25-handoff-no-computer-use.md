@@ -1,14 +1,14 @@
 # Handoff — phát triển tiếp không cần Computer Use
 
-Ngày bàn giao: 2026-11-01, Asia/Bangkok. Repo: https://github.com/vitoo16/ManagerHub. Nhánh `research/fmrte-static`; code baseline `7588216`. Commit chứa tài liệu này nằm sau baseline. Nhánh đã được push; chưa merge vào `main`. Đây là bàn giao phần phát triển phần mềm từ evidence đã có, không phải chứng nhận reader/editor sản phẩm hoặc hoàn thành 27 module.
+Ngày cập nhật: 2026-11-05, Asia/Bangkok. Repo: https://github.com/vitoo16/ManagerHub. Baseline sản phẩm là `main` tại `edad9fd637863f7f9c5da9381e6331792cc63c65`; nhánh `research/fmrte-static` là nhánh nghiên cứu lịch sử, không mặc định là baseline mới nhất. Đây là bàn giao phát triển phần mềm từ evidence đã có, không phải chứng nhận reader/editor sản phẩm hoặc hoàn thành 27 module.
 
 ## 1. Bắt đầu trên đúng checkout
 
-Yêu cầu Node >=22.12.0. Trên Windows PowerShell, dùng `npm.cmd` thay `npm` nếu execution policy chặn shim `.ps1`.
+Yêu cầu Node >=22.12.0. Trên Windows PowerShell, dùng `npm.cmd` thay `npm` nếu execution policy chặn shim `.ps1`. Bắt đầu từ `main` hiện tại, không checkout nhánh nghiên cứu cũ chỉ vì tài liệu lịch sử nhắc đến nó.
 
 ```powershell
 git fetch origin
-git switch research/fmrte-static
+git switch main
 git pull --ff-only
 git status --short --branch
 npm ci
@@ -17,7 +17,7 @@ npm run check
 
 Nếu checkout đã có thay đổi người dùng, giữ nguyên và đánh giá trước khi đổi nhánh; không reset/clean để chạy các lệnh trên. `npm ci` dùng lockfile hiện có; không nâng dependency theo suy đoán. Baseline đã chạy TypeScript,128 Vitest +98 Node =226 tests, build và bundle budgets. Số test có thể tăng sau bàn giao; không giữ cứng226 bằng cách bỏ test.
 
-Đọc theo thứ tự: `AGENTS.md`; execution charter và kế hoạch7 phase trong `docs/implementation/`; `docs/system/03-domain-schema-and-provenance.md`; `docs/system/04-save-reader-compatibility.md`; các report20,22,23,24 và `evidence-manifest.json` ở thư mục này. Report cũ là diễn tiến lịch sử, không dùng câu UNKNOWN đã được report mới giải quyết làm trạng thái hiện tại. [Prompt tiếp quản](26-prompt-next-agent.md) có thể copy nguyên văn.
+Đọc theo thứ tự: `AGENTS.md`; execution charter và kế hoạch7 phase trong `docs/implementation/`; `docs/system/03-domain-schema-and-provenance.md`; `docs/system/04-save-reader-compatibility.md`; các report20,22,23,24, `28-save-fixture-corpus.md` và `evidence-manifest.json` ở thư mục này. Report cũ là diễn tiến lịch sử, không dùng câu UNKNOWN đã được report mới giải quyết làm trạng thái hiện tại. [Prompt tiếp quản](26-prompt-next-agent.md) có thể copy nguyên văn.
 
 ## 2. Đã làm thật và giới hạn
 
@@ -49,26 +49,50 @@ Audit baseline:283 method coordinates,2 artifact observations,201 canonical reco
 | `scripts/fm2013-normalize-live.mjs` | Shared `buildFm2013NormalizedDocument`, bounded fresh-output writer và file-only CLI. |
 | `scripts/fm2013-local-session.mjs` | `prepare`/`finalize`; OS-instance admission và historical output wrapper. |
 | `scripts/fm2013-process-observer.mjs`, `local-research-files.mjs` | Read-only Windows identity observation; bounded file I/O, fatal UTF-8, absolute built-in PowerShell. |
+| `packages/domain/src/archive.ts`, `archive-metadata.ts`, `archive-codec.ts`, `archive-gaps.ts` | Bounded structural catalogue parsing, one shared archive-index validator and base/size limits reused by parser, gap, codec and persistence consumers; experimental, no decoded member payloads. |
+| `packages/domain/src/save.ts`, `save-signature.ts`, `save-library.ts`, `packages/storage/src/save-inspections.ts` | Read-only save inspection; distinct `SaveInspectionResult`/`SaveIdentity` TypeScript contracts; canonical AFE/FMF detection, worker/persistence validation, unhashed record identity and metadata-only opt-in IndexedDB. |
 | `packages/domain/src/player-import.ts`, `player-library.ts` | Existing **export-only** `PlayerDataset`/library. Không cast live snapshot vào đây hoặc nới literal provenance. |
-| `apps/web/src/App.tsx`, `usePlayerLibrary.ts`, workers/ và `inspect-save-in-worker.ts` | Existing shared frontend/worker/persistence patterns; xem trước khi thêm đường mới. |
+| `packages/domain/src/historical-live-snapshot.ts` | Strict historical snapshot contract, schema validation, immutable Editor/Realism projections and mode filtering. |
+| `apps/web/src/features/historical-snapshots/`, `useHistoricalSnapshotLibrary.ts`, `workers/historical-snapshot.worker.ts` | Historical workspace, bounded import worker, local persistence, search/browse and reload flow (merged PR #58). |
+| `apps/web/src/import-historical-capture.ts`, `historical-library-sync.ts` | Address-free wire admission and persistence synchronization; inspect before extending the existing flow. |
+| `apps/web/src/App.tsx`, `usePlayerLibrary.ts`, workers/ and `inspect-save-in-worker.ts` | Shared frontend/worker/persistence patterns; inspect before adding a parallel path. |
 
 Không có Cargo/Tauri host hiện thực ở baseline. Target kiến trúc vẫn shared React/Tauri; không dựng HTTP server thứ hai chỉ để chạy offsets.
 
-## 4. Gói việc tiếp theo: consumer snapshot lịch sử trong ứng dụng
+## 4. Trạng thái consumer lịch sử và gói việc tiếp theo
 
-Mục tiêu: người dùng chủ động chọn **address-free wire JSON**, chọn mode, import qua worker, thấy provenance/coverage, lưu local và mở lại snapshot lịch sử. Dùng parser đang có. Không nhận normalized JSON bất kỳ bằng `as GameSnapshot`; chưa có validator an toàn cho mọi serialized normalized wrapper.
+### Đã tích hợp vào main
 
-Interface/task map cần chốt trước khi code:
+Historical snapshot consumer **đã được triển khai và merge trong PR #58** (merge commit `d918a68`); CI [#41490068166](https://github.com/vitoo16/ManagerHub/actions/runs/41490068166) đã chạy TypeScript, unit tests, production build/bundle budget và Playwright desktop/mobile. PR #59 bổ sung portable local capture-to-wire handoff. Không triển khai lại các phần đã có.
 
-1. **Domain + persisted schema:** store riêng cho historical live snapshots; version/validate mọi dữ liệu đọc lại từ storage; snapshot-scoped IDs, manual career lineage, explicit mode và hash nguồn. Áp dụng visibility boundary khi load/query/export, không chỉ khi vẽ UI. Editor-stored values không được rò vào Realism khi đổi mode/reload.
-2. **Worker/import adapter:** file người dùng chọn, byte/text/record bounds theo parser hiện có; progress/cancel/error; schema/build sai, corrupt, partial, empty và rejected tách biệt. Hash bằng browser API phù hợp, không import Node/Frida/PowerShell vào renderer. Không persist raw wire chứa exact values trong luồng Realism.
-3. **Historical workspace:** nối vào navigation/composition đang có; danh sách snapshot, detail/search player, source/build/time/mode/coverage và unknown reasons. `live_game` nghĩa nguồn dữ liệu, không đồng nghĩa currently connected. Label tuổi là derived calendar age. Không dùng relation club/nation làm eligibility.
-4. **Persistence:** chọn theo architecture/ADR và kích thước thực tế; normalized cohort khoảng hàng chục MiB nên không nhét vào localStorage không xét quota. Kiểm tra quota, dữ liệu hỏng, duplicate import, interrupted storage và removal; không silent overwrite. Không thêm generic framework nếu chỉ có một nhu cầu.
-5. **Verification:** domain/storage/worker tests; Playwright hành trình import→browse→save→reload→mode switch; malformed/build mismatch/cancel/quota cases; VI/EN, keyboard, reduced motion, desktop/mobile/200% zoom và source badges. Dùng synthetic fixture được ghi rõ trong test, không seed cầu thủ giả vào sản phẩm.
+Phạm vi consumer hiện có:
+- Người dùng chủ động import address-free wire JSON qua worker bounded.
+- Parser strict dùng `parseFm2013LiveCapture`; schema và build/profile mismatch được phân loại.
+- Editor/Realism có projection và IndexedDB store tách biệt, versioned; reload có schema validation và mode filtering.
+- Historical workspace có danh sách snapshot, search/browse player, provenance/coverage và trạng thái missing.
+- Import là historical capture; không có watcher, product IPC hoặc trạng thái currently-live.
+- Realism redaction diễn ra ở domain/storage/query/serialization boundary, không chỉ ẩn ở UI.
+- Không cast snapshot sang export-only `PlayerDataset`; không mở Actual CA/PA, wage, contract hoặc eligibility.
 
-Đây là gói tích hợp có acceptance đầy đủ trong kế hoạch27 module/7 phase, không đổi dự án thành MVP và không đánh dấu toàn MH-01/03/05 đã xong. Chưa nối live data vào role/eCA/squad analytics nếu chưa có projection edition-aware và eligibility/calibration đúng; không map tên attrs13 thành26 một cách im lặng.
+### Gói Phase 2 còn lại
 
-Acceptance của gói này: real user path nối end-to-end; historical/current không nhập nhằng; browser không có process capability; Realism không lộ qua store/query/export; source không bị nâng thành verified; all unknown giữ null; existing game-export import/Player Lab/Squad Planner không regress; full checks và kiểm chứng UI chạy thật; ledger/compat/docs/commit đồng bộ.
+Mục tiêu tiếp theo vẫn là **B1 corpus + detection, B2 adapter research/framework, B5 verification** trong [Phase 2](../../implementation/01-full-delivery-plan.md), không phải một UI consumer thứ hai.
+
+1. **Giữ parser/container inspection ở mức structural:** AFE signature và trailing FMF directory candidate chỉ là observations. Directory/member metadata, prefix samples và gap markers không chứng minh member payload đã decode.
+2. **Mở rộng portable fixture corpus:** synthetic fixtures cho valid, truncated, malformed UTF-16, duplicate names, overlap, invalid offsets, marker-heavy tails, decompression bounds và corruption. Mỗi fixture ghi rõ synthetic hay user-consented real sample.
+3. **Nghiên cứu member payload độc lập:** `archive-codec.ts` hiện chỉ chạy length-only codec hypothesis trials có giới hạn; không trả member payload. Tái sử dụng và review implementation này, không tạo decoder song song. Chỉ xác nhận codec/envelope khi có raw sample được phép dùng, repeatable byte-level evidence và đối chiếu nhiều member. Không kết luận zlib chỉ từ hai byte candidate hoặc prefix lặp; không giải nén dữ liệu không có output/memory bounds.
+4. **Exact-build coverage:** edition/build phải được xác minh độc lập. AFE/FMF family signature không phải build identity. Không đăng ký production profile khi chưa có per-domain reference và same-build game comparison.
+5. **Persistence integrity:** mọi IndexedDB record và worker result là untrusted; kiểm tra ID/hash consistency, file-size/directory/member extents, duplicate identity và migration. Original save bytes không được persist hoặc mutate.
+
+Các PR hardening đang mở tại thời điểm cập nhật: [#76](https://github.com/vitoo16/ManagerHub/pull/76) là parser/validator foundation; [#75](https://github.com/vitoo16/ManagerHub/pull/75) là Save Library identity/persistence và cố ý mang cùng archive foundation như một stacked dependency. Merge #76 trước #75, rồi refresh/rebase #75 để diff còn lại chỉ là persistence work. Kiểm tra trạng thái head/CI mới nhất; không dựa vào CI của commit cũ và không merge nếu chưa có quyền phê duyệt rõ ràng.
+
+### Blocker và acceptance
+
+Private save samples/evidence không được commit hoặc upload. Nếu không có raw sample được người dùng cho phép, tiếp tục synthetic/property tests và tài liệu hóa giới hạn; **không chế tạo payload fixture giống thật, không giả codec và không tuyên bố decoder**.
+
+Acceptance cho bước tiếp theo: deterministic bounded parser; malformed inputs không crash; member extents nằm trong file và trước directory; no duplicate/overlap; output chỉ là metadata structural; CI/test evidence gắn với commit cụ thể; compatibility registry vẫn empty cho đến khi exact-build decoder được kiểm chứng.
+
+**Latest CI blocker (2026-11-05):** PR #75 head `69fd9b1` / run `42074331446` and PR #76 head `c932a3e` / run `42054005159` (attempt 2) both end before runner assignment (`runner_id=0`, empty runner name, zero steps). PR #77's documentation-only workflow shows the same pattern; see its PR description for the latest exact head and run. Job-log retrieval returns `BlobNotFound`; no command or test step ran. This is not a code-level test result. The same workflow succeeded on the `main` push at `edad9fd` (run `41675620928`, both jobs assigned GitHub-hosted runners); these are same-repository, non-fork PRs. This narrows the failure to the `pull_request` execution path, but does not establish why. The official [GitHub Status history](https://www.githubstatus.com/history) showed no Nov 5 incident at the time of this check; Nov 4 Actions incidents were marked resolved. This does not rule out a repository policy or PR-event-specific issue. Restore real runner execution and validate exact code heads before merge.
 
 ## 5. Tool và evidence khi không có Computer Use
 
