@@ -28,7 +28,6 @@ function processStatus(raw, expected) {
 
 function readPlan(raw) {
   if (!Array.isArray(raw) || raw.length < 1 || raw.length > FM2013_READONLY_LIMITS.maxRequests) return null;
-  const seen = new Set();
   let total = 0;
   const plan = [];
   for (const request of raw) {
@@ -39,8 +38,10 @@ function readPlan(raw) {
     if (!Number.isSafeInteger(address) || address < FM2013_READONLY_LIMITS.minimumAddress ||
         address > FM2013_READONLY_LIMITS.maximumAddress || address % 4 !== 0 ||
         !Number.isSafeInteger(byteLength) || byteLength < 1 || byteLength > FM2013_READONLY_LIMITS.maxReadBytes ||
-        byteLength - 1 > FM2013_READONLY_LIMITS.maximumAddress - address || seen.has(address)) return null;
-    seen.add(address);
+        byteLength - 1 > FM2013_READONLY_LIMITS.maximumAddress - address) return null;
+    for (const existing of plan) {
+      if (address < existing.address + existing.byteLength && existing.address < address + byteLength) return null;
+    }
     total += byteLength;
     if (total > FM2013_READONLY_LIMITS.maxTotalBytes) return null;
     plan.push({ address, byteLength, nativeKind });
@@ -117,7 +118,10 @@ export async function probeFm2013ReadOnly(request, host, clock = Date.now) {
       blocks.push({ address: item.address, nativeKind: item.nativeKind, bytes: Uint8Array.from(buffer) });
     }
   } catch { error = 'read_failed'; }
-  try { await handle.close(); } catch { error = 'close_failed'; }
+  try {
+    const closed = await handle.close();
+    if (closed === false) error = error ?? 'close_failed';
+  } catch { error = 'close_failed'; }
   if (error) {
     for (const block of blocks) block.bytes.fill(0);
     return rejected(error);

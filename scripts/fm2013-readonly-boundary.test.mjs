@@ -25,7 +25,11 @@ function fixture(options = {}) {
       if (options.readError) throw new Error('PRIVATE READ DETAILS MUST NOT LEAK');
       return options.bytes ?? Uint8Array.from([1, 2, 3, 4]);
     },
-    async close() { calls.close++; if (options.closeError) throw Error('PRIVATE CLOSE DETAILS'); },
+    async close() {
+      calls.close++;
+      if (options.closeError) throw Error('PRIVATE CLOSE DETAILS');
+      if (options.closeReturnsFalse) return false;
+    },
     async write() { calls.write++; throw Error('writer should never be used'); },
   };
   const host = {
@@ -56,10 +60,11 @@ test('explicit host consent and exact process identity are prerequisites to any 
   const input = request(); input.process.binarySha256 = '0'.repeat(64);
   assert.equal((await probeFm2013ReadOnly(input, bad.host)).reason, 'unsupported_build');
   assert.equal(bad.calls.consent, 0);
-  const highPid = fixture();
-  const high = request(); high.process.pid = 0x80000000;
-  assert.equal((await probeFm2013ReadOnly(high, highPid.host)).reason, 'unsupported_build');
-  assert.equal(highPid.calls.consent, 0);
+  for (const invalidPid of [0, -1, 0x80000000]) {
+    const invalid = request(); invalid.process.pid = invalidPid;
+    assert.equal((await probeFm2013ReadOnly(invalid, bad.host)).reason, 'unsupported_build');
+  }
+  assert.equal(bad.calls.consent, 0);
   const moved = fixture({ observations: [{ status: 'observed', process: { ...process, startedAtFileTime: '134064000000000002' } }] });
   assert.equal((await probeFm2013ReadOnly(request(), moved.host)).reason, 'process_identity_changed');
   assert.equal(moved.calls.open, 0);
@@ -91,7 +96,12 @@ test('invalid pointer, count, duplicate and overflow requests are rejected befor
     assert.equal((await probeFm2013ReadOnly(r, f.host)).reason, 'invalid_request');
     assert.equal(f.calls.consent, 0);
   }
-  for (const reads of [[item, item], [], Array.from({ length: 17 }, (_, i) => ({ ...item, address: item.address + i * 4 }))]) {
+  for (const reads of [
+    [item, item],
+    [{ ...item, address: 0x123400, byteLength: 8 }, { ...item, address: 0x123404, byteLength: 4 }],
+    [],
+    Array.from({ length: 17 }, (_, i) => ({ ...item, address: item.address + i * 4 })),
+  ]) {
     const f = fixture();
     const r = request(); r.reads = reads;
     assert.equal((await probeFm2013ReadOnly(r, f.host)).reason, 'invalid_request');
@@ -137,9 +147,10 @@ test('changed or missing process after memory read never yields successful data'
 });
 
 test('open, read and close failures do not expose sampled bytes or private error strings', async () => {
-  for (const options of [{ openError: true }, { readError: true }, { closeError: true }]) {
+  for (const options of [{ openError: true }, { readError: true }, { closeError: true }, { closeReturnsFalse: true }]) {
     const f = fixture(options), result = await probeFm2013ReadOnly(request(), f.host);
     assert.equal(result.status, 'rejected');
+    if (options.closeReturnsFalse) assert.equal(result.reason, 'close_failed');
     assert.equal(JSON.stringify(result).includes('PRIVATE'), false);
     assert.deepEqual(result.blocks, []);
     assert.equal(f.calls.close, options.openError ? 0 : 1);
