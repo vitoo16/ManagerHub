@@ -98,6 +98,34 @@ describe('bounded AFE/FM directory catalogue parser', () => {
     }
   });
 
+  it('rejects lone UTF-16 surrogate labels without rejecting valid Unicode pairs', () => {
+    expect(isSafeArchiveLabel('\uD800', 512)).toBe(false);
+    expect(isSafeArchiveLabel('\uDC00', 512)).toBe(false);
+    expect(isSafeArchiveLabel('a\uD800b', 512)).toBe(false);
+    expect(isSafeArchiveLabel('a\uDC00b', 512)).toBe(false);
+    expect(isSafeArchiveLabel('player\uD83D\uDE80.dat', 512)).toBe(true);
+  });
+
+  it('rejects own non-enumerable and symbol metadata, including member fields', () => {
+    const fresh = () => ({
+      family: 'fmf-index-candidate' as const,
+      evidence: 'experimental' as const,
+      memberCount: 1,
+      directoryOffset: 64,
+      members: [{ filename: 'a.dat', offset: 0, storedBytes: 8, reportedUncompressedBytes: 8 }]
+    });
+    const hiddenRoot = fresh();
+    Object.defineProperty(hiddenRoot, 'hidden', { value: 'untrusted', enumerable: false });
+    expect(isSafeArchiveIndexMetadata(hiddenRoot, 128)).toBe(false);
+    const symbolRoot = fresh();
+    Object.defineProperty(symbolRoot, Symbol('hidden'), { value: 'untrusted' });
+    expect(isSafeArchiveIndexMetadata(symbolRoot, 128)).toBe(false);
+    const hiddenMember = fresh();
+    Object.defineProperty(hiddenMember.members[0], 'hidden', { value: 1, enumerable: false });
+    expect(isSafeArchiveIndexMetadata(hiddenMember, 128)).toBe(false);
+    expect(isSafeArchiveIndexMetadata(fresh(), 128)).toBe(true);
+  });
+
   it('returns null rather than throwing for malformed UTF-16LE member names', () => {
     const malformed = syntheticIndex();
     // Replace the first UTF-16LE character with an unpaired high surrogate.
