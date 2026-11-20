@@ -62,7 +62,7 @@ function timestamp(value: unknown): { readonly iso: string; readonly millisecond
   if (!Number.isFinite(milliseconds) || new Date(milliseconds).toISOString() !== value) throw new TypeError('Invalid session timestamp');
   return { iso: value, milliseconds };
 }
-function processIdentity(value: unknown): Fm2013ProcessIdentity {
+export function validateFm2013ProcessIdentity(value: unknown): Fm2013ProcessIdentity {
   const source = object(value, ['pid', 'startedAtFileTime', 'imagePath', 'binarySha256']);
   if (typeof source.startedAtFileTime !== 'string' || !/^[1-9]\d{17,19}$/u.test(source.startedAtFileTime) ||
       BigInt(source.startedAtFileTime) > 18446744073709551615n || !isSupportedFm2013ImagePath(source.imagePath) || source.binarySha256 !== profile.binarySha256) {
@@ -75,7 +75,7 @@ function ticket(value: unknown): Fm2013CaptureTicket {
   if (source.schema !== 'fm2013-live-session-v1' || source.profileVersion !== profile.profileVersion) throw new TypeError('Unsupported session ticket');
   const issued = timestamp(source.issuedAt), expires = timestamp(source.expiresAt);
   if (expires.milliseconds <= issued.milliseconds || expires.milliseconds - issued.milliseconds > FM2013_CAPTURE_WINDOW_MS) throw new TypeError('Invalid ticket window');
-  return Object.freeze({ schema: 'fm2013-live-session-v1', captureId: captureId(source.captureId), process: processIdentity(source.process),
+  return Object.freeze({ schema: 'fm2013-live-session-v1', captureId: captureId(source.captureId), process: validateFm2013ProcessIdentity(source.process),
     issuedAt: issued.iso, expiresAt: expires.iso, profileVersion: profile.profileVersion });
 }
 
@@ -112,7 +112,7 @@ export function validateFm2013CaptureAdmission(rawTicket: unknown, rawObservatio
       if (source.status === 'process_not_found' || source.status === 'access_denied' || source.status === 'observation_failed' || source.status === 'unsupported_build') return reject(source.status);
       return reject('invalid_observation');
     }
-    observed = processIdentity(object(rawObservation, ['status', 'process']).process);
+    observed = validateFm2013ProcessIdentity(object(rawObservation, ['status', 'process']).process);
   } catch { return reject('invalid_observation'); }
   if (observed.pid !== selected.process.pid || observed.startedAtFileTime !== selected.process.startedAtFileTime ||
       observed.imagePath !== selected.process.imagePath || observed.binarySha256 !== selected.process.binarySha256) return reject('process_identity_changed');
