@@ -18,3 +18,13 @@ Local CD only stages apps/web/dist with a commit-linked manifest under .local-ci
 The .githooks/pre-push hook runs Quick if git config core.hooksPath .githooks is set. It is not a substitute for Full on the exact PR/release commit. Local hooks do not protect GitHub browser merges or other computers. Keep independent review and evidence.
 
 Limitations: GitHub branch protection cannot consume local statuses automatically. Real FM2013 save decoding/writing and other unimplemented modules are not certified by this CI. Never mark native editing safe based on CI alone.
+
+## Commit-bound evidence (new; subject to PR review and rerun)
+
+Every `summary.json` now records `source.gitHead` (full 40-character SHA), branch, clean Git worktree state at start/end, SHA-256 of `ci/local-pipeline.json` and `package-lock.json`, and whether those identities remained stable. Each executed stage has `logSha256`, letting reviewers verify that its local log bytes match the summary. No private paths, complete source tree or save contents are embedded in these hashes.
+
+**`success` means the configured stages executed with zero exit codes AND the checkout/CI inputs did not change during the run.** `acceptanceEligible` additionally requires a clean worktree at both endpoints. Quick/Full on dirty sources may legitimately return `success: true` for diagnosis, but must **never** be used for release or PR acceptance. Release refuses dirty source before expensive stages. A passing `summary.json` by itself is not authenticated proof of who executed the tests; preserve original logs and run from a trusted local machine.
+
+After running, check `summary.source.gitHead` against `git rev-parse HEAD` and the remote PR commit, `summary.acceptanceEligible === true`, every stage exit status and `logSha256` against the on-disk log. A local run does **not** create GitHub branch-protection statuses. For a new PR/merge commit, rerun the full applicable profile; previous PASS on another SHA cannot be carried over.
+
+The synthetic regression tests for this contract are part of `npm run test` and can be run independently with `npm run test:node:ci`. These tests use temporary fixture Git repositories and do not read any FM saves or contact GitHub.
