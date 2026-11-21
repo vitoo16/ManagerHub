@@ -605,4 +605,18 @@ export default {
   "This browser cannot run background save inspection. Use a current browser with Web Worker support.": "Trình duyệt này không hỗ trợ kiểm tra save trong tiến trình nền. Hãy dùng trình duyệt mới có hỗ trợ Web Worker.",
   "Save inspection timed out after 45 seconds. Try a smaller .fm file or select the file again.": "Quá trình kiểm tra save vượt quá 45 giây. Hãy thử tệp .fm nhỏ hơn hoặc chọn lại tệp.",
   "Background save inspection returned invalid data. Select the .fm file again.": "Tiến trình nền trả về dữ liệu kiểm tra không hợp lệ. Hãy chọn lại tệp .fm.",
+  "Saved squad plans": "Kế hoạch đội hình đã lưu",
+  "Save and restore your plans": "Lưu và khôi phục kế hoạch",
+  "Keep both lineups on this browser, tied to this exact imported player list. Nothing is uploaded or saved automatically.": "Lưu cả hai đội hình trên trình duyệt, gắn với đúng danh sách cầu thủ đã nhập. Không tải lên máy chủ hoặc tự động lưu.",
+  "Save plans locally": "Lưu kế hoạch trên máy",
+  "Restore saved plans": "Khôi phục kế hoạch",
+  "Forget saved plans": "Xóa kế hoạch đã lưu",
+  "Confirm forget plans": "Xác nhận xóa kế hoạch",
+  "Plans A and B saved for this exact player export on this browser.": "Đã lưu kế hoạch A và B cho đúng danh sách cầu thủ này trên trình duyệt.",
+  "Could not save these plans. Check conflicting locks or browser storage permissions.": "Không thể lưu kế hoạch. Hãy kiểm tra cầu thủ khóa trùng vị trí hoặc quyền lưu trữ trình duyệt.",
+  "No saved plans found for this exact player export.": "Chưa có kế hoạch được lưu cho đúng danh sách cầu thủ này.",
+  "Plans A and B restored from this browser.": "Đã khôi phục kế hoạch A và B từ trình duyệt.",
+  "Saved plans could not be validated. Your current plans were not changed.": "Dữ liệu kế hoạch đã lưu không hợp lệ. Kế hoạch hiện tại được giữ nguyên.",
+  "Saved plans for this player export were removed. Current session plans remain unchanged.": "Đã xóa kế hoạch lưu cho danh sách cầu thủ này. Kế hoạch trong phiên hiện tại vẫn giữ nguyên.",
+  "Could not remove saved plans from browser storage.": "Không thể xóa kế hoạch khỏi bộ nhớ trình duyệt."
 } as const;
