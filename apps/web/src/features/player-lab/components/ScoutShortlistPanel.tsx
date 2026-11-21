@@ -8,6 +8,7 @@ import {
 } from '@managerhub/domain';
 import { Button, Icon, Surface } from '@managerhub/ui';
 import ScoutRoleComparison from './ScoutRoleComparison';
+import ScoutClubScenario from './ScoutClubScenario';
 
 type Props = {
   dataset: PlayerDataset;
@@ -155,6 +156,7 @@ function ScoutShortlistPanel({ dataset, selected, candidateIds, setCandidateIds,
     </ul> : <p className="scout-shortlist__empty">{t('No candidates selected. Choose a player from the list, then add them here.')}</p>}
     {candidates.length > 0 && <ScoutRoleComparison candidates={candidates} players={dataset.players}
       selected={selected} onSelectPlayer={onSelectPlayer}/>}
+    {candidates.length > 0 && <ScoutClubScenario players={dataset.players} candidates={candidates}/>}
     {notice && <p className="scout-shortlist__notice" role="status" aria-live="polite">{t(notice)}</p>}
     <p className="scout-shortlist__privacy"><Icon name="shield" size={14}/>{t('Only source-bound player IDs are saved locally. Player names, attributes and original files are not duplicated in shortlist storage.')}</p>
   </Surface>;
