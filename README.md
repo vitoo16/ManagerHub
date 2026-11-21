@@ -60,6 +60,19 @@ Player Lab can now **opt-in save** a normalized export to IndexedDB, restore it 
 ### Plan A / Plan B in Squad Planner
 In `/#/squad`, pin an eligible player to an exact position, exclude players or copy Plan A into Plan B. The engine recalculates the entire XI and refuses invalid duplicate or unsupported assignments. The same-formation comparison identifies roster changes and heuristic Role Fit differences; **this is not a validated prediction of match performance**. Plans are temporary in-page scenarios; only explicitly saved player exports persist in IndexedDB. [Implementation details](docs/implementation/08-local-library-and-squad-planner.md).
 
+### Keep and export Squad Planner scenarios (product branch #91)
+
+The user journey is now designed around a repeatable browser-local workflow rather than requiring a new native memory adapter:
+
+1. Import FM HTML/CSV/TSV into Player Lab, then explicitly choose **Save on this browser** to keep the normalized player list in IndexedDB.
+2. Open Squad Planner and edit **Plan A** and **Plan B**. Choose **Save plans locally** to store the formation, position locks, exclusions and active plan, keyed to a SHA-256 of the exact source roster. No original save, raw export, player names or attributes are duplicated in the plan record.
+3. On the next visit, open **Squad Planner** directly. Use **Open a saved player list**, then **Restore saved plans**. A different export or invalid plan record will not silently overwrite the current scenarios.
+4. Choose **Export both plans as CSV** to download a locally generated report with role-fit *heuristics*, source warnings, position assignments and explicit incomplete lineup rows. CSV formula-like names are escaped. It does **not** contain game-save changes or verified CA/PA.
+
+All persistence is opt-in and local to that browser profile; users can delete the saved player export in Player Lab and **Forget saved plans** separately. The Save/Restore controls are not cloud synchronization or a certified FM2013 live reader.
+
+**Acceptance status:** implemented on PR #91, but Windows Node24 full Local CI and browser E2E must pass on the final exact PR head before the feature can be marked released or merged.
+
 ## Languages and player-facing help
 ManagerHub supports **Vietnamese / English (VI/EN)** with immediate language switching from the top bar and stored preference across reloads. Player Lab includes a plain-language guide distinguishing CA, PA, RCA and ManagerHub's role-fit scoring. See [i18n and content guidelines](docs/engineering/i18n-guidelines.md) and [FM Scout CA/PA research](docs/domain/ca-pa-rca-research.md).
 
