@@ -166,6 +166,47 @@ test('scouting shortlist saves, restores and exports only candidates from the ac
   await expect(page.getByRole('region', { name: 'Danh sách theo dõi tuyển trạch' })).toBeVisible();
 });
 
+test('shortlist compares role fit on a shared axis and preserves unknown inputs', async ({ page }) => {
+  const csv = [
+    'Name,Position,Finishing,Off The Ball,Acceleration,Pace,Anticipation,Composure,First Touch',
+    'High Striker,ST (C),19,19,19,19,19,19,19',
+    'Low Striker,ST (C),5,5,5,5,5,5,5',
+    'Partial Striker,ST (C),19,,,,,,'
+  ].join('\n');
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'role-shortlist.csv', mimeType: 'text/csv', buffer: Buffer.from(csv)
+  });
+  await expect(page.getByRole('heading', { name: 'High Striker' })).toBeVisible();
+  const shortlist = page.getByRole('region', { name: 'Scouting shortlist' });
+  await shortlist.getByRole('button', { name: 'Add selected player to shortlist' }).click();
+  for (const name of ['Low Striker', 'Partial Striker']) {
+    await page.getByRole('list', { name: 'Imported players' }).getByRole('button', { name: new RegExp(name) }).click();
+    await shortlist.getByRole('button', { name: 'Add selected player to shortlist' }).click();
+  }
+
+  const table = shortlist.getByRole('table', { name: 'Candidate role-fit ranking' });
+  await expect(table.locator('tbody tr')).toHaveCount(3);
+  await expect(table.locator('tbody tr').first()).toContainText('High Striker');
+  await expect(table.locator('tbody tr').first()).toContainText('95/100');
+  await expect(table.locator('tbody tr').nth(1)).toContainText('Low Striker');
+  await expect(table.locator('tbody tr').nth(2)).toContainText('Partial Striker');
+  await expect(table.locator('tbody tr').nth(2)).toContainText('Insufficient data');
+  await expect(table.locator('tbody tr').nth(2)).toContainText('20%');
+  await table.locator('tbody tr').nth(2).getByText('Inspect role inputs').click();
+  await expect(table.locator('tbody tr').nth(2)).toContainText('Off The Ball');
+
+  await shortlist.getByLabel('Compare for role').selectOption('goalkeeper');
+  await expect(table.locator('tbody tr').first()).toContainText('Insufficient data');
+  await expect(table.locator('tbody tr').nth(1)).toContainText('Insufficient data');
+  await shortlist.getByLabel('Compare for role').selectOption('advanced-forward');
+  await expect(table.locator('tbody tr').first()).toContainText('High Striker');
+
+  await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
+  await expect(page.getByRole('table', { name: 'Xếp hạng mức phù hợp vai trò của ứng viên' })).toBeVisible();
+  await expect(page.getByText('So sánh ứng viên theo vai trò')).toBeVisible();
+});
+
 test('inspects AFE header locally and never claims full save support', async ({ page }) => {
   await page.goto('/#/saves');
   await page.locator('input[type="file"]').setInputFiles({
