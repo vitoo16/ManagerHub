@@ -74,7 +74,14 @@ function canonicalPlans(value: unknown, dataset: PlayerDataset): SquadPlans {
 export async function squadDatasetSha256(dataset: PlayerDataset): Promise<string> {
   if (!dataset || dataset.source !== 'game_export' || !Array.isArray(dataset.players) ||
       dataset.players.length === 0 || dataset.players.length > 20_000) throw new Error('invalid_roster');
-  const bytes = new TextEncoder().encode(JSON.stringify(dataset));
+  // ImportedAt is the local import clock, not source identity. Reimporting the
+  // same file may restore the same plans; any changed player data changes the hash.
+  const bytes = new TextEncoder().encode(JSON.stringify({
+    fileName: dataset.fileName,
+    source: dataset.source,
+    players: dataset.players,
+    attributeColumns: dataset.attributeColumns
+  }));
   if (bytes.byteLength === 0 || bytes.byteLength > MAX_DATASET_BYTES ||
       !globalThis.crypto?.subtle) throw new Error('dataset_hash_unavailable');
   const hash = new Uint8Array(await globalThis.crypto.subtle.digest('SHA-256', bytes));
