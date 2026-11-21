@@ -51,8 +51,9 @@ describe('Squad Planner user-controlled persistence', () => {
     const modified = dataset(original.players.map(p => p.id === 'midfielder'
       ? { ...p, attributes: { passing: 17, stamina: 14 } } : p));
     await expect(restoreSavedSquadPlans(saved, modified)).rejects.toThrow('different_player_export');
-    await expect(restoreSavedSquadPlans(saved, { ...original, importedAt: '2026-11-21T00:00:01.000Z' }))
-      .rejects.toThrow('different_player_export');
+    const sameExportAtLaterTime = { ...original, importedAt: '2026-11-21T00:00:01.000Z' };
+    expect(await squadPlanStorageKey(sameExportAtLaterTime)).toBe(await squadPlanStorageKey(original));
+    await expect(restoreSavedSquadPlans(saved, sameExportAtLaterTime)).resolves.toBeDefined();
   });
 
   it('rejects tampered schema, unknown keys and malformed persistence payloads', async () => {
