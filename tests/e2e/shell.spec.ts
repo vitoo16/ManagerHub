@@ -207,6 +207,51 @@ test('shortlist compares role fit on a shared axis and preserves unknown inputs'
   await expect(page.getByText('So sánh ứng viên theo vai trò')).toBeVisible();
 });
 
+test('shortlist compares with a source-bound reference outside the shortlist and suppresses unknown deltas', async ({ page }) => {
+  const csv = [
+    'Name,Position,Finishing,Off The Ball,Acceleration,Pace,Anticipation,Composure,First Touch',
+    'Candidate A,ST (C),19,19,19,19,19,19,19',
+    'Candidate B,ST (C),19,,,,,,',
+    'Incumbent,ST (C),5,5,5,5,5,5,5'
+  ].join('\n');
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'reference-role.csv', mimeType: 'text/csv', buffer: Buffer.from(csv)
+  });
+  const players = page.getByRole('list', { name: 'Imported players' });
+  const shortlist = page.getByRole('region', { name: 'Scouting shortlist' });
+  await shortlist.getByRole('button', { name: 'Add selected player to shortlist' }).click();
+  await players.getByRole('button', { name: /Candidate B/ }).click();
+  await shortlist.getByRole('button', { name: 'Add selected player to shortlist' }).click();
+  await players.getByRole('button', { name: /Incumbent/ }).click();
+  await shortlist.getByRole('button', { name: 'Use viewed player as reference' }).click();
+
+  const comparison = shortlist.getByRole('table', { name: 'Candidate role-fit ranking' });
+  await expect(shortlist.locator('.scout-role-compare__reference-details')).toContainText('Incumbent');
+  await expect(shortlist.locator('.scout-role-compare__reference-details')).toContainText('21/100');
+  await expect(comparison.locator('tbody tr').first()).toContainText('+74 pts');
+  await expect(comparison.locator('tbody tr').nth(1)).toContainText('Insufficient data');
+  await shortlist.getByText('Inspect reference inputs').click();
+  await expect(shortlist.locator('.scout-role-compare__reference-details')).toContainText('Finishing');
+
+  await shortlist.getByLabel('Compare for role').selectOption('goalkeeper');
+  await expect(shortlist.locator('.scout-role-compare__reference-details')).toContainText('Insufficient data');
+  await expect(comparison.locator('tbody tr').first()).toContainText('Insufficient data');
+  await shortlist.getByLabel('Compare for role').selectOption('advanced-forward');
+  await shortlist.getByRole('button', { name: 'Clear reference player' }).click();
+  await expect(comparison.locator('tbody tr').first()).not.toContainText('+74 pts');
+
+  await shortlist.getByRole('button', { name: 'Use viewed player as reference' }).click();
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'second-reference-role.csv', mimeType: 'text/csv', buffer: Buffer.from(csv.replace('Incumbent', 'New Player'))
+  });
+  await expect(shortlist.locator('.scout-role-compare__reference-details')).toHaveCount(0);
+  await expect(shortlist.locator('.scout-shortlist__candidates li')).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
+  await expect(page.getByRole('region', { name: 'Danh sách theo dõi tuyển trạch' })).toBeVisible();
+});
+
 test('inspects AFE header locally and never claims full save support', async ({ page }) => {
   await page.goto('/#/saves');
   await page.locator('input[type="file"]').setInputFiles({
