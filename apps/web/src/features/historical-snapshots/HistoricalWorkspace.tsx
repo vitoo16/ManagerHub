@@ -11,6 +11,7 @@ import { getHistoricalSnapshot } from '@managerhub/storage/historical-live-snaps
 import { importHistoricalCapture, type HistoricalImportStage } from '../../import-historical-capture';
 import { useHistoricalSnapshotLibrary } from '../../useHistoricalSnapshotLibrary';
 import { HistoricalCaptureGuide } from './HistoricalCaptureGuide';
+import { HistoricalObservationComparison } from './HistoricalObservationComparison';
 import './historical-workspace.css';
 
 i18n.addResourceBundle('vi', 'translation', historicalVi, true, true);
@@ -566,6 +567,9 @@ export default function HistoricalWorkspace() {
           </section>
 
           {selectedPlayer && <PlayerDetail player={selectedPlayer}/>}
+          {selectedPlayer && <HistoricalObservationComparison key={`${record.id}:${record.mode}`} record={record} player={selectedPlayer}
+            items={library.items} busy={importing || switchingMode || library.loading || library.activity !== null || library.error !== null}
+            revision={library.syncedExternalRevision}/>}
           <section className="historical-panel">
             <SectionHeading eyebrow={t('Source diagnostics')} title={t('What this capture does not prove')}/>
             <ul className="historical-diagnostics">

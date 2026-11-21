@@ -91,12 +91,32 @@
 .historical-value-row span {color:var(--text-sub);overflow-wrap:anywhere}
 .historical-value-row strong {max-width:58%;text-align:right;color:var(--text);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .historical-value-row strong.is-unknown {color:var(--text-faint);font-weight:500}
+.historical-comparison-facts {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}
+.historical-comparison-facts>div,.historical-comparison-facts>label {display:grid;align-content:start;gap:7px;min-width:0;color:var(--text-sub);font-size:11px}
+.historical-comparison-facts strong {font-size:12px;color:var(--text);overflow-wrap:anywhere}
+.historical-comparison-facts small {font-size:11px;overflow-wrap:anywhere}
+.historical-comparison-facts select,.historical-comparison-search input {width:100%;min-width:0;min-height:40px;padding:9px;border:1px solid var(--line);border-radius:9px;background:var(--surface-up);color:var(--text);font:inherit}
+.historical-comparison-search {display:grid;gap:7px;margin-top:16px;font-size:11px;color:var(--text-sub)}
+.historical-comparison-candidates {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-height:240px;overflow:auto;margin-top:10px}
+.historical-comparison-candidates button {display:flex;justify-content:space-between;gap:8px;align-items:center;min-width:0;min-height:37px;text-align:left;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface-up);color:var(--text);font-size:11px}
+.historical-comparison-candidates button[aria-pressed="true"] {border-color:var(--accent-strong);color:var(--accent-strong)}
+.historical-comparison-candidates small {font-family:ui-monospace,Consolas,monospace;color:var(--text-faint)}
+.historical-comparison-selected {margin-top:14px;font-size:11px;color:var(--text-sub);overflow-wrap:anywhere}
+.historical-comparison-confirm {display:flex;align-items:flex-start;gap:10px;margin-top:12px;padding:11px;border:1px solid var(--line);border-radius:9px;font-size:11px;line-height:1.6;color:var(--text)}
+.historical-comparison-confirm input {flex:none;width:18px;height:18px;margin:0;accent-color:var(--accent-strong)}
+.historical-comparison-table-wrap {width:100%;overflow-x:auto;margin-top:16px}
+.historical-comparison-table {width:100%;min-width:480px;border-collapse:collapse;font-size:11px;font-variant-numeric:tabular-nums}
+.historical-comparison-table caption {padding:9px 0;text-align:left;color:var(--text);font-weight:800}
+.historical-comparison-table th,.historical-comparison-table td {padding:9px 8px;text-align:left;border-bottom:1px solid var(--line)}
+.historical-comparison-table thead {background:var(--surface-up);color:var(--text-sub)}
+.historical-comparison-table tbody th {font-weight:650;color:var(--text)}
+.historical-comparison-table td {color:var(--text-sub)}
 .historical-empty {padding:24px 16px;text-align:center;color:var(--text-faint)}
 .historical-empty strong {display:block;margin-top:9px;color:var(--text);font-size:12px}
 .historical-empty p {margin:7px auto 0;max-width:280px;font-size:11px;line-height:1.7}
 .historical-muted {font-size:11px;color:var(--text-faint);padding:12px 0}
 .historical-diagnostics {margin:14px 0 0;padding-left:18px;color:var(--text-sub);font-size:11px;line-height:1.8}
-.historical-workspace button:focus-visible,.historical-workspace input:focus-visible {outline:2px solid var(--accent-strong);outline-offset:2px}
+.historical-workspace button:focus-visible,.historical-workspace input:focus-visible,.historical-workspace select:focus-visible {outline:2px solid var(--accent-strong);outline-offset:2px}
 @media(max-width:1100px) {
  .historical-library-layout {grid-template-columns:minmax(0,1fr)}
  .historical-library {position:static;max-height:none}
@@ -110,6 +130,7 @@
  .historical-coverage-grid {grid-template-columns:minmax(0,1fr)}
  .historical-snapshot-list {grid-template-columns:minmax(0,1fr)}
  .historical-facts {grid-template-columns:minmax(0,1fr)}
+ .historical-comparison-facts,.historical-comparison-candidates {grid-template-columns:minmax(0,1fr)}
  .historical-value-grid,.historical-value-grid--positions {grid-template-columns:repeat(2,minmax(0,1fr))}
  .historical-player-table {min-width:560px}
  .historical-panel {padding:15px}

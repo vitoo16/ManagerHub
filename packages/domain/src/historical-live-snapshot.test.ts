@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import profile from './fm2013-live-profile.json' with { type: 'json' };
 import { parseFm2013LiveCapture, type LiveSnapshotContext } from './live-snapshot';
+import { compareHistoricalObservations } from './historical-observation-comparison';
 import {
   alignEditorToSavedRealism, createHistoricalSnapshotRecord, isHistoricalSnapshotRecord, isHistoricalSnapshotSummary,
   parseHistoricalSnapshotRecord, toHistoricalSnapshotSummary
@@ -220,5 +221,67 @@ describe('historical FM2013 snapshot persistence schema', () => {
     expect(() => createHistoricalSnapshotRecord(parsed, { ...metadata, fileName: '../capture.json' })).toThrow();
     expect(() => createHistoricalSnapshotRecord(parsed, { ...metadata, sourceSize: 48_000_001 })).toThrow();
     expect(() => createHistoricalSnapshotRecord(parsed, { ...metadata, importedAt: 'not-a-time' })).toThrow();
+  });
+});
+
+describe('MH-04 manually selected historical observations', () => {
+  function secondCapture(mode: 'editor' | 'realism' = 'editor') {
+    const input = capture();
+    const first = input.passes[0]?.records[0];
+    const passingIndex = profile.attributes.findIndex(attribute => attribute.key === 'passing');
+    if (!first || passingIndex < 0) throw new Error('Expected fixture passing attribute.');
+    first.attributeBytes[passingIndex] = 80;
+    const parsed = parseFm2013LiveCapture(JSON.stringify(input), {
+      ...context, snapshotId: 'second-snapshot', capturedAt: '2026-11-01T09:00:00.000Z', mode
+    });
+    if (parsed.status === 'rejected') throw new Error('Expected comparison capture to parse.');
+    return createHistoricalSnapshotRecord(parsed, { ...metadata, sourceSha256: 'b'.repeat(64) });
+  }
+
+  it('compares two explicitly selected records from matching edition, mode and reader version', () => {
+    const first = makeRecord();
+    const second = secondCapture();
+    const difference = compareHistoricalObservations(first, second, first.snapshot.players[0]!, second.snapshot.players[0]!);
+    expect(difference?.attributes.find(row => row.key === 'passing')).toMatchObject({
+      label: 'Passing', difference: 1, first: { value: 15 }, second: { value: 16 }
+    });
+    expect(difference?.positions.find(row => row.key === 'goalkeeper')).toMatchObject({
+      first: { value: 0 }, second: { value: 0 }, difference: 0
+    });
+    expect(difference?.attributes).toHaveLength(profile.attributes.length);
+  });
+
+  it('keeps Realism observations redacted and never derives differences from unknowns', () => {
+    const first = makeRecord('realism');
+    const second = secondCapture('realism');
+    const result = compareHistoricalObservations(first, second, first.snapshot.players[0]!, second.snapshot.players[0]!);
+    expect(result?.attributes.every(row => row.first.value === null && row.second?.value === null && row.difference === null)).toBe(true);
+    expect(result?.positions.every(row => row.difference === null)).toBe(true);
+  });
+
+  it('does not copy the first observation when the second record lacks a field', () => {
+    const first = makeRecord();
+    const second = secondCapture();
+    const player = second.snapshot.players[0]!;
+    const { passing: _omitted, ...remainingAttributes } = player.attributes;
+    const secondPlayer = { ...player, attributes: remainingAttributes };
+    const secondWithMissing = {
+      ...second,
+      snapshot: { ...second.snapshot, players: [secondPlayer, ...second.snapshot.players.slice(1)] }
+    };
+    const result = compareHistoricalObservations(first, secondWithMissing, first.snapshot.players[0]!, secondPlayer);
+    expect(result?.attributes.find(row => row.key === 'passing')).toMatchObject({ second: null, difference: null });
+  });
+
+  it('rejects mismatched visibility, same-source pairs and unrelated player objects', () => {
+    const first = makeRecord();
+    const second = secondCapture();
+    const firstPlayer = first.snapshot.players[0]!;
+    const secondPlayer = second.snapshot.players[0]!;
+    expect(compareHistoricalObservations(first, first, firstPlayer, firstPlayer)).toBeNull();
+    expect(compareHistoricalObservations(first, { ...second, sourceSha256: first.sourceSha256 }, firstPlayer, secondPlayer)).toBeNull();
+    expect(compareHistoricalObservations(first, secondCapture('realism'), firstPlayer, secondPlayer)).toBeNull();
+    expect(compareHistoricalObservations(first, second, secondPlayer, firstPlayer)).toBeNull();
+    expect(compareHistoricalObservations(first, { ...second, snapshot: { ...second.snapshot, readerVersion: 'different' } }, firstPlayer, secondPlayer)).toBeNull();
   });
 });

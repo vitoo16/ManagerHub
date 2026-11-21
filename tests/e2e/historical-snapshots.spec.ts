@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test';
 import profile from '../../packages/domain/src/fm2013-live-profile.json' with { type: 'json' };
 
-function makePlayer(nativeId: number) {
+function makePlayer(nativeId: number, passingByte = 75) {
   return {
     nativeId,
     firstName: 'Synthetic',
     lastName: 'Player ' + nativeId,
-    attributeBytes: profile.attributes.map(() => 75),
+    attributeBytes: profile.attributes.map(attribute => attribute.key === 'passing' ? passingByte : 75),
     positionBytes: profile.positions.map(() => 0),
     birthDateBytes: [59, 0, 208, 7],
     primaryNation: { nativeId: 88, name: 'Synthetic Nation' },
@@ -32,7 +32,7 @@ function makePass(nativeKind: 'player' | 'playerStaff', records: ReturnType<type
   };
 }
 
-function syntheticWire() {
+function syntheticWire(passingByte = 75) {
   return JSON.stringify({
     schema: profile.schema,
     profileVersion: profile.profileVersion,
@@ -45,7 +45,7 @@ function syntheticWire() {
     },
     gameDateBytes: [59, 0, 209, 7],
     passes: [
-      makePass('player', [makePlayer(42)]),
+      makePass('player', [makePlayer(42, passingByte)]),
       makePass('playerStaff', [makePlayer(43)])
     ]
   });
@@ -55,7 +55,8 @@ async function importSynthetic(
   page: import('@playwright/test').Page,
   mode: 'Editor' | 'Realism' = 'Editor',
   careerLabel = 'Synthetic FM2013 career',
-  captureTime = '2026-10-31T09:00'
+  captureTime = '2026-10-31T09:00',
+  passingByte = 75
 ) {
   await page.getByLabel('Career label (user-declared)').fill(careerLabel);
   await page.getByLabel('Capture time (declared by source workflow)').fill(captureTime);
@@ -64,12 +65,47 @@ async function importSynthetic(
   await page.locator('input[type=file]').setInputFiles({
     name: 'synthetic-fm2013-capture.json',
     mimeType: 'application/json',
-    buffer: Buffer.from(syntheticWire(), 'utf8')
+    buffer: Buffer.from(syntheticWire(passingByte), 'utf8')
   });
   await page.getByRole('button', { name: 'Validate and import' }).click();
   await expect(page.getByText('Capture parsed. Review its source, coverage and unknown fields before saving.')).toBeVisible();
   await expect(page.getByRole('heading', { name: careerLabel })).toBeVisible();
 }
+
+test('MH-04 compares user-selected captures without implying verified identity or leaking Realism ratings', async ({ page }) => {
+  await page.goto('/#/history');
+  await importSynthetic(page, 'Editor');
+  await page.getByRole('button', { name: 'Save snapshot locally' }).click();
+  await expect(page.getByRole('button', { name: 'Saved on this browser' })).toBeDisabled();
+  await importSynthetic(page, 'Editor', 'Synthetic FM2013 career', '2026-11-01T09:00', 80);
+  await page.getByRole('button', { name: 'Save snapshot locally' }).click();
+  await expect(page.getByRole('list', { name: 'Saved historical snapshots' }).getByRole('listitem')).toHaveCount(2);
+
+  const compare = page.locator('.historical-comparison');
+  await expect(compare.getByText('Player identity, career lineage, capture order and game-time progression are unverified.', { exact: false })).toBeVisible();
+  await compare.getByLabel('Second saved snapshot').selectOption({ index: 1 });
+  await compare.getByLabel('Second snapshot players').getByRole('button', { name: /Synthetic Player 42/ }).click();
+  await expect(compare.locator('.historical-comparison-table')).toHaveCount(0);
+  await compare.getByRole('checkbox').check();
+  const passing = compare.locator('.historical-comparison-table').first().getByRole('row').filter({ hasText: 'Passing' });
+  await expect(passing).toContainText('16');
+  await expect(passing).toContainText('15');
+  await expect(passing).toContainText('-1');
+
+  await page.getByRole('button', { name: 'Realism', exact: true }).click();
+  await compare.getByLabel('Second saved snapshot').selectOption({ index: 1 });
+  await compare.getByLabel('Second snapshot players').getByRole('button', { name: /Synthetic Player 42/ }).click();
+  await compare.getByRole('checkbox').check();
+  const redactedPassing = compare.locator('.historical-comparison-table').first().getByRole('row').filter({ hasText: 'Passing' });
+  await expect(redactedPassing).toContainText('Unknown / hidden');
+  await expect(redactedPassing).toContainText('Unavailable');
+  await expect(redactedPassing).not.toContainText('15');
+  await expect(redactedPassing).not.toContainText('16');
+
+  await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
+  await expect(compare.getByRole('heading', { name: 'So sánh các lần quan sát lịch sử' })).toBeVisible();
+  await expect(compare.getByText('Chênh lệch quan sát = lần thứ hai trừ lần thứ nhất.', { exact: false })).toBeVisible();
+});
 
 test('explains the manual capture handoff in English and Vietnamese without a fake live connection', async ({ page }) => {
   await page.goto('/#/history');
