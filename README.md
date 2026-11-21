@@ -75,7 +75,7 @@ All persistence is opt-in and local to that browser profile; users can delete th
 
 ### Scouting shortlist from imported data
 
-In **Player Lab**, select a player from the imported list and choose **Add selected player to shortlist**. Up to 50 players from the **same source export** can be shortlisted. The shortlist is useful for comparing player reports and organizing a provisional recruitment list; it is **not** a verified signing recommendation or price estimate.
+In **Player Lab**, select a player from the imported list and choose **Add selected player to shortlist**. Up to 50 players from the **same source export** can be shortlisted. The shortlist is useful for comparing player reports and organizing a provisional recruitment list; it is **not** a verified signing recommendation or price estimate. Unsaved shortlist selections remain available while navigating between Player Lab and Squad Planner in the same tab, and reset when a different source roster replaces the current one; browser reload still requires explicit prior saving.
 
 - **Save shortlist locally** is an explicit user action. Only the schema, SHA-256 of the full imported roster, selected import-local player IDs and timestamp go into browser localStorage. Names/attributes remain in the original in-memory or opt-in IndexedDB player export, not duplicated in this shortlist.
 - **Restore saved shortlist** validates the exact source roster and player IDs. An altered roster, invalid schema or extra fields fails closed without overwriting the current shortlist. Re-importing identical data remains supported.
