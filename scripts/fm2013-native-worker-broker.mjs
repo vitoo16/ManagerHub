@@ -1,5 +1,6 @@
 import { spawn } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
+import { isAbsolute } from 'node:path';
 
 export const NATIVE_PROBE_SCHEMA = 'managerhub-native-probe-v2';
 export const NATIVE_PROBE_TIMEOUT_MS = 5000;
@@ -17,7 +18,7 @@ const failed = reason => Object.freeze({ status: 'rejected', reason, bytesRead: 
  * a hung kernel syscall was canceled or the worker's OS handle was released.
  */
 export async function runFm2013NativeWorker({ executable, args = [], request, timeoutMs = NATIVE_PROBE_TIMEOUT_MS, spawnWorker = spawn }) {
-  if (typeof executable !== 'string' || !executable || !Array.isArray(args) ||
+  if (typeof executable !== 'string' || !isAbsolute(executable) || !Array.isArray(args) ||
     args.some(x => typeof x !== 'string') || typeof spawnWorker !== 'function' ||
     !Number.isSafeInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > NATIVE_PROBE_TIMEOUT_MS ||
     !request || typeof request !== 'object' || Array.isArray(request)) return failed('invalid_request');
