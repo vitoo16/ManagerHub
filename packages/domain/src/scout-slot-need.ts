@@ -33,6 +33,7 @@ export interface ScoutSlotNeed {
   readonly baseline: SquadSolution | null;
   readonly incumbent: SlotAssignment | null;
   readonly internalDepth: ScoutSlotInternalDepth | null;
+  readonly candidateDepthTrial: ScoutCandidateDepthTrial | null;
   readonly candidates: readonly ScoutSlotCandidateComparison[];
 }
 
@@ -43,10 +44,19 @@ export interface ScoutSlotInternalDepth {
   readonly changedSlots: number | null;
 }
 
+/** An outside candidate against the *same* excluded-incumbent XI as internal depth. */
+export interface ScoutCandidateDepthTrial {
+  readonly candidateId: string;
+  readonly withCandidate: SquadSolution;
+  readonly candidateAssignment: SlotAssignment | null;
+  readonly averageRoleFitDelta: number | null;
+  readonly changedSlots: number | null;
+}
+
 /** A same-export, per-slot fit comparison, never a confirmed club recruitment need. */
 export function compareScoutCandidatesForSlot(
   players: readonly PlayerExport[], club: string, formation: FormationId,
-  slotId: string, candidateIds: readonly string[]
+  slotId: string, candidateIds: readonly string[], trialCandidateId?: string
 ): ScoutSlotNeed {
   const slot = FORMATIONS[formation].find(item => item.id === slotId) ?? null;
   const clubPlayers = players.filter(player => player.club === club && club !== '');
@@ -66,7 +76,10 @@ export function compareScoutCandidatesForSlot(
       ? withoutIncumbent.lineup.filter(item => baseline.lineup.find(previous => previous.slot.id === item.slot.id)
         ?.playerId !== item.playerId).length : null
   } : null;
-  if (!slot) return { slot, clubPlayerCount: clubPlayers.length, baseline, incumbent, internalDepth, candidates: [] };
+  if (!slot) return {
+    slot, clubPlayerCount: clubPlayers.length, baseline, incumbent, internalDepth,
+    candidateDepthTrial: null, candidates: []
+  };
 
   const role = ROLE_PROFILES.find(profile => profile.id === slot.roleId);
   if (!role) throw new Error('Unknown role profile: ' + slot.roleId);
@@ -94,5 +107,24 @@ export function compareScoutCandidatesForSlot(
   }
   candidates.sort((a, b) => (b.roleFit ?? -1) - (a.roleFit ?? -1)
     || a.name.localeCompare(b.name) || a.candidateId.localeCompare(b.candidateId));
-  return { slot, clubPlayerCount: clubPlayers.length, baseline, incumbent, internalDepth, candidates };
+  const trialCandidate = trialCandidateId && candidates.find(item => item.candidateId === trialCandidateId
+    && item.status === 'eligible');
+  const candidate = trialCandidate ? byId.get(trialCandidate.candidateId) : null;
+  const withCandidate = candidate && incumbent && internalDepth
+    ? optimizeSquad([...clubPlayers, candidate], formation, { excludedPlayerIds: [incumbent.playerId] })
+    : null;
+  const withoutCandidate = internalDepth?.withoutIncumbent;
+  const comparable = !!(withoutCandidate?.complete && withCandidate?.complete);
+  const candidateDepthTrial: ScoutCandidateDepthTrial | null = withCandidate && candidate ? {
+    candidateId: candidate.id,
+    withCandidate,
+    candidateAssignment: withCandidate.lineup.find(item => item.playerId === candidate.id) ?? null,
+    averageRoleFitDelta: comparable
+      ? Math.round(((withCandidate.averageRoleScore ?? 0) - (withoutCandidate?.averageRoleScore ?? 0)) * 10) / 10
+      : null,
+    changedSlots: comparable
+      ? withCandidate.lineup.filter(item => withoutCandidate?.lineup.find(previous => previous.slot.id === item.slot.id)
+        ?.playerId !== item.playerId).length : null
+  } : null;
+  return { slot, clubPlayerCount: clubPlayers.length, baseline, incumbent, internalDepth, candidateDepthTrial, candidates };
 }

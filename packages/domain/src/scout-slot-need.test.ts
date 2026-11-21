@@ -36,6 +36,7 @@ describe('observed club-group shortlist comparisons by slot', () => {
     expect(result.internalDepth?.replacement).toBeNull();
     expect(result.internalDepth?.averageRoleFitDelta).toBeNull();
     expect(result.internalDepth?.changedSlots).toBeNull();
+    expect(result.candidateDepthTrial).toBeNull();
     expect(result.candidates).toHaveLength(7);
     expect(result.candidates[0]?.candidateId).toBe('strong');
     const strong = result.candidates[0]!;
@@ -58,11 +59,12 @@ describe('observed club-group shortlist comparisons by slot', () => {
 
   it('suppresses incumbent differences when the observed XI is incomplete', () => {
     const result = compareScoutCandidatesForSlot(
-      [club[0]!, player('strong', 'ST', 'Away', 19)], 'Home', '4-3-3', 'st', ['strong']
+      [club[0]!, player('strong', 'ST', 'Away', 19)], 'Home', '4-3-3', 'st', ['strong'], 'strong'
     );
     expect(result.baseline?.complete).toBe(false);
     expect(result.incumbent).toBeNull();
     expect(result.internalDepth).toBeNull();
+    expect(result.candidateDepthTrial).toBeNull();
     expect(result.candidates[0]).toMatchObject({ status: 'eligible', differenceFromIncumbent: null });
   });
 
@@ -77,6 +79,70 @@ describe('observed club-group shortlist comparisons by slot', () => {
     expect(result.internalDepth?.withoutIncumbent.lineup).not.toContainEqual(
       expect.objectContaining({ playerId: 'st' })
     );
+  });
+
+  it('compares an outside recruit with the full internal replacement XI', () => {
+    const players = [
+      ...club, player('bench-st', 'ST (C)', 'Home', 1),
+      player('outside', 'ST (C)', 'Away', 20)
+    ];
+    const result = compareScoutCandidatesForSlot(players, 'Home', '4-3-3', 'st', ['outside'], 'outside');
+    expect(result.internalDepth?.replacement?.playerId).toBe('bench-st');
+    expect(result.candidateDepthTrial?.withCandidate.complete).toBe(true);
+    expect(result.candidateDepthTrial?.candidateAssignment?.playerId).toBe('outside');
+    expect(result.candidateDepthTrial?.withCandidate.lineup).not.toContainEqual(
+      expect.objectContaining({ playerId: 'st' })
+    );
+    expect(result.candidateDepthTrial?.averageRoleFitDelta).toBeGreaterThan(0);
+    expect(result.candidateDepthTrial?.changedSlots).toBe(1);
+  });
+
+  it('reports an outside candidate filling a gap without an invented numerical difference', () => {
+    const players = [...club, player('outside', 'ST (C)', 'Away', 20)];
+    const result = compareScoutCandidatesForSlot(players, 'Home', '4-3-3', 'st', ['outside'], 'outside');
+    expect(result.internalDepth?.withoutIncumbent.complete).toBe(false);
+    expect(result.candidateDepthTrial?.withCandidate.complete).toBe(true);
+    expect(result.candidateDepthTrial?.candidateAssignment?.playerId).toBe('outside');
+    expect(result.candidateDepthTrial?.averageRoleFitDelta).toBeNull();
+    expect(result.candidateDepthTrial?.changedSlots).toBeNull();
+  });
+
+  it('does not claim a gain when the internal replacement remains selected', () => {
+    const players = [...club, player('bench-st', 'ST (C)', 'Home', 19), player('outside', 'ST (C)', 'Away', 1)];
+    const result = compareScoutCandidatesForSlot(players, 'Home', '4-3-3', 'st', ['outside'], 'outside');
+    expect(result.candidateDepthTrial?.withCandidate.complete).toBe(true);
+    expect(result.candidateDepthTrial?.candidateAssignment).toBeNull();
+    expect(result.candidateDepthTrial?.averageRoleFitDelta).toBe(0);
+    expect(result.candidateDepthTrial?.changedSlots).toBe(0);
+  });
+
+  it('keeps entire XI reassignment when an outside candidate replaces versatile internal cover', () => {
+    const midfield = club.map(item => item.position === 'M (C)'
+      ? player(item.id, item.position, 'Home', 8) : item);
+    const players = [
+      ...midfield, player('flex', 'CB/CM', 'Home', 20),
+      player('outside', 'CB', 'Away', 19)
+    ];
+    const result = compareScoutCandidatesForSlot(players, 'Home', '4-3-3', 'lcb', ['outside'], 'outside');
+    expect(result.internalDepth?.withoutIncumbent.lineup.find(item => item.playerId === 'flex')?.slot.position).toBe('CB');
+    expect(result.candidateDepthTrial?.withCandidate.complete).toBe(true);
+    expect(result.candidateDepthTrial?.candidateAssignment?.slot.position).toBe('CB');
+    expect(result.candidateDepthTrial?.withCandidate.lineup.find(item => item.playerId === 'flex')?.slot.position).toBe('CM');
+    expect(result.candidateDepthTrial?.changedSlots).toBeGreaterThan(1);
+  });
+
+  it('refuses trial optimization when selected candidate is absent or ineligible', () => {
+    const players = [...club, player('bench-st', 'ST (C)', 'Home', 1),
+      player('defender', 'CB', 'Away', 20), player('unknown', 'ST', null, 20),
+      { ...player('sparse', 'ST', 'Away'), attributes: { finishing: 19 } }];
+    for (const selected of ['defender', 'unknown', 'sparse', 'st', 'missing']) {
+      const result = compareScoutCandidatesForSlot(
+        players, 'Home', '4-3-3', 'st', [selected], selected
+      );
+      expect(result.candidateDepthTrial).toBeNull();
+    }
+    expect(compareScoutCandidatesForSlot(players, 'Unknown', '4-3-3', 'st', ['defender'], 'defender')
+      .candidateDepthTrial).toBeNull();
   });
 
   it('reassigns versatile players across slots to cover an internal absence', () => {

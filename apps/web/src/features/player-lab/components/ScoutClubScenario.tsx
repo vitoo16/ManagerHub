@@ -36,8 +36,9 @@ function ScoutClubScenario({ players, candidates }: Props) {
     ? assessScoutClubScenario(players, validClub, validCandidateId, formation) : null,
     [players, validClub, validCandidateId, formation]);
   const slotNeed = useMemo(() => validClub
-    ? compareScoutCandidatesForSlot(players, validClub, formation, validSlotId, candidates.map(candidate => candidate.id))
-    : null, [players, validClub, formation, validSlotId, candidates]);
+    ? compareScoutCandidatesForSlot(players, validClub, formation, validSlotId,
+      candidates.map(candidate => candidate.id), validCandidateId)
+    : null, [players, validClub, formation, validSlotId, candidates, validCandidateId]);
   const role = ROLE_PROFILES.find(item => item.id === scenario?.candidateAssignment?.slot.roleId);
 
   return <section className="scout-club-scenario" aria-label={t('Club-group recruitment scenario')}>
@@ -91,6 +92,24 @@ function ScoutClubScenario({ players, candidates }: Props) {
               </strong></span>
               <span>{t('Changed positions')}: <strong>{slotNeed.internalDepth.changedSlots}</strong></span>
             </div>
+          </> : <p>{t('Without this player, the current export cannot fill all eleven positions under the selected formation and data rules.')}</p>}
+        </section>}
+        {slotNeed.candidateDepthTrial && <section className="scout-slot-depth" aria-label={`${t('Try in XI')} · ${t('Without this player')}`}>
+          <h5>{t('Try in XI')} · {t('Without this player')}</h5>
+          <p>{t('When this player is excluded')}: <strong>{slotNeed.incumbent?.name}</strong></p>
+          {slotNeed.candidateDepthTrial.withCandidate.complete ? <>
+            {slotNeed.candidateDepthTrial.candidateAssignment ? <p>
+              {t('The candidate enters the hypothetical best-fit XI.')} <strong>
+                {slotNeed.candidateDepthTrial.candidateAssignment.name} · {slotNeed.candidateDepthTrial.candidateAssignment.slot.label}
+              </strong>
+            </p> : <p>{t('The candidate does not enter the best-fit XI for this observed club group and formation.')}</p>}
+            {slotNeed.internalDepth?.withoutIncumbent.complete ? <div className="scout-club-scenario__metrics">
+              <span>{t('Role-fit difference')}: <strong>
+                {slotNeed.candidateDepthTrial.averageRoleFitDelta !== null && slotNeed.candidateDepthTrial.averageRoleFitDelta > 0 ? '+' : ''}
+                {slotNeed.candidateDepthTrial.averageRoleFitDelta}
+              </strong></span>
+              <span>{t('Changed positions')}: <strong>{slotNeed.candidateDepthTrial.changedSlots}</strong></span>
+            </div> : <p>{t('Adding this candidate makes a complete best-fit XI possible from the observed group.')}</p>}
           </> : <p>{t('Without this player, the current export cannot fill all eleven positions under the selected formation and data rules.')}</p>}
         </section>}
         {slotNeed.candidates.length === 0 ? <p>{t('No candidates selected. Choose a player from the list, then add them here.')}</p> :

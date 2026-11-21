@@ -285,12 +285,16 @@ test('shortlist evaluates an outside candidate against an observed club-group XI
   await expect(slotTable).toContainText('Finishing');
   await slotTable.getByRole('button', { name: 'Try in XI' }).click();
   await expect(scenario.getByLabel('Shortlisted candidate')).toHaveValue(/.+/);
+  const outsideTrial = slotComparison.getByRole('region', { name: 'Try in XI · Without this player' });
+  await expect(outsideTrial).toContainText('Adding this candidate makes a complete best-fit XI possible');
+  await expect(outsideTrial).not.toContainText('Role-fit difference');
   await expect(scenario).toContainText('The candidate enters the hypothetical best-fit XI.');
   await expect(scenario).toContainText('Previous player in this slot: Striker');
   await expect(scenario).toContainText('XI average before');
   await expect(scenario).toContainText('Changed positions');
 
   await slotComparison.getByLabel('Selected position:').selectOption('lb');
+  await expect(outsideTrial).toHaveCount(0);
   await expect(slotTable).toContainText('Declared position is ineligible');
   await expect(slotTable.getByRole('button', { name: 'Try in XI' })).toBeDisabled();
   await slotComparison.getByLabel('Selected position:').selectOption('lcm');
@@ -300,6 +304,7 @@ test('shortlist evaluates an outside candidate against an observed club-group XI
   await expect(scenario).toContainText('The observed club group plus this candidate cannot form a complete eligible XI');
   await slotComparison.getByLabel('Selected position:').selectOption('st');
   await expect(slotComparison).toContainText('No complete observed XI for this formation');
+  await expect(outsideTrial).toHaveCount(0);
   await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
   await expect(page.getByRole('region', { name: 'Mô phỏng tuyển trạch theo nhóm CLB' })).toBeVisible();
   await expect(page.getByRole('region', { name: 'So sánh danh sách tuyển trạch theo vị trí đội hình' })).toBeVisible();
@@ -339,8 +344,16 @@ test('shortlist exposes internal XI depth and recomputes other positions on abse
   await expect(depth).toContainText('Role-fit difference');
   await expect(depth).toContainText('Changed positions: 1');
 
+  await comparison.getByRole('table', { name: 'Candidate role-fit ranking' })
+    .getByRole('button', { name: 'Try in XI' }).click();
+  const outsideTrial = comparison.getByRole('region', { name: 'Try in XI · Without this player' });
+  await expect(outsideTrial).toContainText('Target Striker · ST');
+  await expect(outsideTrial).toContainText('Role-fit difference: +');
+  await expect(outsideTrial).toContainText('Changed positions: 1');
+
   await comparison.getByLabel('Selected position:').selectOption('lb');
   await expect(depth).toContainText('Without this player, the current export cannot fill all eleven positions');
+  await expect(outsideTrial).toHaveCount(0);
   await scenario.getByLabel('Formation to test').selectOption('4-2-3-1');
   await expect(depth).toHaveCount(0);
 
@@ -349,6 +362,8 @@ test('shortlist exposes internal XI depth and recomputes other positions on abse
   await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
   await expect(page.getByRole('region', { name: 'Đội hình thay thế tốt nhất' }))
     .toContainText('Khi loại cầu thủ này');
+  await expect(page.getByRole('region', { name: 'Thử trong XI · Không có cầu thủ này' }))
+    .toContainText('Chênh lệch điểm hợp vai trò');
   await page.locator('input[type=file]').setInputFiles({
     name: 'new-internal-depth.csv', mimeType: 'text/csv', buffer: Buffer.from(makeSquadExport())
   });
