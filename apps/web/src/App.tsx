@@ -2,6 +2,7 @@ import { setAppLocale } from './i18n';
 import { useTranslation } from 'react-i18next';
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { createDefaultSquadPlans, type SquadPlanKey, type SquadPlans } from '@managerhub/domain/squad-scenarios';
+import { defaultTacticalScenarios, tacticalScenarioForFormation, type TacticalScenarios } from '@managerhub/domain';
 import type { SaveIdentity, WorkspaceKey } from '@managerhub/domain/types';
 import type { SaveInspectionResult } from '@managerhub/domain/save-library';
 import type { PlayerDataset } from '@managerhub/domain';
@@ -96,11 +97,20 @@ export default function App() {
   const [playerDataset, setPlayerDataset] = useState<PlayerDataset | null>(null);
   const [scoutShortlistIds, setScoutShortlistIds] = useState<string[]>([]);
   const [squadPlans, setSquadPlans] = useState<SquadPlans>(createDefaultSquadPlans);
+  const [tacticalScenarios, setTacticalScenarios] = useState<TacticalScenarios>(defaultTacticalScenarios);
   const [activeSquadPlan, setActiveSquadPlan] = useState<SquadPlanKey>('A');
+  useEffect(() => {
+    setTacticalScenarios(previous => {
+      const A = tacticalScenarioForFormation(previous.A, squadPlans.A.formation);
+      const B = tacticalScenarioForFormation(previous.B, squadPlans.B.formation);
+      return A === previous.A && B === previous.B ? previous : { A, B };
+    });
+  }, [squadPlans.A.formation, squadPlans.B.formation]);
   const onPlayerDatasetChange = useCallback((next: PlayerDataset | null) => {
     setPlayerDataset(next);
     setScoutShortlistIds([]);
     setSquadPlans(createDefaultSquadPlans());
+    setTacticalScenarios(defaultTacticalScenarios());
     setActiveSquadPlan('A');
   }, []);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -237,7 +247,8 @@ export default function App() {
             {view === 'players' && <PlayerWorkspace dataset={playerDataset} shortlistIds={scoutShortlistIds} setShortlistIds={setScoutShortlistIds} onDataset={onPlayerDatasetChange} onOpenSquad={openSquad}/>}
             {view === 'history' && <HistoricalWorkspace/>}
             {view === 'squad' && <SquadWorkspace dataset={playerDataset} onImport={openPlayers} onDataset={onPlayerDatasetChange}
-              plans={squadPlans} setPlans={setSquadPlans} active={activeSquadPlan} setActive={setActiveSquadPlan}/>}
+              plans={squadPlans} setPlans={setSquadPlans} active={activeSquadPlan} setActive={setActiveSquadPlan}
+              tacticalScenarios={tacticalScenarios} setTacticalScenarios={setTacticalScenarios}/>}
             {view === 'saves' && <SaveInspector imports={imports} selected={selected} onInspect={onInspect} onRemove={remove} busy={busy} error={error} select={setSelectedId} onRestoreSaved={onRestoreSaved}/>}
             {view === 'modules' && <Systems/>}
             {view === 'architecture' && <Architecture/>}

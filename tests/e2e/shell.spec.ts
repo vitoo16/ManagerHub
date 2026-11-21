@@ -33,6 +33,8 @@ test('navigation opens a functional module directory', async ({ page }) => {
   await page.getByPlaceholder('Search modules or ID…').fill('Player Intelligence');
   await expect(page.getByText('1 / 27 modules')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Player Intelligence & eCA' })).toBeVisible();
+  await page.getByPlaceholder('Search modules or ID…').fill('MH-07');
+  await expect(page.locator('.module-card')).toContainText('In development');
 });
 
 test('overview points first-time users to real player exports and local planning', async ({ page }) => {
@@ -659,6 +661,77 @@ test('saves Plan A/B per export, restores after reload, rejects another career a
     .getByRole('button', { name: /Squad Planner/ }).click();
   await page.getByRole('button', { name: 'Restore saved plans' }).click();
   await expect(page.getByText('No saved plans found for this exact player export.')).toBeVisible();
+});
+
+test('Tactical Lab preserves independent A/B and phase positions, and restores source-bound scenarios', async ({ page }) => {
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'tactical-source.csv', mimeType: 'text/csv', buffer: Buffer.from(makeSquadExport())
+  });
+  await page.getByRole('button', { name: 'Save on this browser' }).click();
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Squad Planner/ }).click();
+
+  const lab = page.getByRole('region', { name: 'Tactical Lab' });
+  const rightWinger = lab.locator('[data-slot="rw"]');
+  await expect(rightWinger).toHaveAttribute('data-x', '18');
+  await rightWinger.focus();
+  await rightWinger.press('ArrowLeft');
+  await expect(rightWinger).toHaveAttribute('data-x', '17');
+  const pitch = lab.getByRole('group', { name: 'Editable tactical pitch' });
+  const pitchBox = await pitch.boundingBox();
+  expect(pitchBox).not.toBeNull();
+  await rightWinger.hover();
+  await page.mouse.down();
+  await page.mouse.move(pitchBox!.x + pitchBox!.width / 2, pitchBox!.y + pitchBox!.height * 0.45, { steps: 8 });
+  await page.mouse.up();
+  await expect(rightWinger).toHaveAttribute('data-x', '10');
+  await expect(rightWinger).toHaveAttribute('data-y', '9');
+  await lab.getByRole('button', { name: 'Reset tactical plan' }).click();
+  await rightWinger.focus();
+  await rightWinger.press('ArrowLeft');
+  await lab.getByRole('button', { name: 'Defending' }).click();
+  await expect(rightWinger).toHaveAttribute('data-x', '18');
+  await rightWinger.focus();
+  await rightWinger.press('ArrowUp');
+  await expect(rightWinger).toHaveAttribute('data-y', '3');
+  await lab.getByRole('button', { name: 'In possession' }).click();
+  await expect(rightWinger).toHaveAttribute('data-x', '17');
+  await lab.getByLabel('Attacking width').selectOption('wide');
+
+  await page.getByRole('button', { name: 'Plan B', exact: true }).click();
+  await expect(rightWinger).toHaveAttribute('data-x', '18');
+  await lab.getByLabel('Attacking width').selectOption('narrow');
+  await lab.getByRole('button', { name: 'Save tactical scenarios' }).click();
+  await expect(lab.getByText('Tactical scenarios A and B saved on this browser.')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Plan A', exact: true }).click();
+  await expect(rightWinger).toHaveAttribute('data-x', '17');
+  await lab.getByRole('button', { name: 'Reset tactical plan' }).click();
+  await expect(rightWinger).toHaveAttribute('data-x', '18');
+  await lab.getByRole('button', { name: 'Restore tactical scenarios' }).click();
+  await expect(rightWinger).toHaveAttribute('data-x', '17');
+  await expect(lab.getByLabel('Attacking width')).toHaveValue('wide');
+  await page.getByLabel('Formation').selectOption('4-2-3-1');
+  await page.getByLabel('Formation').selectOption('4-3-3');
+  await expect(rightWinger).toHaveAttribute('data-x', '18');
+
+  await page.reload();
+  await page.getByRole('combobox', { name: 'Saved player list' })
+    .selectOption({ label: 'tactical-source.csv (11 players)' });
+  await page.getByRole('button', { name: 'Open saved list' }).click();
+  await lab.getByRole('button', { name: 'Restore tactical scenarios' }).click();
+  await expect(rightWinger).toHaveAttribute('data-x', '17');
+  await page.getByRole('button', { name: 'Plan B', exact: true }).click();
+  await expect(lab.getByLabel('Attacking width')).toHaveValue('narrow');
+  await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
+  const localizedLab = page.getByRole('region', { name: 'Phòng phân tích chiến thuật' });
+  await expect(localizedLab).toBeVisible();
+  await localizedLab.getByRole('button', { name: 'Xóa phương án chiến thuật đã lưu' }).click();
+  await localizedLab.getByRole('button', { name: 'Xác nhận xóa chiến thuật' }).click();
+  await localizedLab.getByRole('button', { name: 'Khôi phục phương án chiến thuật' }).click();
+  await expect(localizedLab.getByText('Chưa có phương án chiến thuật được lưu cho dữ liệu này.')).toBeVisible();
 });
 
 test('Plan B remains intact across workspace navigation and resets for a different import', async ({page})=>{

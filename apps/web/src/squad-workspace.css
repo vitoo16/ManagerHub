@@ -138,3 +138,36 @@
   .squad-roster-picker__actions label{flex:1 1 170px}
   .squad-roster-picker__actions select{min-width:0;width:100%}
 }
+
+/* MH-07 operator-authored phase plans. The movable board remains legible without glass. */
+.tactical-lab{margin:22px 0 25px}
+.tactical-lab__intro{display:flex;align-items:start;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:14px}
+.tactical-lab__intro>div:first-child{flex:1 1 320px}
+.tactical-lab__intro h2{font-size:20px;margin:6px 0 8px}
+.tactical-lab__intro p,.tactical-lab__settings p{font-size:11px;line-height:1.65;color:var(--text-sub);max-width:650px}
+.tactical-lab__actions{display:flex;gap:7px;flex-wrap:wrap}
+.tactical-lab__actions .mh-button{font-size:10px}
+.tactical-lab__notice{padding:11px 14px;border:1px solid var(--line);border-radius:9px;background:var(--surface-up);font-size:12px;color:var(--text-sub)}
+.tactical-lab__phases{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tactical-lab__phase{padding:10px 16px;min-height:42px;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--text-sub);font-size:11px;font-weight:700;cursor:pointer}
+.tactical-lab__phase--active{border-color:var(--accent-strong);background:var(--surface-up);color:var(--accent-strong)}
+.tactical-lab__phases>span{margin-left:auto;font-size:10px;color:var(--text-sub)}
+.tactical-lab__layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,1fr);gap:15px;align-items:start}
+.tactical-lab__pitch{position:relative;aspect-ratio:9/10;min-height:470px;max-height:700px;overflow:hidden;border:1px solid #587f70;border-radius:13px;background:repeating-linear-gradient(0deg,#16372d 0px,#16372d 65px,#194337 65px,#194337 130px);isolation:isolate}
+.tactical-lab__player{position:absolute;z-index:2;display:grid;gap:3px;justify-items:center;align-content:center;min-width:51px;max-width:19%;min-height:48px;transform:translate(-50%,-50%);padding:4px 7px;border:1px solid #b4e7c2ad;border-radius:9px;background:#b3e1bd;color:#143a26;box-shadow:0 4px 16px #0005;cursor:grab;touch-action:none;user-select:none}
+.tactical-lab__player:active{cursor:grabbing}
+.tactical-lab__player[aria-pressed="true"]{outline:3px solid #f3d48a;outline-offset:2px}
+.tactical-lab__player:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.tactical-lab__player strong{font-size:10px;font-weight:800}
+.tactical-lab__player span{display:block;max-width:100%;font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tactical-lab__settings{padding:20px;display:grid;gap:12px}
+.tactical-lab__settings h3{font-size:13px;margin:6px 0 0}
+.tactical-lab__settings>label,.tactical-lab__fields label{display:grid;gap:7px;font-size:11px;font-weight:700;color:var(--text-sub)}
+.tactical-lab__settings select{height:41px;padding:7px 10px;border-radius:9px;border:1px solid var(--line);background:var(--surface-up);color:var(--text);min-width:0;width:100%}
+.tactical-lab__nudge{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.tactical-lab__nudge .mh-button{min-height:44px;font-size:17px}
+.tactical-lab__settings .tactical-lab__coordinates{margin:0;font-size:11px;color:var(--text-sub);font-variant-numeric:tabular-nums}
+.tactical-lab__fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tactical-lab__settings .tactical-lab__source{border-top:1px solid var(--line);margin:0;padding-top:14px;font-size:10px}
+@media(max-width:950px){.tactical-lab__layout{grid-template-columns:1fr}.tactical-lab__pitch{aspect-ratio:11/10;min-height:430px}}
+@media(max-width:600px){.tactical-lab__pitch{aspect-ratio:9/12;min-height:440px}.tactical-lab__settings{padding:15px}.tactical-lab__actions{width:100%}.tactical-lab__actions .mh-button{flex:1 1 auto}.tactical-lab__fields{grid-template-columns:1fr}}

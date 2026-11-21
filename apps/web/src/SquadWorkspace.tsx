@@ -1,8 +1,9 @@
 import { memo, type Dispatch, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FORMATIONS, type PlayerDataset, type SquadPlanKey, type SquadPlans } from '@managerhub/domain';
+import { FORMATIONS, type PlayerDataset, type SquadPlanKey, type SquadPlans, type TacticalScenarios } from '@managerhub/domain';
 import { Icon, SectionHeading } from '@managerhub/ui';
 import TacticalPitch from './features/squad-planner/components/TacticalPitch';
+import TacticalLab from './features/squad-planner/components/TacticalLab';
 import LineupResults from './features/squad-planner/components/LineupResults';
 import PinEditor from './features/squad-planner/components/PinEditor';
 import ScenarioComparison from './features/squad-planner/components/ScenarioComparison';
@@ -17,7 +18,7 @@ import SquadReportActions from './features/squad-planner/components/SquadReportA
 import { useSquadPlannerModel } from './features/squad-planner/hooks/useSquadPlannerModel';
 import './squad-workspace.css';
 
-function SquadWorkspaceView({dataset,onImport,onDataset,plans,setPlans,active,setActive}:{
+function SquadWorkspaceView({dataset,onImport,onDataset,plans,setPlans,active,setActive,tacticalScenarios,setTacticalScenarios}:{
   dataset: PlayerDataset | null;
   onImport: () => void;
   onDataset: (dataset: PlayerDataset) => void;
@@ -25,6 +26,8 @@ function SquadWorkspaceView({dataset,onImport,onDataset,plans,setPlans,active,se
   setPlans: Dispatch<SetStateAction<SquadPlans>>;
   active: SquadPlanKey;
   setActive: Dispatch<SetStateAction<SquadPlanKey>>;
+  tacticalScenarios: TacticalScenarios;
+  setTacticalScenarios: Dispatch<SetStateAction<TacticalScenarios>>;
 }){
   const { t } = useTranslation();
   const {
@@ -54,6 +57,8 @@ function SquadWorkspaceView({dataset,onImport,onDataset,plans,setPlans,active,se
         <TacticalPitch solution={solution}/>
         <LineupResults solution={solution}/>
       </div>}
+      <TacticalLab dataset={dataset} plans={plans} active={active} solution={solution}
+        scenarios={tacticalScenarios} setScenarios={setTacticalScenarios}/>
       {solutions && <ScenarioComparison left={solutions.A} right={solutions.B}/>}
 
       <SectionHeading eyebrow={t("WHAT-IF PLANNING")} title={t('Adjust Plan') + ' ' + active}/>
