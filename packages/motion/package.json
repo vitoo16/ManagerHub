@@ -4,6 +4,7 @@
   "type": "module",
   "version": "0.1.0",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./reduced": "./src/reduced.ts"
   }
 }

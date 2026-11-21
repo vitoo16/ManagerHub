@@ -2,6 +2,7 @@ import type { PlayerDataset } from './player-import';
 import { FORMATIONS, type FormationId } from './squad-optimizer';
 import { squadDatasetSha256 } from './squad-plan-library';
 import type { SquadPlanKey, SquadPlans } from './squad-scenarios';
+export { defaultTacticalScenario, defaultTacticalScenarios, tacticalScenarioForFormation } from './tactical-state';
 
 export type TacticalPhase = 'possession' | 'defending';
 export type TacticalWidth = 'narrow' | 'balanced' | 'wide';
@@ -23,23 +24,6 @@ export type TacticalScenarios = Readonly<Record<SquadPlanKey, TacticalScenario>>
 export const TACTICAL_SCHEMA = 'managerhub.tactical-scenarios.v1' as const;
 export const TACTICAL_STORAGE_PREFIX = 'mh.tactical-scenarios.v1:';
 const MAX_JSON = 12_000;
-
-export function defaultTacticalScenario(formation: FormationId): TacticalScenario {
-  return {
-    formation,
-    placements: { possession: {}, defending: {} },
-    instructions: { width: 'balanced', tempo: 'balanced', pressing: 'balanced', defensiveLine: 'balanced' }
-  };
-}
-
-export function defaultTacticalScenarios(): TacticalScenarios {
-  return { A: defaultTacticalScenario('4-3-3'), B: defaultTacticalScenario('4-3-3') };
-}
-
-/** A change of formation invalidates saved slot coordinates for that plan only. */
-export function tacticalScenarioForFormation(current: TacticalScenario, formation: FormationId): TacticalScenario {
-  return current.formation === formation ? current : defaultTacticalScenario(formation);
-}
 
 export function tacticalPosition(scenario: TacticalScenario, phase: TacticalPhase, slotId: string): TacticalPoint {
   const slot = FORMATIONS[scenario.formation].find(item => item.id === slotId);

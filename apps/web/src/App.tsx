@@ -2,13 +2,13 @@ import { setAppLocale } from './i18n';
 import { useTranslation } from 'react-i18next';
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { createDefaultSquadPlans, type SquadPlanKey, type SquadPlans } from '@managerhub/domain/squad-scenarios';
-import { defaultTacticalScenarios, tacticalScenarioForFormation, type TacticalScenarios } from '@managerhub/domain';
+import { defaultTacticalScenarios, tacticalScenarioForFormation } from '@managerhub/domain/tactical-state';
+import type { TacticalScenarios } from '@managerhub/domain/tactical-scenarios';
 import type { SaveIdentity, WorkspaceKey } from '@managerhub/domain/types';
 import type { SaveInspectionResult } from '@managerhub/domain/save-library';
 import type { PlayerDataset } from '@managerhub/domain';
 import { Icon, Status } from '@managerhub/ui';
-import { useReducedMotion, useWorkspaceTransition } from '@managerhub/motion';
-import { inspectSaveInWorker } from './inspect-save-in-worker';
+import { useReducedMotion } from '@managerhub/motion/reduced';
 import { readableSaveInspectionError } from './i18n/save-inspection-copy';
 import './app.css';
 
@@ -19,6 +19,7 @@ const Architecture = lazy(() => import('./features/architecture/Architecture'));
 const PlayerWorkspace = lazy(() => import('./PlayerWorkspace').then(module => ({ default: module.PlayerWorkspace })));
 const SquadWorkspace = lazy(() => import('./SquadWorkspace').then(module => ({ default: module.SquadWorkspace })));
 const HistoricalWorkspace = lazy(() => import('./features/historical-snapshots/HistoricalWorkspace'));
+const WorkspaceAnimator = lazy(() => import('./WorkspaceAnimator'));
 
 const NAV: { key: WorkspaceKey; title: string; detail: string; icon: 'grid' | 'database' | 'layers' | 'shield' | 'compass' | 'history' }[] = [
   { key: 'overview', title: 'Overview', detail: 'Command center', icon: 'grid' },
@@ -122,7 +123,6 @@ export default function App() {
   const commandDialogRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
 
-  useWorkspaceTransition(viewScope, view, reduced);
   useEffect(() => () => {
     inspectionRevisionRef.current += 1;
     inspectionAbortRef.current?.abort();
@@ -193,6 +193,7 @@ export default function App() {
     inspectionAbortRef.current = controller;
     setBusy(true); setError(null);
     try {
+      const { inspectSaveInWorker } = await import('./inspect-save-in-worker');
       const result = await inspectSaveInWorker(file, controller.signal);
       if (controller.signal.aborted || revision !== inspectionRevisionRef.current) return;
       setImports(previous => [result, ...previous.filter(item => item.id !== result.id)]);
@@ -241,6 +242,7 @@ export default function App() {
         </div>
       </header>
       <main ref={viewScope} className="main-area" id="main-content" tabIndex={-1}>
+        <Suspense fallback={null}><WorkspaceAnimator scope={viewScope} view={view} reduced={reduced}/></Suspense>
         <div data-animate="workspace" key={view}>
           <Suspense fallback={<WorkspaceLoading/>}>
             {view === 'overview' && <Overview imports={imports} current={playerDataset} onDataset={onPlayerDatasetChange} go={navigate}/>}

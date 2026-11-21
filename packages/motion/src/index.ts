@@ -1,20 +1,9 @@
-import { useEffect, useState, type RefObject } from 'react';
+import type { RefObject } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+export { useReducedMotion } from './reduced';
 
 gsap.registerPlugin(useGSAP);
-
-export function useReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(() =>
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  useEffect(() => {
-    const query = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const update = () => setReduced(query.matches);
-    query.addEventListener('change', update);
-    return () => query.removeEventListener('change', update);
-  }, []);
-  return reduced;
-}
 
 export function useWorkspaceTransition(scope: RefObject<HTMLElement | null>, viewKey: string, reduced: boolean): void {
   useGSAP(() => {
