@@ -1,6 +1,6 @@
-import { resolve, dirname } from 'node:path';
+import { resolve, dirname, win32 } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { access } from 'node:fs/promises';
+import { lstat } from 'node:fs/promises';
 import { createInterface } from 'node:readline/promises';
 import { observeFm2013Process } from './fm2013-process-observer.mjs';
 import { runFm2013NativeWorker, NATIVE_PROBE_SCHEMA } from './fm2013-native-worker-broker.mjs';
@@ -9,6 +9,8 @@ const reject = reason => ({ status: 'rejected', reason });
 const supported = new Set(['--pid', '--address', '--bytes']);
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const dll = resolve(root, 'native/ManagerHub.Fm2013Host/bin/Release/net10.0-windows/ManagerHub.Fm2013Host.dll');
+// Avoid PATH resolution of the privileged child host.
+const dotnetExe = win32.join(process.env.ProgramFiles ?? '', 'dotnet', 'dotnet.exe');
 
 function cliArgs(items) {
   if (items.length !== 6) return null;
@@ -49,9 +51,14 @@ async function main() {
   // executable hash and process creation FILETIME; the .NET worker checks again.
   const observation = await observeFm2013Process(args.pid);
   if (observation.status !== 'observed') return reject(observation.status === 'unsupported_build' ? 'unsupported_build' : 'observation_failed');
-  try { await access(dll); } catch { return reject('worker_not_built'); }
+  try {
+    if (!win32.isAbsolute(dotnetExe)) return reject('host_not_found');
+    const [host, assembly] = await Promise.all([lstat(dotnetExe), lstat(dll)]);
+    if (!host.isFile() || host.isSymbolicLink() || !assembly.isFile() || assembly.isSymbolicLink())
+      return reject('host_not_found');
+  } catch { return reject('host_not_found'); }
   return await runFm2013NativeWorker({
-    executable: 'dotnet', args: [dll, '--worker'],
+    executable: dotnetExe, args: [dll, '--worker'],
     request: {
       schema: NATIVE_PROBE_SCHEMA, pid: observation.process.pid,
       startedAtFileTime: observation.process.startedAtFileTime,
