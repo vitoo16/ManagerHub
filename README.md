@@ -71,7 +71,11 @@ The user journey is now designed around a repeatable browser-local workflow rath
 
 All persistence is opt-in and local to that browser profile; users can delete the saved player export in Player Lab and **Forget saved plans** separately. The Save/Restore controls are not cloud synchronization or a certified FM2013 live reader.
 
-**Acceptance status:** implemented on PR #91, but Windows Node24 full Local CI and browser E2E must pass on the final exact PR head before the feature can be marked released or merged.
+**Integration evidence:** PR #91 and the targeted CSV lint fix #92 are merged. The repository owner reported a clean Windows Node24/.NET10 Release 10/10 with 114/114 Playwright cases on main `6aaa914aad28b74f4d4b261105a3f665e09eacfb`. Game-memory player reading, Actual CA/PA and save writing remain uncertified.
+
+### Resume from the Overview dashboard
+
+The Overview screen now prioritizes **real product actions**: import a local player export, continue with an active roster, or open one of the three most recently saved browser-local rosters directly in Squad Planner. This list is read from the same IndexedDB library as Player Lab. Opening a different saved roster while a roster is already active requires explicit confirmation; the existing local saved data is not deleted. A plan remains opt-in and must be restored separately. The screen does not imply a verified `.fm` player decoder or live game reader.
 
 ## Languages and player-facing help
 ManagerHub supports **Vietnamese / English (VI/EN)** with immediate language switching from the top bar and stored preference across reloads. Player Lab includes a plain-language guide distinguishing CA, PA, RCA and ManagerHub's role-fit scoring. See [i18n and content guidelines](docs/engineering/i18n-guidelines.md) and [FM Scout CA/PA research](docs/domain/ca-pa-rca-research.md).
