@@ -276,6 +276,8 @@ test('shortlist evaluates an outside candidate against an observed club-group XI
   const slotTable = slotComparison.getByRole('table', { name: 'Candidate role-fit ranking' });
   await expect(slotComparison).toContainText('Observed incumbent');
   await expect(slotComparison).toContainText('Striker');
+  await expect(slotComparison.getByRole('region', { name: 'Best replacement XI' }))
+    .toContainText('Without this player, the current export cannot fill all eleven positions');
   await expect(slotTable.locator('tbody tr')).toHaveCount(1);
   await expect(slotTable.locator('tbody tr').first()).toContainText('Target Striker');
   await expect(slotTable.locator('tbody tr').first()).toContainText('+');
@@ -308,6 +310,49 @@ test('shortlist evaluates an outside candidate against an observed club-group XI
   await expect(page.getByRole('region', { name: 'Mô phỏng tuyển trạch theo nhóm CLB' })).toHaveCount(0);
   await expect(page.getByRole('region', { name: 'Danh sách theo dõi tuyển trạch' })
     .locator('.scout-shortlist__candidates li')).toHaveCount(0);
+});
+
+test('shortlist exposes internal XI depth and recomputes other positions on absence', async ({ page }) => {
+  const rows = makeSquadExport([['Bench Striker','ST (C)']]).split('\n');
+  const originalStriker = rows.find(row => row.startsWith('Striker,'));
+  expect(originalStriker).toBeTruthy();
+  const csv = [
+    `${rows[0]},Club`,
+    ...rows.slice(1).map(row => `${row.startsWith('Bench Striker,') ? row.replaceAll(',15', ',1') : row},Home Club`),
+    `${originalStriker!.replace('Striker,', 'Target Striker,').replaceAll(',15', ',20')},Away Club`
+  ].join('\n');
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'internal-depth.csv', mimeType: 'text/csv', buffer: Buffer.from(csv)
+  });
+  await page.getByRole('textbox', { name: 'Search imported players' }).fill('Target Striker');
+  await page.getByRole('list', { name: 'Imported players' }).getByRole('button', { name: /Target Striker/ }).click();
+  await page.getByRole('region', { name: 'Scouting shortlist' })
+    .getByRole('button', { name: 'Add selected player to shortlist' }).click();
+
+  const scenario = page.getByRole('region', { name: 'Club-group recruitment scenario' });
+  await scenario.getByLabel('Observed club group').selectOption('Home Club');
+  const comparison = scenario.getByRole('region', { name: 'Shortlist comparison by squad slot' });
+  const depth = comparison.getByRole('region', { name: 'Best replacement XI' });
+  await expect(depth).toContainText('When this player is excluded: Striker');
+  await expect(depth).toContainText('Selected position: ST · Bench Striker');
+  await expect(depth).toContainText('Role-fit difference');
+  await expect(depth).toContainText('Changed positions: 1');
+
+  await comparison.getByLabel('Selected position:').selectOption('lb');
+  await expect(depth).toContainText('Without this player, the current export cannot fill all eleven positions');
+  await scenario.getByLabel('Formation to test').selectOption('4-2-3-1');
+  await expect(depth).toHaveCount(0);
+
+  await scenario.getByLabel('Formation to test').selectOption('4-3-3');
+  await comparison.getByLabel('Selected position:').selectOption('st');
+  await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
+  await expect(page.getByRole('region', { name: 'Đội hình thay thế tốt nhất' }))
+    .toContainText('Khi loại cầu thủ này');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'new-internal-depth.csv', mimeType: 'text/csv', buffer: Buffer.from(makeSquadExport())
+  });
+  await expect(page.getByRole('region', { name: 'Đội hình thay thế tốt nhất' })).toHaveCount(0);
 });
 
 test('inspects AFE header locally and never claims full save support', async ({ page }) => {

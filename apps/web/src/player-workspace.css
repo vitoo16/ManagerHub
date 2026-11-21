@@ -212,5 +212,9 @@
 .scout-slot-need summary{cursor:pointer;color:var(--accent-strong);font-weight:700}
 .scout-slot-need details p{margin-top:8px;line-height:1.6}
 .scout-slot-need .mh-button:disabled{opacity:.55;cursor:not-allowed}
+.scout-slot-depth{display:grid;gap:7px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.scout-slot-depth h5{font-size:12px;margin:0}
+.scout-slot-depth p{margin:0;color:var(--text-sub);line-height:1.5}
+.scout-slot-depth p strong{color:var(--text)}
 @media(max-width:850px){.scout-shortlist__candidates{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:560px){.scout-shortlist{padding:14px}.scout-shortlist__candidates li{flex-wrap:wrap}.scout-shortlist__candidates li>.mh-button{width:100%}}

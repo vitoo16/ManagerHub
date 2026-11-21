@@ -32,6 +32,10 @@ describe('observed club-group shortlist comparisons by slot', () => {
     expect(result.clubPlayerCount).toBe(11);
     expect(result.baseline?.complete).toBe(true);
     expect(result.incumbent?.playerId).toBe('st');
+    expect(result.internalDepth?.withoutIncumbent.complete).toBe(false);
+    expect(result.internalDepth?.replacement).toBeNull();
+    expect(result.internalDepth?.averageRoleFitDelta).toBeNull();
+    expect(result.internalDepth?.changedSlots).toBeNull();
     expect(result.candidates).toHaveLength(7);
     expect(result.candidates[0]?.candidateId).toBe('strong');
     const strong = result.candidates[0]!;
@@ -58,7 +62,34 @@ describe('observed club-group shortlist comparisons by slot', () => {
     );
     expect(result.baseline?.complete).toBe(false);
     expect(result.incumbent).toBeNull();
+    expect(result.internalDepth).toBeNull();
     expect(result.candidates[0]).toMatchObject({ status: 'eligible', differenceFromIncumbent: null });
+  });
+
+  it('recalculates the full XI for an internal bench replacement', () => {
+    const players = [...club, player('bench-st', 'ST (C)', 'Home', 1)];
+    const result = compareScoutCandidatesForSlot(players, 'Home', '4-3-3', 'st', []);
+    expect(result.incumbent?.playerId).toBe('st');
+    expect(result.internalDepth?.withoutIncumbent.complete).toBe(true);
+    expect(result.internalDepth?.replacement?.playerId).toBe('bench-st');
+    expect(result.internalDepth?.averageRoleFitDelta).toBeLessThan(0);
+    expect(result.internalDepth?.changedSlots).toBe(1);
+    expect(result.internalDepth?.withoutIncumbent.lineup).not.toContainEqual(
+      expect.objectContaining({ playerId: 'st' })
+    );
+  });
+
+  it('reassigns versatile players across slots to cover an internal absence', () => {
+    const midfield = club.map(item => item.position === 'M (C)'
+      ? player(item.id, item.position, 'Home', 8) : item);
+    const result = compareScoutCandidatesForSlot(
+      [...midfield, player('flex', 'CB/CM', 'Home', 20)], 'Home', '4-3-3', 'lcb', []
+    );
+    expect(['cb1', 'cb2']).toContain(result.incumbent?.playerId);
+    expect(result.baseline?.lineup.find(item => item.playerId === 'flex')?.slot.position).toBe('CM');
+    expect(result.internalDepth?.withoutIncumbent.complete).toBe(true);
+    expect(result.internalDepth?.withoutIncumbent.lineup.find(item => item.playerId === 'flex')?.slot.position).toBe('CB');
+    expect(result.internalDepth?.changedSlots).toBeGreaterThan(1);
   });
 
   it('follows a changed formation and rejects stale or absent club selections', () => {
@@ -67,8 +98,10 @@ describe('observed club-group shortlist comparisons by slot', () => {
     expect(second.slot?.position).toBe('DM');
     expect(second.candidates[0]?.status).toBe('eligible');
     expect(second.incumbent).toBeNull();
+    expect(second.internalDepth).toBeNull();
     const stale = compareScoutCandidatesForSlot(players, 'Home', '4-2-3-1', 'lcm', ['defensive']);
     expect(stale.slot).toBeNull();
+    expect(stale.internalDepth).toBeNull();
     expect(stale.candidates).toHaveLength(0);
     const absent = compareScoutCandidatesForSlot(players, 'Missing Club', '4-3-3', 'st', ['defensive']);
     expect(absent.baseline).toBeNull();

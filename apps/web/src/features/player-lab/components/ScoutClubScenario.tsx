@@ -77,6 +77,22 @@ function ScoutClubScenario({ players, candidates }: Props) {
         <p>{t('Observed incumbent')}: <strong>{slotNeed.incumbent
           ? `${slotNeed.incumbent.name} · ${slotNeed.incumbent.roleScore}/100`
           : t('No complete observed XI for this formation')}</strong></p>
+        {slotNeed.internalDepth && <section className="scout-slot-depth" aria-label={t('Best replacement XI')}>
+          <h5>{t('Best replacement XI')}</h5>
+          <p>{t('When this player is excluded')}: <strong>{slotNeed.incumbent?.name}</strong></p>
+          {slotNeed.internalDepth.withoutIncumbent.complete ? <>
+            <p>{t('Selected position:')} <strong>
+              {slotNeed.slot?.label} · {slotNeed.internalDepth.replacement?.name} · {slotNeed.internalDepth.replacement?.roleScore}/100
+            </strong></p>
+            <div className="scout-club-scenario__metrics">
+              <span>{t('Role-fit difference')}: <strong>
+                {slotNeed.internalDepth.averageRoleFitDelta !== null && slotNeed.internalDepth.averageRoleFitDelta > 0 ? '+' : ''}
+                {slotNeed.internalDepth.averageRoleFitDelta}
+              </strong></span>
+              <span>{t('Changed positions')}: <strong>{slotNeed.internalDepth.changedSlots}</strong></span>
+            </div>
+          </> : <p>{t('Without this player, the current export cannot fill all eleven positions under the selected formation and data rules.')}</p>}
+        </section>}
         {slotNeed.candidates.length === 0 ? <p>{t('No candidates selected. Choose a player from the list, then add them here.')}</p> :
           <div className="scout-slot-need__scroll"><table aria-label={t('Candidate role-fit ranking')}>
             <thead><tr>
