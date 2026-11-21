@@ -116,3 +116,25 @@
   .squad-plan-library__actions{width:100%}
   .squad-plan-library__actions>.mh-button{flex:1 1 auto}
 }
+
+/* Product flow: saved Player Lab roster recovery and one-click A/B report. */
+.squad-roster-picker,.squad-report-actions{
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;
+  padding:17px 18px;margin-bottom:14px;border:1px solid var(--line);
+  border-radius:14px;background:var(--surface-up);
+}
+.squad-roster-picker>div:first-child,.squad-report-actions>div:first-child{flex:1 1 240px;min-width:0}
+.squad-roster-picker strong{display:flex;align-items:center;gap:9px}
+.squad-roster-picker p,.squad-report-actions p{margin:6px 0 0;font-size:11px;line-height:1.55;color:var(--text-sub)}
+.squad-roster-picker__actions{display:flex;align-items:end;flex-wrap:wrap;gap:9px}
+.squad-roster-picker__actions label{display:grid;gap:6px;font-size:11px;color:var(--text-sub)}
+.squad-roster-picker__actions select{min-width:220px;max-width:100%;padding:9px 11px;background:var(--surface);border:1px solid var(--line);border-radius:10px;color:var(--text)}
+.squad-roster-picker__loading{color:var(--text-sub);font-size:12px}
+.squad-report-actions strong{font-size:13px}
+.squad-report-actions>p,.squad-roster-picker>p{flex-basis:100%;color:var(--text-sub)}
+@media(max-width:600px){
+  .squad-roster-picker,.squad-report-actions{padding:14px}
+  .squad-roster-picker__actions{width:100%}
+  .squad-roster-picker__actions label{flex:1 1 170px}
+  .squad-roster-picker__actions select{min-width:0;width:100%}
+}
