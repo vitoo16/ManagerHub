@@ -49,6 +49,16 @@ test('scouting shortlist saves, restores and exports only candidates from the ac
   const shortlist = page.getByRole('region', { name: 'Scouting shortlist' });
   await expect(shortlist.locator('.scout-shortlist__candidates li')).toHaveCount(2);
 
+  // In-session selections remain available across workspaces without auto-saving them.
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Squad Planner/ }).click();
+  await expect(page.getByRole('heading', { name: 'Squad Planner' })).toBeVisible();
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Player Lab/ }).click();
+  await expect(shortlist.locator('.scout-shortlist__candidates li')).toHaveCount(2);
+
   await page.getByRole('button', { name: 'Save shortlist locally' }).click();
   await expect(page.getByText('Shortlist saved on this browser for this exact player export.')).toBeVisible();
   await page.getByRole('button', { name: 'Save on this browser' }).click();
