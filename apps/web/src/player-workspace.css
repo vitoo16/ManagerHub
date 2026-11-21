@@ -167,12 +167,19 @@
 .scout-role-compare__heading h3{font-size:14px;margin:0}
 .scout-role-compare__heading label{display:grid;gap:6px;color:var(--text-sub);font-size:11px;font-weight:700}
 .scout-role-compare__heading select{height:38px;min-width:200px;max-width:100%;padding:0 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface-up);color:var(--text);font:inherit}
+.scout-role-compare__reference{display:grid;justify-items:start;gap:9px;margin:12px 0}
+.scout-role-compare__reference>p{margin:0;color:var(--text-sub);font-size:11px;line-height:1.6}
+.scout-role-compare__reference-details{display:flex;align-items:center;flex-wrap:wrap;gap:12px;max-width:100%;padding:12px;border:1px solid var(--line);border-radius:11px;background:var(--surface-up)}
+.scout-role-compare__reference-details>div{display:grid;gap:5px;min-width:0;overflow-wrap:anywhere}
+.scout-role-compare__reference-details strong{font-size:12px}
+.scout-role-compare__reference-details span{font-size:11px;line-height:1.5;color:var(--text-sub)}
+.scout-role-compare__reference-details details{max-width:320px}
 .scout-role-compare__scroll{max-width:100%;overflow-x:auto}
-.scout-role-compare table{border-collapse:collapse;width:100%;min-width:680px;font-size:11px;text-align:left}
+.scout-role-compare table{border-collapse:collapse;width:100%;min-width:780px;font-size:11px;text-align:left}
 .scout-role-compare th,.scout-role-compare td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top;overflow-wrap:anywhere}
 .scout-role-compare thead th{font-size:10px;color:var(--text-sub);font-weight:700}
 .scout-role-compare tbody th{font-weight:700}
-.scout-role-compare td:nth-child(1),.scout-role-compare td:nth-child(4),.scout-role-compare td:nth-child(5){font-variant-numeric:tabular-nums;white-space:nowrap}
+.scout-role-compare td:nth-child(1),.scout-role-compare td:nth-child(4),.scout-role-compare td:nth-child(5),.scout-role-compare td:nth-child(6){font-variant-numeric:tabular-nums;white-space:nowrap}
 .scout-role-compare details{max-width:240px}
 .scout-role-compare summary{cursor:pointer;color:var(--accent-strong);font-weight:700}
 .scout-role-compare details p{margin:8px 0 0;line-height:1.6;color:var(--text-sub)}

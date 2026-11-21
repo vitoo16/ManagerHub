@@ -153,7 +153,8 @@ function ScoutShortlistPanel({ dataset, selected, candidateIds, setCandidateIds,
         <Button variant="quiet" onClick={() => onSelectPlayer(candidate.id)}>{t('View scouting report')}</Button>
       </li>)}
     </ul> : <p className="scout-shortlist__empty">{t('No candidates selected. Choose a player from the list, then add them here.')}</p>}
-    {candidates.length > 0 && <ScoutRoleComparison candidates={candidates} onSelectPlayer={onSelectPlayer}/>}
+    {candidates.length > 0 && <ScoutRoleComparison candidates={candidates} players={dataset.players}
+      selected={selected} onSelectPlayer={onSelectPlayer}/>}
     {notice && <p className="scout-shortlist__notice" role="status" aria-live="polite">{t(notice)}</p>}
     <p className="scout-shortlist__privacy"><Icon name="shield" size={14}/>{t('Only source-bound player IDs are saved locally. Player names, attributes and original files are not duplicated in shortlist storage.')}</p>
   </Surface>;
