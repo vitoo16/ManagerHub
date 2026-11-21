@@ -35,6 +35,10 @@
       "command": "npm run test:e2e"
     },
     {
+      "id": "native-windows",
+      "command": "node scripts/fm2013-native-stage.mjs"
+    },
+    {
       "id": "stage-release",
       "command": "node scripts/local-stage-release.mjs"
     }
@@ -56,7 +60,8 @@
       "unit-and-node",
       "build-budget",
       "playwright-install",
-      "desktop-mobile-e2e"
+      "desktop-mobile-e2e",
+      "native-windows"
     ],
     "release": [
       "install",
@@ -67,6 +72,7 @@
       "build-budget",
       "playwright-install",
       "desktop-mobile-e2e",
+      "native-windows",
       "stage-release"
     ]
   },
