@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { PlayerDataset, WorkspaceKey } from '@managerhub/domain';
 import { Button, Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
@@ -56,6 +56,27 @@ function ContinueWorkspace({ current, onDataset, go }: Props) {
     }
   }, [current, openSaved, openingId]);
 
+  let savedListContent: ReactNode;
+  if (library.loading) {
+    savedListContent = <p role="status">{t('Checking saved player exports…')}</p>;
+  } else if (library.error) {
+    savedListContent = <p role="alert">{t('Saved player lists are unavailable. Check browser storage permissions.')}</p>;
+  } else if (library.items.length === 0) {
+    savedListContent = <p>{t('No saved lists yet. Import a list in Player Lab and choose Save on this browser.')}</p>;
+  } else {
+    savedListContent = <ul className="overview-resume__list">
+      {library.items.slice(0, 3).map(item => <li key={item.id}>
+        <div className="overview-resume__item">
+          <span className="overview-resume__item-name" title={item.fileName}>{item.fileName}</span>
+          <small>{item.playerCount.toLocaleString()} {t('players')}</small>
+        </div>
+        <Button disabled={openingId !== null} onClick={() => chooseSaved(item.id)}>
+          {t(openingId === item.id ? 'Opening saved list…' : 'Open in Squad Planner')}
+        </Button>
+      </li>)}
+    </ul>;
+  }
+
   return <section className="overview-resume" aria-labelledby="overview-resume-title">
     <SectionHeading eyebrow={t('YOUR WORKSPACE')} title={t('Continue where you left off')} id="overview-resume-title">
       <button className="text-link" onClick={() => go('players')}>{t('Open Player Lab')} <Icon name="arrow" size={15}/></button>
@@ -85,20 +106,7 @@ function ContinueWorkspace({ current, onDataset, go }: Props) {
           <strong>{t('Saved player lists')}</strong>
           <Status tone="neutral">{library.loading ? t('Loading…') : library.items.length.toString()}</Status>
         </div>
-        {library.loading ? <p role="status">{t('Checking saved player exports…')}</p> :
-          library.error ? <p role="alert">{t('Saved player lists are unavailable. Check browser storage permissions.')}</p> :
-          library.items.length === 0 ? <p>{t('No saved lists yet. Import a list in Player Lab and choose Save on this browser.')}</p> :
-          <ul className="overview-resume__list">
-            {library.items.slice(0, 3).map(item => <li key={item.id}>
-              <div className="overview-resume__item">
-                <span className="overview-resume__item-name" title={item.fileName}>{item.fileName}</span>
-                <small>{item.playerCount.toLocaleString()} {t('players')}</small>
-              </div>
-              <Button disabled={openingId !== null} onClick={() => chooseSaved(item.id)}>
-                {t(openingId === item.id ? 'Opening saved list…' : 'Open in Squad Planner')}
-              </Button>
-            </li>)}
-          </ul>}
+        {savedListContent}
         {library.items.length > 3 && <button className="text-link" onClick={() => go('players')}>
           {t('See all saved player lists')} <Icon name="arrow" size={14}/>
         </button>}
