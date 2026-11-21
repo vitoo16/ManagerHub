@@ -32,7 +32,15 @@ export interface ScoutSlotNeed {
   readonly clubPlayerCount: number;
   readonly baseline: SquadSolution | null;
   readonly incumbent: SlotAssignment | null;
+  readonly internalDepth: ScoutSlotInternalDepth | null;
   readonly candidates: readonly ScoutSlotCandidateComparison[];
+}
+
+export interface ScoutSlotInternalDepth {
+  readonly withoutIncumbent: SquadSolution;
+  readonly replacement: SlotAssignment | null;
+  readonly averageRoleFitDelta: number | null;
+  readonly changedSlots: number | null;
 }
 
 /** A same-export, per-slot fit comparison, never a confirmed club recruitment need. */
@@ -45,7 +53,20 @@ export function compareScoutCandidatesForSlot(
   const baseline = slot && clubPlayers.length ? optimizeSquad(clubPlayers, formation) : null;
   const incumbent = baseline?.complete
     ? baseline.lineup.find(item => item.slot.id === slotId) ?? null : null;
-  if (!slot) return { slot, clubPlayerCount: clubPlayers.length, baseline, incumbent, candidates: [] };
+  const withoutIncumbent = incumbent
+    ? optimizeSquad(clubPlayers, formation, { excludedPlayerIds: [incumbent.playerId] }) : null;
+  const internalDepth: ScoutSlotInternalDepth | null = withoutIncumbent && baseline ? {
+    withoutIncumbent,
+    replacement: withoutIncumbent.complete
+      ? withoutIncumbent.lineup.find(item => item.slot.id === slotId) ?? null : null,
+    averageRoleFitDelta: withoutIncumbent.complete
+      ? Math.round(((withoutIncumbent.averageRoleScore ?? 0) - (baseline.averageRoleScore ?? 0)) * 10) / 10
+      : null,
+    changedSlots: withoutIncumbent.complete
+      ? withoutIncumbent.lineup.filter(item => baseline.lineup.find(previous => previous.slot.id === item.slot.id)
+        ?.playerId !== item.playerId).length : null
+  } : null;
+  if (!slot) return { slot, clubPlayerCount: clubPlayers.length, baseline, incumbent, internalDepth, candidates: [] };
 
   const role = ROLE_PROFILES.find(profile => profile.id === slot.roleId);
   if (!role) throw new Error('Unknown role profile: ' + slot.roleId);
@@ -73,5 +94,5 @@ export function compareScoutCandidatesForSlot(
   }
   candidates.sort((a, b) => (b.roleFit ?? -1) - (a.roleFit ?? -1)
     || a.name.localeCompare(b.name) || a.candidateId.localeCompare(b.candidateId));
-  return { slot, clubPlayerCount: clubPlayers.length, baseline, incumbent, candidates };
+  return { slot, clubPlayerCount: clubPlayers.length, baseline, incumbent, internalDepth, candidates };
 }
