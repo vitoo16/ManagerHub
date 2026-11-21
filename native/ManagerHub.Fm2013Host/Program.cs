@@ -92,10 +92,10 @@ internal static class Program
             valid.Replace("1234", "0", StringComparison.Ordinal),
             valid.Replace("134064000000000001", "nope", StringComparison.Ordinal),
             valid.Replace("1192960", "3", StringComparison.Ordinal),
-            valid.Replace("\\"byteLength\\":4", "\\"byteLength\\":513", StringComparison.Ordinal),
-            valid.Replace("\\"pid\\":1234", "\\"pid\\":-1", StringComparison.Ordinal),
-            valid.Replace("\\"pid\\":1234", "\\"pid\\":2147483648", StringComparison.Ordinal),
-            valid[..^1] + ",\\"secret\\":true}",
+            valid.Replace("\"byteLength\":4", "\"byteLength\":513", StringComparison.Ordinal),
+            valid.Replace("\"pid\":1234", "\"pid\":-1", StringComparison.Ordinal),
+            valid.Replace("\"pid\":1234", "\"pid\":2147483648", StringComparison.Ordinal),
+            valid[..^1] + ",\"secret\":true}",
             "{not-json}"
         };
         bool okay = TryParseRequest(valid, out var request) &&
