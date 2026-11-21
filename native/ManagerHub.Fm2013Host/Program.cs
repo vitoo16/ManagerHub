@@ -80,7 +80,7 @@ internal static class Program
 
     private static bool SelfTest()
     {
-        // Parser-only tests never open an OS process, memory handle or file.
+        // Strict parser tests; Windows also self-probes its own process via read-only OS rights.
         var valid = JsonSerializer.Serialize(new
         {
             schema = Schema, pid = 1234,
@@ -102,8 +102,35 @@ internal static class Program
             request.Pid == 1234 && request.ByteLength == 4 &&
             request.Address == 0x123400 &&
             malformed.All(x => !TryParseRequest(x, out _));
+        if (okay && OperatingSystem.IsWindows()) okay = TestReadOwnProcess();
         Console.Out.WriteLine(okay ? "NATIVE_SELF_TEST_PASS" : "NATIVE_SELF_TEST_FAIL");
         return okay;
+    }
+
+    private static bool TestReadOwnProcess()
+    {
+        // An OS-level integration check of our own process, NEVER an FM game read.
+        using var handle = OpenProcess(QueryLimitedInformation | VmRead, false, Environment.ProcessId);
+        if (handle.IsInvalid || CurrentFileTime(handle) is null) return false;
+        var name = new StringBuilder(1024);
+        uint characters = (uint)name.Capacity;
+        if (!QueryFullProcessImageName(handle, 0, name, ref characters) || characters == 0) return false;
+        byte[] expected = { 15, 44, 71, 92 };
+        var observed = new byte[expected.Length];
+        var pinned = GCHandle.Alloc(expected, GCHandleType.Pinned);
+        try
+        {
+            var ok = ReadProcessMemory(handle, pinned.AddrOfPinnedObject(), observed,
+                new UIntPtr((uint)observed.Length), out var count);
+            return ok && count.ToUInt64() == (ulong)expected.Length &&
+                observed.AsSpan().SequenceEqual(expected);
+        }
+        finally
+        {
+            pinned.Free();
+            CryptographicOperations.ZeroMemory(expected);
+            CryptographicOperations.ZeroMemory(observed);
+        }
     }
 
     private static string? ReadBoundedLine()
