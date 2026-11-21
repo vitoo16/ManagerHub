@@ -618,5 +618,17 @@ export default {
   "Plans A and B restored from this browser.": "Đã khôi phục kế hoạch A và B từ trình duyệt.",
   "Saved plans could not be validated. Your current plans were not changed.": "Dữ liệu kế hoạch đã lưu không hợp lệ. Kế hoạch hiện tại được giữ nguyên.",
   "Saved plans for this player export were removed. Current session plans remain unchanged.": "Đã xóa kế hoạch lưu cho danh sách cầu thủ này. Kế hoạch trong phiên hiện tại vẫn giữ nguyên.",
-  "Could not remove saved plans from browser storage.": "Không thể xóa kế hoạch khỏi bộ nhớ trình duyệt."
+  "Could not remove saved plans from browser storage.": "Không thể xóa kế hoạch khỏi bộ nhớ trình duyệt.",
+  "Checking saved player exports…": "Đang kiểm tra các danh sách cầu thủ đã lưu…",
+  "Open a saved player list": "Mở danh sách cầu thủ đã lưu",
+  "Pick a list you previously saved in Player Lab. Then restore its Plan A/B if available.": "Chọn danh sách đã lưu trong Phân tích cầu thủ, sau đó khôi phục kế hoạch A/B nếu có.",
+  "Saved player list": "Danh sách cầu thủ đã lưu",
+  "Choose a saved player list…": "Chọn danh sách cầu thủ đã lưu…",
+  "Opening saved list…": "Đang mở danh sách…",
+  "Open saved list": "Mở danh sách",
+  "Could not open this saved player list. Check browser storage and try again.": "Không thể mở danh sách cầu thủ đã lưu. Kiểm tra bộ nhớ trình duyệt và thử lại.",
+  "Download your lineup report": "Xuất báo cáo đội hình",
+  "Includes both plans, provisional role-fit scores and missing positions; never actual CA/PA or edited game data.": "Bao gồm cả hai kế hoạch, điểm phù hợp vai trò ước tính và vị trí còn thiếu; không có CA/PA thực hay dữ liệu game đã chỉnh sửa.",
+  "Export both plans as CSV": "Xuất cả hai kế hoạch ra CSV",
+  "Could not create this report. Your squad plans are unchanged.": "Không thể tạo báo cáo này. Kế hoạch đội hình vẫn được giữ nguyên."
 } as const;
