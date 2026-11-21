@@ -666,5 +666,6 @@ export default {
   "Export-derived data · No verified live reader": "Dữ liệu từ file xuất · Chưa có trình đọc live được xác minh",
   "Analyze player exports, compare two starting elevens and pick up work saved in this browser. Every estimate stays labeled.": "Phân tích dữ liệu cầu thủ đã xuất, so sánh hai đội hình và tiếp tục công việc được lưu trên trình duyệt. Mọi ước tính đều có nhãn rõ ràng.",
   "Local player workspace": "Không gian dữ liệu cầu thủ cục bộ",
-  "Player Lab · Squad Planner": "Player Lab · Squad Planner"
+  "Player Lab · Squad Planner": "Player Lab · Squad Planner",
+  "Cancel": "Hủy"
 } as const;
