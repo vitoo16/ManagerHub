@@ -73,6 +73,17 @@ All persistence is opt-in and local to that browser profile; users can delete th
 
 **Acceptance status:** implemented on PR #91, but Windows Node24 full Local CI and browser E2E must pass on the final exact PR head before the feature can be marked released or merged.
 
+### Scouting shortlist from imported data
+
+In **Player Lab**, select a player from the imported list and choose **Add selected player to shortlist**. Up to 50 players from the **same source export** can be shortlisted. The shortlist is useful for comparing player reports and organizing a provisional recruitment list; it is **not** a verified signing recommendation or price estimate.
+
+- **Save shortlist locally** is an explicit user action. Only the schema, SHA-256 of the full imported roster, selected import-local player IDs and timestamp go into browser localStorage. Names/attributes remain in the original in-memory or opt-in IndexedDB player export, not duplicated in this shortlist.
+- **Restore saved shortlist** validates the exact source roster and player IDs. An altered roster, invalid schema or extra fields fails closed without overwriting the current shortlist. Re-importing identical data remains supported.
+- **Forget saved shortlist** requires confirmation and removes the stored selection. **Export shortlist CSV** downloads the selected player names and observed role-fit heuristics with an explicit provenance disclaimer. Spreadsheet formula-like values are neutralized, and the game save is never changed.
+- To persist the underlying player export across browser restarts, separately choose **Save on this browser** in Player Lab. Shortlist storage alone does not contain the underlying players.
+
+This is an incremental MH-12 product capability; verified fees, wages, registration, player linkage across careers and Buy/Pass recommendations remain **unsupported** until source evidence exists. Full Windows Local CI and browser verification are required at the PR head before release.
+
 ## Languages and player-facing help
 ManagerHub supports **Vietnamese / English (VI/EN)** with immediate language switching from the top bar and stored preference across reloads. Player Lab includes a plain-language guide distinguishing CA, PA, RCA and ManagerHub's role-fit scoring. See [i18n and content guidelines](docs/engineering/i18n-guidelines.md) and [FM Scout CA/PA research](docs/domain/ca-pa-rca-research.md).
 
