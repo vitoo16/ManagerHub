@@ -32,6 +32,7 @@ function fixture(run, stageCommand = 'node --version') {
       profiles: { quick: ['fixture-stage'], release: ['fixture-stage'] } };
     writeFileSync(join(root, 'ci', 'local-pipeline.json'), JSON.stringify(config) + '\n');
     git(root, ['init', '-q']);
+    git(root, ['config', '--local', 'core.autocrlf', 'false']);
     git(root, ['add', '.']);
     git(root, ['-c', 'user.email=ci@example.invalid', '-c', 'user.name=CI Fixture', 'commit', '-qm', 'fixture']);
     return run(root);
