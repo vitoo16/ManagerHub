@@ -1,4 +1,4 @@
-import { isAbsolute, win32 } from 'node:path';
+import { win32 } from 'node:path';
 import { readBoundedRegularFile } from './local-research-files.mjs';
 import { isSupportedFm2013ImagePath } from '../packages/domain/src/live-session.ts';
 import { inspectPinnedFm2013FileRtti } from './fm2013-rtti-evidence.mjs';
