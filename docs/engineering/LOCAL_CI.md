@@ -28,3 +28,12 @@ Every `summary.json` now records `source.gitHead` (full 40-character SHA), branc
 After running, check `summary.source.gitHead` against `git rev-parse HEAD` and the remote PR commit, `summary.acceptanceEligible === true`, every stage exit status and `logSha256` against the on-disk log. A local run does **not** create GitHub branch-protection statuses. For a new PR/merge commit, rerun the full applicable profile; previous PASS on another SHA cannot be carried over.
 
 The synthetic regression tests for this contract are part of `npm run test` and can be run independently with `npm run test:node:ci`. These tests use temporary fixture Git repositories and do not read any FM saves or contact GitHub.
+
+
+## FM2013 Windows native host gate (Phase 2 / Issue #88)
+
+The research-only native smoke host uses **.NET 10 LTS** (not .NET 8, which reached end of support on 2026-11-10). Windows host build validation is additive: `ci/local-pipeline.json` now contains `native-windows`, which compiles `native/ManagerHub.Fm2013Host` and runs its **no-attach** JSON/parser self-test. No previously existing quality, lint, test, E2E or release stage has been removed.
+
+Current profile stage counts on this feature branch: **Quick 6 / Full 9 / Release 10**. Quick includes additional mocked broker lifecycle tests through the existing `test:node:fm2013` script; Full and Release additionally require a Windows machine and the .NET 10 SDK/runtime. `native-windows` failing due to missing .NET or on a non-Windows machine is a **real gate failure**, not a reason to skip the stage and still claim acceptance. Keep its failure logs and rerun on a correctly provisioned Windows Node24 machine.
+
+A clean pass only attests to compilation and parser/broker test execution. It does **not** attest to a user-authorized live FM2013 read, RTTI/ABA correctness, a secure browser IPC channel, Actual CA/PA, or an offline save decoder. See [native smoke host](../../native/README.md).
