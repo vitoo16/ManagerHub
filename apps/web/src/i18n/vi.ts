@@ -652,5 +652,6 @@ export default {
   "Saved shortlist removed. Current selections remain available in this session.": "Đã xóa bản danh sách lưu. Các cầu thủ đang chọn vẫn còn trong phiên này.",
   "Could not remove saved shortlist from browser storage.": "Không thể xóa danh sách khỏi bộ nhớ trình duyệt.",
   "Shortlist CSV prepared. Scores are provisional role-fit heuristics, not CA/PA or transfer values.": "Đã tạo CSV. Điểm số chỉ là ước tính phù hợp vai trò, không phải CA/PA hay giá chuyển nhượng.",
-  "Could not export shortlist. Current selections are unchanged.": "Không thể xuất danh sách. Các cầu thủ đang chọn được giữ nguyên."
+  "Could not export shortlist. Current selections are unchanged.": "Không thể xuất danh sách. Các cầu thủ đang chọn được giữ nguyên.",
+  "Cancel": "Hủy"
 } as const;
