@@ -11,7 +11,7 @@ const denied = reason => ({ schema: NATIVE_PROBE_SCHEMA, status: 'rejected', rea
 function worker(code, input = request(), timeoutMs = 2000) {
   return runFm2013NativeWorker({ executable: process.execPath, args: ['-e', code], request: input, timeoutMs });
 }
-const emit = value => `process.stdin.resume();process.stdin.on('end',()=>{process.stdout.write(${JSON.stringify(JSON.stringify(value))});});`;
+const emit = (value, overrideId = null) => `let text='';process.stdin.on('data',v=>text+=v);process.stdin.on('end',()=>{const req=JSON.parse(text);process.stdout.write(JSON.stringify({...${JSON.stringify(value)},requestId:${overrideId===null?'req.requestId':JSON.stringify(overrideId)}}));});`;
 
 test('strict child result only permits sanitized length without raw address or memory', async () => {
   assert.deepEqual(await worker(emit(approved())), { status: 'read_only_smoke', reason: null, bytesRead: 4 });
@@ -50,6 +50,21 @@ test('worker cannot send memory, extra fields, oversized or inconsistent read si
   const huge = `process.stdout.write('x'.repeat(2048));`;
   assert.equal((await worker(huge)).reason, 'invalid_response');
 });
+test('v2 correlation rejects wrong, missing and replayed worker response IDs', async () => {
+  assert.equal((await worker(emit(approved(), '0'.repeat(32)))).reason, 'invalid_response');
+  assert.equal((await worker(emit({ ...approved(), requestId: undefined }, 'deadbeef'))).reason, 'invalid_response');
+  const legacy = `process.stdin.resume();process.stdin.on('end',()=>process.stdout.write(${JSON.stringify(JSON.stringify({ schema: 'managerhub-native-probe-v1', status: 'read_only_smoke', reason: null, bytesRead: 4 }))}));`;
+  assert.equal((await worker(legacy)).reason, 'invalid_response');
+  const unbound = `process.stdin.resume();process.stdin.on('end',()=>process.stdout.write(${JSON.stringify(JSON.stringify(approved()))}));`;
+  assert.equal((await worker(unbound)).reason, 'invalid_response');
+  const caller = request(); caller.requestId = 'f'.repeat(32);
+  const blocked = await runFm2013NativeWorker({
+    executable: process.execPath, request: caller,
+    spawnWorker: () => { throw Error('request rejected before spawn'); },
+  });
+  assert.equal(blocked.reason, 'invalid_request');
+});
+
 test('child exit code and spawn errors are fail-closed', async () => {
   assert.equal((await worker('process.exit(9)')).reason, 'worker_failed');
   assert.equal((await runFm2013NativeWorker({
@@ -73,6 +88,14 @@ test('rejects invalid worker arguments without spawning', async () => {
     spawnWorker: () => { throw Error('must not spawn'); },
   })).reason, 'invalid_request');
 });
+test('broker requires an absolute native host executable path', async () => {
+  const result = await runFm2013NativeWorker({
+    executable: 'dotnet', request: request(),
+    spawnWorker: () => { throw Error('must reject PATH lookup before spawn'); },
+  });
+  assert.equal(result.reason, 'invalid_request');
+});
+
 test('worker is allowed only the explicit safe statuses', async () => {
   for (const reason of ['process_identity_changed', 'process_not_found', 'partial_or_invalid_read', 'time_limit']) {
     assert.deepEqual(await worker(emit(denied(reason))), { status: 'rejected', reason, bytesRead: 0 });
