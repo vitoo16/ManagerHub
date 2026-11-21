@@ -15,13 +15,13 @@ namespace ManagerHub.Fm2013Host;
 /// </summary>
 internal static class Program
 {
-    private const string Schema = "managerhub-native-probe-v1";
+    private const string Schema = "managerhub-native-probe-v2";
     private const uint QueryLimitedInformation = 0x1000;
     private const uint VmRead = 0x0010;
     private const int MaxInputCharacters = 512;
     private const int MaximumReadBytes = 512;
     private const long MaximumAddress = 0x7fffffffL;
-    private readonly record struct Request(int Pid, string StartedAtFileTime, long Address, int ByteLength);
+    private readonly record struct Request(int Pid, string StartedAtFileTime, long Address, int ByteLength, string RequestId);
     private readonly record struct Result(string Status, string? Reason, int BytesRead)
     {
         public static Result Rejected(string reason) => new("rejected", reason, 0);
@@ -59,11 +59,16 @@ internal static class Program
         if (args.Length == 1 && args[0] == "--self-test") return SelfTest() ? 0 : 1;
         if (args.Length != 1 || args[0] != "--worker") return 2;
         Result outcome;
+        string? responseRequestId = null;
         try
         {
             var line = ReadBoundedLine();
-            outcome = line is not null && TryParseRequest(line, out var request)
-                ? Probe(request) : Result.Rejected("invalid_request");
+            if (line is not null && TryParseRequest(line, out var request))
+            {
+                responseRequestId = request.RequestId;
+                outcome = Probe(request);
+            }
+            else outcome = Result.Rejected("invalid_request");
         }
         catch
         {
@@ -72,7 +77,7 @@ internal static class Program
         }
         Console.Out.WriteLine(JsonSerializer.Serialize(new
         {
-            schema = Schema, status = outcome.Status,
+            schema = Schema, requestId = responseRequestId, status = outcome.Status,
             reason = outcome.Reason, bytesRead = outcome.BytesRead
         }));
         return 0;
@@ -85,12 +90,14 @@ internal static class Program
         {
             schema = Schema, pid = 1234,
             startedAtFileTime = "134064000000000001",
-            address = 0x123400, byteLength = 4
+            address = 0x123400, byteLength = 4,
+            requestId = "0123456789abcdef0123456789abcdef"
         });
         var malformed = new[]
         {
             valid.Replace("1234", "0", StringComparison.Ordinal),
             valid.Replace("134064000000000001", "nope", StringComparison.Ordinal),
+            valid.Replace("0123456789abcdef0123456789abcdef", "invalid", StringComparison.Ordinal),
             valid.Replace("1192960", "3", StringComparison.Ordinal),
             valid.Replace("\"byteLength\":4", "\"byteLength\":513", StringComparison.Ordinal),
             valid.Replace("\"pid\":1234", "\"pid\":-1", StringComparison.Ordinal),
@@ -159,20 +166,23 @@ internal static class Program
             {
                 if (!keys.Add(property.Name)) return false;
             }
-            if (keys.Count != 5 || !keys.SetEquals(new[]
-                { "schema", "pid", "startedAtFileTime", "address", "byteLength" })) return false;
+            if (keys.Count != 6 || !keys.SetEquals(new[]
+                { "schema", "pid", "startedAtFileTime", "address", "byteLength", "requestId" })) return false;
 
             if (root.GetProperty("schema").GetString() != Schema ||
                 !root.GetProperty("pid").TryGetInt32(out var pid) ||
                 !root.GetProperty("address").TryGetInt64(out var address) ||
                 !root.GetProperty("byteLength").TryGetInt32(out var size)) return false;
             var startedAt = root.GetProperty("startedAtFileTime").GetString();
-            if (startedAt is null || startedAt.Length is < 18 or > 20 ||
+            var requestId = root.GetProperty("requestId").GetString();
+            if (requestId is null || requestId.Length != 32 ||
+                !requestId.All(c => c is >= '0' and <= '9' or >= 'a' and <= 'f') ||
+                startedAt is null || startedAt.Length is < 18 or > 20 ||
                 startedAt[0] == '0' || !startedAt.All(char.IsAsciiDigit) ||
                 !ulong.TryParse(startedAt, NumberStyles.None, CultureInfo.InvariantCulture, out _) ||
                 pid < 1 || address < 0x10000 || address > MaximumAddress || (address & 3) != 0 ||
                 size < 1 || size > MaximumReadBytes || size - 1 > MaximumAddress - address) return false;
-            result = new Request(pid, startedAt, address, size);
+            result = new Request(pid, startedAt, address, size, requestId);
             return true;
         }
         catch (JsonException) { return false; }
