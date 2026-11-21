@@ -1,8 +1,8 @@
 import { memo, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  assessScoutClubScenario, FORMATIONS, ROLE_PROFILES,
-  type FormationId, type PlayerExport, type SquadSolution
+  assessScoutClubScenario, ATTRIBUTE_LABELS, compareScoutCandidatesForSlot, FORMATIONS, ROLE_PROFILES,
+  type FormationId, type PlayerExport, type ScoutSlotCandidateStatus, type SquadSolution
 } from '@managerhub/domain';
 
 type Props = {
@@ -11,18 +11,33 @@ type Props = {
 };
 
 const formationOptions = Object.keys(FORMATIONS) as FormationId[];
+const slotStatusLabels: Record<ScoutSlotCandidateStatus, string> = {
+  'candidate-not-found': 'This candidate is unavailable in the active export.',
+  'club-not-found': 'The selected club group is unavailable in this export.',
+  'candidate-club-unknown': 'The candidate has no observed Club value, so their group membership is unknown.',
+  'already-in-club': 'This candidate already belongs to the selected observed club group.',
+  'position-ineligible': 'Declared position is ineligible',
+  'insufficient-attributes': 'Insufficient data',
+  eligible: 'Role fit'
+};
 
 function ScoutClubScenario({ players, candidates }: Props) {
   const { t } = useTranslation();
   const [club, setClub] = useState('');
   const [candidateId, setCandidateId] = useState('');
   const [formation, setFormation] = useState<FormationId>('4-3-3');
+  const [slotId, setSlotId] = useState('st');
   const clubs = useMemo(() => [...new Set(players.flatMap(player => player.club ? [player.club] : []))]
     .sort((a, b) => a.localeCompare(b)), [players]);
+  const validClub = clubs.includes(club) ? club : '';
+  const validSlotId = FORMATIONS[formation].find(slot => slot.id === slotId)?.id ?? 'gk';
   const validCandidateId = candidates.some(candidate => candidate.id === candidateId) ? candidateId : '';
-  const scenario = useMemo(() => club && validCandidateId
-    ? assessScoutClubScenario(players, club, validCandidateId, formation) : null,
-    [players, club, validCandidateId, formation]);
+  const scenario = useMemo(() => validClub && validCandidateId
+    ? assessScoutClubScenario(players, validClub, validCandidateId, formation) : null,
+    [players, validClub, validCandidateId, formation]);
+  const slotNeed = useMemo(() => validClub
+    ? compareScoutCandidatesForSlot(players, validClub, formation, validSlotId, candidates.map(candidate => candidate.id))
+    : null, [players, validClub, formation, validSlotId, candidates]);
   const role = ROLE_PROFILES.find(item => item.id === scenario?.candidateAssignment?.slot.roleId);
 
   return <section className="scout-club-scenario" aria-label={t('Club-group recruitment scenario')}>
@@ -31,7 +46,7 @@ function ScoutClubScenario({ players, candidates }: Props) {
     {clubs.length === 0 ? <p>{t('No Club values were observed in this export. A club-group comparison is unavailable.')}</p> : <>
       <div className="scout-club-scenario__selectors">
         <label htmlFor="scout-club">{t('Observed club group')}
-          <select id="scout-club" value={clubs.includes(club) ? club : ''} onChange={event => setClub(event.target.value)}>
+          <select id="scout-club" value={validClub} onChange={event => setClub(event.target.value)}>
             <option value="">{t('Choose a club group')}</option>
             {clubs.map(name => <option key={name} value={name}>{name}</option>)}
           </select>
@@ -48,6 +63,50 @@ function ScoutClubScenario({ players, candidates }: Props) {
           </select>
         </label>
       </div>
+      {slotNeed && <section className="scout-slot-need" aria-label={t('Shortlist comparison by squad slot')}>
+        <div className="scout-slot-need__heading">
+          <h4>{t('Shortlist comparison by squad slot')}</h4>
+          <label htmlFor="scout-need-slot">{t('Selected position:')}
+            <select id="scout-need-slot" value={validSlotId} onChange={event => setSlotId(event.target.value)}>
+              {FORMATIONS[formation].map(slot => <option key={slot.id} value={slot.id}>
+                {slot.label} · {t(ROLE_PROFILES.find(role => role.id === slot.roleId)?.title ?? slot.roleId)}
+              </option>)}
+            </select>
+          </label>
+        </div>
+        <p>{t('Observed incumbent')}: <strong>{slotNeed.incumbent
+          ? `${slotNeed.incumbent.name} · ${slotNeed.incumbent.roleScore}/100`
+          : t('No complete observed XI for this formation')}</strong></p>
+        {slotNeed.candidates.length === 0 ? <p>{t('No candidates selected. Choose a player from the list, then add them here.')}</p> :
+          <div className="scout-slot-need__scroll"><table aria-label={t('Candidate role-fit ranking')}>
+            <thead><tr>
+              <th scope="col">{t('Candidate')}</th>
+              <th scope="col">{t('Declared position')}</th>
+              <th scope="col">{t('Role fit')}</th>
+              <th scope="col">{t('Difference vs reference')}</th>
+              <th scope="col">{t('Evidence')}</th>
+              <th scope="col">{t('Try in XI')}</th>
+            </tr></thead>
+            <tbody>{slotNeed.candidates.map(candidate => <tr key={candidate.candidateId}>
+              <th scope="row">{candidate.name}<small>{candidate.club ?? t('Unknown club')}</small></th>
+              <td>{candidate.position ?? '—'}</td>
+              <td>{candidate.roleFit === null ? <>{t(slotStatusLabels[candidate.status])}
+                {candidate.coverage !== null && <small>{t('Attribute coverage')} {Math.round(candidate.coverage * 100)}%</small>}
+              </> : <>
+                {candidate.roleFit}/100 <small>{t('Attribute coverage')} {Math.round((candidate.coverage ?? 0) * 100)}%</small>
+              </>}</td>
+              <td>{candidate.differenceFromIncumbent === null ? '—'
+                : `${candidate.differenceFromIncumbent > 0 ? '+' : ''}${candidate.differenceFromIncumbent} ${t('pts')}`}</td>
+              <td>{candidate.coverage === null ? '—' : <details>
+                <summary>{t('Inspect role inputs')}</summary>
+                <p>{t('Observed:')} {candidate.evidence.map(item => `${t(ATTRIBUTE_LABELS[item.attribute])} ${item.value}/20 (×${item.weight})`).join(', ') || '—'}</p>
+                <p>{t('Missing:')} {candidate.missing.map(item => t(ATTRIBUTE_LABELS[item])).join(', ') || '—'}</p>
+              </details>}</td>
+              <td><button type="button" className="mh-button" disabled={candidate.status !== 'eligible'}
+                onClick={() => setCandidateId(candidate.candidateId)}>{t('Try in XI')}</button></td>
+            </tr>)}</tbody>
+          </table></div>}
+      </section>}
       {scenario && <div className="scout-club-scenario__results" role="status" aria-live="polite">
         <p>{t('{{count}} players observed for this club group', { count: scenario.clubPlayerCount })}</p>
         {scenario.status === 'already-in-club' && <p>{t('This candidate already belongs to the selected observed club group.')}</p>}
