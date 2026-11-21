@@ -88,6 +88,14 @@ test('rejects invalid worker arguments without spawning', async () => {
     spawnWorker: () => { throw Error('must not spawn'); },
   })).reason, 'invalid_request');
 });
+test('broker requires an absolute native host executable path', async () => {
+  const result = await runFm2013NativeWorker({
+    executable: 'dotnet', request: request(),
+    spawnWorker: () => { throw Error('must reject PATH lookup before spawn'); },
+  });
+  assert.equal(result.reason, 'invalid_request');
+});
+
 test('worker is allowed only the explicit safe statuses', async () => {
   for (const reason of ['process_identity_changed', 'process_not_found', 'partial_or_invalid_read', 'time_limit']) {
     assert.deepEqual(await worker(emit(denied(reason))), { status: 'rejected', reason, bytesRead: 0 });
