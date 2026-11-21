@@ -13,6 +13,7 @@ import SquadSummaryCards from './features/squad-planner/components/SquadSummaryC
 import PositionCoverageTable from './features/squad-planner/components/PositionCoverageTable';
 import SquadEmptyState from './features/squad-planner/components/SquadEmptyState';
 import SavedSquadRosterPicker from './features/squad-planner/components/SavedSquadRosterPicker';
+import SquadReportActions from './features/squad-planner/components/SquadReportActions';
 import { useSquadPlannerModel } from './features/squad-planner/hooks/useSquadPlannerModel';
 import './squad-workspace.css';
 
@@ -45,6 +46,7 @@ function SquadWorkspaceView({dataset,onImport,onDataset,plans,setPlans,active,se
       <SquadPlanLibraryControls key={dataset.importedAt + ':' + dataset.fileName}
         dataset={dataset} plans={plans} active={active}
         onRestore={(nextPlans, nextActive) => { setPlans(nextPlans); setActive(nextActive); }}/>
+      {solutions && <SquadReportActions dataset={dataset} solutions={solutions}/>}
       <SquadControlBar formation={plan.formation} dataset={dataset} solution={solution} onChangeFormation={changeFormation}/>
       <SquadSummaryCards solution={solution} plan={plan} unknownPositions={unknownPositions}/>
 
