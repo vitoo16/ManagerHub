@@ -252,6 +252,45 @@ test('shortlist compares with a source-bound reference outside the shortlist and
   await expect(page.getByRole('region', { name: 'Danh sách theo dõi tuyển trạch' })).toBeVisible();
 });
 
+test('shortlist evaluates an outside candidate against an observed club-group XI and resets with the source', async ({ page }) => {
+  const rows = makeSquadExport().split('\n');
+  const originalStriker = rows.find(row => row.startsWith('Striker,'));
+  expect(originalStriker).toBeTruthy();
+  const csv = [
+    `${rows[0]},Club`,
+    ...rows.slice(1).map(row => `${row},Home Club`),
+    `${originalStriker!.replace('Striker,', 'Target Striker,').replaceAll(',15', ',20')},Away Club`
+  ].join('\n');
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'club-scenario.csv', mimeType: 'text/csv', buffer: Buffer.from(csv)
+  });
+  await page.getByRole('textbox', { name: 'Search imported players' }).fill('Target Striker');
+  const players = page.getByRole('list', { name: 'Imported players' });
+  await players.getByRole('button', { name: /Target Striker/ }).click();
+  const shortlist = page.getByRole('region', { name: 'Scouting shortlist' });
+  await shortlist.getByRole('button', { name: 'Add selected player to shortlist' }).click();
+  const scenario = page.getByRole('region', { name: 'Club-group recruitment scenario' });
+  await scenario.getByLabel('Observed club group').selectOption('Home Club');
+  await scenario.getByLabel('Shortlisted candidate').selectOption({ label: 'Target Striker · Away Club' });
+  await expect(scenario).toContainText('The candidate enters the hypothetical best-fit XI.');
+  await expect(scenario).toContainText('Previous player in this slot: Striker');
+  await expect(scenario).toContainText('XI average before');
+  await expect(scenario).toContainText('Changed positions');
+
+  await scenario.getByLabel('Formation to test').selectOption('4-2-3-1');
+  await expect(scenario).toContainText('The observed club group plus this candidate cannot form a complete eligible XI');
+  await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
+  await expect(page.getByRole('region', { name: 'Mô phỏng tuyển trạch theo nhóm CLB' })).toBeVisible();
+
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'new-club-scenario.csv', mimeType: 'text/csv', buffer: Buffer.from(makeSquadExport())
+  });
+  await expect(page.getByRole('region', { name: 'Mô phỏng tuyển trạch theo nhóm CLB' })).toHaveCount(0);
+  await expect(page.getByRole('region', { name: 'Danh sách theo dõi tuyển trạch' })
+    .locator('.scout-shortlist__candidates li')).toHaveCount(0);
+});
+
 test('inspects AFE header locally and never claims full save support', async ({ page }) => {
   await page.goto('/#/saves');
   await page.locator('input[type="file"]').setInputFiles({
