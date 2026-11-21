@@ -286,13 +286,23 @@ test('saves Plan A/B per export, restores after reload, rejects another career a
   await expect(page.getByText('Plans A and B saved for this exact player export on this browser.')).toBeVisible();
 
   await page.reload();
-  await page.goto('/#/players');
-  await page.getByRole('list', { name: 'Saved exports' }).getByRole('button', { name: 'Open' }).click();
-  await expect(page.getByRole('heading', { name: 'GK Player' })).toBeVisible();
-  await page.goto('/#/squad');
+  await expect(page.getByRole('heading', { name: 'Squad Planner' })).toBeVisible();
+  await page.getByRole('combobox', { name: 'Saved player list' }).selectOption({ label: 'persisted-squad.csv (12 players)' });
+  await page.getByRole('button', { name: 'Open saved list' }).click();
   await page.getByRole('button', { name: 'Restore saved plans' }).click();
   await expect(page.getByRole('button', { name: 'Plan B', exact: true })).toHaveAttribute('aria-pressed', 'true');
   await expect(page.getByRole('combobox', { name: 'Lock RB' })).toHaveValue('export-row-12');
+
+  const downloading = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export both plans as CSV' }).click();
+  const download = await downloading;
+  expect(download.suggestedFilename()).toBe('ManagerHub-persisted-squad-plans.csv');
+  const reportStream = await download.createReadStream();
+  let csvText = '';
+  for await (const chunk of reportStream) csvText += String(chunk);
+  expect(csvText).toContain('"B","4-3-3"');
+  expect(csvText).toContain('Bench Versatile');
+  expect(csvText).toContain('Not CA/PA or predicted match performance');
 
   await page.getByRole('button', { name: 'Forget saved plans' }).click();
   await page.getByRole('button', { name: 'Confirm forget plans' }).click();
