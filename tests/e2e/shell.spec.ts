@@ -35,6 +35,59 @@ test('navigation opens a functional module directory', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Player Intelligence & eCA' })).toBeVisible();
 });
 
+test('scouting shortlist saves, restores and exports only candidates from the active player list', async ({ page }) => {
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'shortlist.csv', mimeType: 'text/csv', buffer: Buffer.from(makeSquadExport())
+  });
+  await expect(page.getByRole('heading', { name: 'GK Player' })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Scouting shortlist' })).toBeVisible();
+  await page.getByRole('button', { name: 'Add selected player to shortlist' }).click();
+  await page.getByRole('list', { name: 'Imported players' })
+    .getByRole('button', { name: /Left Defender/ }).click();
+  await page.getByRole('button', { name: 'Add selected player to shortlist' }).click();
+  const shortlist = page.getByRole('region', { name: 'Scouting shortlist' });
+  await expect(shortlist.locator('.scout-shortlist__candidates li')).toHaveCount(2);
+
+  await page.getByRole('button', { name: 'Save shortlist locally' }).click();
+  await expect(page.getByText('Shortlist saved on this browser for this exact player export.')).toBeVisible();
+  await page.getByRole('button', { name: 'Save on this browser' }).click();
+  await expect(page.getByRole('button', { name: 'Saved to this browser' })).toBeDisabled();
+
+  await page.reload();
+  await page.getByRole('list', { name: 'Saved exports' })
+    .getByRole('button', { name: 'Open' }).click();
+  await expect(page.getByRole('heading', { name: 'GK Player' })).toBeVisible();
+  await page.getByRole('button', { name: 'Restore saved shortlist' }).click();
+  await expect(page.getByText('Saved shortlist restored.')).toBeVisible();
+  await expect(shortlist.locator('.scout-shortlist__candidates li')).toHaveCount(2);
+
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export shortlist CSV' }).click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe('ManagerHub-shortlist-shortlist.csv');
+  const stream = await download.createReadStream();
+  let csv = '';
+  for await (const chunk of stream) csv += String(chunk);
+  expect(csv).toContain('"GK Player"');
+  expect(csv).toContain('"Left Defender"');
+  expect(csv).not.toContain('"Striker"');
+  expect(csv).toContain('not verified CA/PA, transfer value');
+
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'different-scout-career.csv', mimeType: 'text/csv',
+    buffer: Buffer.from(makeSquadExport([['Extra Defender', 'D (C)']]))
+  });
+  await expect(page.getByRole('heading', { name: 'GK Player' })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Scouting shortlist' })
+    .locator('.scout-shortlist__candidates li')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Restore saved shortlist' }).click();
+  await expect(page.getByText('No saved shortlist exists for this player export.')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
+  await expect(page.getByRole('region', { name: 'Danh sách theo dõi tuyển trạch' })).toBeVisible();
+});
+
 test('inspects AFE header locally and never claims full save support', async ({ page }) => {
   await page.goto('/#/saves');
   await page.locator('input[type="file"]').setInputFiles({
