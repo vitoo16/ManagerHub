@@ -8,7 +8,7 @@ import { runFm2013NativeWorker, NATIVE_PROBE_SCHEMA } from './fm2013-native-work
 const reject = reason => ({ status: 'rejected', reason });
 const supported = new Set(['--pid', '--address', '--bytes']);
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const dll = resolve(root, 'native/ManagerHub.Fm2013Host/bin/Release/net8.0-windows/ManagerHub.Fm2013Host.dll');
+const dll = resolve(root, 'native/ManagerHub.Fm2013Host/bin/Release/net10.0-windows/ManagerHub.Fm2013Host.dll');
 
 function cliArgs(items) {
   if (items.length !== 6) return null;
