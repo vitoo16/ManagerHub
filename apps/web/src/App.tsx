@@ -77,7 +77,7 @@ function Rail({ current, onNavigate, onClose }: {
       )}
     </nav>
     <div className="rail-bottom">
-      <div className="rail-project"><span className="rail-project__led"/><div><strong>{t("Development workspace")}</strong><small>{t("Phase 01 · Foundation")}</small></div></div>
+      <div className="rail-project"><span className="rail-project__led"/><div><strong>{t("Local player workspace")}</strong><small>{t("Player Lab · Squad Planner")}</small></div></div>
       <a className="rail-documentation" href="https://github.com/vitoo16/ManagerHub/tree/main/docs" target="_blank" rel="noreferrer">
         <Icon name="book" size={16}/> {t("Project documentation")} <Icon name="arrow" size={15}/>
       </a>
@@ -231,7 +231,7 @@ export default function App() {
       <main ref={viewScope} className="main-area" id="main-content" tabIndex={-1}>
         <div data-animate="workspace" key={view}>
           <Suspense fallback={<WorkspaceLoading/>}>
-            {view === 'overview' && <Overview imports={imports} go={navigate}/>}
+            {view === 'overview' && <Overview imports={imports} current={playerDataset} onDataset={onPlayerDatasetChange} go={navigate}/>}
             {view === 'players' && <PlayerWorkspace dataset={playerDataset} onDataset={onPlayerDatasetChange} onOpenSquad={openSquad}/>}
             {view === 'history' && <HistoricalWorkspace/>}
             {view === 'squad' && <SquadWorkspace dataset={playerDataset} onImport={openPlayers} onDataset={onPlayerDatasetChange}
