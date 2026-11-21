@@ -1,5 +1,5 @@
 import { FORMATIONS, declaredPositions } from './squad-optimizer';
-import type { PlayerDataset } from './player-import';
+import type { PlayerDataset, PlayerExport } from './player-import';
 import type { SquadPlanConfig, SquadPlanKey, SquadPlans } from './squad-scenarios';
 
 /** Local-only user plan preferences: no source file, player names or attributes are persisted. */
@@ -35,9 +35,9 @@ function canonicalPlan(value: unknown, dataset: PlayerDataset): SquadPlanConfig 
   }
 
   const formation = value.formation;
-  const roster = new Map(dataset.players.map(player => [player.id, player]));
+  const roster = new Map<string, PlayerExport>(dataset.players.map(player => [player.id, player] as const));
   if (roster.size !== dataset.players.length || roster.size === 0) throw new Error('invalid_roster');
-  const slots = new Map(FORMATIONS[formation].map(slot => [slot.id, slot]));
+  const slots = new Map(FORMATIONS[formation].map(slot => [slot.id, slot] as const));
   const lockedSlots: Record<string, string> = {};
   const pinnedIds = new Set<string>();
   if (Object.keys(value.lockedSlots).length > slots.size) throw new Error('invalid_squad_plan');
