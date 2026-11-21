@@ -9,7 +9,7 @@ export function useWorkspaceTransition(scope: RefObject<HTMLElement | null>, vie
   useGSAP(() => {
     if (reduced) return;
     gsap.fromTo('[data-animate="workspace"]',
-      { autoAlpha: 0, y: 12 },
-      { autoAlpha: 1, y: 0, duration: 0.36, ease: 'power2.out', clearProps: 'all' });
+      { y: 12 },
+      { y: 0, duration: 0.36, ease: 'power2.out', clearProps: 'all' });
   }, { scope, dependencies: [viewKey, reduced], revertOnUpdate: true });
 }
