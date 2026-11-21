@@ -3,6 +3,8 @@
 **2026-11-10 additional public reference:** Independent FM27 in-game editor architecture has been studied for *design patterns only*. The pinned [FM27 source audit, adaptation RFC, verification gates and agent handoff](../fm27-editor/README.md) are subject to [multi-agent issue #78](https://github.com/vitoo16/ManagerHub/issues/78). No FM27 offset or write method is valid for FM2013 without its own evidence. No new native product capability is certified.
 
 **2026-11-21 Phase 2 native-side research guard:** [29 — read-only native boundary ADR candidate and fake-host tests](29-native-readonly-boundary-adr.md). This is a bounded in-process contract only, not a Windows process backend, authenticated current session or certified CA/PA reader; historical capture continues unchanged.
+**2026-11-21 stacked research:** [30 — exact-build offline dual-class RTTI proof and stdio IPC v2 correlation](30-native-rtti-evidence-ipc-v2.md). File-only candidate evidence and request correlation are **not** runtime RTTI, authenticated peer IPC or a live/current reader.
+
 
 **Tích hợp:** research baseline FMRTE/FM2013 đã được merge vào main tại 1cd994c. [Handoff không có Computer Use](25-handoff-no-computer-use.md) ghi các ranh giới và private-artifact limits. [Historical snapshot consumer](27-historical-snapshot-consumer.md) mô tả import worker, schema riêng, IndexedDB, mode privacy và acceptance đang được kiểm thử. [Save-format fixture corpus](28-save-fixture-corpus.md) inventories synthetic regression coverage and the remaining real-build evidence gaps.
 
