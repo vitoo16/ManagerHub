@@ -15,7 +15,10 @@ function ContinueWorkspace({ current, onDataset, go }: Props) {
   const { t } = useTranslation();
   const library = usePlayerLibrary();
   const mountedRef = useRef(true);
-  useEffect(() => () => { mountedRef.current = false; }, []);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => { mountedRef.current = false; };
+  }, []);
   const [openingId, setOpeningId] = useState<string | null>(null);
   const [pendingReplacement, setPendingReplacement] = useState<string | null>(null);
   const [openError, setOpenError] = useState(false);
