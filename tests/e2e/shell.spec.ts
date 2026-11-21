@@ -35,6 +35,74 @@ test('navigation opens a functional module directory', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Player Intelligence & eCA' })).toBeVisible();
 });
 
+test('overview points first-time users to real player exports and local planning', async ({ page }) => {
+  await page.goto('/#/overview');
+  await expect(page.getByRole('heading', { name: 'Continue where you left off' })).toBeVisible();
+  await expect(page.locator('.overview-resume__current')).toContainText('Nothing loaded');
+  await expect(page.locator('.overview-resume__saved')).toContainText('No saved lists yet.');
+  await expect(page.getByRole('heading', { name: 'What you can do today' })).toBeVisible();
+  await page.locator('.hero').getByRole('button', { name: 'Import player list' }).click();
+  await expect(page.getByRole('heading', { name: 'Player Lab' })).toBeVisible();
+
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Overview/ }).click();
+  await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
+  await expect(page.getByRole('heading', { name: 'Tiếp tục công việc đang làm' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Bạn có thể làm gì ngay bây giờ' })).toBeVisible();
+});
+
+test('overview resumes saved exports after restart and confirms replacement of active work', async ({ page }) => {
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'resume-first.csv', mimeType: 'text/csv', buffer: Buffer.from(makeSquadExport())
+  });
+  await expect(page.getByRole('heading', { name: 'GK Player' })).toBeVisible();
+  await page.getByRole('button', { name: 'Save on this browser' }).click();
+  await expect(page.getByRole('button', { name: 'Saved to this browser' })).toBeDisabled();
+
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Overview/ }).click();
+  await expect(page.locator('.overview-resume__current')).toContainText('resume-first.csv');
+  await page.locator('.overview-resume__current').getByRole('button', { name: 'Continue in Squad Planner' }).click();
+  await expect(page.getByRole('heading', { name: 'Squad Planner' })).toBeVisible();
+  await expect(page.getByText('Starting eleven ready').first()).toBeVisible();
+
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Overview/ }).click();
+  await page.reload();
+  await expect(page.locator('.overview-resume__current')).toContainText('Nothing loaded');
+  await expect(page.locator('.overview-resume__saved')).toContainText('resume-first.csv');
+  await page.locator('.overview-resume__saved').getByRole('button', { name: 'Open in Squad Planner' }).click();
+  await expect(page.getByRole('heading', { name: 'Squad Planner' })).toBeVisible();
+  await expect(page.getByText('Starting eleven ready').first()).toBeVisible();
+
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Player Lab/ }).click();
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'resume-second.csv', mimeType: 'text/csv', buffer: Buffer.from(makeSquadExport([['Extra Defender','D (C)']]))
+  });
+  await expect(page.getByRole('heading', { name: 'GK Player' })).toBeVisible();
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Overview/ }).click();
+  await expect(page.locator('.overview-resume__current')).toContainText('resume-second.csv');
+  await page.locator('.overview-resume__saved').getByRole('button', { name: 'Open in Squad Planner' }).click();
+  await expect(page.getByRole('group', { name: 'Replace current roster?' })).toBeVisible();
+  await page.getByRole('button', { name: 'Cancel' }).click();
+  await expect(page.locator('.overview-resume__current')).toContainText('resume-second.csv');
+  await page.locator('.overview-resume__saved').getByRole('button', { name: 'Open in Squad Planner' }).click();
+  await page.getByRole('button', { name: 'Replace and open' }).click();
+  await expect(page.getByRole('heading', { name: 'Squad Planner' })).toBeVisible();
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Overview/ }).click();
+  await expect(page.locator('.overview-resume__current')).toContainText('resume-first.csv');
+});
+
 test('inspects AFE header locally and never claims full save support', async ({ page }) => {
   await page.goto('/#/saves');
   await page.locator('input[type="file"]').setInputFiles({
