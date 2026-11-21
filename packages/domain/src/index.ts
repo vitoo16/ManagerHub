@@ -9,6 +9,7 @@ export * from './player-library';
 export * from './squad-optimizer';
 export * from './squad-scenarios';
 export * from './squad-plan-library';
+export * from './squad-plan-report';
 export * from './recruitment-preview';
 export * from './archive-gaps';
 export * from './archive-codec';
