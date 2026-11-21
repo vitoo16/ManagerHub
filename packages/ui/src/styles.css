@@ -59,7 +59,7 @@ small { font-size: 12px; }
 .mh-button { display: inline-flex; justify-content: center; align-items: center; gap: 9px; min-height: 38px; padding: 0 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--surface-up); color: var(--text); font-weight: 600; font-size: 13px; transition: background .14s ease, border-color .14s ease, transform .14s ease; white-space: nowrap; }
 .mh-button:hover { background: var(--surface-hover); border-color: var(--text-faint); }
 .mh-button:active { transform: translateY(1px); }
-.mh-button--primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.mh-button--primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); transition: transform .14s ease; }
 .mh-button--primary:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
 .mh-button--quiet { background: transparent; border-color: transparent; }
 .mh-button--danger { color: var(--negative); background: transparent; }
