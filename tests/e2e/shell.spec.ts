@@ -272,16 +272,35 @@ test('shortlist evaluates an outside candidate against an observed club-group XI
   await shortlist.getByRole('button', { name: 'Add selected player to shortlist' }).click();
   const scenario = page.getByRole('region', { name: 'Club-group recruitment scenario' });
   await scenario.getByLabel('Observed club group').selectOption('Home Club');
-  await scenario.getByLabel('Shortlisted candidate').selectOption({ label: 'Target Striker · Away Club' });
+  const slotComparison = scenario.getByRole('region', { name: 'Shortlist comparison by squad slot' });
+  const slotTable = slotComparison.getByRole('table', { name: 'Candidate role-fit ranking' });
+  await expect(slotComparison).toContainText('Observed incumbent');
+  await expect(slotComparison).toContainText('Striker');
+  await expect(slotTable.locator('tbody tr')).toHaveCount(1);
+  await expect(slotTable.locator('tbody tr').first()).toContainText('Target Striker');
+  await expect(slotTable.locator('tbody tr').first()).toContainText('+');
+  await slotTable.getByText('Inspect role inputs').click();
+  await expect(slotTable).toContainText('Finishing');
+  await slotTable.getByRole('button', { name: 'Try in XI' }).click();
+  await expect(scenario.getByLabel('Shortlisted candidate')).toHaveValue(/.+/);
   await expect(scenario).toContainText('The candidate enters the hypothetical best-fit XI.');
   await expect(scenario).toContainText('Previous player in this slot: Striker');
   await expect(scenario).toContainText('XI average before');
   await expect(scenario).toContainText('Changed positions');
 
+  await slotComparison.getByLabel('Selected position:').selectOption('lb');
+  await expect(slotTable).toContainText('Declared position is ineligible');
+  await expect(slotTable.getByRole('button', { name: 'Try in XI' })).toBeDisabled();
+  await slotComparison.getByLabel('Selected position:').selectOption('lcm');
+
   await scenario.getByLabel('Formation to test').selectOption('4-2-3-1');
+  await expect(slotComparison.getByLabel('Selected position:')).toHaveValue('gk');
   await expect(scenario).toContainText('The observed club group plus this candidate cannot form a complete eligible XI');
+  await slotComparison.getByLabel('Selected position:').selectOption('st');
+  await expect(slotComparison).toContainText('No complete observed XI for this formation');
   await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
   await expect(page.getByRole('region', { name: 'Mô phỏng tuyển trạch theo nhóm CLB' })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'So sánh danh sách tuyển trạch theo vị trí đội hình' })).toBeVisible();
 
   await page.locator('input[type=file]').setInputFiles({
     name: 'new-club-scenario.csv', mimeType: 'text/csv', buffer: Buffer.from(makeSquadExport())
