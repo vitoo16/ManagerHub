@@ -69,6 +69,7 @@ function runStage(stage, number) {
     const logHash = createHash('sha256');
     const write = (data) => { logHash.update(data); file.write(data); };
     const env = { ...process.env, CI: '1', ...config.env, ...stage.env };
+    if (stage.id === 'desktop-mobile-e2e') delete env.NO_COLOR;
     console.log('\n>>> ' + stage.id + ': ' + stage.command);
     const child = spawn(stage.command, {
       cwd: resolve(root, stage.cwd ?? '.'), env, shell: true, windowsHide: true,
