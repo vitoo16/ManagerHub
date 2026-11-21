@@ -9,6 +9,7 @@ import PlayerImportIntro from './features/player-lab/components/PlayerImportIntr
 import PlayerImportToolbar from './features/player-lab/components/PlayerImportToolbar';
 import PlayerListPanel from './features/player-lab/components/PlayerListPanel';
 import SavedPlayerLibraryPanel from './features/player-lab/components/SavedPlayerLibraryPanel';
+import ScoutShortlistPanel from './features/player-lab/components/ScoutShortlistPanel';
 import { usePlayerImport } from './features/player-lab/hooks/usePlayerImport';
 import './player-workspace.css';
 
@@ -128,6 +129,8 @@ function PlayerWorkspaceView({ dataset, onDataset, onOpenSquad }: Props) {
 
     {!dataset ? <PlayerImportIntro/> : <>
       <PlayerDatasetSummary dataset={dataset}/>
+      <ScoutShortlistPanel key={dataset.importedAt + ':' + dataset.fileName}
+        dataset={dataset} selected={selected} onSelectPlayer={onChoosePlayer}/>
       <div className="player-lab-layout">
         <PlayerListPanel
           visible={visible}
