@@ -2,7 +2,9 @@
 
 **Date:** 2026-11-21  
 **Related:** [Phase 2 issue #81](https://github.com/vitoo16/ManagerHub/issues/81), [review #78](https://github.com/vitoo16/ManagerHub/issues/78), [FM27 reference](../fm27-editor/README.md).  
-**Status:** *Proposed architecture for review; in-process synthetic guard implemented. No Windows/native host, browser IPC or game attach is implemented or certified.*
+**Status:** *The strict in-process fake-host guard remains the canonical Player/PlayerStaff RTTI contract. A separate **experimental** .NET 10 Windows single-range read-only smoke worker and bounded broker are proposed in [draft PR #89](https://github.com/vitoo16/ManagerHub/pull/89). No production native reader, verified real RTTI/ABA, browser IPC or game attach has been certified.*
+
+**Incremental native-side path (2026-11-21):** see [native host README](../../../native/README.md). That worker can only report a sanitized OS memory-read byte count after interactive research consent and exact on-disk image checks. It **does not** implement `inspectType`, cross to `GameSnapshot` or identify real FM2013 player objects. A browser/current-session adapter remains blocked until source-backed stable object identity, security architecture and actual Windows evidence exist.
 
 ## Decision under review
 
