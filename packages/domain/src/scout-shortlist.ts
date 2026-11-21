@@ -50,12 +50,14 @@ export async function createSavedScoutShortlist(
   if (!Number.isFinite(Date.parse(savedAt)) || new Date(savedAt).toISOString() !== savedAt) {
     throw new Error('invalid_shortlist_time');
   }
-  return {
+  const record: SavedScoutShortlist = {
     schema: SCOUT_SHORTLIST_SCHEMA,
     rosterSha256: await squadDatasetSha256(dataset),
     savedAt,
     playerIds: ids
   };
+  if (JSON.stringify(record).length > MAX_SHORTLIST_JSON) throw new Error('invalid_shortlist');
+  return record;
 }
 
 export async function restoreSavedScoutShortlist(
