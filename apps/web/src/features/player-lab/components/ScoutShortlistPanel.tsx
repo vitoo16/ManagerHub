@@ -47,7 +47,8 @@ function ScoutShortlistPanel({ dataset, selected, candidateIds, setCandidateIds,
     } else if (candidateIds.length >= MAX_SCOUT_SHORTLIST_PLAYERS) {
       setNotice('The shortlist supports up to 50 players per export.');
     } else {
-      setCandidateIds(ids => [...ids, selected.id]);
+      setCandidateIds(ids => ids.includes(selected.id) || ids.length >= MAX_SCOUT_SHORTLIST_PLAYERS
+        ? ids : [...ids, selected.id]);
     }
   }, [selected, candidateIds, busy, setCandidateIds]);
 
