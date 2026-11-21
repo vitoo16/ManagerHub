@@ -16,3 +16,7 @@ test-results
 *.sqlite
 *.sqlite3
 .local-ci/
+
+# Local .NET host build artifacts (never commit process memory or binaries)
+native/**/bin/
+native/**/obj/
