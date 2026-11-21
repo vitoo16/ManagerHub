@@ -48,7 +48,7 @@ describe('Source-bound scouting shortlist', () => {
     expect(() => validateScoutShortlistIds(['one', 'one'], input)).toThrow();
     expect(() => validateScoutShortlistIds(['unknown'], input)).toThrow();
     expect(() => validateScoutShortlistIds([false], input)).toThrow();
-    expect(() => validateScoutShortlistIds(new Array(MAX_SCOUT_SHORTLIST_PLAYERS + 1).fill('one'), input)).toThrow();
+    expect(() => validateScoutShortlistIds(Array.from({ length: MAX_SCOUT_SHORTLIST_PLAYERS + 1 }, () => 'one'), input)).toThrow();
     expect(() => validateScoutShortlistIds([], input)).not.toThrow();
   });
 
