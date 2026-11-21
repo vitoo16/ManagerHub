@@ -279,7 +279,9 @@ test('saves Plan A/B per export, restores after reload, rejects another career a
   await expect(page.getByRole('heading', { name: 'GK Player' })).toBeVisible();
   await page.getByRole('button', { name: 'Save on this browser' }).click();
   await expect(page.getByRole('button', { name: 'Saved to this browser' })).toBeDisabled();
-  await page.goto('/#/squad');
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Squad Planner/ }).click();
   await page.getByRole('button', { name: 'Plan B', exact: true }).click();
   await page.getByRole('combobox', { name: 'Lock RB' }).selectOption('export-row-12');
   await page.getByRole('button', { name: 'Save plans locally' }).click();
@@ -311,11 +313,15 @@ test('saves Plan A/B per export, restores after reload, rejects another career a
   await page.getByRole('button', { name: 'Restore saved plans' }).click();
   await expect(page.getByText('No saved plans found for this exact player export.')).toBeVisible();
 
-  await page.goto('/#/players');
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Player Lab/ }).click();
   await page.locator('input[type=file]').setInputFiles({
     name: 'different-career.csv', mimeType: 'text/csv', buffer: Buffer.from(makeSquadExport())
   });
-  await page.goto('/#/squad');
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Squad Planner/ }).click();
   await page.getByRole('button', { name: 'Restore saved plans' }).click();
   await expect(page.getByText('No saved plans found for this exact player export.')).toBeVisible();
 });
