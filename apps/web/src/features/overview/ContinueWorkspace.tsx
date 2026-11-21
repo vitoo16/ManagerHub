@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { PlayerDataset, WorkspaceKey } from '@managerhub/domain';
 import { Button, Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
@@ -14,6 +14,8 @@ type Props = {
 function ContinueWorkspace({ current, onDataset, go }: Props) {
   const { t } = useTranslation();
   const library = usePlayerLibrary();
+  const mountedRef = useRef(true);
+  useEffect(() => () => { mountedRef.current = false; }, []);
   const [openingId, setOpeningId] = useState<string | null>(null);
   const [pendingReplacement, setPendingReplacement] = useState<string | null>(null);
   const [openError, setOpenError] = useState(false);
@@ -24,6 +26,7 @@ function ContinueWorkspace({ current, onDataset, go }: Props) {
     setOpenError(false);
     try {
       const dataset = await library.open(id);
+      if (!mountedRef.current) return;
       if (dataset) {
         onDataset(dataset);
         go('squad');
@@ -31,10 +34,12 @@ function ContinueWorkspace({ current, onDataset, go }: Props) {
         setOpenError(true);
       }
     } catch {
-      setOpenError(true);
+      if (mountedRef.current) setOpenError(true);
     } finally {
-      setOpeningId(null);
-      setPendingReplacement(null);
+      if (mountedRef.current) {
+        setOpeningId(null);
+        setPendingReplacement(null);
+      }
     }
   }, [openingId, library.open, onDataset, go]);
 
