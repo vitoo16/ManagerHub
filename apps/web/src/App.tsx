@@ -94,10 +94,12 @@ export default function App() {
   const [glass, setGlass] = useState(() => loadPreference('mh-glass', 'on', ['on', 'off']));
   const [imports, setImports] = useState<SaveInspectionResult[]>([]);
   const [playerDataset, setPlayerDataset] = useState<PlayerDataset | null>(null);
+  const [scoutShortlistIds, setScoutShortlistIds] = useState<string[]>([]);
   const [squadPlans, setSquadPlans] = useState<SquadPlans>(createDefaultSquadPlans);
   const [activeSquadPlan, setActiveSquadPlan] = useState<SquadPlanKey>('A');
   const onPlayerDatasetChange = useCallback((next: PlayerDataset | null) => {
     setPlayerDataset(next);
+    setScoutShortlistIds([]);
     setSquadPlans(createDefaultSquadPlans());
     setActiveSquadPlan('A');
   }, []);
@@ -232,7 +234,7 @@ export default function App() {
         <div data-animate="workspace" key={view}>
           <Suspense fallback={<WorkspaceLoading/>}>
             {view === 'overview' && <Overview imports={imports} go={navigate}/>}
-            {view === 'players' && <PlayerWorkspace dataset={playerDataset} onDataset={onPlayerDatasetChange} onOpenSquad={openSquad}/>}
+            {view === 'players' && <PlayerWorkspace dataset={playerDataset} shortlistIds={scoutShortlistIds} setShortlistIds={setScoutShortlistIds} onDataset={onPlayerDatasetChange} onOpenSquad={openSquad}/>}
             {view === 'history' && <HistoricalWorkspace/>}
             {view === 'squad' && <SquadWorkspace dataset={playerDataset} onImport={openPlayers} onDataset={onPlayerDatasetChange}
               plans={squadPlans} setPlans={setSquadPlans} active={activeSquadPlan} setActive={setActiveSquadPlan}/>}
