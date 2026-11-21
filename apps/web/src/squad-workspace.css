@@ -98,3 +98,21 @@
  .squad-compare-metrics{grid-template-columns:1fr}
  .squad-compare-summary strong{font-size:18px}.squad-lock-row>span{width:60px}
 }
+
+
+/* Opt-in squad-plan persistence, source bound and accessible on narrow screens. */
+.squad-plan-library{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding:16px 18px;margin-bottom:14px;border:1px solid var(--line);
+  border-radius:14px;background:var(--surface-up);
+}
+.squad-plan-library__intro{flex:1 1 230px;min-width:0}
+.squad-plan-library__intro strong{display:flex;align-items:center;gap:8px;font-size:13px}
+.squad-plan-library__intro p{margin:6px 0 0;font-size:11px;line-height:1.55;color:var(--text-sub)}
+.squad-plan-library__actions{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.squad-plan-library__notice{flex-basis:100%;margin:0;color:var(--text-sub);font-size:12px;line-height:1.5}
+@media(max-width:600px){
+  .squad-plan-library{padding:14px}
+  .squad-plan-library__actions{width:100%}
+  .squad-plan-library__actions>.mh-button{flex:1 1 auto}
+}
