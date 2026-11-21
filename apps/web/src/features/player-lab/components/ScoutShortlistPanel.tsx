@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { PlayerDataset, PlayerExport } from '@managerhub/domain';
 import {
@@ -11,13 +11,14 @@ import { Button, Icon, Surface } from '@managerhub/ui';
 type Props = {
   dataset: PlayerDataset;
   selected: PlayerExport | null;
+  candidateIds: readonly string[];
+  setCandidateIds: Dispatch<SetStateAction<string[]>>;
   onSelectPlayer: (id: string) => void;
 };
 
 /** All persistence is an explicit user action. Changing the imported roster remounts this panel. */
-function ScoutShortlistPanel({ dataset, selected, onSelectPlayer }: Props) {
+function ScoutShortlistPanel({ dataset, selected, candidateIds, setCandidateIds, onSelectPlayer }: Props) {
   const { t } = useTranslation();
-  const [candidateIds, setCandidateIds] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [confirmForget, setConfirmForget] = useState(false);
@@ -48,7 +49,7 @@ function ScoutShortlistPanel({ dataset, selected, onSelectPlayer }: Props) {
     } else {
       setCandidateIds(ids => [...ids, selected.id]);
     }
-  }, [selected, candidateIds, busy]);
+  }, [selected, candidateIds, busy, setCandidateIds]);
 
   const save = useCallback(async () => {
     setBusy(true); setNotice(null); setConfirmForget(false);
@@ -78,7 +79,7 @@ function ScoutShortlistPanel({ dataset, selected, onSelectPlayer }: Props) {
     } catch {
       if (mountedRef.current) setNotice('Saved shortlist is invalid or unavailable. Current selections were not changed.');
     } finally { if (mountedRef.current) setBusy(false); }
-  }, [dataset]);
+  }, [dataset, setCandidateIds]);
 
   const forget = useCallback(async () => {
     setBusy(true); setNotice(null);
