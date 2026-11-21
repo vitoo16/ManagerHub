@@ -71,7 +71,7 @@ describe('Squad Planner user-controlled persistence', () => {
     const input = dataset(), good = await makeSavedSquadPlans(input, createDefaultSquadPlans(), 'A');
     for (const modified of [
       { gk: 'not-in-source' }, { unknownSlot: 'gk' }, { cm: 'forward' },
-      { gk: 'gk', lb: 'gk' }, { __proto__: 'gk' }
+      { gk: 'gk', lb: 'gk' }, JSON.parse('{"__proto__":"gk"}')
     ]) {
       await expect(restoreSavedSquadPlans({
         ...good, plans: { ...good.plans, A: { ...good.plans.A, lockedSlots: modified } }
