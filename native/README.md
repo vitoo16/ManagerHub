@@ -51,3 +51,10 @@ The prompt requires typing `READ ONLY <PID>`. An unknown, arbitrary, unsupported
 Review host threat model/consent and integrate real **FM2013-native class RTTI/vtable/record identity verification**, snapshot-level source provenance and **sanitized, authenticated, versioned local IPC**. Only after same-build field cross-check + Editor/Realism privacy tests may a live reader capability be considered. Actual CA/PA writer and offline `.fm` save decoder remain disabled/unsupported, with 0/27 modules certified Complete.
 
 Related: [Native host implementation issue #88](https://github.com/vitoo16/ManagerHub/issues/88), [read-only Phase 2 gate #81](https://github.com/vitoo16/ManagerHub/issues/81), [FM27 architecture review #78](https://github.com/vitoo16/ManagerHub/issues/78), [existing boundary ADR](../docs/research/fmrte/29-native-readonly-boundary-adr.md).
+
+
+## Stacked RTTI file proof + stdio v2 research (separate draft PR)
+
+The next branch adds an exact-build, two-class **offline** MSVC RTTI proof and private `managerhub-native-probe-v2` request/response correlation. See [RTTI and IPC v2 design/limits](../docs/research/fmrte/30-native-rtti-evidence-ipc-v2.md). Its `requestId` is **not** an access token, peer authentication, proof of consent or a guarantee against same-user malicious software. It only binds a worker reply to the current invocation; old v1 responses are refused. The broker refuses non-absolute native host executable paths; the research CLI looks for `dotnet.exe` in the system Program Files installation rather than PATH.
+
+File-backed vtable candidate RVAs are not runtime vtable validation, loaded image attestation or a same-class ABA defense. Do not return them to web/IndexedDB. The local Windows build and full Local CI must be rerun at the new head after this change; the old #89 10/10 PASS is **not inherited**.
