@@ -77,6 +77,17 @@ All persistence is opt-in and local to that browser profile; users can delete th
 
 The Overview screen now prioritizes **real product actions**: import a local player export, continue with an active roster, or open one of the three most recently saved browser-local rosters directly in Squad Planner. This list is read from the same IndexedDB library as Player Lab. Opening a different saved roster while a roster is already active requires explicit confirmation; the existing local saved data is not deleted. A plan remains opt-in and must be restored separately. The screen does not imply a verified `.fm` player decoder or live game reader.
 
+### Scouting shortlist from imported data
+
+In **Player Lab**, select a player from the imported list and choose **Add selected player to shortlist**. Up to 50 players from the **same source export** can be shortlisted. The shortlist is useful for comparing player reports and organizing a provisional recruitment list; it is **not** a verified signing recommendation or price estimate. Unsaved shortlist selections remain available while navigating between Player Lab and Squad Planner in the same tab, and reset when a different source roster replaces the current one; browser reload still requires explicit prior saving.
+
+- **Save shortlist locally** is an explicit user action. Only the schema, SHA-256 of the full imported roster, selected import-local player IDs and timestamp go into browser localStorage. Names/attributes remain in the original in-memory or opt-in IndexedDB player export, not duplicated in this shortlist.
+- **Restore saved shortlist** validates the exact source roster and player IDs. An altered roster, invalid schema or extra fields fails closed without overwriting the current shortlist. Re-importing identical data remains supported.
+- **Forget saved shortlist** requires confirmation and removes the stored selection. **Export shortlist CSV** downloads the selected player names and observed role-fit heuristics with an explicit provenance disclaimer. Spreadsheet formula-like values are neutralized, and the game save is never changed.
+- To persist the underlying player export across browser restarts, separately choose **Save on this browser** in Player Lab. Shortlist storage alone does not contain the underlying players.
+
+This is an incremental MH-12 product capability; verified fees, wages, registration, player linkage across careers and Buy/Pass recommendations remain **unsupported** until source evidence exists. Full Windows Local CI and browser verification are required at the PR head before release.
+
 ## Languages and player-facing help
 ManagerHub supports **Vietnamese / English (VI/EN)** with immediate language switching from the top bar and stored preference across reloads. Player Lab includes a plain-language guide distinguishing CA, PA, RCA and ManagerHub's role-fit scoring. See [i18n and content guidelines](docs/engineering/i18n-guidelines.md) and [FM Scout CA/PA research](docs/domain/ca-pa-rca-research.md).
 

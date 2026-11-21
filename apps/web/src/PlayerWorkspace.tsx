@@ -1,4 +1,4 @@
-import { memo, useCallback, useDeferredValue, useMemo, useState } from 'react';
+import { memo, useCallback, useDeferredValue, useMemo, useState, type Dispatch, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { PlayerDataset } from '@managerhub/domain';
 import { Icon } from '@managerhub/ui';
@@ -9,16 +9,19 @@ import PlayerImportIntro from './features/player-lab/components/PlayerImportIntr
 import PlayerImportToolbar from './features/player-lab/components/PlayerImportToolbar';
 import PlayerListPanel from './features/player-lab/components/PlayerListPanel';
 import SavedPlayerLibraryPanel from './features/player-lab/components/SavedPlayerLibraryPanel';
+import ScoutShortlistPanel from './features/player-lab/components/ScoutShortlistPanel';
 import { usePlayerImport } from './features/player-lab/hooks/usePlayerImport';
 import './player-workspace.css';
 
 type Props = {
   dataset: PlayerDataset | null;
+  shortlistIds: readonly string[];
+  setShortlistIds: Dispatch<SetStateAction<string[]>>;
   onDataset: (dataset: PlayerDataset | null) => void;
   onOpenSquad: () => void;
 };
 
-function PlayerWorkspaceView({ dataset, onDataset, onOpenSquad }: Props) {
+function PlayerWorkspaceView({ dataset, shortlistIds, setShortlistIds, onDataset, onOpenSquad }: Props) {
   const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [chosenId, setChosenId] = useState<string | null>(null);
@@ -128,6 +131,9 @@ function PlayerWorkspaceView({ dataset, onDataset, onOpenSquad }: Props) {
 
     {!dataset ? <PlayerImportIntro/> : <>
       <PlayerDatasetSummary dataset={dataset}/>
+      <ScoutShortlistPanel key={dataset.importedAt + ':' + dataset.fileName}
+        dataset={dataset} selected={selected} candidateIds={shortlistIds}
+        setCandidateIds={setShortlistIds} onSelectPlayer={onChoosePlayer}/>
       <div className="player-lab-layout">
         <PlayerListPanel
           visible={visible}
