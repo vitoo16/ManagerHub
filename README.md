@@ -60,7 +60,7 @@ Player Lab can now **opt-in save** a normalized export to IndexedDB, restore it 
 ### Plan A / Plan B in Squad Planner
 In `/#/squad`, pin an eligible player to an exact position, exclude players or copy Plan A into Plan B. The engine recalculates the entire XI and refuses invalid duplicate or unsupported assignments. The same-formation comparison identifies roster changes and heuristic Role Fit differences; **this is not a validated prediction of match performance**. Plans are temporary in-page scenarios; only explicitly saved player exports persist in IndexedDB. [Implementation details](docs/implementation/08-local-library-and-squad-planner.md).
 
-### Keep and export Squad Planner scenarios (product branch #91)
+### Keep and export Squad Planner scenarios
 
 The user journey is now designed around a repeatable browser-local workflow rather than requiring a new native memory adapter:
 
