@@ -15,6 +15,7 @@ const roles = new Map(ROLE_PROFILES.map(role => [role.id, role.title] as const))
 function csvCell(value: string | number): string {
   let text = String(value);
   // Excel/Sheets can evaluate leading spreadsheet formulas in user-controlled names.
+  // eslint-disable-next-line no-control-regex
   if (/^[\u0000-\u0020]*[=+@-]/u.test(text)) text = "'" + text;
   return '"' + text.replaceAll('"', '""') + '"';
 }
