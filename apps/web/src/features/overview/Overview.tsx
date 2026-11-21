@@ -1,29 +1,31 @@
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { type SaveIdentity, type WorkspaceKey } from '@managerhub/domain';
+import { type PlayerDataset, type SaveIdentity, type WorkspaceKey } from '@managerhub/domain';
 import { Button, Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
+import ContinueWorkspace from './ContinueWorkspace';
 
-const PHASES = [
-  { name: 'Foundation & Interface', detail: 'Core architecture, design system, motion', count: 'Phase 01' },
-  { name: 'Football Manager Data', detail: 'Save adapters, verified player records', count: 'Phase 02' },
-  { name: 'Player Intelligence', detail: 'eCA, role intelligence, scouting charts', count: 'Phase 03' },
-  { name: 'Tactics & Squad Planning', detail: 'Tactical Lab, optimized lineups', count: 'Phase 04' },
-  { name: 'Sporting Department', detail: 'Transfers, contracts, youth, finance', count: 'Phase 05' },
-  { name: 'Club Management & AI', detail: 'Matchday, boardroom, AI staff', count: 'Phase 06' },
-  { name: 'Full Integration', detail: 'Set pieces, certified editor, release', count: 'Phase 07' }
-] as const;
+const WORKFLOWS: readonly { title: string; detail: string; destination: WorkspaceKey }[] = [
+  { title: 'Import observed player data', detail: 'Use a local HTML/CSV/TSV export, not an unverified .fm player decoder.', destination: 'players' },
+  { title: 'Compare player roles', detail: 'Inspect visible attributes and source-labeled heuristic role fit.', destination: 'players' },
+  { title: 'Build your starting XI', detail: 'Create, save, compare and export Plan A/B without changing your game save.', destination: 'squad' }
+];
 
-function Overview({ imports, go }: { imports: readonly SaveIdentity[]; go: (key: WorkspaceKey) => void }) {
+function Overview({ imports, current, onDataset, go }: {
+  imports: readonly SaveIdentity[];
+  current: PlayerDataset | null;
+  onDataset: (dataset: PlayerDataset) => void;
+  go: (key: WorkspaceKey) => void;
+}) {
   const { t } = useTranslation();
   return <div className="view-flow">
     <div className="hero">
       <div className="hero-content">
         <div className="hero-kicker"><span className="hero-kicker__dot"/> {t("THE NEXT ERA OF FOOTBALL MANAGEMENT")}</div>
         <h1>{t("Every decision.")}<br/><em>{t("Better informed.")}</em></h1>
-        <p>{t("A single command center for your career. Built around verified Football Manager data, transparent analysis and a system designed to grow with the club.")}</p>
+        <p>{t("Analyze player exports, compare two starting elevens and pick up work saved in this browser. Every estimate stays labeled.")}</p>
         <div className="hero-actions">
-          <Button variant="primary" onClick={() => go('saves')}><Icon name="plus" size={17}/> {t("Inspect a save")}</Button>
-          <Button onClick={() => go('players')}><Icon name="compass" size={17}/> {t("Player Lab")}</Button>
+          <Button variant="primary" onClick={() => go('players')}><Icon name="plus" size={17}/> {t("Import player list")}</Button>
+          <Button onClick={() => go('squad')}><Icon name="layers" size={17}/> {t("Squad Planner")}</Button>
         </div>
       </div>
       <div className="hero-art" aria-hidden="true">
@@ -32,23 +34,25 @@ function Overview({ imports, go }: { imports: readonly SaveIdentity[]; go: (key:
         <div className="hero-art-caption">{t("PLAN  ·  ANALYZE  ·  EVOLVE")}</div>
       </div>
     </div>
+    <ContinueWorkspace current={current} onDataset={onDataset} go={go}/>
     <div className="headline-stats" aria-label={t("Workspace information")}>
       <Surface className="stat-card"><span className="stat-label">{t("Product scope")}</span><div className="stat-value">27<span>{t("modules")}</span></div><span className="stat-sub">{t("Six interconnected departments")}</span></Surface>
       <Surface className="stat-card"><span className="stat-label">{t("Local files inspected")}</span><div className="stat-value">{imports.length.toString().padStart(2, '0')}<span>{t("files")}</span></div><span className="stat-sub">{t("No save files uploaded to a server")}</span></Surface>
-      <Surface className="stat-card"><span className="stat-label">{t("Current implementation")}</span><div className="stat-value stat-value--word">{t("Foundation")}</div><span className="stat-sub">{t("Player exports work now · Save reader is still being built")}</span></Surface>
+      <Surface className="stat-card"><span className="stat-label">{t("Loaded player records")}</span><div className="stat-value">{(current?.players.length ?? 0).toLocaleString()}<span>{t("players")}</span></div><span className="stat-sub">{t("Export-derived data · No verified live reader")}</span></Surface>
     </div>
-    <SectionHeading eyebrow={t("BUILD PROGRESS")} title={t("Your management ecosystem")}>
+    <SectionHeading eyebrow={t("AVAILABLE WORKFLOWS")} title={t("What you can do today")}>
       <button className="text-link" onClick={() => go('modules')}>{t("All 27 workstreams")} <Icon name="arrow" size={15}/></button>
     </SectionHeading>
     <div className="overview-panels">
       <Surface className="phase-card">
-        <div className="panel-heading"><span>{t("WHAT'S COMING NEXT")}</span><Status tone="info">{t("7 integrated phases")}</Status></div>
+        <div className="panel-heading"><span>{t("WORK WITH REAL EXPORTS")}</span><Status tone="info">{t("Local and read-only")}</Status></div>
         <div className="phase-list">
-          {PHASES.slice(0, 5).map((phase, i) =>
-            <div key={phase.name} className="phase-row">
+          {WORKFLOWS.map((workflow, i) =>
+            <div key={workflow.title} className="phase-row">
               <div className={'phase-marker ' + (i === 0 ? 'phase-marker--active' : '')}>{String(i + 1).padStart(2, '0')}</div>
-              <div className="phase-row__copy"><strong>{t(phase.name)}</strong><small>{t(phase.detail)}</small></div>
-              <span className="phase-row__state">{t(i === 0 ? 'IN PROGRESS' : 'PLANNED')}</span>
+              <div className="phase-row__copy"><strong>{t(workflow.title)}</strong><small>{t(workflow.detail)}</small></div>
+              <button className="phase-row__action" onClick={() => go(workflow.destination)}
+                aria-label={t('Open {{workspace}}', { workspace: t(workflow.title) })}>{t('Open')} <Icon name="arrow" size={13}/></button>
             </div>
           )}
         </div>
