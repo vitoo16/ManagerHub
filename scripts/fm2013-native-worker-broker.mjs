@@ -1,6 +1,7 @@
 import { spawn } from 'node:child_process';
+import { randomBytes } from 'node:crypto';
 
-export const NATIVE_PROBE_SCHEMA = 'managerhub-native-probe-v1';
+export const NATIVE_PROBE_SCHEMA = 'managerhub-native-probe-v2';
 export const NATIVE_PROBE_TIMEOUT_MS = 5000;
 const MAX_REQUEST_BYTES = 512;
 const MAX_RESPONSE_BYTES = 1024;
@@ -33,8 +34,9 @@ export async function runFm2013NativeWorker({ executable, args = [], request, ti
       request.address + request.byteLength - 1 > 0x7fffffff) return failed('invalid_request');
   } catch { return failed('invalid_request'); }
   let payload;
+  const requestId = randomBytes(16).toString('hex'); // Fresh correlation ID, NOT caller authentication.
   try {
-    payload = JSON.stringify(request) + '\n';
+    payload = JSON.stringify({ ...request, requestId }) + '\n';
     if (Buffer.byteLength(payload, 'utf8') > MAX_REQUEST_BYTES) return failed('invalid_request');
   } catch { return failed('invalid_request'); }
 
@@ -76,9 +78,10 @@ export async function runFm2013NativeWorker({ executable, args = [], request, ti
       try {
         const value = JSON.parse(response.trim());
         if (!value || typeof value !== 'object' || Array.isArray(value) ||
-          Object.keys(value).length !== 4 ||
-          !['schema', 'status', 'reason', 'bytesRead'].every(k => Object.hasOwn(value, k)) ||
-          value.schema !== NATIVE_PROBE_SCHEMA || !Number.isInteger(value.bytesRead)) {
+          Object.keys(value).length !== 5 ||
+          !['schema', 'requestId', 'status', 'reason', 'bytesRead'].every(k => Object.hasOwn(value, k)) ||
+          value.schema !== NATIVE_PROBE_SCHEMA || value.requestId !== requestId ||
+          !Number.isInteger(value.bytesRead)) {
           finish(failed('invalid_response')); return;
         }
         if (value.status === 'read_only_smoke' && value.reason === null &&
