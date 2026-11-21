@@ -270,6 +270,62 @@ test('Plan A/B supports versatile player pins, exclusions and honest comparisons
 });
 
 
+test('saves Plan A/B per export, restores after reload, rejects another career and forgets explicitly', async ({ page }) => {
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'persisted-squad.csv', mimeType: 'text/csv',
+    buffer: Buffer.from(makeSquadExport([['Bench Versatile', 'D (R), AM (R)']]))
+  });
+  await expect(page.getByRole('heading', { name: 'GK Player' })).toBeVisible();
+  await page.getByRole('button', { name: 'Save on this browser' }).click();
+  await expect(page.getByRole('button', { name: 'Saved to this browser' })).toBeDisabled();
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Squad Planner/ }).click();
+  await page.getByRole('button', { name: 'Plan B', exact: true }).click();
+  await page.getByRole('combobox', { name: 'Lock RB' }).selectOption('export-row-12');
+  await page.getByRole('button', { name: 'Save plans locally' }).click();
+  await expect(page.getByText('Plans A and B saved for this exact player export on this browser.')).toBeVisible();
+
+  await page.reload();
+  await expect(page.getByRole('heading', { name: 'Squad Planner' })).toBeVisible();
+  await page.getByRole('combobox', { name: 'Saved player list' }).selectOption({ label: 'persisted-squad.csv (12 players)' });
+  await page.getByRole('button', { name: 'Open saved list' }).click();
+  await page.getByRole('button', { name: 'Restore saved plans' }).click();
+  await expect(page.getByRole('button', { name: 'Plan B', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('combobox', { name: 'Lock RB' })).toHaveValue('export-row-12');
+
+  const downloading = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export both plans as CSV' }).click();
+  const download = await downloading;
+  expect(download.suggestedFilename()).toBe('ManagerHub-persisted-squad-plans.csv');
+  const reportStream = await download.createReadStream();
+  let csvText = '';
+  for await (const chunk of reportStream) csvText += String(chunk);
+  expect(csvText).toContain('"B","4-3-3"');
+  expect(csvText).toContain('Bench Versatile');
+  expect(csvText).toContain('Not CA/PA or predicted match performance');
+
+  await page.getByRole('button', { name: 'Forget saved plans' }).click();
+  await page.getByRole('button', { name: 'Confirm forget plans' }).click();
+  await expect(page.getByText('Saved plans for this player export were removed. Current session plans remain unchanged.')).toBeVisible();
+  await expect(page.getByRole('combobox', { name: 'Lock RB' })).toHaveValue('export-row-12');
+  await page.getByRole('button', { name: 'Restore saved plans' }).click();
+  await expect(page.getByText('No saved plans found for this exact player export.')).toBeVisible();
+
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Player Lab/ }).click();
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'different-career.csv', mimeType: 'text/csv', buffer: Buffer.from(makeSquadExport())
+  });
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Squad Planner/ }).click();
+  await page.getByRole('button', { name: 'Restore saved plans' }).click();
+  await expect(page.getByText('No saved plans found for this exact player export.')).toBeVisible();
+});
+
 test('Plan B remains intact across workspace navigation and resets for a different import', async ({page})=>{
   await page.goto('/#/players');
   await page.locator('input[type=file]').setInputFiles({

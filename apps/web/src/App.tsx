@@ -234,7 +234,7 @@ export default function App() {
             {view === 'overview' && <Overview imports={imports} go={navigate}/>}
             {view === 'players' && <PlayerWorkspace dataset={playerDataset} onDataset={onPlayerDatasetChange} onOpenSquad={openSquad}/>}
             {view === 'history' && <HistoricalWorkspace/>}
-            {view === 'squad' && <SquadWorkspace dataset={playerDataset} onImport={openPlayers}
+            {view === 'squad' && <SquadWorkspace dataset={playerDataset} onImport={openPlayers} onDataset={onPlayerDatasetChange}
               plans={squadPlans} setPlans={setSquadPlans} active={activeSquadPlan} setActive={setActiveSquadPlan}/>}
             {view === 'saves' && <SaveInspector imports={imports} selected={selected} onInspect={onInspect} onRemove={remove} busy={busy} error={error} select={setSelectedId} onRestoreSaved={onRestoreSaved}/>}
             {view === 'modules' && <Systems/>}
