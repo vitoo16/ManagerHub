@@ -12,12 +12,14 @@ import SquadPlanLibraryControls from './features/squad-planner/components/SquadP
 import SquadSummaryCards from './features/squad-planner/components/SquadSummaryCards';
 import PositionCoverageTable from './features/squad-planner/components/PositionCoverageTable';
 import SquadEmptyState from './features/squad-planner/components/SquadEmptyState';
+import SavedSquadRosterPicker from './features/squad-planner/components/SavedSquadRosterPicker';
 import { useSquadPlannerModel } from './features/squad-planner/hooks/useSquadPlannerModel';
 import './squad-workspace.css';
 
-function SquadWorkspaceView({dataset,onImport,plans,setPlans,active,setActive}:{
+function SquadWorkspaceView({dataset,onImport,onDataset,plans,setPlans,active,setActive}:{
   dataset: PlayerDataset | null;
   onImport: () => void;
+  onDataset: (dataset: PlayerDataset) => void;
   plans: SquadPlans;
   setPlans: Dispatch<SetStateAction<SquadPlans>>;
   active: SquadPlanKey;
@@ -35,7 +37,10 @@ function SquadWorkspaceView({dataset,onImport,plans,setPlans,active,setActive}:{
       <h1>{t("Squad Planner")}</h1>
       <p>{t("Pick a formation, keep your favorite players in position, exclude others and compare two possible starting elevens.")}</p>
     </div>
-    {!dataset ? <SquadEmptyState onImport={onImport}/> : <>
+    {!dataset ? <>
+      <SavedSquadRosterPicker onDataset={onDataset}/>
+      <SquadEmptyState onImport={onImport}/>
+    </> : <>
       <SquadScenarioHeader active={active} onSetActive={setActive} onCopyPlanAtoB={onCopyPlanAtoB}/>
       <SquadPlanLibraryControls key={dataset.importedAt + ':' + dataset.fileName}
         dataset={dataset} plans={plans} active={active}
