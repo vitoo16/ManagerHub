@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { PlayerDataset, PlayerExport } from '@managerhub/domain';
 import {
@@ -27,10 +27,14 @@ function ScoutShortlistPanel({ dataset, selected, onSelectPlayer }: Props) {
     return () => { mountedRef.current = false; };
   }, []);
 
-  const candidates = candidateIds.flatMap(id => {
-    const candidate = dataset.players.find(player => player.id === id);
+  const playerById = useMemo(
+    () => new Map(dataset.players.map(player => [player.id, player] as const)),
+    [dataset.players]
+  );
+  const candidates = useMemo(() => candidateIds.flatMap(id => {
+    const candidate = playerById.get(id);
     return candidate ? [candidate] : [];
-  });
+  }), [candidateIds, playerById]);
   const selectedAlready = selected !== null && candidateIds.includes(selected.id);
 
   const toggleCandidate = useCallback(() => {
