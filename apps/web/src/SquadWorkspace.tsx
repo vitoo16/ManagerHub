@@ -8,6 +8,7 @@ import PinEditor from './features/squad-planner/components/PinEditor';
 import ScenarioComparison from './features/squad-planner/components/ScenarioComparison';
 import SquadScenarioHeader from './features/squad-planner/components/SquadScenarioHeader';
 import SquadControlBar from './features/squad-planner/components/SquadControlBar';
+import SquadPlanLibraryControls from './features/squad-planner/components/SquadPlanLibraryControls';
 import SquadSummaryCards from './features/squad-planner/components/SquadSummaryCards';
 import PositionCoverageTable from './features/squad-planner/components/PositionCoverageTable';
 import SquadEmptyState from './features/squad-planner/components/SquadEmptyState';
@@ -36,6 +37,9 @@ function SquadWorkspaceView({dataset,onImport,plans,setPlans,active,setActive}:{
     </div>
     {!dataset ? <SquadEmptyState onImport={onImport}/> : <>
       <SquadScenarioHeader active={active} onSetActive={setActive} onCopyPlanAtoB={onCopyPlanAtoB}/>
+      <SquadPlanLibraryControls key={dataset.importedAt + ':' + dataset.fileName}
+        dataset={dataset} plans={plans} active={active}
+        onRestore={(nextPlans, nextActive) => { setPlans(nextPlans); setActive(nextActive); }}/>
       <SquadControlBar formation={plan.formation} dataset={dataset} solution={solution} onChangeFormation={changeFormation}/>
       <SquadSummaryCards solution={solution} plan={plan} unknownPositions={unknownPositions}/>
 
