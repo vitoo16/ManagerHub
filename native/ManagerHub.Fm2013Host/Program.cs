@@ -56,6 +56,7 @@ internal static class Program
 
     private static int Main(string[] args)
     {
+        if (args.Length == 1 && args[0] == "--self-test") return SelfTest() ? 0 : 1;
         if (args.Length != 1 || args[0] != "--worker") return 2;
         Result outcome;
         try
@@ -75,6 +76,34 @@ internal static class Program
             reason = outcome.Reason, bytesRead = outcome.BytesRead
         }));
         return 0;
+    }
+
+    private static bool SelfTest()
+    {
+        // Parser-only tests never open an OS process, memory handle or file.
+        var valid = JsonSerializer.Serialize(new
+        {
+            schema = Schema, pid = 1234,
+            startedAtFileTime = "134064000000000001",
+            address = 0x123400, byteLength = 4
+        });
+        var malformed = new[]
+        {
+            valid.Replace("1234", "0", StringComparison.Ordinal),
+            valid.Replace("134064000000000001", "nope", StringComparison.Ordinal),
+            valid.Replace("1192960", "3", StringComparison.Ordinal),
+            valid.Replace("\\"byteLength\\":4", "\\"byteLength\\":513", StringComparison.Ordinal),
+            valid.Replace("\\"pid\\":1234", "\\"pid\\":-1", StringComparison.Ordinal),
+            valid.Replace("\\"pid\\":1234", "\\"pid\\":2147483648", StringComparison.Ordinal),
+            valid[..^1] + ",\\"secret\\":true}",
+            "{not-json}"
+        };
+        bool okay = TryParseRequest(valid, out var request) &&
+            request.Pid == 1234 && request.ByteLength == 4 &&
+            request.Address == 0x123400 &&
+            malformed.All(x => !TryParseRequest(x, out _));
+        Console.Out.WriteLine(okay ? "NATIVE_SELF_TEST_PASS" : "NATIVE_SELF_TEST_FAIL");
+        return okay;
     }
 
     private static string? ReadBoundedLine()
