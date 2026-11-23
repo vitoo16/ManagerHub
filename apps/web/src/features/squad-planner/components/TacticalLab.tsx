@@ -1,7 +1,7 @@
 import { memo, useCallback, useRef, useState, type Dispatch, type KeyboardEvent, type PointerEvent, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  FORMATIONS, defaultTacticalScenario, makeSavedTacticalScenarios, positionTacticalSlot,
+  FORMATIONS, defaultTacticalScenario, diagnoseTacticalScenario, makeSavedTacticalScenarios, positionTacticalSlot,
   restoreSavedTacticalScenarios, squadDatasetSha256, tacticalPosition, tacticalScenarioForFormation,
   TACTICAL_STORAGE_PREFIX,
   type PlayerDataset, type SquadPlanKey, type SquadPlans, type SquadSolution,
@@ -38,6 +38,7 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
   const selectedSlot = slots.find(item => item.id === selectedId) ?? slots[0]!;
   const selectedPoint = tacticalPosition(scenario, phase, selectedSlot.id);
   const changedPositions = Object.keys(scenario.placements[phase]).length;
+  const report = diagnoseTacticalScenario(scenario, solution);
 
   const updateScenario = useCallback((update: (current: TacticalScenario) => TacticalScenario) => {
     setScenarios(previous => ({
@@ -214,6 +215,25 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
             </select></label>
           </>}
         </div>
+        <section className="tactical-lab__diagnostics" aria-label={t('Tactical diagnostics')}>
+          <h3>{t('Tactical diagnostics')}</h3>
+          <p className="tactical-lab__diagnostic-summary" role="status">
+            {report.lineupEvidence === 'incomplete-xi'
+              ? t('Complete XI needed for shape diagnostics')
+              : report.diagnostics.length === 0
+                ? t('No shape risks detected by these rules')
+                : t('{{count}} tactical cautions', { count: report.diagnostics.length })}
+          </p>
+          {report.diagnostics.length > 0 && <ul className="tactical-lab__diagnostic-list">
+            {report.diagnostics.map(item => <li key={item.id} className="tactical-lab__diagnostic">
+              <strong>{t(item.title)}</strong>
+              <p><b>{t('Why flagged')}</b> {t(item.trigger)}</p>
+              <p><b>{t('Consider')}</b> {t(item.adjustment)}</p>
+              <p><b>{t('Limit')}</b> {t(item.limitation)}</p>
+            </li>)}
+          </ul>}
+          <p className="tactical-lab__diagnostic-provenance">{t('Rule set {{version}}. These checks use manager-authored positions and instructions, and cannot predict match outcomes.', { version: report.model })}</p>
+        </section>
         <p className="tactical-lab__source">{t('Source: imported player export. Position labels and roles come from the current lineup. Tactical coordinates and instructions are user assumptions. Changing formations resets this plan’s tactical coordinates.')}</p>
       </Surface>
     </div>
