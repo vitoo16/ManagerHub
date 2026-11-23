@@ -11,6 +11,7 @@ export * from './scout-club-scenario';
 export * from './scout-slot-need';
 export * from './squad-scenarios';
 export * from './squad-plan-library';
+export * from './tactical-scenarios';
 export * from './squad-plan-report';
 export * from './scout-shortlist';
 export * from './recruitment-preview';

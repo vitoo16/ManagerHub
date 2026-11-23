@@ -3,6 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { FEATURES, FEATURE_GROUPS } from '@managerhub/domain';
 import { Icon, Status, Surface } from '@managerhub/ui';
 
+// Keep this product-directory indicator aligned with the acceptance ledger.
+const IN_DEVELOPMENT = new Set(['MH-01', 'MH-02', 'MH-04', 'MH-05', 'MH-06', 'MH-07', 'MH-11', 'MH-12', 'MH-27']);
+
 function Systems() {
   const { t } = useTranslation();
   const [group, setGroup] = useState('All departments');
@@ -18,7 +21,7 @@ function Systems() {
     <div className="module-count">{visible.length} / 27 {t('modules')}</div>
     <div className="module-grid">{visible.map(item => <Surface className="module-card" key={item.id}>
       <div className="module-card__top"><span className="module-id">{item.id}</span><span className="module-phase">{t('Phase')} {String(item.phase).padStart(2, '0')}</span></div>
-      <h2>{t(item.title)}</h2><div className="module-card__bottom"><span>{t(item.group)}</span><Status tone={['MH-01','MH-02','MH-05','MH-06'].includes(item.id) ? 'info' : 'neutral'}>{t(['MH-01','MH-02','MH-05','MH-06'].includes(item.id) ? 'In development' : 'Planned')}</Status></div>
+      <h2>{t(item.title)}</h2><div className="module-card__bottom"><span>{t(item.group)}</span><Status tone={IN_DEVELOPMENT.has(item.id) ? 'info' : 'neutral'}>{t(IN_DEVELOPMENT.has(item.id) ? 'In development' : 'Planned')}</Status></div>
     </Surface>)}</div>
     {visible.length === 0 && <Surface className="empty-library"><h3>{t("No matching modules")}</h3><p>{t("Adjust the department filter or search term.")}</p></Surface>}
     <div className="reference-link"><Icon name="book" size={18}/><span>{t("Full specification and acceptance criteria:")}</span><a target="_blank" rel="noreferrer" href="https://github.com/vitoo16/ManagerHub/blob/main/docs/product/01-full-feature-catalog.md">{t("Feature Catalogue")} <Icon name="arrow" size={14}/></a></div>
