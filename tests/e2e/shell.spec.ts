@@ -734,6 +734,55 @@ test('Tactical Lab preserves independent A/B and phase positions, and restores s
   await expect(localizedLab.getByText('Chưa có phương án chiến thuật được lưu cho dữ liệu này.')).toBeVisible();
 });
 
+test('Tactical diagnostics react to scenario edits, plan switching and Vietnamese localization', async ({ page }) => {
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'diagnostics.csv', mimeType: 'text/csv', buffer: Buffer.from(makeSquadExport())
+  });
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Squad Planner/ }).click();
+
+  const lab = page.getByRole('region', { name: 'Tactical Lab' });
+  const diagnostics = lab.getByRole('region', { name: 'Tactical diagnostics' });
+  await expect(diagnostics.getByText('No shape risks detected by these rules')).toBeVisible();
+  await lab.getByRole('button', { name: 'Defending' }).click();
+  await lab.getByLabel('Proposed defensive line').selectOption('high');
+  await lab.getByLabel('Proposed pressing').selectOption('low');
+  await expect(diagnostics.getByText('High line with low pressing')).toBeVisible();
+  await expect(diagnostics.getByText('Review pressure on the ball, or consider a lower defensive line.')).toBeVisible();
+  await page.getByRole('button', { name: 'Plan B', exact: true }).click();
+  await expect(diagnostics.getByText('No shape risks detected by these rules')).toBeVisible();
+  await page.getByRole('button', { name: 'Plan A', exact: true }).click();
+  await expect(diagnostics.getByText('High line with low pressing')).toBeVisible();
+  await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
+  await expect(page.getByRole('region', { name: 'Chẩn đoán chiến thuật' })
+    .getByText('Hàng thủ dâng cao nhưng gây áp lực thấp')).toBeVisible();
+  await page.getByRole('region', { name: 'Phòng phân tích chiến thuật' })
+    .getByLabel('Cường độ gây áp lực dự kiến').selectOption('balanced');
+  await expect(page.getByRole('region', { name: 'Chẩn đoán chiến thuật' })
+    .getByText('Các quy tắc hiện tại chưa phát hiện nguy cơ về bố trí')).toBeVisible();
+});
+
+test('Tactical diagnostics suppress shape warnings for incomplete XI', async ({ page }) => {
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'incomplete-diagnostics.csv', mimeType: 'text/csv',
+    buffer: Buffer.from(makeSquadExport().split('\n').slice(0, -1).join('\n'))
+  });
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Squad Planner/ }).click();
+  const lab = page.getByRole('region', { name: 'Tactical Lab' });
+  const diagnostics = lab.getByRole('region', { name: 'Tactical diagnostics' });
+  await expect(diagnostics.getByText('Complete XI needed for shape diagnostics')).toBeVisible();
+  await lab.getByRole('button', { name: 'Defending' }).click();
+  await lab.getByLabel('Proposed defensive line').selectOption('high');
+  await lab.getByLabel('Proposed pressing').selectOption('low');
+  await expect(diagnostics.getByText('Complete the XI to assess tactical shape')).toBeVisible();
+  await expect(diagnostics.getByText('High line with low pressing')).toHaveCount(0);
+});
+
 test('Plan B remains intact across workspace navigation and resets for a different import', async ({page})=>{
   await page.goto('/#/players');
   await page.locator('input[type=file]').setInputFiles({
