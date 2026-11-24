@@ -1,8 +1,8 @@
 import { memo, useCallback, useRef, useState, type Dispatch, type KeyboardEvent, type PointerEvent, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  FORMATIONS, applyTacticalDiagnosticAdjustment, defaultTacticalScenario, diagnoseTacticalScenario, makeSavedTacticalScenarios, positionTacticalSlot,
-  restoreSavedTacticalScenarios, squadDatasetSha256, tacticalPosition, tacticalScenarioForFormation,
+  FORMATIONS, applyTacticalDiagnosticAdjustment, createTacticalScenarioCsv, defaultTacticalScenario, diagnoseTacticalScenario, makeSavedTacticalScenarios, positionTacticalSlot,
+  restoreSavedTacticalScenarios, squadDatasetSha256, tacticalPosition, tacticalReportFilename, tacticalScenarioForFormation,
   TACTICAL_STORAGE_PREFIX,
   type PlayerDataset, type SquadPlanKey, type SquadPlans, type SquadSolution,
   type TacticalInstructions, type TacticalPhase, type TacticalPoint,
@@ -108,6 +108,28 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
     B: tacticalScenarioForFormation(scenarios.B, plans.B.formation)
   });
 
+  const exportTacticalReport = () => {
+    setNotice(null);
+    let url: string | null = null;
+    try {
+      const csv = createTacticalScenarioCsv(active, scenario, solution);
+      url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = tacticalReportFilename(dataset.fileName, active);
+      anchor.hidden = true;
+      document.body.append(anchor);
+      try { anchor.click(); } finally { anchor.remove(); }
+    } catch {
+      setNotice('Could not export tactical report. The plan is unchanged.');
+    } finally {
+      if (url !== null) {
+        const cleanupUrl = url;
+        window.setTimeout(() => URL.revokeObjectURL(cleanupUrl), 30_000);
+      }
+    }
+  };
+
   const save = async () => {
     setBusy(true); setNotice(null); setConfirmForget(false);
     try {
@@ -152,6 +174,7 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
       </div>
       <div className="tactical-lab__actions">
         <Button disabled={busy} onClick={() => void save()}>{t('Save tactical scenarios')}</Button>
+        <Button variant="quiet" disabled={busy} onClick={exportTacticalReport}>{t('Export tactical plan as CSV')}</Button>
         <Button variant="quiet" disabled={busy} onClick={() => void restore()}>{t('Restore tactical scenarios')}</Button>
         {confirmForget ? <>
           <Button variant="danger" disabled={busy} onClick={() => void forget()}>{t('Confirm forget tactics')}</Button>
