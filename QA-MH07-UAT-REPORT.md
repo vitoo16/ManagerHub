@@ -118,4 +118,26 @@
 
 **Kết luận QA Step 2 (PR #108):** **ACCEPT (Chấp thuận tăng dần phạm vi chẩn đoán tương tác vai trò của PR #108)**. 100% test cases QA-108-01..08 PASS. Không có lỗi P0/P1. MH-09 và MH-11 tiếp tục duy trì trạng thái **In progress**.
 
+---
+
+### 8. Kết quả kiểm tra Step 3 — PR #110 / Issue #111 (MH-09 Central Dynamics & Reversible Role Adjustments)
+
+**Tested Candidate SHA:** `938f13e1dc18f6d8e23615e358297840dbd58ebd`  
+**Merged Main SHA:** `3c58a8df5c2fa7724d3852880be5c513a21f3452`  
+**Profile:** Local CI Release 10/10 stages PASS (`acceptanceEligible: true`, Candidate SHA256: `A462C8775668CB5941143DC960145E6743AB27068F360FA6248840B3288B2539`, Merged Main SHA256: `E2AF317EFEEB34BA1149CFDB2E70EEF0B346284A5C0A804C37A1E982E9D1CF3F`).
+
+| Test ID | Nội dung kiểm thử | Kết quả | Bằng chứng / Chi tiết |
+|---|---|:---:|---|
+| **QA-110-01** | Đội hình neutral 4-3-3 & 4-2-3-1: không có cảnh báo tương tác vai trò, hiển thị đúng model `managerhub.role-interactions.v1`. | **PASS** | Vitest `role-interactions.test.ts`, Playwright E2E assert text 'No role interaction findings under these bounded rules'. |
+| **QA-110-02** | Dâng tất cả tiền vệ trung tâm (CM/DM) lên $Y \le 8$: phát hiện `Uncovered central pivot`, liệt kê đúng tên cầu thủ được phân công. | **PASS** | Playwright E2E `MH-09 Step 3 central dynamics`: assert 'Uncovered central pivot' và lý do dâng cao. |
+| **QA-110-03** | Áp dụng gợi ý (Apply suggested adjustment) cho Uncovered central pivot & Undo: tiền vệ trụ lùi về $Y=12$, cảnh báo tắt, Undo phục hồi đúng. | **PASS** | Playwright E2E: click 'Apply suggested adjustment to Uncovered central pivot', cảnh báo biến mất, click 'Undo last tactical adjustment' cảnh báo xuất hiện lại. |
+| **QA-110-04** | Trùng lặp không gian trung lộ tấn công ($|dx| \le 1, |dy| \le 1$ tại $Y \le 9, 7 \le X \le 13$): phát hiện `Central midfield spatial congestion`. | **PASS** | Vitest: kịch bản 4-2-3-1 với `ldm` dâng cạnh `am` tại $\{x:10, y:7\}$; phát hiện chính xác cặp slot. |
+| **QA-110-05** | Áp dụng gợi ý cho Central midfield spatial congestion & Undo: tự động kéo lùi lệch tầng vị trí thứ hai ($Y+3$), cảnh báo tắt. | **PASS** | Vitest: vị trí `am` chuyển từ $y=6$ thành $y=9$, cảnh báo giải tỏa hoàn toàn. |
+| **QA-110-06** | Incomplete XI / đội hình thiếu hoặc sai sơ đồ: fail-closed an toàn, không tạo cảnh báo giả. | **PASS** | Vitest 8 negative tests: status `incomplete-xi`, danh sách `incomplete-role-evidence`. |
+| **QA-110-07** | Độc lập Plan A/B & Lưu trữ trình duyệt: Plan A cảnh báo/điều chỉnh, Plan B giữ nguyên trạng thái; Save/Restore qua browser reload nguyên vẹn. | **PASS** | Playwright E2E desktop & mobile 146 tests PASS. |
+| **QA-110-08** | Bản địa hóa VI/EN & Trợ năng WCAG 2.2: hiển thị tiếng Việt `Khoảng trống trục dọc trung lộ chưa được che chắn`, `Trùng lặp không gian trung lộ`; `role="status"` live region. | **PASS** | Playwright E2E switch VI/EN assert text tiếng Việt; axe-core WCAG 2.2 PASS. |
+
+**Kết luận QA Step 3 (PR #110):** **ACCEPT (Chấp thuận tăng dần phạm vi động lực trung lộ và điều chỉnh có thể hoàn tác của PR #110)**. 100% test cases QA-110-01..08 PASS. Zero P0/P1 defects. MH-09 và MH-11 tiếp tục duy trì trạng thái **In progress**.
+
+
 
