@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { diagnoseTacticalScenario, TACTICAL_DIAGNOSTIC_VERSION } from './tactical-diagnostics';
+import { applyTacticalDiagnosticAdjustment, diagnoseTacticalScenario, TACTICAL_DIAGNOSTIC_VERSION } from './tactical-diagnostics';
 import { FORMATIONS, type FormationId, type SquadSolution } from './squad-optimizer';
 import { defaultTacticalScenario } from './tactical-state';
 import { positionTacticalSlot, type TacticalScenario } from './tactical-scenarios';
@@ -82,6 +82,37 @@ describe('MH-07 deterministic tactical diagnostics', () => {
     const narrower = positionTacticalSlot(widened, 'defending', 'rcb', { x: 12, y: 15 });
     expect(ruleIds(narrower, xi)).toEqual([]);
     expect(ruleIds(base, xi)).toEqual([]);
+  });
+
+  it('suggests an opt-in high-line correction without mutating input', () => {
+    const base = defaultTacticalScenario('4-3-3');
+    const scenario = { ...base, instructions: { ...base.instructions, defensiveLine: 'high' as const, pressing: 'low' as const } };
+    const changed = applyTacticalDiagnosticAdjustment(scenario, 'high-line-low-press');
+    expect(changed.instructions.defensiveLine).toBe('balanced');
+    expect(changed.instructions.pressing).toBe('low');
+    expect(scenario.instructions.defensiveLine).toBe('high');
+    expect(ruleIds(changed, completeXI('4-3-3'))).not.toContain('high-line-low-press');
+  });
+
+  it('suggests retaining one fullback for cover without changing defending positions', () => {
+    const base = defaultTacticalScenario('4-2-3-1');
+    const scenario = positionTacticalSlot(positionTacticalSlot(base, 'possession', 'lb', {x:2,y:10}), 'possession', 'rb', {x:18,y:10});
+    const changed = applyTacticalDiagnosticAdjustment(scenario, 'advanced-fullbacks-without-cover');
+    expect(ruleIds(scenario, completeXI('4-2-3-1'))).toContain('advanced-fullbacks-without-cover');
+    expect(ruleIds(changed, completeXI('4-2-3-1'))).not.toContain('advanced-fullbacks-without-cover');
+    expect(changed.placements.defending).toEqual(scenario.placements.defending);
+    expect(changed.placements.possession.lb).toEqual(scenario.placements.possession.lb);
+  });
+
+  it('narrows the centre-back gap without changing the possession phase', () => {
+    const base = defaultTacticalScenario('4-3-3');
+    const scenario = positionTacticalSlot(positionTacticalSlot(base, 'defending', 'lcb', {x:3,y:15}), 'defending', 'rcb', {x:17,y:15});
+    const changed = applyTacticalDiagnosticAdjustment(scenario, 'open-central-channel');
+    expect(changed.placements.defending.rcb).toEqual({ x:12, y:15 });
+    expect(changed.placements.possession).toEqual(scenario.placements.possession);
+    expect(ruleIds(changed, completeXI('4-3-3'))).not.toContain('open-central-channel');
+    const reversed = positionTacticalSlot(positionTacticalSlot(base, 'defending', 'lcb', {x:17,y:15}), 'defending', 'rcb', {x:2,y:15});
+    expect(applyTacticalDiagnosticAdjustment(reversed, 'open-central-channel').placements.defending.rcb?.x).toBe(8);
   });
 
   it('keeps the authored phases and A/B scenarios independent', () => {
