@@ -1,12 +1,17 @@
 import { setAppLocale } from './i18n';
 import { useTranslation } from 'react-i18next';
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createDefaultSquadPlans, type SquadPlanKey, type SquadPlans } from '@managerhub/domain/squad-scenarios';
 import { defaultTacticalScenarios, tacticalScenarioForFormation } from '@managerhub/domain/tactical-state';
 import type { TacticalScenarios } from '@managerhub/domain/tactical-scenarios';
 import type { SaveIdentity, WorkspaceKey } from '@managerhub/domain/types';
 import type { SaveInspectionResult } from '@managerhub/domain/save-library';
 import type { PlayerDataset } from '@managerhub/domain';
+import type {
+  DecodedSaveDatabase,
+  DecodedSaveMode,
+  FM2013DecodeProgress
+} from '@managerhub/domain/fm2013-offline';
 import { Icon, Status } from '@managerhub/ui';
 import { useReducedMotion } from '@managerhub/motion/reduced';
 import { readableSaveInspectionError } from './i18n/save-inspection-copy';
@@ -42,6 +47,32 @@ function loadPreference<T extends string>(key: string, fallback: T, allowed: rea
 function routeFromHash(): WorkspaceKey {
   const hash = window.location.hash.slice(2);
   return NAV.some(n => n.key === hash) ? hash as WorkspaceKey : 'overview';
+}
+
+function defaultClubUidForSave(db: DecodedSaveDatabase): number | null {
+  const humanManaged = db.humans.find(
+    human => human.clubUid !== null && db.players.some(player => player.clubUid === human.clubUid)
+  );
+  return humanManaged?.clubUid ?? null;
+}
+
+function buildInspectionFromDecoded(db: DecodedSaveDatabase): SaveInspectionResult {
+  return {
+    id: db.source.saveId,
+    name: db.source.fileName,
+    size: db.source.fileSize,
+    lastModified: db.source.lastModified,
+    signature: db.source.signature,
+    sha256: db.source.sha256,
+    detectedFamily: db.source.family,
+    edition: db.source.edition,
+    build: db.source.build,
+    support: 'decoded',
+    importedAt: db.source.decodedAt,
+    inspectionStatus: 'inspected',
+    archiveIndex: null,
+    warnings: []
+  };
 }
 
 function WorkspaceLoading() {
@@ -95,11 +126,34 @@ export default function App() {
   const [theme, setTheme] = useState<Theme>(() => loadPreference('mh-theme', 'dark', ['dark', 'light']));
   const [glass, setGlass] = useState(() => loadPreference('mh-glass', 'on', ['on', 'off']));
   const [imports, setImports] = useState<SaveInspectionResult[]>([]);
+  const [decodedSaves, setDecodedSaves] = useState<Record<string, DecodedSaveDatabase>>({});
+  const [activeSaveId, setActiveSaveId] = useState<string | null>(null);
+  const [saveMode, setSaveMode] = useState<DecodedSaveMode>('realism');
+  const [activeClubFilterUid, setActiveClubFilterUid] = useState<number | null>(null);
+  const [selectedPlayerIdForLab, setSelectedPlayerIdForLab] = useState<string | null>(null);
   const [playerDataset, setPlayerDataset] = useState<PlayerDataset | null>(null);
   const [scoutShortlistIds, setScoutShortlistIds] = useState<string[]>([]);
   const [squadPlans, setSquadPlans] = useState<SquadPlans>(createDefaultSquadPlans);
   const [tacticalScenarios, setTacticalScenarios] = useState<TacticalScenarios>(defaultTacticalScenarios);
   const [activeSquadPlan, setActiveSquadPlan] = useState<SquadPlanKey>('A');
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [decodeProgress, setDecodeProgress] = useState<FM2013DecodeProgress | null>(null);
+  const [decodeNotice, setDecodeNotice] = useState<string | null>(null);
+  const inspectionAbortRef = useRef<AbortController | null>(null);
+  const inspectionRevisionRef = useRef(0);
+  const saveModeRef = useRef<DecodedSaveMode>(saveMode);
+  saveModeRef.current = saveMode;
+  const viewScope = useRef<HTMLElement>(null);
+  const commandDialogRef = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
+
+  const activeDecodedSave = useMemo(
+    () => (activeSaveId ? decodedSaves[activeSaveId] ?? null : null),
+    [activeSaveId, decodedSaves]
+  );
+
   useEffect(() => {
     setTacticalScenarios(previous => {
       const A = tacticalScenarioForFormation(previous.A, squadPlans.A.formation);
@@ -107,21 +161,74 @@ export default function App() {
       return A === previous.A && B === previous.B ? previous : { A, B };
     });
   }, [squadPlans.A.formation, squadPlans.B.formation]);
-  const onPlayerDatasetChange = useCallback((next: PlayerDataset | null) => {
-    setPlayerDataset(next);
+
+  const resetDerivedWorkspaceState = useCallback(() => {
     setScoutShortlistIds([]);
     setSquadPlans(createDefaultSquadPlans());
     setTacticalScenarios(defaultTacticalScenarios());
     setActiveSquadPlan('A');
+    setSelectedPlayerIdForLab(null);
   }, []);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
-  const inspectionAbortRef = useRef<AbortController | null>(null);
-  const inspectionRevisionRef = useRef(0);
-  const viewScope = useRef<HTMLElement>(null);
-  const commandDialogRef = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
+
+  const onPlayerDatasetChange = useCallback((next: PlayerDataset | null) => {
+    setPlayerDataset(next);
+    if (next === null || next.source !== 'decoded_save') {
+      setActiveSaveId(null);
+      setActiveClubFilterUid(null);
+    }
+    resetDerivedWorkspaceState();
+  }, [resetDerivedWorkspaceState]);
+
+  const projectDecodedDataset = useCallback(async (
+    db: DecodedSaveDatabase,
+    mode: DecodedSaveMode,
+    clubUid: number | null
+  ): Promise<PlayerDataset> => {
+    const { saveDatabaseToPlayerDataset } = await import('@managerhub/domain/fm2013-offline');
+    return saveDatabaseToPlayerDataset(db, mode, { clubUid });
+  }, []);
+
+  const activateDecodedSave = useCallback(async (
+    db: DecodedSaveDatabase,
+    options: { readonly clubUid?: number | null; readonly initialPlayerId?: string | null } = {}
+  ) => {
+    const targetClubUid = options.clubUid !== undefined ? options.clubUid : defaultClubUidForSave(db);
+    const dataset = await projectDecodedDataset(db, saveModeRef.current, targetClubUid);
+    const inspection = buildInspectionFromDecoded(db);
+    setDecodedSaves(prev => ({ ...prev, [db.source.saveId]: db }));
+    setImports(prev => [inspection, ...prev.filter(item => item.id !== inspection.id)]);
+    setSelectedId(inspection.id);
+    setActiveSaveId(db.source.saveId);
+    setActiveClubFilterUid(targetClubUid);
+    setPlayerDataset(dataset);
+    resetDerivedWorkspaceState();
+    if (options.initialPlayerId) {
+      setSelectedPlayerIdForLab(options.initialPlayerId);
+    }
+  }, [projectDecodedDataset, resetDerivedWorkspaceState]);
+
+  const onSwitchDecodedSave = useCallback((saveId: string) => {
+    const target = decodedSaves[saveId];
+    if (!target || saveId === activeSaveId) return;
+    void activateDecodedSave(target);
+  }, [decodedSaves, activeSaveId, activateDecodedSave]);
+
+  const onSetSaveMode = useCallback((nextMode: DecodedSaveMode) => {
+    setSaveMode(nextMode);
+    if (!activeDecodedSave) return;
+    void projectDecodedDataset(activeDecodedSave, nextMode, activeClubFilterUid).then(dataset => {
+      setPlayerDataset(current => (current?.source === 'decoded_save' && current.saveId === activeDecodedSave.source.saveId) ? dataset : current);
+    });
+  }, [activeDecodedSave, activeClubFilterUid, projectDecodedDataset]);
+
+  const onClubFilterChange = useCallback((nextClubUid: number | null) => {
+    setActiveClubFilterUid(nextClubUid);
+    if (!activeDecodedSave) return;
+    void projectDecodedDataset(activeDecodedSave, saveModeRef.current, nextClubUid).then(dataset => {
+      setPlayerDataset(dataset);
+      resetDerivedWorkspaceState();
+    });
+  }, [activeDecodedSave, projectDecodedDataset, resetDerivedWorkspaceState]);
 
   useEffect(() => () => {
     inspectionRevisionRef.current += 1;
@@ -167,6 +274,7 @@ export default function App() {
     window.addEventListener('keydown', trap);
     return () => { window.removeEventListener('keydown', trap); restore?.focus(); };
   }, [commandOpen]);
+
   const navigate = useCallback((key: WorkspaceKey) => {
     const next = '#/' + key;
     if (window.location.hash === next) setView(key);
@@ -176,12 +284,49 @@ export default function App() {
   }, []);
   const openSquad = useCallback(() => navigate('squad'), [navigate]);
   const openPlayers = useCallback(() => navigate('players'), [navigate]);
+  const openSaves = useCallback(() => navigate('saves'), [navigate]);
+
+  const onOpenPlayerFromSave = useCallback((playerUid: number, clubUid: number | null) => {
+    if (!activeDecodedSave) return;
+    const targetPlayerId = `${activeDecodedSave.source.saveId.slice(0, 12)}:${playerUid}`;
+    if (activeClubFilterUid !== null && activeClubFilterUid !== clubUid) {
+      setActiveClubFilterUid(clubUid);
+      void projectDecodedDataset(activeDecodedSave, saveModeRef.current, clubUid).then(dataset => {
+        setPlayerDataset(dataset);
+        resetDerivedWorkspaceState();
+        setSelectedPlayerIdForLab(targetPlayerId);
+      });
+    } else {
+      setSelectedPlayerIdForLab(targetPlayerId);
+    }
+    navigate('players');
+  }, [activeDecodedSave, activeClubFilterUid, projectDecodedDataset, resetDerivedWorkspaceState, navigate]);
+
+  const onLoadClubInSquad = useCallback((clubUid: number | null) => {
+    if (activeDecodedSave && activeClubFilterUid !== clubUid) {
+      setActiveClubFilterUid(clubUid);
+      void projectDecodedDataset(activeDecodedSave, saveModeRef.current, clubUid).then(dataset => {
+        setPlayerDataset(dataset);
+        resetDerivedWorkspaceState();
+      });
+    }
+    navigate('squad');
+  }, [activeDecodedSave, activeClubFilterUid, projectDecodedDataset, resetDerivedWorkspaceState, navigate]);
+
   const onRestoreSaved = useCallback((records: readonly SaveIdentity[]) => {
     setImports(current => {
       const existingIds = new Set(current.map(item => item.id));
       return [...records.filter(item => !existingIds.has(item.id)), ...current];
     });
     setSelectedId(current => current ?? records[0]?.id ?? null);
+  }, []);
+
+  const onCancelDecode = useCallback(() => {
+    inspectionRevisionRef.current += 1;
+    inspectionAbortRef.current?.abort();
+    inspectionAbortRef.current = null;
+    setBusy(false);
+    setDecodeProgress(null);
   }, []);
 
   const onInspect = useCallback(async (file: File) => {
@@ -191,13 +336,35 @@ export default function App() {
     inspectionAbortRef.current?.abort();
     const controller = new AbortController();
     inspectionAbortRef.current = controller;
-    setBusy(true); setError(null);
+    setBusy(true);
+    setError(null);
+    setDecodeNotice(null);
+    setDecodeProgress({ stage: 'reading_container', percent: 5 });
     try {
-      const { inspectSaveInWorker } = await import('./inspect-save-in-worker');
-      const result = await inspectSaveInWorker(file, controller.signal);
+      const { decodeSaveInWorker } = await import('./decode-save-in-worker');
+      const result = await decodeSaveInWorker(file, {
+        signal: controller.signal,
+        onProgress: progress => {
+          if (!controller.signal.aborted && revision === inspectionRevisionRef.current) {
+            setDecodeProgress(progress);
+          }
+        }
+      });
       if (controller.signal.aborted || revision !== inspectionRevisionRef.current) return;
-      setImports(previous => [result, ...previous.filter(item => item.id !== result.id)]);
-      setSelectedId(result.id);
+      setImports(previous => [result.inspection, ...previous.filter(item => item.id !== result.inspection.id)]);
+      setSelectedId(result.inspection.id);
+      setDecodeNotice(result.decodeNotice);
+      if (result.database) {
+        const db = result.database;
+        const defaultClubUid = defaultClubUidForSave(db);
+        const dataset = await projectDecodedDataset(db, saveModeRef.current, defaultClubUid);
+        if (controller.signal.aborted || revision !== inspectionRevisionRef.current) return;
+        setDecodedSaves(prev => ({ ...prev, [db.source.saveId]: db }));
+        setActiveSaveId(db.source.saveId);
+        setActiveClubFilterUid(defaultClubUid);
+        setPlayerDataset(dataset);
+        resetDerivedWorkspaceState();
+      }
     } catch (exception) {
       if (!controller.signal.aborted && revision === inspectionRevisionRef.current) {
         setError(readableSaveInspectionError(exception));
@@ -206,13 +373,28 @@ export default function App() {
       if (revision === inspectionRevisionRef.current) {
         inspectionAbortRef.current = null;
         setBusy(false);
+        setDecodeProgress(null);
       }
     }
-  }, []);
+  }, [projectDecodedDataset, resetDerivedWorkspaceState]);
+
   const remove = useCallback((id: string) => {
     setImports(prev => prev.filter(file => file.id !== id));
     setSelectedId(current => current === id ? null : current);
-  }, []);
+    setDecodedSaves(prev => {
+      if (!(id in prev)) return prev;
+      const copy = { ...prev };
+      delete copy[id];
+      return copy;
+    });
+    if (activeSaveId === id) {
+      setActiveSaveId(null);
+      setActiveClubFilterUid(null);
+      setPlayerDataset(current => (current?.saveId === id ? null : current));
+      resetDerivedWorkspaceState();
+    }
+  }, [activeSaveId, resetDerivedWorkspaceState]);
+
   const selected = imports.find(f => f.id === selectedId) ?? imports[0] ?? null;
   const activeItem = NAV.find(n => n.key === view) ?? NAV[0];
 
@@ -245,13 +427,63 @@ export default function App() {
         <Suspense fallback={null}><WorkspaceAnimator scope={viewScope} view={view} reduced={reduced}/></Suspense>
         <div data-animate="workspace" key={view}>
           <Suspense fallback={<WorkspaceLoading/>}>
-            {view === 'overview' && <Overview imports={imports} current={playerDataset} onDataset={onPlayerDatasetChange} go={navigate}/>}
-            {view === 'players' && <PlayerWorkspace dataset={playerDataset} shortlistIds={scoutShortlistIds} setShortlistIds={setScoutShortlistIds} onDataset={onPlayerDatasetChange} onOpenSquad={openSquad}/>}
+            {view === 'overview' && <Overview
+              imports={imports}
+              current={playerDataset}
+              activeDecodedSave={activeDecodedSave}
+              onDataset={onPlayerDatasetChange}
+              go={navigate}
+            />}
+            {view === 'players' && <PlayerWorkspace
+              dataset={playerDataset}
+              shortlistIds={scoutShortlistIds}
+              setShortlistIds={setScoutShortlistIds}
+              onDataset={onPlayerDatasetChange}
+              onOpenSquad={openSquad}
+              activeDecodedSave={activeDecodedSave}
+              saveMode={saveMode}
+              onSetSaveMode={onSetSaveMode}
+              clubFilterUid={activeClubFilterUid}
+              onClubFilterChange={onClubFilterChange}
+              initialPlayerId={selectedPlayerIdForLab}
+            />}
             {view === 'history' && <HistoricalWorkspace/>}
-            {view === 'squad' && <SquadWorkspace dataset={playerDataset} onImport={openPlayers} onDataset={onPlayerDatasetChange}
-              plans={squadPlans} setPlans={setSquadPlans} active={activeSquadPlan} setActive={setActiveSquadPlan}
-              tacticalScenarios={tacticalScenarios} setTacticalScenarios={setTacticalScenarios}/>}
-            {view === 'saves' && <SaveInspector imports={imports} selected={selected} onInspect={onInspect} onRemove={remove} busy={busy} error={error} select={setSelectedId} onRestoreSaved={onRestoreSaved}/>}
+            {view === 'squad' && <SquadWorkspace
+              dataset={playerDataset}
+              onImport={openPlayers}
+              onOpenSaves={openSaves}
+              onDataset={onPlayerDatasetChange}
+              plans={squadPlans}
+              setPlans={setSquadPlans}
+              active={activeSquadPlan}
+              setActive={setActiveSquadPlan}
+              tacticalScenarios={tacticalScenarios}
+              setTacticalScenarios={setTacticalScenarios}
+              activeDecodedSave={activeDecodedSave}
+              clubFilterUid={activeClubFilterUid}
+              onClubFilterChange={onClubFilterChange}
+            />}
+            {view === 'saves' && <SaveInspector
+              imports={imports}
+              selected={selected}
+              onInspect={onInspect}
+              onRemove={remove}
+              busy={busy}
+              error={error}
+              select={setSelectedId}
+              onRestoreSaved={onRestoreSaved}
+              decodeProgress={decodeProgress}
+              onCancelDecode={onCancelDecode}
+              decodeNotice={decodeNotice}
+              decodedSaves={decodedSaves}
+              activeDecodedSave={activeDecodedSave}
+              saveMode={saveMode}
+              onSetSaveMode={onSetSaveMode}
+              onActivateDecodedSave={db => void activateDecodedSave(db)}
+              onSwitchDecodedSave={onSwitchDecodedSave}
+              onOpenPlayerFromSave={onOpenPlayerFromSave}
+              onLoadClubInSquad={onLoadClubInSquad}
+            />}
             {view === 'modules' && <Systems/>}
             {view === 'architecture' && <Architecture/>}
           </Suspense>

@@ -3,8 +3,9 @@ import { join, relative } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import vi from '../apps/web/src/i18n/vi';
 import historicalVi from '../apps/web/src/i18n/historical-vi';
+import saveDbVi from '../apps/web/src/i18n/save-db-vi';
 
-const vietnamese = { ...vi, ...historicalVi };
+const vietnamese = { ...vi, ...historicalVi, ...saveDbVi };
 
 type KeyUse = { key: string; file: string; line: number };
 type DynamicKeyUse = { file: string; line: number };

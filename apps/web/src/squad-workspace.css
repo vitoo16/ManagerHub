@@ -180,3 +180,12 @@
 .tactical-lab__settings .tactical-lab__source{border-top:1px solid var(--line);margin:0;padding-top:14px;font-size:10px}
 @media(max-width:950px){.tactical-lab__layout{grid-template-columns:1fr}.tactical-lab__pitch{aspect-ratio:11/10;min-height:430px}}
 @media(max-width:600px){.tactical-lab__pitch{aspect-ratio:9/12;min-height:440px}.tactical-lab__settings{padding:15px}.tactical-lab__actions{width:100%}.tactical-lab__actions .mh-button{flex:1 1 auto}.tactical-lab__fields{grid-template-columns:1fr}}
+
+.squad-no-data__actions{display:flex;gap:10px;flex-wrap:wrap}
+.squad-decoded-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:14px 18px;margin-bottom:16px}
+.squad-decoded-bar__meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}
+.squad-decoded-bar__meta strong{font-size:13px;overflow-wrap:anywhere}
+.squad-decoded-bar__meta>span{font-size:11px;color:var(--text-sub)}
+.squad-decoded-bar__select{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:var(--text-sub)}
+.squad-decoded-bar__select select{height:38px;min-width:200px;max-width:280px;padding:0 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface-up);color:var(--text);font-size:12px}
+@media(max-width:560px){.squad-decoded-bar__select{width:100%}.squad-decoded-bar__select select{flex:1;min-width:0;max-width:none}}

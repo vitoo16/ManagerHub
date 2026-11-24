@@ -18,6 +18,7 @@ function PlayerImportToolbar({ dataset, importing, savedCurrent, activity, onFil
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputId = useId();
+  const isDecoded = dataset?.source === 'decoded_save';
 
   return <div className="player-lab-header">
     <div>
@@ -25,17 +26,19 @@ function PlayerImportToolbar({ dataset, importing, savedCurrent, activity, onFil
       <input id={fileInputId} ref={inputRef} type="file"
         accept=".csv,.tsv,.txt,.html,.htm,text/csv,text/tab-separated-values,text/html"
         className="visually-hidden" onChange={onFile}/>
-      <Button variant="primary" disabled={importing} onClick={() => inputRef.current?.click()}>
-        <Icon name="plus" size={16}/>{t(importing ? 'Importing player data…' : dataset ? 'Replace player export' : 'Import player CSV / HTML')}
+      <Button variant={isDecoded ? 'default' : 'primary'} disabled={importing} onClick={() => inputRef.current?.click()}>
+        <Icon name="plus" size={16}/>{t(importing ? 'Importing player data…' : isDecoded ? 'Optional: import HTML / CSV export' : dataset ? 'Replace player export' : 'Import player CSV / HTML')}
       </Button>
-      {dataset && <Button disabled={savedCurrent || activity !== null} onClick={onSave}>
+      {dataset && !isDecoded && <Button disabled={savedCurrent || activity !== null} onClick={onSave}>
         <Icon name="download" size={16}/>{t(savedCurrent ? 'Saved to this browser' : activity === 'saving' ? 'Saving…' : 'Save on this browser')}
       </Button>}
       {dataset && <Button variant="quiet" onClick={onClear}>
         <Icon name="trash" size={16}/> {t("Clear session")}
       </Button>}
     </div>
-    <Status tone={importing ? 'warning' : 'info'}>{t(importing ? 'Analyzing export in the background…' : dataset ? 'Export loaded in this session' : 'No data uploaded')}</Status>
+    <Status tone={importing ? 'warning' : isDecoded ? 'positive' : 'info'}>
+      {t(importing ? 'Analyzing export in the background…' : isDecoded ? 'Decoded from save · Verified' : dataset ? 'Export loaded in this session' : 'No data uploaded')}
+    </Status>
   </div>;
 }
 

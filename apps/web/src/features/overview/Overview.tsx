@@ -1,18 +1,23 @@
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type PlayerDataset, type SaveIdentity, type WorkspaceKey } from '@managerhub/domain';
+import type { DecodedSaveDatabase } from '@managerhub/domain/fm2013-offline';
 import { Button, Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
 import ContinueWorkspace from './ContinueWorkspace';
+import { registerSaveDbI18n } from '../../i18n/register-save-db-i18n';
+
+registerSaveDbI18n();
 
 const WORKFLOWS: readonly { title: string; detail: string; destination: WorkspaceKey }[] = [
-  { title: 'Import observed player data', detail: 'Use a local HTML/CSV/TSV export, not an unverified .fm player decoder.', destination: 'players' },
+  { title: 'Load a .fm save offline', detail: 'Decode FM2013 players, clubs, finances, contracts and staff directly from one .fm file with zero CSV export.', destination: 'saves' },
   { title: 'Compare player roles', detail: 'Inspect visible attributes and source-labeled heuristic role fit.', destination: 'players' },
   { title: 'Build your starting XI', detail: 'Create, save, compare and export Plan A/B without changing your game save.', destination: 'squad' }
 ];
 
-function Overview({ imports, current, onDataset, go }: {
+function Overview({ imports, current, activeDecodedSave = null, onDataset, go }: {
   imports: readonly SaveIdentity[];
   current: PlayerDataset | null;
+  activeDecodedSave?: DecodedSaveDatabase | null;
   onDataset: (dataset: PlayerDataset) => void;
   go: (key: WorkspaceKey) => void;
 }) {
@@ -22,9 +27,10 @@ function Overview({ imports, current, onDataset, go }: {
       <div className="hero-content">
         <div className="hero-kicker"><span className="hero-kicker__dot"/> {t("THE NEXT ERA OF FOOTBALL MANAGEMENT")}</div>
         <h1>{t("Every decision.")}<br/><em>{t("Better informed.")}</em></h1>
-        <p>{t("Analyze player exports, compare two starting elevens and pick up work saved in this browser. Every estimate stays labeled.")}</p>
+        <p>{t("Decode FM2013 players, clubs, finances, contracts and staff directly from one .fm file with zero CSV export.")}</p>
         <div className="hero-actions">
-          <Button variant="primary" onClick={() => go('players')}><Icon name="plus" size={17}/> {t("Import player list")}</Button>
+          <Button variant="primary" onClick={() => go('saves')}><Icon name="database" size={17}/> {t("Load a .fm save")}</Button>
+          <Button onClick={() => go('players')}><Icon name="plus" size={17}/> {t("Import player list")}</Button>
           <Button onClick={() => go('squad')}><Icon name="layers" size={17}/> {t("Squad Planner")}</Button>
         </div>
       </div>
@@ -37,8 +43,8 @@ function Overview({ imports, current, onDataset, go }: {
     <ContinueWorkspace current={current} onDataset={onDataset} go={go}/>
     <div className="headline-stats" aria-label={t("Workspace information")}>
       <Surface className="stat-card"><span className="stat-label">{t("Product scope")}</span><div className="stat-value">27<span>{t("modules")}</span></div><span className="stat-sub">{t("Six interconnected departments")}</span></Surface>
-      <Surface className="stat-card"><span className="stat-label">{t("Local files inspected")}</span><div className="stat-value">{imports.length.toString().padStart(2, '0')}<span>{t("files")}</span></div><span className="stat-sub">{t("No save files uploaded to a server")}</span></Surface>
-      <Surface className="stat-card"><span className="stat-label">{t("Loaded player records")}</span><div className="stat-value">{(current?.players.length ?? 0).toLocaleString()}<span>{t("players")}</span></div><span className="stat-sub">{t("Export-derived data · No verified live reader")}</span></Surface>
+      <Surface className="stat-card"><span className="stat-label">{t("Local files inspected")}</span><div className="stat-value">{imports.length.toString().padStart(2, '0')}<span>{t("files")}</span></div><span className="stat-sub">{t(activeDecodedSave ? 'Decoded offline from FM2013' : 'No save files uploaded to a server')}</span></Surface>
+      <Surface className="stat-card"><span className="stat-label">{t("Loaded player records")}</span><div className="stat-value">{(activeDecodedSave?.counts.players ?? current?.players.length ?? 0).toLocaleString()}<span>{t("players")}</span></div><span className="stat-sub">{t(activeDecodedSave ? 'Read-only · Original .fm unchanged' : 'Export-derived data · No verified live reader')}</span></Surface>
     </div>
     <SectionHeading eyebrow={t("AVAILABLE WORKFLOWS")} title={t("What you can do today")}>
       <button className="text-link" onClick={() => go('modules')}>{t("All 27 workstreams")} <Icon name="arrow" size={15}/></button>

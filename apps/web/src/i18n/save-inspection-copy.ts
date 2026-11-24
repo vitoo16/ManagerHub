@@ -7,6 +7,8 @@ const SAVE_ERROR_GUIDANCE: readonly (readonly [RegExp, string])[] = [
     'This browser cannot run background save inspection. Use a current browser with Web Worker support.'],
   [/Background save inspection exceeded 45 seconds/i,
     'Save inspection timed out after 45 seconds. Try a smaller .fm file or select the file again.'],
+  [/Background save inspection exceeded 90 seconds/i,
+    'Save decoding timed out after 90 seconds. Try selecting the .fm file again.'],
   [/Background save inspection returned an invalid result/i,
     'Background save inspection returned invalid data. Select the .fm file again.'],
   [/Background save inspection failed/i,

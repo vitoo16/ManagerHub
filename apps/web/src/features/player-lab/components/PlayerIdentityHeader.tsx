@@ -7,14 +7,15 @@ function PlayerIdentityHeader({ player }: { player: PlayerExport }) {
   const { t } = useTranslation();
   const metadata = [player.club, player.position, player.age !== null ? player.age + ' ' + t('years') : null, player.nationality]
     .filter(Boolean).join(' · ');
+  const isDecoded = player.source === 'decoded_save';
   return <div className="scout-identity">
     <div className="scout-avatar" aria-hidden="true">{player.name.slice(0, 1).toUpperCase()}</div>
     <div className="scout-identity__copy">
-      <span className="mh-eyebrow">{t("PLAYER INTELLIGENCE / EXPORT VIEW")}</span>
+      <span className="mh-eyebrow">{t(isDecoded ? 'Decoded offline from FM2013' : 'PLAYER INTELLIGENCE / EXPORT VIEW')}</span>
       <h2>{player.name}</h2>
       <p>{metadata || t('Only identity data available')}</p>
     </div>
-    <Status tone="info">{t("Game export")}</Status>
+    <Status tone={isDecoded ? 'positive' : 'info'}>{t(isDecoded ? 'Decoded from save' : 'Game export')}</Status>
   </div>;
 }
 

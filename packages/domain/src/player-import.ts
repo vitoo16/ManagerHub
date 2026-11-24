@@ -18,15 +18,50 @@ export type AttributeKey =
   | 'throwing' | 'punching' | 'tendencyToPunch';
 
 export interface PlayerExport {
-  readonly id: string;                   // import-local identity only
+  readonly id: string;                   // import-local or save-scoped identity
   readonly name: string;
   readonly position: string | null;
   readonly age: number | null;
   readonly club: string | null;
   readonly nationality: string | null;
   readonly attributes: Readonly<Partial<Record<AttributeKey, number>>>;
-  readonly source: 'game_export';
-  readonly verification: 'provisional';
+  readonly source: 'game_export' | 'decoded_save';
+  readonly verification: 'provisional' | 'verified';
+  readonly nativeId?: number;
+  readonly birthDate?: string | null;
+  readonly heightCm?: number | null;
+  readonly weightKg?: number | null;
+  readonly marketValueGbp?: number | null;
+  readonly weeklyWageGbp?: number | null;
+  readonly contractExpiresAt?: string | null;
+  readonly squadNumber?: number | null;
+  readonly isLoanedIn?: boolean;
+  readonly parentClubName?: string | null;
+  readonly leftFoot?: number | null;
+  readonly rightFoot?: number | null;
+  readonly positions?: Readonly<Record<string, number>> | null;
+  readonly actualCa?: number | null;
+  readonly potentialAbility?: number | null;
+  readonly homeReputation?: number | null;
+  readonly currentReputation?: number | null;
+  readonly worldReputation?: number | null;
+  readonly hiddenPlaying?: Readonly<{
+    readonly dirtiness: number;
+    readonly consistency: number;
+    readonly importantMatches: number;
+    readonly injuryProneness: number;
+    readonly versatility: number;
+  }> | null;
+  readonly personality?: Readonly<{
+    readonly adaptability: number;
+    readonly ambition: number;
+    readonly loyalty: number;
+    readonly pressure: number;
+    readonly professionalism: number;
+    readonly sportsmanship: number;
+    readonly temperament: number;
+    readonly controversy: number;
+  }> | null;
 }
 export interface PlayerDataset {
   readonly fileName: string;
@@ -34,9 +69,16 @@ export interface PlayerDataset {
   readonly players: readonly PlayerExport[];
   readonly attributeColumns: readonly AttributeKey[];
   readonly warnings: readonly string[];
-  readonly source: 'game_export';
-  readonly actualCaAvailable: false;
-  readonly potentialAbilityAvailable: false;
+  readonly source: 'game_export' | 'decoded_save';
+  readonly actualCaAvailable: boolean;
+  readonly potentialAbilityAvailable: boolean;
+  readonly saveId?: string;
+  readonly saveMode?: 'realism' | 'editor';
+  readonly saveEdition?: string;
+  readonly saveBuild?: string;
+  readonly saveGameDate?: string | null;
+  readonly clubFilterUid?: number | null;
+  readonly clubFilterName?: string | null;
 }
 
 const MAX_ROWS = 20000;

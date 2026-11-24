@@ -1,7 +1,8 @@
-import { memo, useCallback, useDeferredValue, useMemo, useState, type Dispatch, type SetStateAction } from 'react';
+import { memo, useCallback, useDeferredValue, useEffect, useId, useMemo, useState, type Dispatch, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { PlayerDataset } from '@managerhub/domain';
-import { Icon } from '@managerhub/ui';
+import type { DecodedSaveDatabase, DecodedSaveMode } from '@managerhub/domain/fm2013-offline';
+import { Icon, Status, Surface } from '@managerhub/ui';
 import { usePlayerLibrary } from './usePlayerLibrary';
 import PlayerDetails from './features/player-lab/components/PlayerDetails';
 import PlayerDatasetSummary from './features/player-lab/components/PlayerDatasetSummary';
@@ -11,7 +12,10 @@ import PlayerListPanel from './features/player-lab/components/PlayerListPanel';
 import SavedPlayerLibraryPanel from './features/player-lab/components/SavedPlayerLibraryPanel';
 import ScoutShortlistPanel from './features/player-lab/components/ScoutShortlistPanel';
 import { usePlayerImport } from './features/player-lab/hooks/usePlayerImport';
+import { registerSaveDbI18n } from './i18n/register-save-db-i18n';
 import './player-workspace.css';
+
+registerSaveDbI18n();
 
 type Props = {
   dataset: PlayerDataset | null;
@@ -19,15 +23,40 @@ type Props = {
   setShortlistIds: Dispatch<SetStateAction<string[]>>;
   onDataset: (dataset: PlayerDataset | null) => void;
   onOpenSquad: () => void;
+  activeDecodedSave?: DecodedSaveDatabase | null;
+  saveMode?: DecodedSaveMode;
+  onSetSaveMode?: (mode: DecodedSaveMode) => void;
+  clubFilterUid?: number | null;
+  onClubFilterChange?: (clubUid: number | null) => void;
+  initialPlayerId?: string | null;
 };
 
-function PlayerWorkspaceView({ dataset, shortlistIds, setShortlistIds, onDataset, onOpenSquad }: Props) {
+function PlayerWorkspaceView({
+  dataset,
+  shortlistIds,
+  setShortlistIds,
+  onDataset,
+  onOpenSquad,
+  activeDecodedSave = null,
+  saveMode = 'realism',
+  onSetSaveMode,
+  clubFilterUid = null,
+  onClubFilterChange,
+  initialPlayerId = null
+}: Props) {
   const { t } = useTranslation();
   const [search, setSearch] = useState('');
-  const [chosenId, setChosenId] = useState<string | null>(null);
+  const [chosenId, setChosenId] = useState<string | null>(initialPlayerId);
   const [visibleLimit, setVisibleLimit] = useState(100);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+  const clubSelectId = useId();
   const library = usePlayerLibrary();
+
+  useEffect(() => {
+    if (initialPlayerId) {
+      setChosenId(initialPlayerId);
+    }
+  }, [initialPlayerId]);
 
   const onImportParsed = useCallback((parsed: PlayerDataset) => {
     onDataset(parsed);
@@ -37,6 +66,13 @@ function PlayerWorkspaceView({ dataset, shortlistIds, setShortlistIds, onDataset
     setPendingDelete(null);
   }, [onDataset]);
   const { error, importing, onFile, clearError } = usePlayerImport(onImportParsed);
+
+  const clubsWithPlayers = useMemo(() => {
+    if (!activeDecodedSave) return [];
+    return activeDecodedSave.clubs
+      .filter(club => club.playerCount > 0)
+      .sort((a, b) => b.playerCount - a.playerCount || a.fullName.localeCompare(b.fullName));
+  }, [activeDecodedSave]);
 
   const normalizedSearch = search.trim().toLowerCase();
   const deferredSearch = useDeferredValue(normalizedSearch);
@@ -99,12 +135,71 @@ function PlayerWorkspaceView({ dataset, shortlistIds, setShortlistIds, onDataset
     if (dataset) void library.save(dataset);
   }, [dataset, library.save]);
 
+  const isDecodedSource = dataset?.source === 'decoded_save' && activeDecodedSave !== null;
+
   return <div className="view-flow" aria-busy={importing}>
     <div className="page-title">
-      <span className="mh-eyebrow">{t("PLAYER INTELLIGENCE / PROVISIONAL EXPORTS")}</span>
+      <span className="mh-eyebrow">{t(isDecodedSource ? 'Decoded offline from FM2013' : 'PLAYER INTELLIGENCE / PROVISIONAL EXPORTS')}</span>
       <h1>{t("Player Lab")}</h1>
-      <p>{t("Import a player list from Football Manager to discover each player's strengths, suitable roles and comparisons with teammates.")}</p>
+      <p>{t(isDecodedSource
+        ? 'Decode FM2013 players, clubs, finances, contracts and staff directly from one .fm file with zero CSV export.'
+        : "Import a player list from Football Manager to discover each player's strengths, suitable roles and comparisons with teammates.")}</p>
     </div>
+
+    {isDecodedSource && activeDecodedSave && (
+      <Surface className="decoded-save-bar">
+        <div className="decoded-save-bar__info">
+          <Status tone="positive">{t('Decoded save active')}</Status>
+          <strong>{activeDecodedSave.source.fileName}</strong>
+          <span>
+            {activeDecodedSave.source.edition} {activeDecodedSave.source.build}
+            {activeDecodedSave.source.gameDate ? ` · ${activeDecodedSave.source.gameDate}` : ''}
+          </span>
+        </div>
+        <div className="decoded-save-bar__controls">
+          {onClubFilterChange && (
+            <label className="decoded-save-bar__select" htmlFor={clubSelectId}>
+              <span>{t('Filter by club')}</span>
+              <select
+                id={clubSelectId}
+                value={clubFilterUid === null ? 'all' : String(clubFilterUid)}
+                onChange={event => {
+                  const val = event.currentTarget.value;
+                  onClubFilterChange(val === 'all' ? null : Number(val));
+                  setSearch('');
+                  setVisibleLimit(100);
+                }}
+              >
+                <option value="all">{t('All players in save')} ({activeDecodedSave.counts.players.toLocaleString()})</option>
+                {clubsWithPlayers.map(club => (
+                  <option key={club.uid} value={String(club.uid)}>
+                    {club.shortName || club.fullName} ({club.playerCount})
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+          {onSetSaveMode && (
+            <div className="decoded-save-mode-switch" role="group" aria-label={t('Display mode')}>
+              <button
+                type="button"
+                aria-pressed={saveMode === 'realism'}
+                onClick={() => onSetSaveMode('realism')}
+              >
+                {t('Realism mode')}
+              </button>
+              <button
+                type="button"
+                aria-pressed={saveMode === 'editor'}
+                onClick={() => onSetSaveMode('editor')}
+              >
+                {t('Editor mode')}
+              </button>
+            </div>
+          )}
+        </div>
+      </Surface>
+    )}
 
     <PlayerImportToolbar
       dataset={dataset}
@@ -155,7 +250,9 @@ function PlayerWorkspaceView({ dataset, shortlistIds, setShortlistIds, onDataset
 
     <div className="coverage-note">
       <Icon name="shield" size={16}/>
-      <p><strong>{t("Data integrity:")}</strong> {t("CA, PA and hidden personality are not recovered from a CSV unless independently verified. Role profiles are authored ManagerHub heuristics, not Sports Interactive ratings. Player identities in different imports are not assumed to match.")}</p>
+      <p><strong>{t("Data integrity:")}</strong> {t(isDecodedSource
+        ? 'This report uses verified attributes decoded offline from your .fm save. Original save bytes remain untouched.'
+        : 'CA, PA and hidden personality are not recovered from a CSV unless independently verified. Role profiles are authored ManagerHub heuristics, not Sports Interactive ratings. Player identities in different imports are not assumed to match.')}</p>
     </div>
   </div>;
 }
