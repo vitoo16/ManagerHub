@@ -780,6 +780,8 @@ export default {
   "high": "Cao",
   "Source: imported player export. Position labels and roles come from the current lineup. Tactical coordinates and instructions are user assumptions. Changing formations resets this plan’s tactical coordinates.": "Nguồn: file dữ liệu cầu thủ đã nhập. Nhãn vị trí và vai trò dựa trên đội hình hiện tại. Tọa độ và chỉ dẫn chiến thuật là giả định của bạn. Khi thay đổi sơ đồ, tọa độ chiến thuật của phương án sẽ được đặt lại.",
   "Tactical diagnostics": "Chẩn đoán chiến thuật",
+  "Export tactical plan as CSV": "Xuất báo cáo chiến thuật CSV",
+  "Could not export tactical report. The plan is unchanged.": "Không thể xuất báo cáo chiến thuật. Phương án vẫn được giữ nguyên.",
   "Apply suggested adjustment": "Áp dụng điều chỉnh gợi ý",
   "Apply suggested adjustment to {{finding}}": "Áp dụng điều chỉnh cho {{finding}}",
   "Undo last tactical adjustment": "Hoàn tác điều chỉnh chiến thuật vừa áp dụng",
