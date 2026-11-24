@@ -1,12 +1,27 @@
 import { FORMATIONS, type SquadSolution } from './squad-optimizer';
-import { tacticalPosition, type TacticalScenario } from './tactical-scenarios';
+import { positionTacticalSlot, tacticalPosition, type TacticalScenario } from './tactical-scenarios';
 
 /**
  * MH-09 bounded role-partnership checks against the existing XI role assignments.
  * These are geometry/role heuristics, not match-engine dynamics or a team synergy score.
  */
 export const ROLE_INTERACTION_VERSION = 'managerhub.role-interactions.v1' as const;
-export type RoleInteractionId = 'incomplete-role-evidence' | 'flank-advance-exposure' | 'central-cover-partnership';
+export type RoleInteractionId =
+  | 'incomplete-role-evidence'
+  | 'flank-advance-exposure'
+  | 'central-cover-partnership'
+  | 'uncovered-central-pivot'
+  | 'central-midfield-congestion';
+
+export type RoleAdjustmentId =
+  | 'flank-advance-exposure'
+  | 'uncovered-central-pivot'
+  | 'central-midfield-congestion';
+
+export function isRoleAdjustmentId(id: RoleInteractionId): id is RoleAdjustmentId {
+  return id === 'flank-advance-exposure' || id === 'uncovered-central-pivot' || id === 'central-midfield-congestion';
+}
+
 export interface RoleInteractionFinding {
   readonly id: RoleInteractionId;
   readonly slotIds: readonly string[];
@@ -89,8 +104,98 @@ export function analyzeRoleInteractions(
       limitation: 'Position alone does not verify that this player will recover, defend or coordinate successfully.'
     });
   }
+
+  // MH-09 Step 3: Uncovered Central Pivot
+  const centralMids = slots.filter(slot => slot.position === 'CM' || slot.position === 'DM');
+  const midPlacements = centralMids.map(slot => ({ slot, point: tacticalPosition(scenario, 'possession', slot.id) }));
+  const allMidsAdvanced = centralMids.length >= 2 && midPlacements.every(item => item.point.y <= 8);
+  const hasScreeningMid = midPlacements.some(item => item.point.x >= 7 && item.point.x <= 13 && item.point.y >= 11);
+  if (allMidsAdvanced && !hasScreeningMid) {
+    output.push({
+      id: 'uncovered-central-pivot',
+      slotIds: centralMids.map(slot => slot.id),
+      playerNames: centralMids.map(slot => assigned.get(slot.id)?.name).filter((name): name is string => Boolean(name)),
+      title: 'Uncovered central pivot',
+      reason: 'All central midfielders advance into attacking depth (Y <= 8) without a holding presence in front of the centre-backs.',
+      suggestion: 'Retain at least one central midfielder in a deeper position (Y >= 11) to maintain central balance during transitions.',
+      limitation: 'This is a spatial guideline based on manager-authored coordinates, not an in-engine simulation of transition defensive shapes.'
+    });
+  }
+
+  // MH-09 Step 3: Central Midfield Spatial Congestion
+  const centralRoles = slots.filter(slot => slot.position === 'CM' || slot.position === 'DM' || slot.position === 'AM');
+  for (let i = 0; i < centralRoles.length; i++) {
+    for (let j = i + 1; j < centralRoles.length; j++) {
+      const s1 = centralRoles[i]!;
+      const s2 = centralRoles[j]!;
+      const p1 = tacticalPosition(scenario, 'possession', s1.id);
+      const p2 = tacticalPosition(scenario, 'possession', s2.id);
+      if (p1.x >= 7 && p1.x <= 13 && p2.x >= 7 && p2.x <= 13 &&
+          p1.y <= 9 && p2.y <= 9 &&
+          Math.abs(p1.x - p2.x) <= 1 && Math.abs(p1.y - p2.y) <= 1) {
+        const p1Name = assigned.get(s1.id)?.name ?? s1.label;
+        const p2Name = assigned.get(s2.id)?.name ?? s2.label;
+        output.push({
+          id: 'central-midfield-congestion',
+          slotIds: [s1.id, s2.id],
+          playerNames: [p1Name, p2Name],
+          title: 'Central midfield spatial congestion',
+          reason: 'Two central players occupy overlapping positions in the central attacking channel within one grid unit of each other.',
+          suggestion: 'Stagger depth or assign different horizontal channels to provide distinct passing options and prevent space congestion.',
+          limitation: 'Spatial proximity on the tactical board does not capture dynamic player movement or tactical free-role instructions.'
+        });
+      }
+    }
+  }
+
   return {
     model: ROLE_INTERACTION_VERSION, source: 'imported-export-and-manager-scenario',
     status: 'complete-xi', findings: output
   };
 }
+
+export function applyRoleInteractionAdjustment(
+  scenario: TacticalScenario, id: RoleAdjustmentId
+): TacticalScenario {
+  if (id === 'flank-advance-exposure') {
+    for (const [backId, wideId] of [['lb','lw'], ['rb','rw']] as const) {
+      const def = tacticalPosition(scenario, 'defending', backId);
+      const adv = tacticalPosition(scenario, 'possession', backId);
+      const wide = tacticalPosition(scenario, 'possession', wideId);
+      if (def.y - adv.y >= 4 && Math.abs(adv.x - wide.x) <= 4 &&
+        (wideId === 'lw' ? wide.x <= 6 : wide.x >= 14)) {
+        return positionTacticalSlot(scenario, 'possession', backId, { ...def });
+      }
+    }
+    return scenario;
+  }
+  if (id === 'uncovered-central-pivot') {
+    const targetSlotId = scenario.formation === '4-3-3' ? 'cm' : 'rdm';
+    const targetSlot = FORMATIONS[scenario.formation].find(s => s.id === targetSlotId);
+    if (!targetSlot) return scenario;
+    const defPos = tacticalPosition(scenario, 'defending', targetSlotId);
+    const targetX = Math.max(7, Math.min(13, defPos.x));
+    return positionTacticalSlot(scenario, 'possession', targetSlotId, { x: targetX, y: 12 });
+  }
+  if (id === 'central-midfield-congestion') {
+    const slots = FORMATIONS[scenario.formation];
+    const centralSlots = slots.filter(s => s.position === 'CM' || s.position === 'DM' || s.position === 'AM');
+    for (let i = 0; i < centralSlots.length; i++) {
+      for (let j = i + 1; j < centralSlots.length; j++) {
+        const s1 = centralSlots[i]!;
+        const s2 = centralSlots[j]!;
+        const p1 = tacticalPosition(scenario, 'possession', s1.id);
+        const p2 = tacticalPosition(scenario, 'possession', s2.id);
+        if (p1.x >= 7 && p1.x <= 13 && p2.x >= 7 && p2.x <= 13 &&
+            p1.y <= 9 && p2.y <= 9 &&
+            Math.abs(p1.x - p2.x) <= 1 && Math.abs(p1.y - p2.y) <= 1) {
+          const nextY = Math.min(15, p2.y + 3);
+          return positionTacticalSlot(scenario, 'possession', s2.id, { x: p2.x, y: nextY });
+        }
+      }
+    }
+    return scenario;
+  }
+  throw new Error('unknown_role_adjustment');
+}
+
