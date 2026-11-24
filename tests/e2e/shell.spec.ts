@@ -939,6 +939,45 @@ test('MH-09 Step 3 central dynamics: detects uncovered pivot and congestion with
   await expect(localizedReport.getByText('Khoảng trống trục dọc trung lộ chưa được che chắn')).toBeVisible();
 });
 
+test('MH-09 applies the selected flank card and preserves independent undo history', async ({ page }) => {
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'role-targets.csv', mimeType: 'text/csv', buffer: Buffer.from(makeSquadExport())
+  });
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Squad Planner/ }).click();
+  const lab = page.getByRole('region', { name: 'Tactical Lab' });
+  const report = lab.getByRole('region', { name: 'Role partnerships' });
+  const left = lab.locator('[data-slot="lb"]');
+  const right = lab.locator('[data-slot="rb"]');
+  for (const slot of [left, right]) {
+    for (let i = 0; i < 4; i++) await slot.press('ArrowUp');
+  }
+  await expect(report.getByText('Advancing wing-back and winger share a flank')).toHaveCount(2);
+  await report.getByRole('button', {
+    name: 'Apply suggested adjustment to Advancing wing-back and winger share a flank for Right Defender, Right Wing'
+  }).click();
+  await expect(left).toHaveAttribute('data-y', '11');
+  await expect(right).toHaveAttribute('data-y', '15');
+  await expect(report.getByText('Assigned players: Left Defender, Left Wing', { exact: true })).toBeVisible();
+  await expect(lab.getByRole('button', { name: 'Undo last tactical adjustment' })).toHaveCount(1);
+  await page.getByRole('button', { name: 'Plan B', exact: true }).click();
+  for (let i = 0; i < 4; i++) await left.press('ArrowUp');
+  await report.getByRole('button', {
+    name: 'Apply suggested adjustment to Advancing wing-back and winger share a flank for Left Defender, Left Wing'
+  }).click();
+  await expect(left).toHaveAttribute('data-y', '15');
+  await page.getByRole('button', { name: 'Plan A', exact: true }).click();
+  await report.getByRole('button', { name: 'Undo last tactical adjustment' }).click();
+  await expect(left).toHaveAttribute('data-y', '11');
+  await expect(right).toHaveAttribute('data-y', '11');
+  await page.getByRole('button', { name: 'Plan B', exact: true }).click();
+  await report.getByRole('button', { name: 'Undo last tactical adjustment' }).click();
+  await expect(left).toHaveAttribute('data-y', '11');
+  await expect(right).toHaveAttribute('data-y', '15');
+});
+
 test('Tactical diagnostics suppress shape warnings for incomplete XI', async ({ page }) => {
   await page.goto('/#/players');
   await page.locator('input[type=file]').setInputFiles({
