@@ -52,4 +52,17 @@ describe('MH-07 manager-authored tactical CSV', () => {
     expect(output).toContain('x=10;y=12');
     expect(tacticalReportFilename('../../evil.csv', 'B')).toBe('ManagerHub-evil-tactical-B.csv');
   });
+
+  it('handles formation mismatch between solution and scenario safely', () => {
+    const mismatchSolution: SquadSolution = {
+      ...complete(),
+      formation: '4-2-3-1',
+      lineup: FORMATIONS['4-2-3-1'].map((slot, index) => ({
+        slot, playerId: String(index), name: 'Player ' + index, roleScore: 80, coverage: 1
+      }))
+    };
+    const output = createTacticalScenarioCsv('A', defaultTacticalScenario('4-3-3'), mismatchSolution);
+    expect(output).toContain('incomplete-xi');
+    expect(output).toContain('Unassigned');
+  });
 });
