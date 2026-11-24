@@ -764,6 +764,41 @@ test('Tactical diagnostics react to scenario edits, plan switching and Vietnames
     .getByText('Các quy tắc hiện tại chưa phát hiện nguy cơ về bố trí')).toBeVisible();
 });
 
+test('Tactical diagnostics allow explicit correction and undo without changing Plan B', async ({ page }) => {
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'guided-adjustments.csv', mimeType: 'text/csv', buffer: Buffer.from(makeSquadExport())
+  });
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Squad Planner/ }).click();
+  const lab = page.getByRole('region', { name: 'Tactical Lab' });
+  const diagnostics = lab.getByRole('region', { name: 'Tactical diagnostics' });
+  await lab.getByRole('button', { name: 'Defending' }).click();
+  await lab.getByLabel('Proposed defensive line').selectOption('high');
+  await lab.getByLabel('Proposed pressing').selectOption('low');
+  await expect(diagnostics.getByText('High line with low pressing')).toBeVisible();
+  await diagnostics.getByRole('button', { name: /Apply suggested adjustment to High line with low pressing/ }).click();
+  await expect(lab.getByLabel('Proposed defensive line')).toHaveValue('balanced');
+  await expect(diagnostics.getByText('No shape risks detected by these rules')).toBeVisible();
+  await diagnostics.getByRole('button', { name: 'Undo last tactical adjustment' }).click();
+  await expect(lab.getByLabel('Proposed defensive line')).toHaveValue('high');
+  await expect(diagnostics.getByText('High line with low pressing')).toBeVisible();
+  await expect(diagnostics.getByRole('button', { name: 'Undo last tactical adjustment' })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Plan B', exact: true }).click();
+  await expect(lab.getByLabel('Proposed defensive line')).toHaveValue('balanced');
+  await expect(diagnostics.getByText('No shape risks detected by these rules')).toBeVisible();
+  await page.getByRole('button', { name: 'Plan A', exact: true }).click();
+  await expect(diagnostics.getByText('High line with low pressing')).toBeVisible();
+  await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
+  const localized = page.getByRole('region', { name: 'Chẩn đoán chiến thuật' });
+  await expect(localized.getByRole('button', { name: /Áp dụng điều chỉnh cho/ })).toBeVisible();
+  await localized.getByRole('button', { name: /Áp dụng điều chỉnh cho/ }).click();
+  await expect(localized.getByRole('button', { name: 'Hoàn tác điều chỉnh chiến thuật vừa áp dụng' })).toBeVisible();
+  await page.getByRole('region', { name: 'Phòng phân tích chiến thuật' }).getByLabel('Cường độ gây áp lực dự kiến').selectOption('high');
+  await expect(localized.getByRole('button', { name: 'Hoàn tác điều chỉnh chiến thuật vừa áp dụng' })).toHaveCount(0);
+});
+
 test('Tactical diagnostics suppress shape warnings for incomplete XI', async ({ page }) => {
   await page.goto('/#/players');
   await page.locator('input[type=file]').setInputFiles({
@@ -781,6 +816,7 @@ test('Tactical diagnostics suppress shape warnings for incomplete XI', async ({ 
   await lab.getByLabel('Proposed pressing').selectOption('low');
   await expect(diagnostics.getByText('Complete the XI to assess tactical shape')).toBeVisible();
   await expect(diagnostics.getByText('High line with low pressing')).toHaveCount(0);
+  await expect(diagnostics.getByRole('button', { name: /Apply suggested adjustment/ })).toHaveCount(0);
 });
 
 test('Plan B remains intact across workspace navigation and resets for a different import', async ({page})=>{

@@ -1,12 +1,12 @@
 import { memo, useCallback, useRef, useState, type Dispatch, type KeyboardEvent, type PointerEvent, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  FORMATIONS, defaultTacticalScenario, diagnoseTacticalScenario, makeSavedTacticalScenarios, positionTacticalSlot,
+  FORMATIONS, applyTacticalDiagnosticAdjustment, defaultTacticalScenario, diagnoseTacticalScenario, makeSavedTacticalScenarios, positionTacticalSlot,
   restoreSavedTacticalScenarios, squadDatasetSha256, tacticalPosition, tacticalScenarioForFormation,
   TACTICAL_STORAGE_PREFIX,
   type PlayerDataset, type SquadPlanKey, type SquadPlans, type SquadSolution,
   type TacticalInstructions, type TacticalPhase, type TacticalPoint,
-  type TacticalScenario, type TacticalScenarios, type TacticalWidth, type TacticalIntensity
+  type TacticalDiagnosticId, type TacticalScenario, type TacticalScenarios, type TacticalWidth, type TacticalIntensity
 } from '@managerhub/domain';
 import { Button, Surface } from '@managerhub/ui';
 
@@ -30,6 +30,7 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [confirmForget, setConfirmForget] = useState(false);
+  const [lastAdjustment, setLastAdjustment] = useState<{ plan: SquadPlanKey; before: TacticalScenario; after: TacticalScenario } | null>(null);
   const dragging = useRef<string | null>(null);
   const formation = plans[active].formation;
   const scenario = tacticalScenarioForFormation(scenarios[active], formation);
@@ -41,12 +42,27 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
   const report = diagnoseTacticalScenario(scenario, solution);
 
   const updateScenario = useCallback((update: (current: TacticalScenario) => TacticalScenario) => {
+    setLastAdjustment(null);
     setScenarios(previous => ({
       ...previous,
       [active]: update(tacticalScenarioForFormation(previous[active], formation))
     }));
     setNotice(null);
   }, [active, formation, setScenarios]);
+
+  const applyAdjustment = (id: TacticalDiagnosticId) => {
+    if (id === 'incomplete-xi') return;
+    const adjusted = applyTacticalDiagnosticAdjustment(scenario, id);
+    setScenarios(previous => ({ ...previous, [active]: adjusted }));
+    setLastAdjustment({ plan: active, before: scenario, after: adjusted });
+    setNotice(null);
+  };
+
+  const undoAdjustment = () => {
+    if (!lastAdjustment || lastAdjustment.plan !== active || lastAdjustment.after !== scenario) return;
+    setScenarios(previous => ({ ...previous, [active]: lastAdjustment.before }));
+    setLastAdjustment(null);
+  };
 
   const position = useCallback((slotId: string, point: TacticalPoint) => {
     updateScenario(current => positionTacticalSlot(current, phase, slotId, point));
@@ -110,6 +126,7 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
       if (saved === null) { setNotice('No tactical scenarios saved for this export.'); return; }
       const restored = await restoreSavedTacticalScenarios(saved, dataset, plans);
       setScenarios(restored.scenarios);
+      setLastAdjustment(null);
       setNotice('Tactical scenarios restored for both plans.');
     } catch {
       setNotice('Tactical scenarios could not be validated. Restore matching lineup formations first.');
@@ -120,6 +137,7 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
     setBusy(true); setNotice(null);
     try {
       localStorage.removeItem(TACTICAL_STORAGE_PREFIX + await squadDatasetSha256(dataset));
+      setLastAdjustment(null);
       setNotice('Saved tactical scenarios removed. Session edits remain available.');
     } catch {
       setNotice('Could not remove saved tactical scenarios.');
@@ -230,8 +248,13 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
               <p><b>{t('Why flagged')}</b> {t(item.trigger)}</p>
               <p><b>{t('Consider')}</b> {t(item.adjustment)}</p>
               <p><b>{t('Limit')}</b> {t(item.limitation)}</p>
+              {item.id !== 'incomplete-xi' && <Button variant="quiet" disabled={busy}
+                aria-label={t('Apply suggested adjustment to {{finding}}', { finding: t(item.title) })}
+                onClick={() => applyAdjustment(item.id)}>{t('Apply suggested adjustment')}</Button>}
             </li>)}
           </ul>}
+          {lastAdjustment?.plan === active && lastAdjustment.after === scenario && <Button variant="quiet" disabled={busy}
+            onClick={undoAdjustment}>{t('Undo last tactical adjustment')}</Button>}
           <p className="tactical-lab__diagnostic-provenance">{t('Rule set {{version}}. These checks use manager-authored positions and instructions, and cannot predict match outcomes.', { version: report.model })}</p>
         </section>
         <p className="tactical-lab__source">{t('Source: imported player export. Position labels and roles come from the current lineup. Tactical coordinates and instructions are user assumptions. Changing formations resets this plan’s tactical coordinates.')}</p>
