@@ -283,10 +283,15 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
         </section>
         <section className="tactical-lab__diagnostics" aria-label={t('Role partnerships')}>
           <h3>{t('Role partnerships')}</h3>
-          {roleInteractions.findings.length === 0
-            ? <p>{t('No role interaction findings under these bounded rules')}</p>
-            : <ul className="tactical-lab__diagnostic-list">
-              {roleInteractions.findings.map((finding, index) => <li key={finding.id + '-' + index} className="tactical-lab__diagnostic">
+          <p className="tactical-lab__diagnostic-summary" role="status">
+            {roleInteractions.status === 'incomplete-xi'
+              ? t('Complete XI needed for role partnership checks')
+              : roleInteractions.findings.length === 0
+                ? t('No role interaction findings under these bounded rules')
+                : t('Role interaction findings: {{count}}', { count: roleInteractions.findings.length })}
+          </p>
+          {roleInteractions.findings.length > 0 && <ul className="tactical-lab__diagnostic-list">
+              {roleInteractions.findings.map(finding => <li key={finding.id + '-' + finding.slotIds.join('-')} className="tactical-lab__diagnostic">
                 <strong>{t(finding.title)}</strong>
                 {finding.playerNames.length > 0 && <p>{t('Assigned players')}: {finding.playerNames.join(', ')}</p>}
                 <p><b>{t('Why flagged')}</b> {t(finding.reason)}</p>
@@ -294,7 +299,7 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
                 <p><b>{t('Limit')}</b> {t(finding.limitation)}</p>
               </li>)}
             </ul>}
-          <p className="tactical-lab__diagnostic-provenance">{t('Role model {{version}} uses imported lineup roles and manager-authored positions only.', { version: roleInteractions.model })}</p>
+          <p className="tactical-lab__diagnostic-provenance">{t('Role model {{version}} uses roles assigned by Squad Planner and manager-authored positions only, not native FM roles.', { version: roleInteractions.model })}</p>
         </section>
         <p className="tactical-lab__source">{t('Source: imported player export. Position labels and roles come from the current lineup. Tactical coordinates and instructions are user assumptions. Changing formations resets this plan’s tactical coordinates.')}</p>
       </Surface>

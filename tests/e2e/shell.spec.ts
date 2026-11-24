@@ -833,6 +833,7 @@ test('MH-09 role interactions respond to selected XI positions and VI translatio
   await page.locator('input[type=file]').setInputFiles({
     name: 'role-interactions.csv', mimeType: 'text/csv', buffer: Buffer.from(makeSquadExport())
   });
+  await page.getByRole('button', { name: 'Save on this browser' }).click();
   await page.keyboard.press('Control+k');
   await page.getByRole('dialog', { name: 'Quick navigation' })
     .getByRole('button', { name: /Squad Planner/ }).click();
@@ -842,12 +843,63 @@ test('MH-09 role interactions respond to selected XI positions and VI translatio
   await lab.getByLabel('Select tactical position').selectOption('lb');
   const leftBack = lab.locator('[data-slot="lb"]');
   await leftBack.focus();
-  for (let i = 0; i < 5; i++) await leftBack.press('ArrowUp');
+  await expect(report.getByText(/managerhub\.role-interactions\.v1/)).toBeVisible();
+  for (let i = 0; i < 3; i++) await leftBack.press('ArrowUp');
+  await expect(report.getByText('No role interaction findings under these bounded rules')).toBeVisible();
+  await leftBack.press('ArrowUp');
   await expect(report.getByText('Advancing wing-back and winger share a flank')).toBeVisible();
-  await expect(report.getByText(/Left Defender/)).toBeVisible();
+  await expect(report.getByText('Assigned players: Left Defender, Left Wing', { exact: true })).toBeVisible();
+  await expect(report.getByText(/not a measured overlap/)).toBeVisible();
+  await lab.getByRole('button', { name: 'Move down', exact: true }).click();
+  await expect(report.getByText('No role interaction findings under these bounded rules')).toBeVisible();
+  await lab.getByRole('button', { name: 'Move up', exact: true }).click();
+  await expect(report.getByText('Advancing wing-back and winger share a flank')).toBeVisible();
+  await page.getByRole('button', { name: 'Plan B', exact: true }).click();
+  await expect(report.getByText('No role interaction findings under these bounded rules')).toBeVisible();
+  await page.getByRole('button', { name: 'Plan A', exact: true }).click();
+  await expect(report.getByText('Advancing wing-back and winger share a flank')).toBeVisible();
+  await lab.getByRole('button', { name: 'Save tactical scenarios' }).click();
+  await expect(lab.getByText('Tactical scenarios A and B saved on this browser.')).toBeVisible();
+  await page.reload();
+  await page.getByRole('combobox', { name: 'Saved player list' })
+    .selectOption({ label: 'role-interactions.csv (11 players)' });
+  await page.getByRole('button', { name: 'Open saved list' }).click();
+  await lab.getByRole('button', { name: 'Restore tactical scenarios' }).click();
+  await expect(report.getByText('Assigned players: Left Defender, Left Wing', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
-  await expect(page.getByRole('region', { name: 'Tương tác giữa các vai trò' })
-    .getByText('Hậu vệ biên dâng cao cùng hành lang với cầu thủ chạy cánh')).toBeVisible();
+  const localizedReport = page.getByRole('region', { name: 'Tương tác giữa các vai trò' });
+  await expect(localizedReport.getByText('Hậu vệ biên dâng cao cùng hành lang với cầu thủ chạy cánh')).toBeVisible();
+  await expect(localizedReport.getByText('Cầu thủ liên quan: Left Defender, Left Wing', { exact: true })).toBeVisible();
+});
+
+test('MH-09 role partnerships keep Plan B formation and cover independent', async ({ page }) => {
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'role-cover.csv', mimeType: 'text/csv',
+    buffer: Buffer.from(makeSquadExport([['DM One', 'DM'], ['DM Two', 'DM'], ['AM One', 'AM (C)']]))
+  });
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Squad Planner/ }).click();
+  const lab = page.getByRole('region', { name: 'Tactical Lab' });
+  const report = lab.getByRole('region', { name: 'Role partnerships' });
+  await page.getByRole('button', { name: 'Plan B', exact: true }).click();
+  await page.getByLabel('Formation').selectOption('4-2-3-1');
+  await page.getByRole('combobox', { name: 'Lock LDM' }).selectOption('export-row-12');
+  await lab.getByLabel('Select tactical position').selectOption('rb');
+  for (let i = 0; i < 4; i++) await lab.getByRole('button', { name: 'Move up', exact: true }).click();
+  await expect(report.getByText('Assigned players: Right Defender, Right Wing', { exact: true })).toBeVisible();
+  const dm = lab.locator('[data-slot="ldm"]');
+  await dm.press('ArrowRight');
+  await dm.press('ArrowRight');
+  for (let i = 0; i < 4; i++) await dm.press('ArrowDown');
+  await expect(report.getByText('Deep central midfield cover is drawn')).toBeVisible();
+  await expect(report.getByText('Assigned players: DM One', { exact: true })).toBeVisible();
+  await expect(report.getByText(/Position alone does not verify/)).toBeVisible();
+  await page.getByRole('button', { name: 'Plan A', exact: true }).click();
+  await expect(report.getByText('No role interaction findings under these bounded rules')).toBeVisible();
+  await page.getByRole('button', { name: 'Plan B', exact: true }).click();
+  await expect(report.getByText('Assigned players: DM One', { exact: true })).toBeVisible();
 });
 
 test('Tactical diagnostics suppress shape warnings for incomplete XI', async ({ page }) => {
@@ -868,6 +920,10 @@ test('Tactical diagnostics suppress shape warnings for incomplete XI', async ({ 
   await expect(diagnostics.getByText('Complete the XI to assess tactical shape')).toBeVisible();
   await expect(diagnostics.getByText('High line with low pressing')).toHaveCount(0);
   await expect(diagnostics.getByRole('button', { name: /Apply suggested adjustment/ })).toHaveCount(0);
+  const roleReport = lab.getByRole('region', { name: 'Role partnerships' });
+  await expect(roleReport.getByText('Role partnership checks need a complete XI')).toBeVisible();
+  await expect(roleReport.getByText('Advancing wing-back and winger share a flank')).toHaveCount(0);
+  await expect(roleReport.getByText(/Assigned players:/)).toHaveCount(0);
 });
 
 test('Plan B remains intact across workspace navigation and resets for a different import', async ({page})=>{

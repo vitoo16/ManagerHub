@@ -33,7 +33,7 @@ export function analyzeRoleInteractions(
     new Set(solution.lineup.map(item => item.playerId)).size === 11 &&
     new Set(solution.lineup.map(item => item.slot.id)).size === 11 &&
     solution.lineup.every(item => validIds.has(item.slot.id) &&
-      slots.some(slot => slot.id === item.slot.id && slot.roleId === item.slot.roleId));
+      slots.some(slot => slot.id === item.slot.id && slot.roleId === item.slot.roleId && slot.position === item.slot.position));
   const output: RoleInteractionFinding[] = [];
   if (!complete || !solution) {
     output.push({
@@ -50,6 +50,7 @@ export function analyzeRoleInteractions(
   }
 
   const assigned = new Map(solution.lineup.map(item => [item.slot.id, item] as const));
+  const advancingFlanks: number[] = [];
   for (const [backId, wideId] of [['lb','lw'], ['rb','rw']] as const) {
     const back = assigned.get(backId);
     const wide = assigned.get(wideId);
@@ -58,11 +59,14 @@ export function analyzeRoleInteractions(
     const advanced = tacticalPosition(scenario, 'possession', backId);
     const winger = tacticalPosition(scenario, 'possession', wideId);
     if (defender.y - advanced.y < 4 || Math.abs(advanced.x - winger.x) > 4) continue;
+    // A nominal winger moved into the centre is no longer drawing a wide corridor.
+    if (wideId === 'lw' ? winger.x > 6 : winger.x < 14) continue;
+    advancingFlanks.push(advanced.y);
     output.push({
       id: 'flank-advance-exposure',
       slotIds: [backId, wideId], playerNames: [back.name, wide.name],
       title: 'Advancing wing-back and winger share a flank',
-      reason: 'The selected wing-back advances at least four grid steps and stays in the winger\'s drawn corridor.',
+      reason: 'The wing-back advances at least four grid steps and stays within four horizontal steps of the winger in the drawn wide corridor.',
       suggestion: 'Review cover behind this flank or stagger the fullback and winger before committing to this pattern.',
       limitation: 'This is a shape/assigned-role interaction, not a measured overlap, opponent matchup or match-engine partnership.'
     });
@@ -71,16 +75,17 @@ export function analyzeRoleInteractions(
   const midfield = slots.filter(slot => slot.position === 'CM' || slot.position === 'DM')
     .filter(slot => {
       const point = tacticalPosition(scenario, 'possession', slot.id);
-      return point.x >= 7 && point.x <= 13 && point.y >= 12;
+      return point.x >= 7 && point.x <= 13 && point.y >= 12 &&
+        advancingFlanks.some(depth => point.y > depth);
     });
-  if (output.some(item => item.id === 'flank-advance-exposure') && midfield.length > 0) {
+  if (midfield.length > 0) {
     const cover = midfield[0]!;
     const player = assigned.get(cover.id);
     output.push({
       id: 'central-cover-partnership', slotIds: [cover.id], playerNames: player ? [player.name] : [],
       title: 'Deep central midfield cover is drawn',
-      reason: 'A central midfielder occupies the deeper central grid while a wing-back advances.',
-      suggestion: 'Keep this midfielder available to cover the advancing flank in the proposed shape.',
+      reason: 'A central midfielder is drawn in the deeper central grid behind at least one advancing wing-back.',
+      suggestion: 'Consider keeping this midfielder available for cover behind an advancing flank in the proposed shape.',
       limitation: 'Position alone does not verify that this player will recover, defend or coordinate successfully.'
     });
   }
