@@ -828,6 +828,28 @@ test('Tactical report exports the active edited scenario and localized action wi
     .getByRole('button', { name: 'Xuất báo cáo chiến thuật CSV' })).toBeVisible();
 });
 
+test('MH-09 role interactions respond to selected XI positions and VI translation', async ({ page }) => {
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'role-interactions.csv', mimeType: 'text/csv', buffer: Buffer.from(makeSquadExport())
+  });
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Squad Planner/ }).click();
+  const lab = page.getByRole('region', { name: 'Tactical Lab' });
+  const report = lab.getByRole('region', { name: 'Role partnerships' });
+  await expect(report.getByText('No role interaction findings under these bounded rules')).toBeVisible();
+  await lab.getByLabel('Select tactical position').selectOption('lb');
+  const leftBack = lab.locator('[data-slot="lb"]');
+  await leftBack.focus();
+  for (let i = 0; i < 5; i++) await leftBack.press('ArrowUp');
+  await expect(report.getByText('Advancing wing-back and winger share a flank')).toBeVisible();
+  await expect(report.getByText(/LB Player/)).toBeVisible();
+  await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
+  await expect(page.getByRole('region', { name: 'Tương tác giữa các vai trò' })
+    .getByText('Hậu vệ biên dâng cao cùng hành lang với cầu thủ chạy cánh')).toBeVisible();
+});
+
 test('Tactical diagnostics suppress shape warnings for incomplete XI', async ({ page }) => {
   await page.goto('/#/players');
   await page.locator('input[type=file]').setInputFiles({
