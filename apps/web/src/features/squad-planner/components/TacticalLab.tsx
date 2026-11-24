@@ -6,7 +6,7 @@ import {
   TACTICAL_STORAGE_PREFIX,
   type PlayerDataset, type SquadPlanKey, type SquadPlans, type SquadSolution,
   type TacticalInstructions, type TacticalPhase, type TacticalPoint,
-  type TacticalAdjustmentId, type TacticalScenario, type TacticalScenarios, type TacticalWidth, type TacticalIntensity
+  type TacticalDiagnosticId, type TacticalScenario, type TacticalScenarios, type TacticalWidth, type TacticalIntensity
 } from '@managerhub/domain';
 import { Button, Surface } from '@managerhub/ui';
 
@@ -50,7 +50,8 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
     setNotice(null);
   }, [active, formation, setScenarios]);
 
-  const applyAdjustment = (id: TacticalAdjustmentId) => {
+  const applyAdjustment = (id: TacticalDiagnosticId) => {
+    if (id === 'incomplete-xi') return;
     const adjusted = applyTacticalDiagnosticAdjustment(scenario, id);
     setScenarios(previous => ({ ...previous, [active]: adjusted }));
     setLastAdjustment({ plan: active, before: scenario, after: adjusted });
@@ -125,6 +126,7 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
       if (saved === null) { setNotice('No tactical scenarios saved for this export.'); return; }
       const restored = await restoreSavedTacticalScenarios(saved, dataset, plans);
       setScenarios(restored.scenarios);
+      setLastAdjustment(null);
       setNotice('Tactical scenarios restored for both plans.');
     } catch {
       setNotice('Tactical scenarios could not be validated. Restore matching lineup formations first.');
@@ -135,6 +137,7 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
     setBusy(true); setNotice(null);
     try {
       localStorage.removeItem(TACTICAL_STORAGE_PREFIX + await squadDatasetSha256(dataset));
+      setLastAdjustment(null);
       setNotice('Saved tactical scenarios removed. Session edits remain available.');
     } catch {
       setNotice('Could not remove saved tactical scenarios.');

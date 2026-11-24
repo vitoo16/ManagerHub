@@ -784,6 +784,7 @@ test('Tactical diagnostics allow explicit correction and undo without changing P
   await diagnostics.getByRole('button', { name: 'Undo last tactical adjustment' }).click();
   await expect(lab.getByLabel('Proposed defensive line')).toHaveValue('high');
   await expect(diagnostics.getByText('High line with low pressing')).toBeVisible();
+  await expect(diagnostics.getByRole('button', { name: 'Undo last tactical adjustment' })).toHaveCount(0);
   await page.getByRole('button', { name: 'Plan B', exact: true }).click();
   await expect(lab.getByLabel('Proposed defensive line')).toHaveValue('balanced');
   await expect(diagnostics.getByText('No shape risks detected by these rules')).toBeVisible();
@@ -792,6 +793,10 @@ test('Tactical diagnostics allow explicit correction and undo without changing P
   await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
   const localized = page.getByRole('region', { name: 'Chẩn đoán chiến thuật' });
   await expect(localized.getByRole('button', { name: /Áp dụng điều chỉnh cho/ })).toBeVisible();
+  await localized.getByRole('button', { name: /Áp dụng điều chỉnh cho/ }).click();
+  await expect(localized.getByRole('button', { name: 'Hoàn tác điều chỉnh chiến thuật vừa áp dụng' })).toBeVisible();
+  await page.getByRole('region', { name: 'Phòng phân tích chiến thuật' }).getByLabel('Cường độ gây áp lực dự kiến').selectOption('high');
+  await expect(localized.getByRole('button', { name: 'Hoàn tác điều chỉnh chiến thuật vừa áp dụng' })).toHaveCount(0);
 });
 
 test('Tactical diagnostics suppress shape warnings for incomplete XI', async ({ page }) => {
@@ -811,6 +816,7 @@ test('Tactical diagnostics suppress shape warnings for incomplete XI', async ({ 
   await lab.getByLabel('Proposed pressing').selectOption('low');
   await expect(diagnostics.getByText('Complete the XI to assess tactical shape')).toBeVisible();
   await expect(diagnostics.getByText('High line with low pressing')).toHaveCount(0);
+  await expect(diagnostics.getByRole('button', { name: /Apply suggested adjustment/ })).toHaveCount(0);
 });
 
 test('Plan B remains intact across workspace navigation and resets for a different import', async ({page})=>{
