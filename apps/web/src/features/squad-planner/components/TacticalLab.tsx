@@ -1,7 +1,7 @@
 import { memo, useCallback, useRef, useState, type Dispatch, type KeyboardEvent, type PointerEvent, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  FORMATIONS, applyTacticalDiagnosticAdjustment, createTacticalScenarioCsv, defaultTacticalScenario, diagnoseTacticalScenario, makeSavedTacticalScenarios, positionTacticalSlot,
+  FORMATIONS, analyzeRoleInteractions, applyTacticalDiagnosticAdjustment, createTacticalScenarioCsv, defaultTacticalScenario, diagnoseTacticalScenario, makeSavedTacticalScenarios, positionTacticalSlot,
   restoreSavedTacticalScenarios, squadDatasetSha256, tacticalPosition, tacticalReportFilename, tacticalScenarioForFormation,
   TACTICAL_STORAGE_PREFIX,
   type PlayerDataset, type SquadPlanKey, type SquadPlans, type SquadSolution,
@@ -40,6 +40,7 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
   const selectedPoint = tacticalPosition(scenario, phase, selectedSlot.id);
   const changedPositions = Object.keys(scenario.placements[phase]).length;
   const report = diagnoseTacticalScenario(scenario, solution);
+  const roleInteractions = analyzeRoleInteractions(scenario, solution);
 
   const updateScenario = useCallback((update: (current: TacticalScenario) => TacticalScenario) => {
     setLastAdjustment(null);
@@ -279,6 +280,26 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
           {lastAdjustment?.plan === active && lastAdjustment.after === scenario && <Button variant="quiet" disabled={busy}
             onClick={undoAdjustment}>{t('Undo last tactical adjustment')}</Button>}
           <p className="tactical-lab__diagnostic-provenance">{t('Rule set {{version}}. These checks use manager-authored positions and instructions, and cannot predict match outcomes.', { version: report.model })}</p>
+        </section>
+        <section className="tactical-lab__diagnostics" aria-label={t('Role partnerships')}>
+          <h3>{t('Role partnerships')}</h3>
+          <p className="tactical-lab__diagnostic-summary" role="status">
+            {roleInteractions.status === 'incomplete-xi'
+              ? t('Complete XI needed for role partnership checks')
+              : roleInteractions.findings.length === 0
+                ? t('No role interaction findings under these bounded rules')
+                : t('Role interaction findings: {{count}}', { count: roleInteractions.findings.length })}
+          </p>
+          {roleInteractions.findings.length > 0 && <ul className="tactical-lab__diagnostic-list">
+              {roleInteractions.findings.map(finding => <li key={finding.id + '-' + finding.slotIds.join('-')} className="tactical-lab__diagnostic">
+                <strong>{t(finding.title)}</strong>
+                {finding.playerNames.length > 0 && <p>{t('Assigned players')}: {finding.playerNames.join(', ')}</p>}
+                <p><b>{t('Why flagged')}</b> {t(finding.reason)}</p>
+                <p><b>{t('Consider')}</b> {t(finding.suggestion)}</p>
+                <p><b>{t('Limit')}</b> {t(finding.limitation)}</p>
+              </li>)}
+            </ul>}
+          <p className="tactical-lab__diagnostic-provenance">{t('Role model {{version}} uses roles assigned by Squad Planner and manager-authored positions only, not native FM roles.', { version: roleInteractions.model })}</p>
         </section>
         <p className="tactical-lab__source">{t('Source: imported player export. Position labels and roles come from the current lineup. Tactical coordinates and instructions are user assumptions. Changing formations resets this plan’s tactical coordinates.')}</p>
       </Surface>

@@ -13,6 +13,7 @@ export * from './squad-scenarios';
 export * from './squad-plan-library';
 export * from './tactical-scenarios';
 export * from './tactical-diagnostics';
+export * from './role-interactions';
 export * from './tactical-report';
 export * from './squad-plan-report';
 export * from './scout-shortlist';
