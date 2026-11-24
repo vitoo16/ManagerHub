@@ -98,3 +98,24 @@
 
 **Kết luận QA Gate F:** **ACCEPT (Chấp thuận tăng dần phạm vi xuất báo cáo CSV của PR #107)**. Không phát hiện lỗi P0/P1. Toàn bộ 140/140 E2E tests và 237/237 Vitest tests đã chạy đạt 100% PASS. MH-07 và MH-11 tiếp tục ở trạng thái **In progress**.
 
+---
+
+### 7. Kết quả kiểm tra Step 2 — PR #108 / Issue #109 (MH-09 Role Interaction Diagnostics)
+
+**Tested Candidate SHA:** `f8d5921b08d7145dd50a2dd26bb2e3f8fca852d7`  
+**Profile:** Local CI Release 10/10 stages PASS (`acceptanceEligible: true`, SHA256: `1E7CFED742BFECF9A10B7B3DA52D789913DAA66B545B893ED80E9F7D5EC9FEE8`).
+
+| Test ID | Nội dung kiểm thử | Kết quả | Bằng chứng / Chi tiết |
+|---|---|:---:|---|
+| **QA-108-01** | Đội hình 4-3-3 neutral XI hoàn chỉnh: không xuất hiện cảnh báo tương tác vai trò; hiển thị đúng mã mô hình `managerhub.role-interactions.v1`. | **PASS** | Vitest `role-interactions.test.ts`, Playwright E2E: assert text 'No role interaction findings under these bounded rules' và hiển thị version. |
+| **QA-108-02** | Dâng cao LB >= 4 ô cùng hành lang biên với LW: phát hiện cặp wing-back + winger dâng cao; hiển thị chính xác tên cầu thủ được phân công và giới hạn hình học. | **PASS** | Playwright E2E: `Advancing wing-back and winger share a flank`, `Assigned players: Left Defender, Left Wing`. |
+| **QA-108-03** | Điều chỉnh LB ra khỏi hành lang biên hoặc lùi sâu: cảnh báo tương tác biên lập tức biến mất. | **PASS** | Playwright E2E: di chuyển LB lùi 1 ô (Y=12) hoặc vào trung lộ -> cảnh báo tắt. |
+| **QA-108-04** | Đội hình 4-2-3-1, dâng RB và kéo DM về trung lộ sâu: hiển thị nhận xét bọc lót trung lộ sâu có điều kiện (qualified observation), không khẳng định kết quả trận đấu. | **PASS** | Playwright E2E: `Deep central midfield cover is drawn`, `Assigned players: DM One`. |
+| **QA-108-05** | Incomplete XI, sai sơ đồ, trùng cầu thủ/vị trí hoặc lệch vai trò: fail-closed an toàn; hiển thị yêu cầu đủ XI, không tạo tương tác giả. | **PASS** | Vitest: 8 negative test cases; Playwright E2E: kiểm tra `Role partnership checks need a complete XI`. |
+| **QA-108-06** | Tính độc lập A/B & Lưu trữ: Plan A và Plan B giữ phân tích độc lập; lưu và khôi phục (Save/Restore) sau reload giữ đúng tên cầu thủ và cảnh báo. | **PASS** | Playwright E2E: Plan A cảnh báo, Plan B neutral; save to browser, reload, restore hoạt động hoàn hảo. |
+| **QA-108-07** | Bản địa hóa VI/EN & Trợ năng: hiển thị đầy đủ `Tương tác giữa các vai trò`, `Cầu thủ liên quan`, `Hậu vệ biên dâng cao cùng hành lang...`, `Đã bố trí tiền vệ bọc lót...`; hỗ trợ bàn phím, screen reader `role="status"`. | **PASS** | Playwright E2E: chuyển đổi ngôn ngữ tiếng Việt xác nhận text; toàn bộ 144/144 E2E tests PASS. |
+| **QA-108-08** | Giới hạn trung thực (Honest Boundaries): không khẳng định đọc trực tiếp chiến thuật FM2013, không can thiệp save/memory, không bịa điểm tương tác chemistry hay dự đoán trận đấu. | **PASS** | Provenance ghi rõ: `Mô hình managerhub.role-interactions.v1 chỉ dùng vai trò do Squad Planner gán và vị trí do bạn thiết lập, không phải vai trò gốc trong FM.` |
+
+**Kết luận QA Step 2 (PR #108):** **ACCEPT (Chấp thuận tăng dần phạm vi chẩn đoán tương tác vai trò của PR #108)**. 100% test cases QA-108-01..08 PASS. Không có lỗi P0/P1. MH-09 và MH-11 tiếp tục duy trì trạng thái **In progress**.
+
+
