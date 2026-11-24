@@ -844,7 +844,7 @@ test('MH-09 role interactions respond to selected XI positions and VI translatio
   await leftBack.focus();
   for (let i = 0; i < 5; i++) await leftBack.press('ArrowUp');
   await expect(report.getByText('Advancing wing-back and winger share a flank')).toBeVisible();
-  await expect(report.getByText(/LB Player/)).toBeVisible();
+  await expect(report.getByText(/Left Defender/)).toBeVisible();
   await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
   await expect(page.getByRole('region', { name: 'Tương tác giữa các vai trò' })
     .getByText('Hậu vệ biên dâng cao cùng hành lang với cầu thủ chạy cánh')).toBeVisible();
