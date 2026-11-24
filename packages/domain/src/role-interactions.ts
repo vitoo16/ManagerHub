@@ -154,48 +154,39 @@ export function analyzeRoleInteractions(
   };
 }
 
+/** Apply only the selected, currently supported finding. A stale or invalid XI is a no-op. */
 export function applyRoleInteractionAdjustment(
-  scenario: TacticalScenario, id: RoleAdjustmentId
+  scenario: TacticalScenario,
+  solution: SquadSolution | null,
+  target: Pick<RoleInteractionFinding, 'id' | 'slotIds' | 'playerNames'>
 ): TacticalScenario {
-  if (id === 'flank-advance-exposure') {
-    for (const [backId, wideId] of [['lb','lw'], ['rb','rw']] as const) {
-      const def = tacticalPosition(scenario, 'defending', backId);
-      const adv = tacticalPosition(scenario, 'possession', backId);
-      const wide = tacticalPosition(scenario, 'possession', wideId);
-      if (def.y - adv.y >= 4 && Math.abs(adv.x - wide.x) <= 4 &&
-        (wideId === 'lw' ? wide.x <= 6 : wide.x >= 14)) {
-        return positionTacticalSlot(scenario, 'possession', backId, { ...def });
-      }
-    }
-    return scenario;
-  }
-  if (id === 'uncovered-central-pivot') {
-    const targetSlotId = scenario.formation === '4-3-3' ? 'cm' : 'rdm';
-    const targetSlot = FORMATIONS[scenario.formation].find(s => s.id === targetSlotId);
-    if (!targetSlot) return scenario;
-    const defPos = tacticalPosition(scenario, 'defending', targetSlotId);
-    const targetX = Math.max(7, Math.min(13, defPos.x));
-    return positionTacticalSlot(scenario, 'possession', targetSlotId, { x: targetX, y: 12 });
-  }
-  if (id === 'central-midfield-congestion') {
-    const slots = FORMATIONS[scenario.formation];
-    const centralSlots = slots.filter(s => s.position === 'CM' || s.position === 'DM' || s.position === 'AM');
-    for (let i = 0; i < centralSlots.length; i++) {
-      for (let j = i + 1; j < centralSlots.length; j++) {
-        const s1 = centralSlots[i]!;
-        const s2 = centralSlots[j]!;
-        const p1 = tacticalPosition(scenario, 'possession', s1.id);
-        const p2 = tacticalPosition(scenario, 'possession', s2.id);
-        if (p1.x >= 7 && p1.x <= 13 && p2.x >= 7 && p2.x <= 13 &&
-            p1.y <= 9 && p2.y <= 9 &&
-            Math.abs(p1.x - p2.x) <= 1 && Math.abs(p1.y - p2.y) <= 1) {
-          const nextY = Math.min(15, p2.y + 3);
-          return positionTacticalSlot(scenario, 'possession', s2.id, { x: p2.x, y: nextY });
-        }
-      }
-    }
-    return scenario;
-  }
-  throw new Error('unknown_role_adjustment');
-}
+  if (!isRoleAdjustmentId(target.id)) throw new Error('unknown_role_adjustment');
+  const finding = analyzeRoleInteractions(scenario, solution).findings.find(item =>
+    item.id === target.id &&
+    item.slotIds.length === target.slotIds.length &&
+    item.slotIds.every((id, index) => id === target.slotIds[index]) &&
+    item.playerNames.length === target.playerNames.length &&
+    item.playerNames.every((name, index) => name === target.playerNames[index]));
+  if (!finding) return scenario;
 
+  if (finding.id === 'flank-advance-exposure') {
+    const backId = finding.slotIds[0]!;
+    const defending = tacticalPosition(scenario, 'defending', backId);
+    return positionTacticalSlot(scenario, 'possession', backId, defending);
+  }
+  if (finding.id === 'uncovered-central-pivot') {
+    const targetSlotId = scenario.formation === '4-3-3' ? 'cm' : 'rdm';
+    const defending = tacticalPosition(scenario, 'defending', targetSlotId);
+    return positionTacticalSlot(scenario, 'possession', targetSlotId, {
+      x: Math.max(7, Math.min(13, defending.x)), y: 12
+    });
+  }
+  if (finding.id === 'central-midfield-congestion') {
+    const slotId = finding.slotIds[1]!;
+    const point = tacticalPosition(scenario, 'possession', slotId);
+    return positionTacticalSlot(scenario, 'possession', slotId, {
+      x: point.x, y: point.y + 3
+    });
+  }
+  return scenario;
+}

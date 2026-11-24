@@ -3,7 +3,7 @@ import {
   analyzeRoleInteractions,
   applyRoleInteractionAdjustment,
   ROLE_INTERACTION_VERSION,
-  type RoleAdjustmentId
+  type RoleInteractionFinding
 } from './role-interactions';
 import { FORMATIONS, type FormationId, type SquadSolution } from './squad-optimizer';
 import { defaultTacticalScenario } from './tactical-state';
@@ -117,7 +117,7 @@ describe('MH-09 source-bound role partnerships', () => {
     expect(finding.playerNames).toEqual(['Test lcm', 'Test cm', 'Test rcm']);
 
     // Applying adjustment pulls cm back to y=12
-    const adjusted = applyRoleInteractionAdjustment(allPushed, 'uncovered-central-pivot');
+    const adjusted = applyRoleInteractionAdjustment(allPushed, valid, finding);
     expect(adjusted.placements.possession.cm).toEqual({ x: 10, y: 12 });
     const adjustedReport = analyzeRoleInteractions(adjusted, valid);
     expect(adjustedReport.findings.map(item => item.id)).not.toContain('uncovered-central-pivot');
@@ -135,7 +135,7 @@ describe('MH-09 source-bound role partnerships', () => {
     expect(finding.playerNames).toEqual(['Test ldm', 'Test am']);
 
     // Applying adjustment staggers the deeper one back
-    const adjusted = applyRoleInteractionAdjustment(congested, 'central-midfield-congestion');
+    const adjusted = applyRoleInteractionAdjustment(congested, valid, finding);
     expect(adjusted.placements.possession.am?.y).toBe(9);
     const adjustedReport = analyzeRoleInteractions(adjusted, valid);
     expect(adjustedReport.findings.map(item => item.id)).not.toContain('central-midfield-congestion');
@@ -144,13 +144,63 @@ describe('MH-09 source-bound role partnerships', () => {
   it('applies flank advance exposure adjustment by retreating the wing-back', () => {
     const base = defaultTacticalScenario('4-3-3');
     const advanced = positionTacticalSlot(base, 'possession', 'lb', { x: 2, y: 10 });
-    const adjusted = applyRoleInteractionAdjustment(advanced, 'flank-advance-exposure');
+    const valid = xi('4-3-3');
+    const finding = analyzeRoleInteractions(advanced, valid).findings.find(item => item.id === 'flank-advance-exposure')!;
+    const adjusted = applyRoleInteractionAdjustment(advanced, valid, finding);
     expect(adjusted.placements.possession.lb?.y).toBe(15);
+  });
+
+  it('applies the selected right flank finding when both flanks are advanced', () => {
+    const valid = xi('4-3-3');
+    const base = defaultTacticalScenario('4-3-3');
+    const both = positionTacticalSlot(positionTacticalSlot(base, 'possession', 'lb', { x: 2, y: 11 }),
+      'possession', 'rb', { x: 18, y: 11 });
+    const findings = analyzeRoleInteractions(both, valid).findings;
+    const right = findings.find(item => item.id === 'flank-advance-exposure' && item.slotIds[0] === 'rb')!;
+    const adjusted = applyRoleInteractionAdjustment(both, valid, right);
+    expect(adjusted.placements.possession.lb).toEqual({ x: 2, y: 11 });
+    expect(adjusted.placements.possession.rb).toEqual({ x: 18, y: 15 });
+    expect(adjusted.placements.defending).toBe(both.placements.defending);
+    expect(adjusted.instructions).toBe(both.instructions);
+    expect(analyzeRoleInteractions(adjusted, valid).findings.filter(item => item.id === 'flank-advance-exposure')
+      .map(item => item.slotIds)).toEqual([['lb', 'lw']]);
+    expect(applyRoleInteractionAdjustment(adjusted, valid, right)).toBe(adjusted);
+    expect(applyRoleInteractionAdjustment(both, null, right)).toBe(both);
+    expect(applyRoleInteractionAdjustment(both, xi('4-2-3-1'), right)).toBe(both);
+    const changedXI = { ...valid, lineup: valid.lineup.map(item =>
+      item.slot.id === 'rb' ? { ...item, name: 'Replacement RB' } : item) };
+    expect(applyRoleInteractionAdjustment(both, changedXI, right)).toBe(both);
+  });
+
+  it('targets the selected congestion pair rather than the first repeated rule', () => {
+    const valid = xi('4-3-3');
+    let scenario = defaultTacticalScenario('4-3-3');
+    for (const [id, x] of [['lcm', 9], ['cm', 10], ['rcm', 11]] as const) {
+      scenario = positionTacticalSlot(scenario, 'possession', id, { x, y: 8 });
+    }
+    const pairs = analyzeRoleInteractions(scenario, valid).findings.filter(item => item.id === 'central-midfield-congestion');
+    expect(pairs.map(item => item.slotIds)).toEqual([['lcm', 'cm'], ['cm', 'rcm']]);
+    const adjusted = applyRoleInteractionAdjustment(scenario, valid, pairs[1]!);
+    expect(adjusted.placements.possession.cm).toEqual({ x: 10, y: 8 });
+    expect(adjusted.placements.possession.rcm).toEqual({ x: 11, y: 11 });
+    expect(analyzeRoleInteractions(adjusted, valid).findings.filter(item => item.id === 'central-midfield-congestion')
+      .map(item => item.slotIds)).toEqual([['lcm', 'cm']]);
+    expect(applyRoleInteractionAdjustment(scenario, valid, { ...pairs[1]!, slotIds: ['gk', 'st'] })).toBe(scenario);
+  });
+
+  it('does not apply a fabricated pivot warning to a neutral XI', () => {
+    const base = defaultTacticalScenario('4-3-3');
+    expect(applyRoleInteractionAdjustment(base, xi('4-3-3'), {
+      id: 'uncovered-central-pivot', slotIds: ['lcm', 'cm', 'rcm'],
+      playerNames: ['Test lcm', 'Test cm', 'Test rcm']
+    })).toBe(base);
   });
 
   it('throws on unknown role adjustment IDs', () => {
     const base = defaultTacticalScenario('4-3-3');
-    expect(() => applyRoleInteractionAdjustment(base, 'unknown-id' as unknown as RoleAdjustmentId))
+    expect(() => applyRoleInteractionAdjustment(base, xi('4-3-3'), {
+      id: 'unknown-id' as unknown as RoleInteractionFinding['id'], slotIds: [], playerNames: []
+    }))
       .toThrow('unknown_role_adjustment');
   });
 });

@@ -810,6 +810,7 @@ export default {
   "Could not export tactical report. The plan is unchanged.": "Không thể xuất báo cáo chiến thuật. Phương án vẫn được giữ nguyên.",
   "Apply suggested adjustment": "Áp dụng điều chỉnh gợi ý",
   "Apply suggested adjustment to {{finding}}": "Áp dụng điều chỉnh cho {{finding}}",
+  "Apply suggested adjustment to {{finding}} for {{players}}": "Áp dụng điều chỉnh cho {{finding}}: {{players}}",
   "Undo last tactical adjustment": "Hoàn tác điều chỉnh chiến thuật vừa áp dụng",
   "Complete XI needed for shape diagnostics": "Cần đủ đội hình XI để kiểm tra hình dạng chiến thuật",
   "No shape risks detected by these rules": "Các quy tắc hiện tại chưa phát hiện nguy cơ về bố trí",
