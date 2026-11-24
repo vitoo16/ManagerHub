@@ -93,8 +93,16 @@ export function selectComparableMembers(left, right, limit = MAX_COMPARE_MEMBERS
   };
 }
 
-export async function compareLocalAfeSaves(pathA, pathB, { allMembers = false } = {}) {
-  if (typeof allMembers !== 'boolean') throw new TypeError('allMembers must be boolean.');
+export async function compareLocalAfeSaves(pathA, pathB, { allMembers = false, includeLargeMembers = false } = {}) {
+  if (typeof allMembers !== 'boolean' || typeof includeLargeMembers !== 'boolean') {
+    throw new TypeError('Comparison mode options must be boolean.');
+  }
+  if (includeLargeMembers && !allMembers) {
+    throw new TypeError('Large-member comparison requires full catalogue mode.');
+  }
+  // Only the explicit research mode hashes large database members. Validated
+  // non-overlapping extents and the existing per-file cap bound total reads.
+  const hashMemberLimit = includeLargeMembers ? MAX_INPUT_BYTES : MAX_HASH_MEMBER_BYTES;
   const [fingerprintA, fingerprintB] = await Promise.all([
     fingerprint(pathA), fingerprint(pathB)
   ]);
@@ -139,7 +147,7 @@ export async function compareLocalAfeSaves(pathA, pathB, { allMembers = false } 
     // Hash the complete stored member in bounded chunks. Digests never leave
     // this function; the output records equality evidence only.
     const digestMember = async (handle, member) => {
-      if (member.storedBytes > MAX_HASH_MEMBER_BYTES) return null;
+      if (member.storedBytes > hashMemberLimit) return null;
       const hash = createHash('sha256');
       let consumed = 0;
       while (consumed < member.storedBytes) {
@@ -171,7 +179,7 @@ export async function compareLocalAfeSaves(pathA, pathB, { allMembers = false } 
       }
       let completeMemberHashMatch = null;
       if (memberA.storedBytes === memberB.storedBytes &&
-          memberA.storedBytes <= MAX_HASH_MEMBER_BYTES) {
+          memberA.storedBytes <= hashMemberLimit) {
         const [digestA, digestB] = await Promise.all([
           digestMember(handleA, memberA), digestMember(handleB, memberB)
         ]);
@@ -193,6 +201,13 @@ export async function compareLocalAfeSaves(pathA, pathB, { allMembers = false } 
         })
       });
     }
+    if (includeLargeMembers) {
+      const [afterA, afterB] = await Promise.all([fingerprint(pathA), fingerprint(pathB)]);
+      if (afterA.bytes !== fingerprintA.bytes || afterA.digest !== fingerprintA.digest ||
+          afterB.bytes !== fingerprintB.bytes || afterB.digest !== fingerprintB.digest) {
+        throw new Error('Save changed during large-member comparison.');
+      }
+    }
     const hashedMembers = comparisons.filter(item => item.completeMemberHashMatch !== null).length;
     const changedMembers = comparisons.filter(item => item.completeMemberHashMatch === false).length;
     return {
@@ -203,6 +218,7 @@ export async function compareLocalAfeSaves(pathA, pathB, { allMembers = false } 
       ...coverage,
       ...(allMembers ? {
         comparisonMode: 'full_catalogue',
+        ...(includeLargeMembers ? { hashMemberLimitBytes: hashMemberLimit, sourceRechecked: true } : {}),
         hashedMembers,
         changedMembers,
         unchangedMembers: hashedMembers - changedMembers,
@@ -222,12 +238,16 @@ export async function compareLocalAfeSaves(pathA, pathB, { allMembers = false } 
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  const [first, second, flag] = process.argv.slice(2);
-  if (!first || !second || (flag && flag !== '--all-members') || process.argv.length > 5) {
-    console.error('Usage: node scripts/afe-cross-save.mjs <first-local.fm> <second-local.fm> [--all-members]');
+  const [first, second, ...flags] = process.argv.slice(2);
+  const allMembers = flags.includes('--all-members');
+  const includeLargeMembers = flags.includes('--include-large-members');
+  if (!first || !second || new Set(flags).size !== flags.length ||
+      flags.some(flag => flag !== '--all-members' && flag !== '--include-large-members') ||
+      (includeLargeMembers && !allMembers)) {
+    console.error('Usage: node scripts/afe-cross-save.mjs <first-local.fm> <second-local.fm> [--all-members [--include-large-members]]');
     process.exitCode = 2;
   } else {
-    compareLocalAfeSaves(first, second, { allMembers: flag === '--all-members' })
+    compareLocalAfeSaves(first, second, { allMembers, includeLargeMembers })
       .then(result => console.log(JSON.stringify(result, null, 2)))
       .catch(error => { console.error(error.message); process.exitCode = 1; });
   }
