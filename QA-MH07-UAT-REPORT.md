@@ -139,5 +139,27 @@
 
 **Kết luận QA Step 3 (PR #110):** **ACCEPT (Chấp thuận tăng dần phạm vi động lực trung lộ và điều chỉnh có thể hoàn tác của PR #110)**. 100% test cases QA-110-01..08 PASS. Zero P0/P1 defects. MH-09 và MH-11 tiếp tục duy trì trạng thái **In progress**.
 
+---
+
+### 9. Kết quả kiểm tra Corrective Gate — PR #112 / Issue #113 (Selected-Finding Corrections & Independent Undo)
+
+**Tested Candidate SHA:** `8223ddb707049f170bc6364c7e827706bf8a628a`  
+**Merged Main SHA:** `267848972e293f0632a9e223ce5270daee45e7f1`  
+**Profile:** Local CI Release 10/10 stages PASS (`acceptanceEligible: true`, Candidate SHA256: `43FCEB242982FE3A0C3DCCDA201F6BDC2EFAF19C86D63733B562197D9F5258A0`, Merged Main SHA256: `4BC8F6C000D000A349C54A459C309EA5F50EA13E09172A10C2E7E359E1082632`).
+
+| Test ID | Nội dung kiểm thử | Kết quả | Bằng chứng / Chi tiết |
+|---|---|:---:|---|
+| **QA-112-01** | 4-3-3 cả 2 cánh dâng cao: bấm nút điều chỉnh cánh phải (RB) | **PASS** | Chỉ RB lùi về độ sâu phòng ngự ($Y=15$), LB vẫn giữ $Y=11$; thẻ cánh trái vẫn hiển thị đúng. |
+| **QA-112-02** | 4-2-3-1 kiểm tra tương tự trên từng cánh độc lập | **PASS** | Thao tác điều chỉnh xác định đúng slot cánh được chọn qua finding ID và slot IDs. |
+| **QA-112-03** | Hai cặp tiền vệ cùng trùng lặp vị trí: chọn cặp thứ hai | **PASS** | Chỉ di chuyển slot thứ hai của cặp được chọn ($Y+3$), không tác động sai cặp thứ nhất. |
+| **QA-112-04** | Fail-closed đối với finding hết hiệu lực hoặc XI không hợp lệ | **PASS** | Finding giả mạo hoặc XI thiếu/lệch role trả về scenario nguyên vẹn (no-op an toàn). |
+| **QA-112-05** | Undo độc lập giữa Plan A và Plan B | **PASS** | Điều chỉnh A rồi điều chỉnh B, quay lại A bấm Undo chỉ hoàn tác A; sau đó sang B bấm Undo hoàn tác B. |
+| **QA-112-06** | Vòng đời Undo: thao tác chỉnh tay thủ công chỉ xóa Undo của plan đó | **PASS** | Chỉnh tay Plan A không làm mất Undo của Plan B; Save/Restore/Forget xóa sạch cả 2 plan đúng chuẩn. |
+| **QA-112-07** | Bản địa hóa VI/EN, tên truy cập phân biệt theo cầu thủ và WCAG 2.2 | **PASS** | Nút bấm chứa tên cầu thủ (`Áp dụng điều chỉnh cho... đối với...`); axe-core 100% PASS. |
+| **QA-112-08** | Không phá vỡ kiểm thử cũ (Regressions) & Không can thiệp dữ liệu game | **PASS** | Toàn bộ 250 Vitest tests và 148 Playwright E2E tests đạt 100% PASS; zero save/memory writes. |
+
+**Kết luận QA Corrective Gate (PR #112):** **ACCEPT (Chấp thuận tăng dần phạm vi bảo vệ điều chỉnh mục tiêu và hoàn tác độc lập của PR #112)**. 100% test cases QA-112-01..08 PASS. Zero P0/P1 defects. MH-09 và MH-11 tiếp tục duy trì trạng thái **In progress**.
+
+
 
 
