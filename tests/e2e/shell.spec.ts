@@ -799,6 +799,35 @@ test('Tactical diagnostics allow explicit correction and undo without changing P
   await expect(localized.getByRole('button', { name: 'Hoàn tác điều chỉnh chiến thuật vừa áp dụng' })).toHaveCount(0);
 });
 
+test('Tactical report exports the active edited scenario and localized action without changing the plan', async ({ page }) => {
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'tactical-report.csv', mimeType: 'text/csv', buffer: Buffer.from(makeSquadExport())
+  });
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Squad Planner/ }).click();
+  const lab = page.getByRole('region', { name: 'Tactical Lab' });
+  await lab.getByRole('button', { name: 'Defending' }).click();
+  await lab.getByLabel('Proposed defensive line').selectOption('high');
+  await lab.getByLabel('Proposed pressing').selectOption('low');
+  const downloadPromise = page.waitForEvent('download');
+  await lab.getByRole('button', { name: 'Export tactical plan as CSV' }).click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe('ManagerHub-tactical-report-tactical-A.csv');
+  const stream = await download.createReadStream();
+  const chunks: Buffer[] = [];
+  for await (const chunk of stream) chunks.push(Buffer.from(chunk));
+  const exported = Buffer.concat(chunks).toString('utf8');
+  expect(exported).toContain('High line with low pressing');
+  expect(exported).toContain('defensiveLine=high');
+  expect(exported).toContain('not native FM2013 tactics');
+  await expect(lab.getByLabel('Proposed defensive line')).toHaveValue('high');
+  await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
+  await expect(page.getByRole('region', { name: 'Phòng phân tích chiến thuật' })
+    .getByRole('button', { name: 'Xuất báo cáo chiến thuật CSV' })).toBeVisible();
+});
+
 test('Tactical diagnostics suppress shape warnings for incomplete XI', async ({ page }) => {
   await page.goto('/#/players');
   await page.locator('input[type=file]').setInputFiles({
