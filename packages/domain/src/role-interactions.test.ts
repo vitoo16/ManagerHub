@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { analyzeRoleInteractions, ROLE_INTERACTION_VERSION } from './role-interactions';
+import {
+  analyzeRoleInteractions,
+  applyRoleInteractionAdjustment,
+  ROLE_INTERACTION_VERSION,
+  type RoleAdjustmentId
+} from './role-interactions';
 import { FORMATIONS, type FormationId, type SquadSolution } from './squad-optimizer';
 import { defaultTacticalScenario } from './tactical-state';
 import { positionTacticalSlot } from './tactical-scenarios';
@@ -92,5 +97,60 @@ describe('MH-09 source-bound role partnerships', () => {
       'possession', 'rb', { x: 18, y: 15 });
     expect(analyzeRoleInteractions(deeperBack, xi('4-2-3-1')).findings.map(item => item.id))
       .toEqual(['flank-advance-exposure']);
+  });
+
+  it('detects uncovered central pivot when all central midfielders advance into attacking depth', () => {
+    // In 4-3-3: lcm, cm, rcm
+    const base = defaultTacticalScenario('4-3-3');
+    const valid = xi('4-3-3');
+    const allPushed = positionTacticalSlot(
+      positionTacticalSlot(
+        positionTacticalSlot(base, 'possession', 'lcm', { x: 7, y: 7 }),
+        'possession', 'cm', { x: 10, y: 6 }
+      ),
+      'possession', 'rcm', { x: 13, y: 7 }
+    );
+    const report = analyzeRoleInteractions(allPushed, valid);
+    expect(report.findings.map(item => item.id)).toContain('uncovered-central-pivot');
+    const finding = report.findings.find(item => item.id === 'uncovered-central-pivot')!;
+    expect(finding.slotIds).toEqual(['lcm', 'cm', 'rcm']);
+    expect(finding.playerNames).toEqual(['Test lcm', 'Test cm', 'Test rcm']);
+
+    // Applying adjustment pulls cm back to y=12
+    const adjusted = applyRoleInteractionAdjustment(allPushed, 'uncovered-central-pivot');
+    expect(adjusted.placements.possession.cm).toEqual({ x: 10, y: 12 });
+    const adjustedReport = analyzeRoleInteractions(adjusted, valid);
+    expect(adjustedReport.findings.map(item => item.id)).not.toContain('uncovered-central-pivot');
+  });
+
+  it('detects and adjusts central midfield spatial congestion', () => {
+    // In 4-2-3-1: am is default at x=10, y=6. Move ldm directly next to it: x=10, y=7
+    const base = defaultTacticalScenario('4-2-3-1');
+    const valid = xi('4-2-3-1');
+    const congested = positionTacticalSlot(base, 'possession', 'ldm', { x: 10, y: 7 });
+    const report = analyzeRoleInteractions(congested, valid);
+    expect(report.findings.map(item => item.id)).toContain('central-midfield-congestion');
+    const finding = report.findings.find(item => item.id === 'central-midfield-congestion')!;
+    expect(finding.slotIds).toEqual(['ldm', 'am']);
+    expect(finding.playerNames).toEqual(['Test ldm', 'Test am']);
+
+    // Applying adjustment staggers the deeper one back
+    const adjusted = applyRoleInteractionAdjustment(congested, 'central-midfield-congestion');
+    expect(adjusted.placements.possession.am?.y).toBe(9);
+    const adjustedReport = analyzeRoleInteractions(adjusted, valid);
+    expect(adjustedReport.findings.map(item => item.id)).not.toContain('central-midfield-congestion');
+  });
+
+  it('applies flank advance exposure adjustment by retreating the wing-back', () => {
+    const base = defaultTacticalScenario('4-3-3');
+    const advanced = positionTacticalSlot(base, 'possession', 'lb', { x: 2, y: 10 });
+    const adjusted = applyRoleInteractionAdjustment(advanced, 'flank-advance-exposure');
+    expect(adjusted.placements.possession.lb?.y).toBe(15);
+  });
+
+  it('throws on unknown role adjustment IDs', () => {
+    const base = defaultTacticalScenario('4-3-3');
+    expect(() => applyRoleInteractionAdjustment(base, 'unknown-id' as unknown as RoleAdjustmentId))
+      .toThrow('unknown_role_adjustment');
   });
 });

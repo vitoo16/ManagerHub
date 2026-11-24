@@ -1,10 +1,10 @@
 import { memo, useCallback, useRef, useState, type Dispatch, type KeyboardEvent, type PointerEvent, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  FORMATIONS, analyzeRoleInteractions, applyTacticalDiagnosticAdjustment, createTacticalScenarioCsv, defaultTacticalScenario, diagnoseTacticalScenario, makeSavedTacticalScenarios, positionTacticalSlot,
+  FORMATIONS, analyzeRoleInteractions, applyRoleInteractionAdjustment, applyTacticalDiagnosticAdjustment, createTacticalScenarioCsv, defaultTacticalScenario, diagnoseTacticalScenario, isRoleAdjustmentId, makeSavedTacticalScenarios, positionTacticalSlot,
   restoreSavedTacticalScenarios, squadDatasetSha256, tacticalPosition, tacticalReportFilename, tacticalScenarioForFormation,
   TACTICAL_STORAGE_PREFIX,
-  type PlayerDataset, type SquadPlanKey, type SquadPlans, type SquadSolution,
+  type PlayerDataset, type RoleInteractionId, type SquadPlanKey, type SquadPlans, type SquadSolution,
   type TacticalInstructions, type TacticalPhase, type TacticalPoint,
   type TacticalDiagnosticId, type TacticalScenario, type TacticalScenarios, type TacticalWidth, type TacticalIntensity
 } from '@managerhub/domain';
@@ -54,6 +54,14 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
   const applyAdjustment = (id: TacticalDiagnosticId) => {
     if (id === 'incomplete-xi') return;
     const adjusted = applyTacticalDiagnosticAdjustment(scenario, id);
+    setScenarios(previous => ({ ...previous, [active]: adjusted }));
+    setLastAdjustment({ plan: active, before: scenario, after: adjusted });
+    setNotice(null);
+  };
+
+  const applyRoleAdjustment = (id: RoleInteractionId) => {
+    if (!isRoleAdjustmentId(id)) return;
+    const adjusted = applyRoleInteractionAdjustment(scenario, id);
     setScenarios(previous => ({ ...previous, [active]: adjusted }));
     setLastAdjustment({ plan: active, before: scenario, after: adjusted });
     setNotice(null);
@@ -297,8 +305,15 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
                 <p><b>{t('Why flagged')}</b> {t(finding.reason)}</p>
                 <p><b>{t('Consider')}</b> {t(finding.suggestion)}</p>
                 <p><b>{t('Limit')}</b> {t(finding.limitation)}</p>
+                {isRoleAdjustmentId(finding.id) && (
+                  <Button variant="quiet" disabled={busy}
+                    aria-label={t('Apply suggested adjustment to {{finding}}', { finding: t(finding.title) })}
+                    onClick={() => applyRoleAdjustment(finding.id)}>{t('Apply suggested adjustment')}</Button>
+                )}
               </li>)}
             </ul>}
+          {lastAdjustment?.plan === active && lastAdjustment.after === scenario && <Button variant="quiet" disabled={busy}
+            onClick={undoAdjustment}>{t('Undo last tactical adjustment')}</Button>}
           <p className="tactical-lab__diagnostic-provenance">{t('Role model {{version}} uses roles assigned by Squad Planner and manager-authored positions only, not native FM roles.', { version: roleInteractions.model })}</p>
         </section>
         <p className="tactical-lab__source">{t('Source: imported player export. Position labels and roles come from the current lineup. Tactical coordinates and instructions are user assumptions. Changing formations resets this plan’s tactical coordinates.')}</p>

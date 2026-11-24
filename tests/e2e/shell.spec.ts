@@ -902,6 +902,43 @@ test('MH-09 role partnerships keep Plan B formation and cover independent', asyn
   await expect(report.getByText('Assigned players: DM One', { exact: true })).toBeVisible();
 });
 
+test('MH-09 Step 3 central dynamics: detects uncovered pivot and congestion with reversible adjustment', async ({ page }) => {
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'step3-central.csv', mimeType: 'text/csv',
+    buffer: Buffer.from(makeSquadExport([['DM One', 'DM'], ['DM Two', 'DM'], ['AM One', 'AM (C)']]))
+  });
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' })
+    .getByRole('button', { name: /Squad Planner/ }).click();
+  const lab = page.getByRole('region', { name: 'Tactical Lab' });
+  const report = lab.getByRole('region', { name: 'Role partnerships' });
+
+  // In 4-3-3: move all 3 central midfielders (lcm, cm, rcm) up to attacking depth (y <= 8)
+  await lab.getByLabel('Select tactical position').selectOption('lcm');
+  for (let i = 0; i < 3; i++) await lab.getByRole('button', { name: 'Move up', exact: true }).click();
+  await lab.getByLabel('Select tactical position').selectOption('cm');
+  for (let i = 0; i < 4; i++) await lab.getByRole('button', { name: 'Move up', exact: true }).click();
+  await lab.getByLabel('Select tactical position').selectOption('rcm');
+  for (let i = 0; i < 3; i++) await lab.getByRole('button', { name: 'Move up', exact: true }).click();
+
+  await expect(report.getByText('Uncovered central pivot')).toBeVisible();
+  await expect(report.getByText(/All central midfielders advance into attacking depth/)).toBeVisible();
+
+  // Apply suggested adjustment to uncovered central pivot
+  await report.getByRole('button', { name: 'Apply suggested adjustment to Uncovered central pivot' }).click();
+  await expect(report.getByText('Uncovered central pivot')).not.toBeVisible();
+
+  // Undo restores the warning
+  await report.getByRole('button', { name: 'Undo last tactical adjustment' }).click();
+  await expect(report.getByText('Uncovered central pivot')).toBeVisible();
+
+  // Language switch to Vietnamese
+  await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
+  const localizedReport = page.getByRole('region', { name: 'Tương tác giữa các vai trò' });
+  await expect(localizedReport.getByText('Khoảng trống trục dọc trung lộ chưa được che chắn')).toBeVisible();
+});
+
 test('Tactical diagnostics suppress shape warnings for incomplete XI', async ({ page }) => {
   await page.goto('/#/players');
   await page.locator('input[type=file]').setInputFiles({
