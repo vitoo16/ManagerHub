@@ -1,5 +1,5 @@
 import { FORMATIONS, type SquadSolution } from './squad-optimizer';
-import { tacticalPosition, type TacticalScenario } from './tactical-scenarios';
+import { positionTacticalSlot, tacticalPosition, type TacticalScenario } from './tactical-scenarios';
 
 export const TACTICAL_DIAGNOSTIC_VERSION = 'managerhub.tactical-diagnostics.v1' as const;
 
@@ -109,4 +109,31 @@ export function diagnoseTacticalScenario(
     lineupEvidence: 'complete-xi',
     diagnostics
   };
+}
+
+/**
+ * An opt-in, reversible suggestion for a *manager-authored* tactic.
+ * These corrections address only the specified geometric rule; they never
+ * predict match performance or mutate an imported game source.
+ */
+export type TacticalAdjustmentId = Exclude<TacticalDiagnosticId, 'incomplete-xi'>;
+
+export function applyTacticalDiagnosticAdjustment(
+  scenario: TacticalScenario, id: TacticalAdjustmentId
+): TacticalScenario {
+  if (id === 'high-line-low-press') {
+    return { ...scenario, instructions: { ...scenario.instructions, defensiveLine: 'balanced' } };
+  }
+  if (id === 'advanced-fullbacks-without-cover') {
+    const rightBack = tacticalPosition(scenario, 'possession', 'rb');
+    const defendingRightBack = tacticalPosition(scenario, 'defending', 'rb');
+    return positionTacticalSlot(scenario, 'possession', 'rb', { ...rightBack, y: defendingRightBack.y });
+  }
+  if (id === 'open-central-channel') {
+    const left = tacticalPosition(scenario, 'defending', 'lcb');
+    const right = tacticalPosition(scenario, 'defending', 'rcb');
+    const targetX = Math.max(1, Math.min(19, left.x + (right.x >= left.x ? 9 : -9)));
+    return positionTacticalSlot(scenario, 'defending', 'rcb', { ...right, x: targetX });
+  }
+  throw new Error('unknown_tactical_adjustment');
 }
