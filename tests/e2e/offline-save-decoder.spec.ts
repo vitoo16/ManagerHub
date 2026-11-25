@@ -106,6 +106,7 @@ test('complete offline FM2013 save workflow: decode, explore, Realism/Editor iso
   await expect(modeGroup.getByRole('button', { name: 'Editor mode' })).toHaveAttribute('aria-pressed', 'true');
   await expect(explorer.locator('thead th', { hasText: /^CA$/ })).toBeVisible();
   await expect(explorer.locator('thead th', { hasText: /^PA$/ })).toBeVisible();
+  const toolbar = page.locator('.active-save-toolbar');
   await toolbar.locator('input[accept=".exe"]').setInputFiles({
     name: 'synthetic-test-only.exe', mimeType: 'application/octet-stream',
     buffer: buildSyntheticAuthorizationExecutable()
@@ -381,6 +382,12 @@ test('P0 unified SaveSession (S01-S08): non-remounting continuity, decoupled clu
 
   // 5. S06 & S08: Switch to Editor mode -> Edit Owen Shaw + Club Finances -> Test Undo/Redo -> Certified Save As .fm roundtrip
   await toolbar.getByRole('group', { name: 'Global display mode' }).getByRole('button', { name: 'Editor mode' }).click();
+  await toolbar.locator('input[accept=".exe"]').setInputFiles({
+    name: 'synthetic-test-only.exe',
+    mimeType: 'application/octet-stream',
+    buffer: buildSyntheticAuthorizationExecutable()
+  });
+  await expect(toolbar).toContainText('HMAC-SHA512');
   const owenRow = explorer.locator('tbody tr', { hasText: 'Owen Shaw' });
   await owenRow.getByRole('button', { name: 'Edit' }).click();
 
