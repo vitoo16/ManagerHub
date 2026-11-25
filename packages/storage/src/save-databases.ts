@@ -1,6 +1,8 @@
 import {
-  DECODED_SAVE_DB_SCHEMA_VERSION,
+  isValidDecodedSaveDatabase,
+  isValidDecodedSaveSummary,
   summarizeSaveDatabase,
+  validateDecodedSaveDatabase,
   type DecodedSaveDatabase,
   type DecodedSaveDatabaseSummary
 } from '@managerhub/domain/fm2013-offline';
@@ -11,6 +13,17 @@ const SAVE_DB_VERSION = 1;
 const STORE_SUMMARIES = 'save-db-summaries';
 const STORE_RECORDS = 'save-db-records';
 export const MAX_SAVED_DECODED_DATABASES = 8;
+
+export class SaveDatabaseCapacityError extends Error {
+  readonly code = 'SAVE_DB_CAPACITY_EXCEEDED' as const;
+
+  constructor(maxItems = MAX_SAVED_DECODED_DATABASES) {
+    super(
+      `Browser decoded-save library has reached its ${maxItems}-save limit. Remove an older saved database before saving a new one.`
+    );
+    this.name = 'SaveDatabaseCapacityError';
+  }
+}
 
 function openSaveDb(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
@@ -50,15 +63,7 @@ function isObject(value: unknown): value is Record<string, unknown> {
 }
 
 export function isDecodedSaveDatabaseSummary(value: unknown): value is DecodedSaveDatabaseSummary {
-  if (!isObject(value)) return false;
-  if (value.schemaVersion !== DECODED_SAVE_DB_SCHEMA_VERSION) return false;
-  if (typeof value.saveId !== 'string' || !/^[a-f0-9]{64}$/.test(value.saveId)) return false;
-  if (typeof value.savedAt !== 'string' || !Number.isFinite(Date.parse(value.savedAt))) return false;
-  if (!isObject(value.source) || !isObject(value.counts) || !Array.isArray(value.humans)) return false;
-  return typeof value.source.fileName === 'string' &&
-    value.source.edition === 'FM2013' &&
-    value.source.writeCapability === false &&
-    typeof value.counts.players === 'number';
+  return isValidDecodedSaveSummary(value);
 }
 
 interface StoredDecodedSaveEnvelope {
@@ -67,21 +72,14 @@ interface StoredDecodedSaveEnvelope {
   readonly database: DecodedSaveDatabase;
 }
 
-export function isStoredDecodedSaveEnvelope(value: unknown): value is StoredDecodedSaveEnvelope {
+export function isStoredDecodedSaveEnvelope(
+  value: unknown,
+  expectedSaveId?: string
+): value is StoredDecodedSaveEnvelope {
   if (!isObject(value) || typeof value.saveId !== 'string' || !/^[a-f0-9]{64}$/.test(value.saveId)) return false;
-  if (!isObject(value.database)) return false;
-  const db = value.database;
-  return db.schemaVersion === DECODED_SAVE_DB_SCHEMA_VERSION &&
-    isObject(db.source) &&
-    db.source.saveId === value.saveId &&
-    db.source.writeCapability === false &&
-    Array.isArray(db.players) &&
-    Array.isArray(db.clubs) &&
-    Array.isArray(db.staff) &&
-    Array.isArray(db.teams) &&
-    Array.isArray(db.stadiums) &&
-    Array.isArray(db.nations) &&
-    Array.isArray(db.competitions);
+  if (expectedSaveId !== undefined && value.saveId !== expectedSaveId) return false;
+  if (typeof value.savedAt !== 'string' || !Number.isFinite(Date.parse(value.savedAt))) return false;
+  return isValidDecodedSaveDatabase(value.database, value.saveId);
 }
 
 export async function listDecodedSaveSummaries(): Promise<DecodedSaveDatabaseSummary[]> {
@@ -105,7 +103,7 @@ export async function getDecodedSaveDatabase(saveId: string): Promise<DecodedSav
     const raw = await readRequest<unknown>(tx.objectStore(STORE_RECORDS).get(saveId));
     await transactionCompleted(tx);
     if (!raw) return null;
-    if (!isStoredDecodedSaveEnvelope(raw)) {
+    if (!isStoredDecodedSaveEnvelope(raw, saveId)) {
       throw new Error('Stored decoded save record failed schema validation.');
     }
     return raw.database;
@@ -114,13 +112,17 @@ export async function getDecodedSaveDatabase(saveId: string): Promise<DecodedSav
   }
 }
 
-export async function saveDecodedSaveDatabase(database: DecodedSaveDatabase): Promise<DecodedSaveDatabaseSummary> {
+export async function saveDecodedSaveDatabase(
+  database: DecodedSaveDatabase,
+  options: { readonly evictOldest?: boolean } = {}
+): Promise<DecodedSaveDatabaseSummary> {
+  const validated = validateDecodedSaveDatabase(database);
   const savedAt = new Date().toISOString();
-  const summary = summarizeSaveDatabase(database, savedAt);
+  const summary = summarizeSaveDatabase(validated, savedAt);
   const envelope: StoredDecodedSaveEnvelope = {
-    saveId: database.source.saveId,
+    saveId: validated.source.saveId,
     savedAt,
-    database
+    database: validated
   };
   const db = await openSaveDb();
   try {
@@ -131,11 +133,18 @@ export async function saveDecodedSaveDatabase(database: DecodedSaveDatabase): Pr
     const others = existing
       .filter(item => item.saveId !== summary.saveId)
       .sort((a, b) => Date.parse(b.savedAt) - Date.parse(a.savedAt));
-    // Enforce bounded storage ceiling by evicting oldest decoded databases beyond capacity.
-    for (const stale of others.slice(MAX_SAVED_DECODED_DATABASES - 1)) {
-      summaryStore.delete(stale.saveId);
-      recordStore.delete(stale.saveId);
+
+    if (others.length >= MAX_SAVED_DECODED_DATABASES) {
+      if (options.evictOldest !== true) {
+        tx.abort();
+        throw new SaveDatabaseCapacityError(MAX_SAVED_DECODED_DATABASES);
+      }
+      for (const stale of others.slice(MAX_SAVED_DECODED_DATABASES - 1)) {
+        summaryStore.delete(stale.saveId);
+        recordStore.delete(stale.saveId);
+      }
     }
+
     summaryStore.put(summary);
     recordStore.put(envelope);
     await transactionCompleted(tx);

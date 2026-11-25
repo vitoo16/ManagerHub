@@ -29,6 +29,7 @@ type Props = {
   clubFilterUid?: number | null;
   onClubFilterChange?: (clubUid: number | null) => void;
   initialPlayerId?: string | null;
+  onEditPlayer?: (playerUid: number) => void;
 };
 
 function PlayerWorkspaceView({
@@ -42,7 +43,8 @@ function PlayerWorkspaceView({
   onSetSaveMode,
   clubFilterUid = null,
   onClubFilterChange,
-  initialPlayerId = null
+  initialPlayerId = null,
+  onEditPlayer
 }: Props) {
   const { t } = useTranslation();
   const [search, setSearch] = useState('');
@@ -242,7 +244,7 @@ function PlayerWorkspaceView({
         />
         <div className="player-detail-column">
           {selected
-            ? <PlayerDetails key={selected.id} player={selected} dataset={dataset} onOpenSquad={onOpenSquad}/>
+            ? <PlayerDetails key={selected.id} player={selected} dataset={dataset} onOpenSquad={onOpenSquad} onEditPlayer={onEditPlayer}/>
             : <div className="empty-library">{t("Choose a player from the imported list.")}</div>}
         </div>
       </div>

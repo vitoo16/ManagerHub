@@ -20,12 +20,27 @@ function csvCell(value: string | number): string {
   return '"' + text.replaceAll('"', '""') + '"';
 }
 
+function isSupportedSquadReportSource(dataset: PlayerDataset): boolean {
+  if (dataset.source === 'game_export') {
+    return dataset.actualCaAvailable === false && dataset.potentialAbilityAvailable === false;
+  }
+  if (dataset.source === 'decoded_save') {
+    return typeof dataset.saveId === 'string' && /^[a-f0-9]{64}$/u.test(dataset.saveId);
+  }
+  return false;
+}
+
 export function createSquadPlansCsv(
   dataset: PlayerDataset,
   solutions: Readonly<Record<SquadPlanKey, SquadSolution>>
 ): string {
-  if (dataset.source !== 'game_export' || dataset.actualCaAvailable !== false ||
-      dataset.potentialAbilityAvailable !== false) throw new Error('Unsupported source');
+  if (!isSupportedSquadReportSource(dataset)) throw new Error('Unsupported source');
+  const sourceLabel = dataset.source === 'decoded_save'
+    ? `decoded_save (${dataset.saveEdition ?? 'FM2013'}${dataset.saveBuild ? ' ' + dataset.saveBuild : ''} · ${dataset.saveMode ?? 'realism'})`
+    : 'game_export (provisional)';
+  const interpretation = dataset.source === 'decoded_save'
+    ? 'Visible attributes decoded offline from .fm save; role-fit heuristic only. Not CA/PA or predicted match performance.'
+    : explanation;
   const rows: (string | number)[][] = [[...columns]];
   for (const key of ['A', 'B'] as const) {
     const solution = solutions[key];
@@ -37,7 +52,7 @@ export function createSquadPlansCsv(
         key, solution.formation, solution.complete ? 'Complete' : 'Incomplete',
         slot.label, assigned?.name ?? '', roles.get(slot.roleId) ?? slot.roleId,
         assigned?.roleScore ?? '', assigned ? Math.round(assigned.coverage * 100) : '',
-        'game_export (provisional)', explanation
+        sourceLabel, interpretation
       ]);
     }
   }

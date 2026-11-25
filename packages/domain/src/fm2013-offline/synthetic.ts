@@ -1,4 +1,19 @@
+import { computeGameDbHmacSha512 } from './afe-container';
 import type { DecodedPositionRatings } from './types';
+
+/**
+ * Public non-proprietary 32-byte UTF-16LE HMAC-SHA512 test key ('MH_SYNTH_KEY_001')
+ * used exclusively for synthetic unit and E2E save roundtrip verification in CI.
+ */
+export const SYNTHETIC_TEST_HMAC_KEY: Uint8Array = (() => {
+  const label = 'MH_SYNTH_KEY_001';
+  const buf = new Uint8Array(label.length * 2);
+  const dv = new DataView(buf.buffer);
+  for (let i = 0; i < label.length; i++) {
+    dv.setUint16(i * 2, label.charCodeAt(i), true);
+  }
+  return buf;
+})();
 
 /**
  * Deterministic synthetic FM2013 `.fm` save builder for unit & E2E testing.
@@ -130,6 +145,8 @@ export interface SyntheticFm2013SaveSpec {
   readonly managerClubRow?: number;
   readonly clubs?: readonly SyntheticClubSpec[];
   readonly players?: readonly SyntheticPlayerSpec[];
+  readonly signingKey?: Uint8Array;
+  readonly omitSummary?: boolean;
 }
 
 async function deflateZlib(bytes: Uint8Array): Promise<Uint8Array> {
@@ -638,7 +655,15 @@ function buildSyntheticGameDb(spec: Required<Pick<
   // T28 NON_PLAYING_DATA (2 records: coach + human)
   w.u32(2); w.u8(0);
   for (let i = 0; i < 2; i++) {
-    w.u8(0); w.raw(new Uint8Array(0x29).fill(12)); w.dbRecord(i, 50001 + i * 10000);
+    w.u8(0);
+    const npd = new Uint8Array(0x29).fill(14);
+    npd[2] = 15 + i; // adaptability (1..20)
+    npd[4] = 16;     // levelOfDiscipline (1..20)
+    npd[12] = 17;    // workingWithYoungsters (1..20)
+    npd[13] = 16 * 5; // determination (1..100)
+    for (let k = 26; k <= 39; k++) npd[k] = (14 + (k % 5)) * 5;
+    w.raw(npd);
+    w.dbRecord(i, 50001 + i * 10000);
   }
   w.tableFooter(70000);
 
@@ -697,11 +722,24 @@ export async function buildSyntheticFm2013Save(spec: SyntheticFm2013SaveSpec = {
   const players = spec.players ?? defaultSyntheticPlayers();
   const managerClubShort = clubs[managerClubRow]?.shortName ?? clubs[0]?.shortName ?? 'Northbridge';
 
-  const rawMembers: readonly [string, string, Uint8Array][] = [
-    ['save_game_summary', '.dat', buildSyntheticSummary({ gameVersion, managerName, clubShortName: managerClubShort, gameDateDoy, gameDateYear })],
+  const signingKey = spec.signingKey ?? SYNTHETIC_TEST_HMAC_KEY;
+  const unsignedGameDb = buildSyntheticGameDb({ gameDbVersion, gameDateDoy, gameDateYear, managerName, managerClubRow, clubs, players });
+  const hmac = await computeGameDbHmacSha512(unsignedGameDb, signingKey);
+  const signedGameDb = unsignedGameDb.slice();
+  signedGameDb.set(hmac, signedGameDb.byteLength - 64);
+
+  const rawMembers: [string, string, Uint8Array][] = [];
+  if (!spec.omitSummary) {
+    rawMembers.push([
+      'save_game_summary',
+      '.dat',
+      buildSyntheticSummary({ gameVersion, managerName, clubShortName: managerClubShort, gameDateDoy, gameDateYear })
+    ]);
+  }
+  rawMembers.push(
     ['humans', '.dat', buildSyntheticHumans(players.length + 1)],
-    ['game_db', '.dat', buildSyntheticGameDb({ gameDbVersion, gameDateDoy, gameDateYear, managerName, managerClubRow, clubs, players })]
-  ];
+    ['game_db', '.dat', signedGameDb]
+  );
 
   const storedBlobs: Uint8Array[] = [];
   const dirWriter = new BinaryWriter();
@@ -721,19 +759,20 @@ export async function buildSyntheticFm2013Save(spec: SyntheticFm2013SaveSpec = {
     storedBlobs.push(stored);
     relOffset += stored.byteLength;
   }
+  dirWriter.u32(0); // subDirCount = 0 (recursive FMF v4 root footer)
 
   const dirCompressed = await deflateZlib(dirWriter.toUint8Array());
   const directoryOffset = 18 + relOffset;
 
   const out = new BinaryWriter();
-  // Container header (18 bytes)
+  // Container header (18 bytes) matching fm.exe (0x13bfc40): directoryPtr = directoryOffset - 9, directoryMetaLen = 9
   if (family === 'afe') {
-    out.raw(Uint8Array.of(0x02, 0x01, 0x61, 0x66, 0x65, 0x2e, 0x05, 0x00, 0x00));
+    out.raw(Uint8Array.of(0x02, 0x01, 0x61, 0x66, 0x65, 0x2e, 0x04, 0x00, 0x00));
   } else {
-    out.raw(Uint8Array.of(0x02, 0x01, 0x66, 0x6d, 0x66, 0x2e, 0x05, 0x00, 0x00));
+    out.raw(Uint8Array.of(0x02, 0x01, 0x66, 0x6d, 0x66, 0x2e, 0x04, 0x00, 0x00));
   }
-  out.u32(directoryOffset);
-  out.u32(0);
+  out.u32(directoryOffset - 9);
+  out.u32(9);
   out.u8(compressed ? 1 : 0);
 
   for (const blob of storedBlobs) out.raw(blob);

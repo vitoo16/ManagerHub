@@ -58,6 +58,8 @@ export interface SaveDatabaseExplorerProps {
   readonly onRemovePersistedDatabase: (saveId: string, fileName: string) => void;
   readonly onOpenPlayerInLab: (playerUid: number, clubUid: number | null) => void;
   readonly onLoadClubInSquad: (clubUid: number | null) => void;
+  readonly onEditEntity?: (target: { readonly kind: 'player' | 'staff' | 'club' | 'stadium'; readonly uid: number }) => void;
+  readonly onOpenSaveAsModal?: () => void;
 }
 
 function SaveDatabaseExplorerView({
@@ -71,7 +73,9 @@ function SaveDatabaseExplorerView({
   onPersistDatabase,
   onRemovePersistedDatabase,
   onOpenPlayerInLab,
-  onLoadClubInSquad
+  onLoadClubInSquad,
+  onEditEntity,
+  onOpenSaveAsModal
 }: SaveDatabaseExplorerProps) {
   const { t } = useTranslation();
   const [tab, setTab] = useState<ExplorerTab>('players');
@@ -316,6 +320,11 @@ function SaveDatabaseExplorerView({
           </div>
 
           <div className="save-db-actions">
+            {saveMode === 'editor' && onOpenSaveAsModal && (
+              <Button variant="default" onClick={onOpenSaveAsModal}>
+                <Icon name="download" size={15} /> {t('Save As .fm')}
+              </Button>
+            )}
             <Button
               variant="primary"
               onClick={() => onLoadClubInSquad(defaultSquadClubUid)}
@@ -500,6 +509,15 @@ function SaveDatabaseExplorerView({
                       {saveMode === 'editor' && <td className="save-db-num"><strong>{hidden.potentialAbility.value ?? '—'}</strong></td>}
                       <td>
                         <div className="save-db-row-actions">
+                          {saveMode === 'editor' && onEditEntity && (
+                            <Button
+                              type="button"
+                              variant="primary"
+                              onClick={() => onEditEntity({ kind: 'player', uid: player.uid })}
+                            >
+                              {t('Edit')}
+                            </Button>
+                          )}
                           <Button
                             type="button"
                             onClick={() => onOpenPlayerInLab(player.uid, player.clubUid)}
@@ -547,13 +565,22 @@ function SaveDatabaseExplorerView({
                     </td>
                     <td className="save-db-num">{club.yearFounded ?? '—'}</td>
                     <td>
-                      {club.playerCount > 0 && (
-                        <div className="save-db-row-actions">
+                      <div className="save-db-row-actions">
+                        {saveMode === 'editor' && onEditEntity && (
+                          <Button
+                            type="button"
+                            variant="primary"
+                            onClick={() => onEditEntity({ kind: 'club', uid: club.uid })}
+                          >
+                            {t('Edit')}
+                          </Button>
+                        )}
+                        {club.playerCount > 0 && (
                           <Button type="button" onClick={() => onLoadClubInSquad(club.uid)}>
                             {t('Load squad in Squad Planner')}
                           </Button>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -570,9 +597,11 @@ function SaveDatabaseExplorerView({
                   <th scope="col">{t('Age')}</th>
                   <th scope="col">{t('Wage')}</th>
                   <th scope="col">{t('Expires')}</th>
+                  <th scope="col">{t('Coaching')}</th>
                   {saveMode === 'editor' && <th scope="col">{t('CA')}</th>}
                   {saveMode === 'editor' && <th scope="col">PA</th>}
                   {saveMode === 'editor' && <th scope="col">{t('Reputation')}</th>}
+                  {saveMode === 'editor' && onEditEntity && <th scope="col">{t('Edit')}</th>}
                 </tr>
               </thead>
               <tbody>
@@ -583,6 +612,7 @@ function SaveDatabaseExplorerView({
                     database.source.edition,
                     database.source.build
                   );
+                  const staffAttrs = projected.attributes.value;
                   return (
                     <tr key={member.uid}>
                       <td>
@@ -599,9 +629,27 @@ function SaveDatabaseExplorerView({
                       <td className="save-db-num">{member.calendarAge ?? '—'}</td>
                       <td className="save-db-num">{formatGbp(member.weeklyWageGbp)}</td>
                       <td className="save-db-num">{member.contractExpiresAt ?? '—'}</td>
+                      <td className="save-db-num">
+                        {staffAttrs
+                          ? `TAC ${staffAttrs.tacticalKnowledge} · YNG ${staffAttrs.workingWithYoungsters} ·JPA ${staffAttrs.judgingPlayerAbility}`
+                          : '—'}
+                      </td>
                       {saveMode === 'editor' && <td className="save-db-num">{projected.staffCa.value ?? '—'}</td>}
                       {saveMode === 'editor' && <td className="save-db-num">{projected.staffPa.value ?? '—'}</td>}
                       {saveMode === 'editor' && <td className="save-db-num">{projected.currentReputation.value ?? '—'}</td>}
+                      {saveMode === 'editor' && onEditEntity && (
+                        <td>
+                          <div className="save-db-row-actions">
+                            <Button
+                              type="button"
+                              variant="primary"
+                              onClick={() => onEditEntity({ kind: 'staff', uid: member.uid })}
+                            >
+                              {t('Edit')}
+                            </Button>
+                          </div>
+                        </td>
+                      )}
                     </tr>
                   );
                 })}
@@ -642,6 +690,7 @@ function SaveDatabaseExplorerView({
                   <th scope="col">{t('Capacity')}</th>
                   <th scope="col">{t('Seating')}</th>
                   <th scope="col">{t('Expansion')}</th>
+                  {saveMode === 'editor' && onEditEntity && <th scope="col">{t('Edit')}</th>}
                 </tr>
               </thead>
               <tbody>
@@ -649,17 +698,38 @@ function SaveDatabaseExplorerView({
                   <tr key={stadium.uid}>
                     <td>
                       <strong>{stadium.customName ?? `${t('Stadium')} #${stadium.uid}`}</strong>
-                      <span className="save-db-sub">UID {stadium.uid}</span>
+                      <span className="save-db-sub">
+                        UID {stadium.uid}{stadium.cityName ? ` · ${stadium.cityName}` : ''}
+                      </span>
                     </td>
                     <td>
-                      <span className={'save-db-badge ' + (stadium.nameProvenance === 'decoded_save' ? 'save-db-badge--verified' : 'save-db-badge--external')}>
-                        {t(stadium.nameProvenance === 'decoded_save' ? 'Inline in save' : 'Base name in lang_db.dat')}
+                      <span className={'save-db-badge ' + (stadium.nameProvenance !== 'not_stored_in_save' ? 'save-db-badge--verified' : 'save-db-badge--external')}>
+                        {t(
+                          stadium.nameProvenance === 'decoded_save'
+                            ? 'Inline in save'
+                            : stadium.nameProvenance === 'lang_db'
+                              ? 'Resolved via lang_db.dat'
+                              : 'Base name in lang_db.dat'
+                        )}
                       </span>
                     </td>
                     <td>{stadium.ownerClubName ?? '—'}</td>
                     <td className="save-db-num">{stadium.capacity.toLocaleString()}</td>
                     <td className="save-db-num">{stadium.seatingCapacity.toLocaleString()}</td>
                     <td className="save-db-num">{stadium.expansionCapacity.toLocaleString()}</td>
+                    {saveMode === 'editor' && onEditEntity && (
+                      <td>
+                        <div className="save-db-row-actions">
+                          <Button
+                            type="button"
+                            variant="primary"
+                            onClick={() => onEditEntity({ kind: 'stadium', uid: stadium.uid })}
+                          >
+                            {t('Edit')}
+                          </Button>
+                        </div>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
@@ -706,8 +776,14 @@ function SaveDatabaseExplorerView({
                       <span className="save-db-sub">UID {comp.uid}</span>
                     </td>
                     <td>
-                      <span className={'save-db-badge ' + (comp.nameProvenance === 'decoded_save' ? 'save-db-badge--verified' : 'save-db-badge--external')}>
-                        {t(comp.nameProvenance === 'decoded_save' ? 'Inline in save' : 'Base name in lang_db.dat')}
+                      <span className={'save-db-badge ' + (comp.nameProvenance !== 'not_stored_in_save' ? 'save-db-badge--verified' : 'save-db-badge--external')}>
+                        {t(
+                          comp.nameProvenance === 'decoded_save'
+                            ? 'Inline in save'
+                            : comp.nameProvenance === 'lang_db'
+                              ? 'Resolved via lang_db.dat'
+                              : 'Base name in lang_db.dat'
+                        )}
                       </span>
                     </td>
                     <td className="save-db-num">{comp.teamCount.toLocaleString()}</td>

@@ -4,7 +4,7 @@ import {
   analyzeRoles, attributeStrengthIndex, getAttributeInsights,
   type PlayerDataset, type PlayerExport
 } from '@managerhub/domain';
-import { Icon, Surface } from '@managerhub/ui';
+import { Button, Icon, Surface } from '@managerhub/ui';
 import PlayerAbilitySummary from './PlayerAbilitySummary';
 import PlayerIdentityHeader from './PlayerIdentityHeader';
 import PlayerReportTabs, { type PlayerReportTab } from './PlayerReportTabs';
@@ -19,6 +19,7 @@ type Props = {
   player: PlayerExport;
   dataset: PlayerDataset;
   onOpenSquad: () => void;
+  onEditPlayer?: (playerUid: number) => void;
 };
 
 const POSITION_KEYS = ['GK', 'SW', 'DL', 'DC', 'DR', 'WBL', 'WBR', 'DM', 'ML', 'MC', 'MR', 'AML', 'AMC', 'AMR', 'ST'] as const;
@@ -28,7 +29,7 @@ function formatCurrencyGbp(amount: number | null | undefined): string {
   return `£${amount.toLocaleString()}`;
 }
 
-function PlayerDetailsView({ player, dataset, onOpenSquad }: Props) {
+function PlayerDetailsView({ player, dataset, onOpenSquad, onEditPlayer }: Props) {
   const { t } = useTranslation();
   const [tab, setTab] = useState<PlayerReportTab>('overview');
 
@@ -41,6 +42,13 @@ function PlayerDetailsView({ player, dataset, onOpenSquad }: Props) {
 
   return <section aria-label={t('Scouting report for') + ' ' + player.name}>
     <PlayerIdentityHeader player={player}/>
+    {isEditorMode && player.nativeId !== undefined && onEditPlayer && (
+      <div className="save-db-actions" style={{ marginBottom: 12 }}>
+        <Button type="button" variant="primary" onClick={() => onEditPlayer(player.nativeId!)}>
+          {t('Edit player')}
+        </Button>
+      </div>
+    )}
     <PlayerAbilitySummary strength={strength} topRole={topRole} player={player} dataset={dataset}/>
     <PlayerReportTabs active={tab} onChange={setTab}/>
 

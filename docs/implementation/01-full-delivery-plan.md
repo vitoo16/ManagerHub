@@ -19,7 +19,7 @@ Phase 6: Match & opposition, Club DNA, leadership/boardroom/dynasty, AI staff
 Phase 7: Set-pieces, advanced editing if certified, all 27 integration,
          full release QA / interoperability / packaging / performance
 ```
-Overlapping **approved independent** work may start earlier: e.g. Phase 3 role math alongside Phase 2 parser (using versioned known-good fixtures), Phase 4 pitch UI alongside Phase 3 models. Never depend on invented save data in production to make concurrency appear complete.
+Overlapping **approved independent** work may start earlier: e.g. Phase 3 role math alongside Phase 2 parser (using versioned known-good fixtures), Phase 4 pitch UI alongside Phase 3 models, and P0 unified offline FM2013 `SaveSession` + certified surgical `Save As .fm` copy editing (advancing MH-01, MH-02, MH-03, and MH-05 for verified FM2013 `afe` v4 builds while keeping multi-edition and live-bridge work gated). Never depend on invented save data in production to make concurrency appear complete.
 
 ## Phase 1 — Foundation & Visual Identity (MH-27 platform basis; all modules depend on it)
 

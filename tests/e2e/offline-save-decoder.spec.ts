@@ -1,5 +1,7 @@
+import { readFile } from 'node:fs/promises';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
+import { buildSyntheticFm2013LangDb } from '../../packages/domain/src/fm2013-offline/lang-db';
 import { buildSyntheticFm2013Save } from '../../packages/domain/src/fm2013-offline/synthetic';
 
 const WCAG_AA_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
@@ -26,7 +28,7 @@ test('complete offline FM2013 save workflow: decode, explore, Realism/Editor iso
   await page.locator('.hero').getByRole('button', { name: 'Load a .fm save' }).click();
   await expect(page.getByRole('heading', { name: 'Save Library' })).toBeVisible();
 
-  await page.locator('input[type="file"]').setInputFiles({
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
     name: 'northbridge-career.fm',
     mimeType: 'application/octet-stream',
     buffer: Buffer.from(saveBytes)
@@ -190,7 +192,7 @@ test('multi-save isolation across compressed AFE and uncompressed FMF, VI/EN tog
   });
 
   await page.goto('/#/saves');
-  await page.locator('input[type="file"]').setInputFiles({
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
     name: 'alpha-compressed.fm',
     mimeType: 'application/octet-stream',
     buffer: Buffer.from(saveAlpha)
@@ -200,7 +202,7 @@ test('multi-save isolation across compressed AFE and uncompressed FMF, VI/EN tog
   await expect(explorer).toContainText('Owen Shaw');
 
   // Upload second uncompressed FMF save and confirm strict isolation (no Alpha data leaks)
-  await page.locator('input[type="file"]').setInputFiles({
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
     name: 'beta-uncompressed.fm',
     mimeType: 'application/octet-stream',
     buffer: Buffer.from(saveBeta)
@@ -265,4 +267,161 @@ test('multi-save isolation across compressed AFE and uncompressed FMF, VI/EN tog
       await waitWorkspaceSettled();
     }
   }
+});
+
+test('P0 unified SaveSession (S01-S08): non-remounting continuity, decoupled club filter, mode-independent shortlist, lang_db, Undo/Redo, and certified Save As .fm roundtrip', async ({ page }) => {
+  test.setTimeout(120_000);
+  const saveBytes = await buildSyntheticFm2013Save({
+    compressed: true,
+    family: 'afe',
+    managerName: 'Alex Mercer'
+  });
+  const langDbBytes = await buildSyntheticFm2013LangDb();
+
+  const navigateTo = async (label: RegExp) => {
+    await page.keyboard.press('Control+k');
+    await page.getByRole('dialog', { name: 'Quick navigation' }).getByRole('button', { name: label }).click();
+  };
+
+  // 1. Load save once -> verify global ActiveSaveToolbar appears
+  await page.goto('/#/saves');
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'northbridge-career.fm',
+    mimeType: 'application/octet-stream',
+    buffer: Buffer.from(saveBytes)
+  });
+
+  const toolbar = page.getByRole('region', { name: 'Active save session' });
+  const explorer = page.locator('.save-db-explorer');
+  await expect(toolbar).toBeVisible({ timeout: 20_000 });
+  await expect(toolbar).toContainText('northbridge-career.fm');
+  await expect(toolbar).toContainText('HMAC-SHA512');
+
+  // 2. Attach lang_db.dat via global toolbar (Gate B)
+  await toolbar.locator('input[accept=".dat"]').setInputFiles({
+    name: 'lang_db.dat',
+    mimeType: 'application/octet-stream',
+    buffer: Buffer.from(langDbBytes)
+  });
+  await expect(toolbar).toContainText('lang_db');
+
+  // 3. S01 & S02: Set search query in Save Library, visit Player Lab -> Squad Planner -> Overview -> Save Library, verify NO remount
+  const searchInput = explorer.getByPlaceholder('Search database…');
+  await searchInput.fill('Owen');
+  await expect(explorer.locator('tbody tr')).toHaveCount(1);
+
+  await navigateTo(/Player Lab/);
+  await expect(page.getByRole('heading', { name: 'Player Lab' })).toBeVisible();
+  await expect(toolbar).toBeVisible();
+
+  // 4. S03 (AUD-03): Change Player Lab local club filter to Harbor City -> Squad Planner global managed club stays Northbridge
+  const playerClubSelect = page.locator('.decoded-save-bar select');
+  await playerClubSelect.selectOption({ label: 'Harbor City (2)' });
+  await expect(toolbar.getByLabel('Global managed club').locator('option:checked')).toContainText('Northbridge (12)');
+
+  await navigateTo(/Squad Planner/);
+  await expect(page.getByRole('heading', { name: 'Squad Planner' })).toBeVisible();
+  await expect(page.locator('.squad-decoded-bar')).toContainText('Northbridge');
+  await expect(page.getByText('Starting eleven ready').first()).toBeVisible();
+
+  // Return to Player Lab and restore Northbridge filter -> verify S04 mode-independent Scouting Shortlist persistence
+  await navigateTo(/Player Lab/);
+  await playerClubSelect.selectOption({ label: 'Northbridge (12)' });
+  await page.getByPlaceholder('Search player, team, position…').fill('Owen');
+  await page.getByRole('button', { name: /Owen Shaw/ }).click();
+  await toolbar.getByRole('group', { name: 'Global display mode' }).getByRole('button', { name: 'Editor mode' }).click();
+  await expect(page.locator('.scout-metrics')).toContainText('168');
+
+  const shortlistRegion = page.getByRole('region', { name: 'Scouting shortlist' });
+  await shortlistRegion.getByRole('button', { name: 'Add selected player to shortlist' }).click();
+  await shortlistRegion.getByRole('button', { name: 'Save shortlist locally' }).click();
+  await expect(shortlistRegion).toContainText('Shortlist saved on this browser for this exact player export.');
+
+  // Switch to Realism mode -> remove from session -> restore saved shortlist -> must succeed across modes with zero CA/PA leak!
+  await toolbar.getByRole('group', { name: 'Global display mode' }).getByRole('button', { name: 'Realism mode' }).click();
+  await expect(page.locator('.scout-metrics')).toContainText('Hidden in Realism mode');
+  await shortlistRegion.getByRole('button', { name: 'Remove selected player from shortlist' }).click();
+  await expect(shortlistRegion).toContainText('0 / 50');
+  await shortlistRegion.getByRole('button', { name: 'Restore saved shortlist' }).click();
+  await expect(shortlistRegion).toContainText('Saved shortlist restored.');
+  await expect(shortlistRegion).toContainText('1 / 50');
+
+  // Visit Overview and return to Save Library -> confirm SaveDatabaseExplorer kept 'Owen' search without remounting!
+  await navigateTo(/Overview/);
+  await expect(toolbar).toBeVisible();
+  await navigateTo(/Save Library/);
+  await expect(searchInput).toHaveValue('Owen');
+  await searchInput.fill('');
+
+  // 5. S06 & S08: Switch to Editor mode -> Edit Owen Shaw + Club Finances -> Test Undo/Redo -> Certified Save As .fm roundtrip
+  await toolbar.getByRole('group', { name: 'Global display mode' }).getByRole('button', { name: 'Editor mode' }).click();
+  const owenRow = explorer.locator('tbody tr', { hasText: 'Owen Shaw' });
+  await owenRow.getByRole('button', { name: 'Edit' }).click();
+
+  const modal = page.getByRole('dialog');
+  await expect(modal).toContainText('Edit player · Owen Shaw');
+
+  // S05: Verify WCAG 2.2 AA compliance on the open FMRTE13 Editor Modal
+  const modalAxe = await new AxeBuilder({ page }).include('.editor-modal').withTags(WCAG_AA_TAGS).analyze();
+  expect(summarizeViolations(modalAxe.violations), 'SaveEntityEditorModal WCAG').toEqual([]);
+
+  await modal.getByLabel('Actual CA (1–200)').fill('191');
+  await modal.getByLabel('Actual PA (1–200)').fill('198');
+  await modal.getByRole('button', { name: 'Inspire morale' }).click();
+  await modal.getByRole('button', { name: 'Done' }).click();
+  await expect(modal).toHaveCount(0);
+
+  await expect(owenRow).toContainText('191');
+  await expect(owenRow).toContainText('198');
+  await expect(toolbar).toContainText('unsaved edits');
+
+  // Verify Undo & Redo on global toolbar
+  await toolbar.getByRole('button', { name: 'Undo last edit' }).click();
+  await toolbar.getByRole('button', { name: 'Undo last edit' }).click();
+  await expect(owenRow).toContainText('191');
+  await expect(owenRow).toContainText('182');
+  await toolbar.getByRole('button', { name: 'Redo edit' }).click();
+  await toolbar.getByRole('button', { name: 'Redo edit' }).click();
+  await expect(owenRow).toContainText('198');
+
+  // Edit Northbridge Athletic club balance to £120M
+  await explorer.getByRole('tab', { name: /Clubs & Finances/ }).click();
+  const northbridgeRow = explorer.locator('tbody tr', { hasText: 'Northbridge Athletic' });
+  await northbridgeRow.getByRole('button', { name: 'Edit' }).click();
+  await expect(modal).toContainText('Edit club & finances · Northbridge Athletic');
+  await modal.getByLabel('Balance (£)').fill('120000000');
+  await modal.getByRole('button', { name: 'Done' }).click();
+  await expect(northbridgeRow).toContainText('£120.00M');
+
+  // Open Save As .fm modal -> verify diff preview -> download certified .fm -> re-import & verify roundtrip!
+  await toolbar.getByRole('button', { name: 'Save As .fm' }).click();
+  await expect(modal).toContainText('Save As .fm (Certified Offline Copy)');
+  await expect(modal).toContainText('HMAC-SHA512 signing key ready');
+  await expect(modal.locator('tbody')).toContainText('Owen Shaw');
+  await expect(modal.locator('tbody')).toContainText('Northbridge');
+  await expect(modal.locator('tbody')).toContainText('120000000');
+
+  const downloadPromise = page.waitForEvent('download');
+  await modal.getByRole('button', { name: 'Download certified Save As .fm' }).click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe('northbridge-career-edited.fm');
+  const downloadedPath = await download.path();
+  expect(downloadedPath).toBeTruthy();
+  const patchedBytes = await readFile(downloadedPath!);
+  await expect(modal).toHaveCount(0);
+
+  // Accept confirm prompt when loading the newly exported .fm over dirty draft
+  page.once('dialog', dialog => dialog.accept());
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'northbridge-career-edited.fm',
+    mimeType: 'application/octet-stream',
+    buffer: patchedBytes
+  });
+
+  await expect(explorer).toContainText('northbridge-career-edited.fm');
+  await expect(explorer).toContainText('Exact EOF verified');
+  await expect(northbridgeRow).toContainText('£120.00M');
+  await explorer.getByRole('tab', { name: /Players/ }).click();
+  await expect(explorer.locator('tbody tr', { hasText: 'Owen Shaw' })).toContainText('191');
+  await expect(explorer.locator('tbody tr', { hasText: 'Owen Shaw' })).toContainText('198');
 });

@@ -83,7 +83,9 @@ function SaveInspector({
   onOpenDecodedSave,
   onSwitchDecodedSave,
   onOpenPlayerFromSave,
-  onLoadClubInSquad
+  onLoadClubInSquad,
+  onEditEntity,
+  onOpenSaveAsModal
 }: {
   imports: readonly SaveInspectionResult[];
   selected: SaveInspectionResult | null;
@@ -104,6 +106,8 @@ function SaveInspector({
   onSwitchDecodedSave: (saveId: string) => void;
   onOpenPlayerFromSave: (playerUid: number, clubUid: number | null) => void;
   onLoadClubInSquad: (clubUid: number | null) => void;
+  onEditEntity?: (target: { readonly kind: 'player' | 'staff' | 'club' | 'stadium'; readonly uid: number }) => void;
+  onOpenSaveAsModal?: () => void;
 }) {
   const { t } = useTranslation();
   const saveLibrary = useSaveInspectionLibrary();
@@ -271,6 +275,8 @@ function SaveInspector({
           onRemovePersistedDatabase={onRemovePersistedDatabase}
           onOpenPlayerInLab={onOpenPlayerFromSave}
           onLoadClubInSquad={onLoadClubInSquad}
+          onEditEntity={onEditEntity}
+          onOpenSaveAsModal={onOpenSaveAsModal}
         />
       </Suspense>
     )}
