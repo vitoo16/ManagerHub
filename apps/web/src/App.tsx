@@ -20,6 +20,7 @@ import { Icon, Status } from '@managerhub/ui';
 import { useReducedMotion } from '@managerhub/motion/reduced';
 import { readableSaveInspectionError } from './i18n/save-inspection-copy';
 import { registerSaveDbI18n } from './i18n/register-save-db-i18n';
+import { useDialogFocus } from './useDialogFocus';
 import './app.css';
 
 registerSaveDbI18n();
@@ -573,30 +574,15 @@ export default function App() {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-        event.preventDefault(); setCommandOpen(open => !open);
+        event.preventDefault();
+        if (!editorModalTarget) setCommandOpen(open => !open);
       }
       if (event.key === 'Escape') { setCommandOpen(false); setMenuOpen(false); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
-  useEffect(() => {
-    if (!commandOpen) return;
-    const restore = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    const first = commandDialogRef.current?.querySelector<HTMLButtonElement>('.command-item');
-    first?.focus();
-    const trap = (event: KeyboardEvent) => {
-      if (event.key !== 'Tab') return;
-      const buttons = Array.from(commandDialogRef.current?.querySelectorAll<HTMLButtonElement>('button:not([disabled])') ?? []);
-      if (!buttons.length) return;
-      const firstButton = buttons[0];
-      const lastButton = buttons[buttons.length - 1];
-      if (event.shiftKey && document.activeElement === firstButton) { event.preventDefault(); lastButton?.focus(); }
-      else if (!event.shiftKey && document.activeElement === lastButton) { event.preventDefault(); firstButton?.focus(); }
-    };
-    window.addEventListener('keydown', trap);
-    return () => { window.removeEventListener('keydown', trap); restore?.focus(); };
-  }, [commandOpen]);
+  }, [editorModalTarget]);
+  useDialogFocus(commandDialogRef, commandOpen, '.command-item');
 
   const navigate = useCallback((key: WorkspaceKey) => {
     setVisitedViews(prev => (prev.has(key) ? prev : new Set([...prev, key])));
@@ -899,7 +885,7 @@ export default function App() {
     )}
 
     {commandOpen && <div className="command-overlay" role="presentation" onMouseDown={event => {if(event.target === event.currentTarget) setCommandOpen(false);}}>
-      <div ref={commandDialogRef} className="command-dialog mh-surface mh-surface--glass" role="dialog" aria-modal="true" aria-label={t("Quick navigation")}>
+      <div ref={commandDialogRef} className="command-dialog mh-surface mh-surface--glass" role="dialog" tabIndex={-1} aria-modal="true" aria-label={t("Quick navigation")}>
         <div className="command-top"><Icon name="search" size={19}/><span>{t("Jump to a workspace")}</span><button className="icon-action" onClick={() => setCommandOpen(false)} aria-label={t("Close quick navigation")}><Icon name="close" size={17}/></button></div>
         {NAV.map(item => <button key={item.key} className="command-item" onClick={() => navigate(item.key)}><Icon name={item.icon}/><span>{t(item.title)}</span><Icon name="arrow" size={15}/></button>)}
         <div className="command-footer">{t("Esc to close · Ctrl/⌘ K to open")}</div>

@@ -17,6 +17,7 @@ import {
 } from '@managerhub/domain/fm2013-offline';
 import { Button, Icon, Status } from '@managerhub/ui';
 import { clampInt } from './editor-number';
+import { useDialogFocus } from '../../useDialogFocus';
 import { PlayerEditorRecord } from './PlayerEditorRecord';
 import { StaffEditorRecord } from './StaffEditorRecord';
 import { ClubEditorRecord } from './ClubEditorRecord';
@@ -67,6 +68,7 @@ function SaveEntityEditorModal({
   const { t } = useTranslation();
   const exeInputRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
+  useDialogFocus(dialogRef, true, '.editor-record-tab__select[aria-pressed="true"]');
   const [notice, setNotice] = useState<string | null>(null);
   const [recordState, setRecordState] = useState(() => isRecordTarget(initialTarget) ? createRecordState(initialTarget) : null);
   const target = recordState?.active ?? initialTarget;
@@ -267,6 +269,7 @@ function SaveEntityEditorModal({
         ref={dialogRef}
         className={recordState ? "editor-modal editor-modal--records" : "editor-modal"}
         role="dialog"
+        tabIndex={-1}
         aria-modal="true"
         aria-label={modalTitle}
       >

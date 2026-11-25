@@ -5,6 +5,7 @@ import type { DecodedSaveDatabase } from '@managerhub/domain/fm2013-offline';
 import { Icon, SectionHeading, SectionTabs, Status, Surface } from '@managerhub/ui';
 import TacticalPitch from './features/squad-planner/components/TacticalPitch';
 import LineupResults from './features/squad-planner/components/LineupResults';
+import SquadIssue from './features/squad-planner/components/SquadIssue';
 import SquadScenarioHeader from './features/squad-planner/components/SquadScenarioHeader';
 import SquadControlBar from './features/squad-planner/components/SquadControlBar';
 import SquadPlanLibraryControls from './features/squad-planner/components/SquadPlanLibraryControls';
@@ -145,6 +146,9 @@ function SquadWorkspaceView({
           </div>}
           {section === 'constraints' && <>
             <SectionHeading eyebrow={t('WHAT-IF PLANNING')} title={t('Adjust Plan') + ' ' + active}/>
+            {solution && !solution.complete && <div className="coverage-note" role="status">
+              <Icon name="warning" size={16}/><SquadIssue reason={solution.reason}/>
+            </div>}
             <PinEditor key={active + plan.formation} slots={FORMATIONS[plan.formation]} dataset={dataset}
               locks={plan.lockedSlots} excluded={plan.excludedPlayerIds}
               onPin={onPin} onExclude={onExclude} onClear={reset}/>

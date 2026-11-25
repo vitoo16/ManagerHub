@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { DecodedSaveDatabase } from '@managerhub/domain/fm2013-offline';
 import { Button, Icon } from '@managerhub/ui';
@@ -20,7 +20,9 @@ export function EditorRecordNavigator({ database, state, onOpen, onClose }: Prop
   const [query, setQuery] = useState('');
   const activeRecordRef = useRef<HTMLButtonElement>(null);
   useEffect(() => { activeRecordRef.current?.focus(); }, [state]);
-  const results = useMemo(() => searchEditorRecords(database, kind, query), [database, kind, query]);
+  const deferredQuery = useDeferredValue(query);
+  const searching = deferredQuery !== query;
+  const results = useMemo(() => searchEditorRecords(database, kind, deferredQuery), [database, kind, deferredQuery]);
   const atLimit = state.records.length >= MAX_EDITOR_RECORDS;
   const kindLabels: Record<EditorRecordKind, string> = {
     player: t('Players'), staff: t('Staff & Managers'), club: t('Clubs & Finances'), stadium: t('Stadiums')
@@ -69,11 +71,11 @@ export function EditorRecordNavigator({ database, state, onOpen, onClose }: Prop
       </div>
       {atLimit && <p className="editor-record-hint" role="status">{t('Close a record before opening another.')}</p>}
       {query.trim() && (
-        <div className="editor-record-results" role="group" aria-label={t('Matching records')}>
-          {results.length === 0 && <p className="editor-record-hint" role="status">{t('No matching records.')}</p>}
+        <div className="editor-record-results" role="group" aria-label={t('Matching records')} aria-busy={searching}>
+          {!searching && results.length === 0 && <p className="editor-record-hint" role="status">{t('No matching records.')}</p>}
           {results.map(result => (
             <Button key={recordKey(result.target)} type="button"
-              disabled={atLimit && !state.records.some(record => recordKey(record) === recordKey(result.target))}
+              disabled={searching || (atLimit && !state.records.some(record => recordKey(record) === recordKey(result.target)))}
               onClick={() => {
                 onOpen(result.target);
                 setQuery('');
