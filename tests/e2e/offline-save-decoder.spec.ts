@@ -123,9 +123,13 @@ test('complete offline FM2013 save workflow: decode, explore, Realism/Editor iso
   await expect(page.locator('.scout-metrics')).toContainText('168');
   await expect(page.locator('.scout-metrics')).toContainText('182');
   await expect(page.locator('.scout-metrics')).toContainText('Decoded from save · Verified');
+  const reportTabs = page.getByRole('tablist', { name: 'Player report' });
+  await expect(page.getByText('Contract & physical profile')).toHaveCount(0);
+  await reportTabs.getByRole('tab', { name: 'Contract & positions' }).click();
   await expect(page.getByText('Contract & physical profile')).toBeVisible();
   await expect(page.getByText('£145,000')).toBeVisible();
   await expect(page.getByText('Positional familiarity (1–20)')).toBeVisible();
+  await reportTabs.getByRole('tab', { name: 'Personality & hidden traits' }).click();
   await expect(page.getByText('Hidden attributes & personality (Editor mode)')).toBeVisible();
   await expect(page.getByText('Professionalism')).toBeVisible();
 
@@ -135,6 +139,7 @@ test('complete offline FM2013 save workflow: decode, explore, Realism/Editor iso
   await expect(page.locator('.scout-metrics')).not.toContainText('168');
   await expect(page.locator('.scout-metrics')).not.toContainText('182');
   await expect(page.getByText('Switch to Editor mode to view verified Actual CA')).toBeVisible();
+  await expect(page.getByText('Professionalism', { exact: true })).toHaveCount(0);
 
   // 8. Navigate to Squad Planner -> managed club XI solved directly from .fm save
   await page.keyboard.press('Control+k');

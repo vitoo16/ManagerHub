@@ -241,3 +241,5 @@
 .player-attribute-summary th { font-weight: 600; color: var(--text-sub); }
 .player-attribute-summary td { font-variant-numeric: tabular-nums; text-align: end; }
 .player-attribute-summary thead th:not(:first-child) { text-align: end; }
+
+.player-hidden-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 10px; margin-top: 12px; }

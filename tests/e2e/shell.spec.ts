@@ -473,7 +473,7 @@ test('treats masked scouting attributes as unknown, not zero', async ({page}) =>
     buffer:Buffer.from('Name\tPassing\tVision\tDecisions\nUnscouted\t-\t14-17\t?')
   });
   await expect(page.getByText('1 player records')).toBeVisible();
-  await expect(page.getByText('No recognized, exact 1–20 attributes')).toHaveCount(0); // overview shows an empty radar
+  await expect(page.getByText('No recognized, exact 1–20 attributes')).toHaveCount(0); // overview uses an explicit missing-data summary
   await expect(page.getByText('No exact attributes observed')).toBeVisible();
   await page.getByRole('tab',{name:'Role fit'}).click();
   await expect(page.getByText('N/A').first()).toBeVisible();
@@ -487,6 +487,7 @@ test('supports native FM-style print to HTML table without external scripts', as
   await expect(page.getByRole('heading',{name:'Test Native HTML'})).toBeVisible();
   await page.getByRole('tab',{name:'Attributes'}).click();
   await expect(page.getByText('Passing', { exact: true }).first()).toBeVisible();
+  await page.getByLabel('Attribute group', { exact: true }).selectOption('Mental');
   await expect(page.getByText('Vision', { exact: true }).first()).toBeVisible();
   await expect(page.getByText('Visible attributes only · Not CA')).toBeVisible();
 });
@@ -1113,6 +1114,7 @@ test('Vietnamese player scouting labels are readable and CA stays unverified',as
   await expect(page.getByText('Chưa xác minh').first()).toBeVisible();
   await page.getByRole('tab',{name:'Chỉ số'}).click();
   await expect(page.getByText('Chuyền bóng').first()).toBeVisible();
+  await page.getByLabel('Nhóm chỉ số', { exact: true }).selectOption('Mental');
   await expect(page.getByText('Tầm nhìn').first()).toBeVisible();
 });
 
@@ -1595,4 +1597,31 @@ test('loads the shared Be Vietnam Pro faces locally without a font CDN', async (
   await expect(heading).toHaveCSS('font-family', /Be Vietnam Pro/);
   expect(result.loaded).toBe(true);
   expect(externalFontRequests).toEqual([]);
+});
+
+
+test('player attribute report uses bounded exact-value groups and preserves global ranking', async ({ page }) => {
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'compact-attributes.csv', mimeType: 'text/csv',
+    buffer: Buffer.from('Name,Position,Passing,Vision,Decisions,Stamina,Finishing\nCompact Prospect,CM,18,17,15,16,20')
+  });
+  await expect(page.getByRole('heading', { name: 'Compact Prospect' })).toBeVisible();
+  const report = page.getByRole('tablist', { name: 'Player report' });
+  await expect(page.getByRole('table', { name: 'Attribute group summary' })).toBeVisible();
+  await expect(page.locator('.role-results')).toHaveCount(0);
+  await report.getByRole('tab', { name: 'Attributes' }).click();
+  const panel = page.locator('.player-attribute-table');
+  const technical = panel.getByRole('group', { name: 'Technical', exact: true });
+  await expect(technical.locator('.mh-attribute-row').filter({ hasText: 'Finishing' }).locator('dd')).toHaveText('20');
+  await expect(technical.locator('.mh-attribute-row').filter({ hasText: 'Corners' }).locator('dd')).toHaveText('—');
+  await expect(panel.locator('svg, .mh-attribute-bar')).toHaveCount(0);
+  await panel.getByLabel('Attribute group', { exact: true }).selectOption('all');
+  await panel.getByRole('checkbox', { name: 'Sort highest first' }).check();
+  await expect(panel.locator('.mh-attribute-row')).toHaveCount(14);
+  await expect(panel.locator('.mh-attribute-row').first().locator('dt')).toHaveText('Finishing');
+  await panel.getByRole('button', { name: 'Next attributes' }).click();
+  await expect(panel.getByRole('group', { name: 'Attribute page' })).toContainText('2 /');
+  await report.getByRole('tab', { name: 'Role fit' }).click();
+  await expect(page.locator('.role-results')).toBeVisible();
 });

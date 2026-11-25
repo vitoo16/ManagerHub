@@ -9,8 +9,6 @@ import {
   summarizeDraftChanges,
   type ClubDraftPatch,
   type ClubSquadPresetKind,
-  type DecodedHiddenPlayingAttributes,
-  type DecodedPersonalityAttributes,
   type DecodedPositionRatings,
   type DecodedSaveDatabase,
   type DecodedStaffAttributes,
@@ -21,6 +19,7 @@ import {
   type StaffDraftPatch
 } from '@managerhub/domain/fm2013-offline';
 import { AttributePropertyGroup, Button, Icon, Status } from '@managerhub/ui';
+import { HIDDEN_KEYS, PERSONALITY_KEYS } from '../player-attribute-fields';
 import { EditorRecordNavigator } from './EditorRecordNavigator';
 import { closeEditorRecord, createRecordState, isRecordTarget, openEditorRecord, recordKey, type EditorModalTarget, type EditorRecordTarget } from './editor-records';
 import { registerSaveDbI18n } from '../../i18n/register-save-db-i18n';
@@ -49,25 +48,6 @@ export interface SaveEntityEditorModalProps {
 
 const POSITION_KEYS: readonly (keyof DecodedPositionRatings)[] = [
   'GK', 'SW', 'DL', 'DC', 'DR', 'WBL', 'WBR', 'DM', 'ML', 'MC', 'MR', 'AML', 'AMC', 'AMR', 'ST'
-];
-
-const HIDDEN_KEYS: readonly { readonly key: keyof DecodedHiddenPlayingAttributes; readonly label: string }[] = [
-  { key: 'consistency', label: 'Consistency' },
-  { key: 'importantMatches', label: 'Important Matches' },
-  { key: 'injuryProneness', label: 'Injury Proneness' },
-  { key: 'dirtiness', label: 'Dirtiness' },
-  { key: 'versatility', label: 'Versatility' }
-];
-
-const PERSONALITY_KEYS: readonly { readonly key: keyof DecodedPersonalityAttributes; readonly label: string }[] = [
-  { key: 'adaptability', label: 'Adaptability' },
-  { key: 'ambition', label: 'Ambition' },
-  { key: 'loyalty', label: 'Loyalty' },
-  { key: 'pressure', label: 'Pressure' },
-  { key: 'professionalism', label: 'Professionalism' },
-  { key: 'sportsmanship', label: 'Sportsmanship' },
-  { key: 'temperament', label: 'Temperament' },
-  { key: 'controversy', label: 'Controversy' }
 ];
 
 const STAFF_ATTR_KEYS: readonly { readonly key: keyof DecodedStaffAttributes; readonly label: string }[] = [

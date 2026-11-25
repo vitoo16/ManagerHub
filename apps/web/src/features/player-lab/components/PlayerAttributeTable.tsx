@@ -1,38 +1,48 @@
 import { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ATTRIBUTE_GROUPS, ATTRIBUTE_LABELS, type AttributeKey, type PlayerExport } from '@managerhub/domain';
-import { AttributePropertyGroup, getAttributeTier } from '@managerhub/ui';
+import { AttributePropertyGroup, Button, getAttributeTier } from '@managerhub/ui';
 
-type Group = keyof typeof ATTRIBUTE_GROUPS;
+type Group = keyof typeof ATTRIBUTE_GROUPS | 'all';
+const PAGE_SIZE = 14;
 
 function PlayerAttributeTable({ player }: { player: PlayerExport }) {
   const { t } = useTranslation();
   const [group, setGroup] = useState<Group>('Technical');
   const [ranked, setRanked] = useState(false);
-  const keys: AttributeKey[] = [...ATTRIBUTE_GROUPS[group]];
+  const [page, setPage] = useState(0);
+  const keys: AttributeKey[] = group === 'all' ? [...new Set(Object.values(ATTRIBUTE_GROUPS).flat())] : [...ATTRIBUTE_GROUPS[group]];
   const rankValue = (key: AttributeKey) => {
     const value = player.attributes[key];
     return getAttributeTier(value) ? value! : -1;
   };
   if (ranked) keys.sort((a, b) => rankValue(b) - rankValue(a));
   const fields = keys.map(key => ({ key, label: t(ATTRIBUTE_LABELS[key]), value: player.attributes[key] }));
+  const pageCount = Math.max(1, Math.ceil(fields.length / PAGE_SIZE));
+  const visibleFields = group === 'all' ? fields.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE) : fields;
   const observed = fields.filter(field => getAttributeTier(field.value) !== undefined).length;
   return <div className="player-attribute-table">
     <div className="player-attribute-controls">
       <label>
         <span>{t('Attribute group')}</span>
-        <select value={group} onChange={event => setGroup(event.currentTarget.value as Group)}>
+        <select value={group} onChange={event => { setGroup(event.currentTarget.value as Group); setPage(0); }}>
+          <option value="all">{t('All attributes')}</option>
           {Object.keys(ATTRIBUTE_GROUPS).map(key => <option key={key} value={key}>{t(key)}</option>)}
         </select>
       </label>
       <label className="player-attribute-sort">
-        <input type="checkbox" checked={ranked} onChange={event => setRanked(event.currentTarget.checked)}/>
+        <input type="checkbox" checked={ranked} onChange={event => { setRanked(event.currentTarget.checked); setPage(0); }}/>
         <span>{t('Sort highest first')}</span>
       </label>
     </div>
     <p className="module-disclaimer">{t('{{observed}} of {{total}} attributes observed', { observed, total: fields.length })}</p>
     {observed === 0 && <p className="module-disclaimer">{t('No recognized, exact 1–20 attributes were included in the export.')}</p>}
-    <AttributePropertyGroup title={t(group)} fields={fields}/>
+    <AttributePropertyGroup title={t(group === 'all' ? 'All attributes' : group)} fields={visibleFields}/>
+    {group === 'all' && <div className="save-db-actions" role="group" aria-label={t('Attribute page')}>
+      <Button type="button" disabled={page === 0} onClick={() => setPage(page - 1)}>{t('Previous attributes')}</Button>
+      <span aria-live="polite">{page + 1} / {pageCount}</span>
+      <Button type="button" disabled={page + 1 >= pageCount} onClick={() => setPage(page + 1)}>{t('Next attributes')}</Button>
+    </div>}
   </div>;
 }
 export default memo(PlayerAttributeTable);

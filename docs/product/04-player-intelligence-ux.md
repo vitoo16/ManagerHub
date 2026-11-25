@@ -14,7 +14,9 @@ Header: player identity, age, club, position, foot, condition, injury, contract,
 Hero KPI strip: Actual CA [when verified] / eCA with uncertainty / PA [when verified] / role fit / tactical fit / availability.
 Persistent switch: Realistic Scouting (hidden attributes restricted) vs Editor Data (requires authorized, verified decoder).
 Tabs:
-- Overview: analyst summary, six attribute families, strengths, weaknesses, caveats.
+- Overview: compact attribute-group mean and coverage, strengths, weaknesses and caveats; no repeated role ranking or full profile.
+- Contract & positions: contract, physical details and positional familiarity for decoded saves.
+- Personality & hidden traits: exact numeric properties, restricted in Realism mode.
 - Abilities: attributes table, eCA, diagnostic Actual CA – eCA (only if both), estimated CA explanation, sensitivity toggles, model card.
 - Position & Roles: pitch heatmap of position suitability, top roles in possession and out of possession if supported, natural familiarity vs retraining, weaknesses.
 - Performance: supported match statistics, minutes, sample size and league/role cohorts.
