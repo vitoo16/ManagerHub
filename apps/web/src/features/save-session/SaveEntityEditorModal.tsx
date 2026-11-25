@@ -1,6 +1,5 @@
-import { memo, useEffect, useId, useMemo, useRef, useState, type ChangeEvent } from 'react';
+import { memo, useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import PlayerAttributeTable from '../PlayerAttributeTable';
 import {
   buildClubSquadPresetOverlay,
   buildEditedSaveFileName,
@@ -10,15 +9,18 @@ import {
   type ClubDraftPatch,
   type ClubSquadPresetKind,
   type DecodedSaveDatabase,
-  type DecodedStaffAttributes,
   type PlayerDraftPatch,
   type PlayerPresetKind,
   type SaveDraftOverlay,
   type StadiumDraftPatch,
   type StaffDraftPatch
 } from '@managerhub/domain/fm2013-offline';
-import { AttributePropertyGroup, Button, Icon, SectionTabs, Status } from '@managerhub/ui';
-import { HIDDEN_KEYS, PERSONALITY_KEYS, POSITION_KEYS } from '../player-attribute-fields';
+import { Button, Icon, Status } from '@managerhub/ui';
+import { clampInt } from './editor-number';
+import { PlayerEditorRecord } from './PlayerEditorRecord';
+import { StaffEditorRecord } from './StaffEditorRecord';
+import { ClubEditorRecord } from './ClubEditorRecord';
+import { StadiumEditorRecord } from './StadiumEditorRecord';
 import { EditorRecordNavigator } from './EditorRecordNavigator';
 import { closeEditorRecord, createRecordState, isRecordTarget, openEditorRecord, recordKey, type EditorModalTarget, type EditorRecordTarget } from './editor-records';
 import { registerSaveDbI18n } from '../../i18n/register-save-db-i18n';
@@ -45,53 +47,6 @@ export interface SaveEntityEditorModalProps {
   readonly onSaveAsFm: (outputFileName: string) => void;
 }
 
-const STAFF_ATTR_KEYS: readonly { readonly key: keyof DecodedStaffAttributes; readonly label: string }[] = [
-  { key: 'attacking', label: 'Coaching Attacking' },
-  { key: 'defending', label: 'Coaching Defending' },
-  { key: 'fitness', label: 'Coaching Fitness' },
-  { key: 'goalkeepers', label: 'Coaching Goalkeepers' },
-  { key: 'mental', label: 'Coaching Mental' },
-  { key: 'technical', label: 'Coaching Technical' },
-  { key: 'tactical', label: 'Coaching Tactical' },
-  { key: 'player', label: 'Coaching Outfield' },
-  { key: 'manManagement', label: 'Man Management' },
-  { key: 'workingWithYoungsters', label: 'Working With Youngsters' },
-  { key: 'judgingPlayerAbility', label: 'Judging Player Ability' },
-  { key: 'judgingPlayerPotential', label: 'Judging Player Potential' },
-  { key: 'tacticalKnowledge', label: 'Tactical Knowledge' },
-  { key: 'motivating', label: 'Motivating' },
-  { key: 'levelOfDiscipline', label: 'Level of Discipline' },
-  { key: 'determination', label: 'Determination' },
-  { key: 'adaptability', label: 'Adaptability' },
-  { key: 'physiotherapy', label: 'Physiotherapy' }
-];
-
-type EditorSection = 'general' | 'contract' | 'personality' | 'attributes' | 'hidden' | 'positions' | 'presets' | 'facilities';
-
-const PLAYER_SECTIONS = [
-  { id: 'general', label: 'Ability, Reputation & Bio' },
-  { id: 'contract', label: 'Active Contract' },
-  { id: 'attributes', label: 'Attributes' },
-  { id: 'hidden', label: 'Hidden Playing Traits (1–20)' },
-  { id: 'personality', label: 'Personality (1–20)' },
-  { id: 'positions', label: 'Positions & Feet' },
-  { id: 'presets', label: 'Quick presets' }
-] as const satisfies readonly { id: EditorSection; label: string }[];
-const STAFF_SECTIONS = [
-  { id: 'general', label: 'Staff Ability, Reputation & Contract' },
-  { id: 'attributes', label: 'Attributes' }
-] as const satisfies readonly { id: EditorSection; label: string }[];
-const CLUB_SECTIONS = [
-  { id: 'general', label: 'Finances' },
-  { id: 'facilities', label: 'Facilities' },
-  { id: 'presets', label: 'Club presets' }
-] as const satisfies readonly { id: EditorSection; label: string }[];
-
-function clampInt(val: string, fallback: number, min: number, max: number): number {
-  const parsed = Number.parseInt(val, 10);
-  if (!Number.isFinite(parsed)) return fallback;
-  return Math.max(min, Math.min(max, parsed));
-}
 
 function SaveEntityEditorModal({
   target: initialTarget,
@@ -112,8 +67,6 @@ function SaveEntityEditorModal({
   const { t } = useTranslation();
   const exeInputRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
-  const sectionId = useId();
-  const [recordSection, setRecordSection] = useState<EditorSection>('general');
   const [notice, setNotice] = useState<string | null>(null);
   const [recordState, setRecordState] = useState(() => isRecordTarget(initialTarget) ? createRecordState(initialTarget) : null);
   const target = recordState?.active ?? initialTarget;
@@ -123,7 +76,6 @@ function SaveEntityEditorModal({
     if (next === recordState) return;
     setRecordState(next);
     if (recordKey(next.active) !== recordKey(recordState.active)) {
-      setRecordSection('general');
       setNotice(null);
     }
   };
@@ -133,7 +85,6 @@ function SaveEntityEditorModal({
     if (next === recordState) return;
     setRecordState(next);
     if (recordKey(next.active) !== recordKey(recordState.active)) {
-      setRecordSection('general');
       setNotice(null);
     }
   };
@@ -344,483 +295,13 @@ function SaveEntityEditorModal({
         {notice && <div className="editor-notice" role="status">{notice}</div>}
         {writeError && <div className="inline-alert" role="alert">{writeError}</div>}
 
-        {target.kind === 'player' && player && (
-          <>
-            <SectionTabs<EditorSection> id={sectionId} label={t('Player editor sections')}
-              items={PLAYER_SECTIONS.map(item => ({ ...item, label: t(item.label) }))}
-              active={recordSection} onChange={setRecordSection}/>
-            <div className="editor-record-panel" role="tabpanel" id={sectionId + '-panel'}
-              aria-labelledby={sectionId + '-tab-' + recordSection}>
-            {recordSection === 'presets' && (
-            <div className="editor-presets">
-              <strong>{t('Quick presets')}:</strong>
-              <Button type="button" onClick={() => applyPlayerPreset('inspire_morale', 'Inspire Player')}>
-                {t('Inspire morale')}
-              </Button>
-              <Button type="button" onClick={() => applyPlayerPreset('match_ca_to_pa', 'Match CA to PA')}>
-                {t('Match CA to PA')}
-              </Button>
-              <Button type="button" onClick={() => applyPlayerPreset('wonderkid_pa_200', 'Wonderkid PA 200')}>
-                {t('Wonderkid (PA 200)')}
-              </Button>
-              <Button type="button" onClick={() => applyPlayerPreset('perfect_model_professional', 'Model Professional')}>
-                {t('Model Professional')}
-              </Button>
-              <Button type="button" onClick={() => applyPlayerPreset('natural_all_positions', 'All Positions 20')}>
-                {t('All positions 20')}
-              </Button>
-              {player.contract && (
-                <Button type="button" onClick={() => applyPlayerPreset('extend_contract_5y', 'Extend Contract +5y')}>
-                  {t('Extend contract +5y')}
-                </Button>
-              )}
-            </div>
-            )}
+        {target.kind === 'player' && player && <PlayerEditorRecord key={player.uid} player={player} applyPlayerField={applyPlayerField} applyPlayerPreset={applyPlayerPreset}/>}
 
-            {recordSection === 'general' && (
-              <>
-                <div className="editor-section">
-                  <h3>{t('Ability, Reputation & Bio')}</h3>
-                  <div className="editor-field-grid">
-                    <label className="editor-field">
-                      <span>{t('Actual CA')} (1–200)</span>
-                      <input
-                        type="number"
-                        min={1}
-                        max={200}
-                        value={player.actualCa}
-                        onChange={e => applyPlayerField('Edit Actual CA', { actualCa: clampInt(e.target.value, player.actualCa, 1, 200) })}
-                      />
-                    </label>
-                    <label className="editor-field">
-                      <span>{t('Actual PA')} (1–200)</span>
-                      <input
-                        type="number"
-                        min={1}
-                        max={200}
-                        value={player.potentialAbility}
-                        onChange={e => applyPlayerField('Edit Actual PA', { potentialAbility: clampInt(e.target.value, player.potentialAbility, 1, 200) })}
-                      />
-                    </label>
-                    <label className="editor-field">
-                      <span>{t('Morale')} (1–20)</span>
-                      <input
-                        type="number"
-                        min={1}
-                        max={20}
-                        value={player.morale ?? 15}
-                        onChange={e => applyPlayerField('Edit Morale', { morale: clampInt(e.target.value, player.morale ?? 15, 1, 20) })}
-                      />
-                    </label>
-                    <label className="editor-field">
-                      <span>{t('Market value')} (£)</span>
-                      <input
-                        type="number"
-                        min={0}
-                        max={1_500_000_000}
-                        step={50_000}
-                        value={player.marketValueGbp ?? 0}
-                        onChange={e => applyPlayerField('Edit Market Value', { marketValueGbp: clampInt(e.target.value, player.marketValueGbp ?? 0, 0, 1_500_000_000) })}
-                      />
-                    </label>
-                    <label className="editor-field">
-                      <span>{t('Current reputation')}</span>
-                      <input
-                        type="number"
-                        min={1}
-                        max={10_000}
-                        value={player.currentReputation}
-                        onChange={e => applyPlayerField('Edit Current Reputation', { currentReputation: clampInt(e.target.value, player.currentReputation, 1, 10_000) })}
-                      />
-                    </label>
-                    <label className="editor-field">
-                      <span>{t('World reputation')}</span>
-                      <input
-                        type="number"
-                        min={1}
-                        max={10_000}
-                        value={player.worldReputation}
-                        onChange={e => applyPlayerField('Edit World Reputation', { worldReputation: clampInt(e.target.value, player.worldReputation, 1, 10_000) })}
-                      />
-                    </label>
-                    <label className="editor-field">
-                      <span>{t('International caps')}</span>
-                      <input
-                        type="number"
-                        min={0}
-                        max={250}
-                        value={player.intCaps}
-                        onChange={e => applyPlayerField('Edit Caps', { intCaps: clampInt(e.target.value, player.intCaps, 0, 250) })}
-                      />
-                    </label>
-                    <label className="editor-field">
-                      <span>{t('International goals')}</span>
-                      <input
-                        type="number"
-                        min={0}
-                        max={250}
-                        value={player.intGoals}
-                        onChange={e => applyPlayerField('Edit Int Goals', { intGoals: clampInt(e.target.value, player.intGoals, 0, 250) })}
-                      />
-                    </label>
-                  </div>
-                </div>
+        {target.kind === 'staff' && staffMember && <StaffEditorRecord key={staffMember.uid} staffMember={staffMember} applyStaffField={applyStaffField}/>}
 
-              </>
-            )}
+        {target.kind === 'club' && club && <ClubEditorRecord key={club.uid} club={club} applyClubField={applyClubField} applyClubPreset={applyClubPreset}/>}
 
-            {recordSection === 'contract' && (player.contract ? (
-                  <div className="editor-section">
-                    <h3>{t('Active Contract')}</h3>
-                    <div className="editor-field-grid">
-                      <label className="editor-field">
-                        <span>{t('Weekly wage')} (£)</span>
-                        <input
-                          type="number"
-                          min={0}
-                          max={10_000_000}
-                          step={1_000}
-                          value={player.contract.weeklyWageGbp ?? 0}
-                          onChange={e => applyPlayerField('Edit Weekly Wage', { weeklyWageGbp: clampInt(e.target.value, player.contract?.weeklyWageGbp ?? 0, 0, 10_000_000) })}
-                        />
-                      </label>
-                      <label className="editor-field">
-                        <span>{t('Contract expiry')}</span>
-                        <input
-                          type="date"
-                          value={player.contract.expiresAt ?? '2016-06-30'}
-                          onChange={e => {
-                            if (/^\d{4}-\d{2}-\d{2}$/u.test(e.target.value)) {
-                              applyPlayerField('Edit Contract Expiry', { contractExpiresAt: e.target.value });
-                            }
-                          }}
-                        />
-                      </label>
-                      <label className="editor-field">
-                        <span>{t('Squad number')} (1–99)</span>
-                        <input
-                          type="number"
-                          min={1}
-                          max={99}
-                          value={player.squadNumber ?? 1}
-                          onChange={e => applyPlayerField('Edit Squad Number', { squadNumber: clampInt(e.target.value, player.squadNumber ?? 1, 1, 99) })}
-                        />
-                      </label>
-                    </div>
-                  </div>
-            ) : <p className="editor-notice">{t('No active contract data.')}</p>)}
-
-            {recordSection === 'personality' && (player.personality ? (
-                  <AttributePropertyGroup
-                    title={t('Personality (1–20)')}
-                    fields={PERSONALITY_KEYS.map(item => ({
-                      key: item.key, label: t(item.label), value: player.personality?.[item.key]
-                    }))}
-                    onChange={(key, raw, previous) => applyPlayerField(`Edit ${key}`, {
-                      personality: { [key]: clampInt(raw, previous, 1, 20) }
-                    })}
-                  />
-            ) : <p className="editor-notice">{t('No personality data.')}</p>)}
-
-            {recordSection === 'attributes' && (
-              <PlayerAttributeTable attributes={player.attributes}
-                onChange={(key, raw, previous) => applyPlayerField(`Edit ${key}`, {
-                  attributes: { [key]: clampInt(raw, previous, 1, 20) }
-                })}/>
-            )}
-
-            {recordSection === 'hidden' && (
-                <AttributePropertyGroup
-                  title={t('Hidden Playing Traits (1–20)')}
-                  fields={HIDDEN_KEYS.map(item => ({
-                    key: item.key, label: t(item.label), value: player.hiddenPlaying[item.key]
-                  }))}
-                  onChange={(key, raw, previous) => applyPlayerField(`Edit ${key}`, {
-                    hiddenPlaying: { [key]: clampInt(raw, previous, 1, 20) }
-                  })}
-                />
-            )}
-
-            {recordSection === 'positions' && (
-              <>
-                <div className="editor-section">
-                  <h3>{t('Preferred feet')} (1–20)</h3>
-                  <div className="editor-field-grid">
-                    <label className="editor-field">
-                      <span>{t('Left foot')}</span>
-                      <input
-                        type="number"
-                        min={1}
-                        max={20}
-                        value={player.leftFoot}
-                        onChange={e => applyPlayerField('Edit Left Foot', { leftFoot: clampInt(e.target.value, player.leftFoot, 1, 20) })}
-                      />
-                    </label>
-                    <label className="editor-field">
-                      <span>{t('Right foot')}</span>
-                      <input
-                        type="number"
-                        min={1}
-                        max={20}
-                        value={player.rightFoot}
-                        onChange={e => applyPlayerField('Edit Right Foot', { rightFoot: clampInt(e.target.value, player.rightFoot, 1, 20) })}
-                      />
-                    </label>
-                  </div>
-                </div>
-                <div className="editor-section">
-                  <h3>{t('Positional familiarity (1–20)')}</h3>
-                  <div className="editor-field-grid editor-field-grid--compact">
-                    {POSITION_KEYS.map(pos => (
-                      <label className="editor-field" key={pos}>
-                        <span>{pos}</span>
-                        <input
-                          type="number"
-                          min={1}
-                          max={20}
-                          value={player.positions[pos]}
-                          onChange={e =>
-                            applyPlayerField(`Edit ${pos}`, {
-                              positions: { [pos]: clampInt(e.target.value, player.positions[pos], 1, 20) }
-                            })
-                          }
-                        />
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
-            </div>
-          </>
-        )}
-
-        {target.kind === 'staff' && staffMember && (
-          <>
-            <SectionTabs<EditorSection> id={sectionId} label={t('Staff editor sections')}
-              items={STAFF_SECTIONS.map(item => ({ ...item, label: t(item.label) }))}
-              active={recordSection} onChange={setRecordSection}/>
-            <div className="editor-record-panel" role="tabpanel" id={sectionId + '-panel'}
-              aria-labelledby={sectionId + '-tab-' + recordSection}>
-            {recordSection === 'general' && <div className="editor-section">
-              <h3>{t('Staff Ability, Reputation & Contract')}</h3>
-              <div className="editor-field-grid">
-                <label className="editor-field">
-                  <span>{t('Staff CA')} (1–200)</span>
-                  <input
-                    type="number"
-                    min={1}
-                    max={200}
-                    value={staffMember.staffCa}
-                    onChange={e => applyStaffField('Edit Staff CA', { staffCa: clampInt(e.target.value, staffMember.staffCa, 1, 200) })}
-                  />
-                </label>
-                <label className="editor-field">
-                  <span>{t('Staff PA')} (1–200)</span>
-                  <input
-                    type="number"
-                    min={1}
-                    max={200}
-                    value={staffMember.staffPa}
-                    onChange={e => applyStaffField('Edit Staff PA', { staffPa: clampInt(e.target.value, staffMember.staffPa, 1, 200) })}
-                  />
-                </label>
-                <label className="editor-field">
-                  <span>{t('Current reputation')}</span>
-                  <input
-                    type="number"
-                    min={1}
-                    max={10_000}
-                    value={staffMember.currentReputation}
-                    onChange={e => applyStaffField('Edit Staff Reputation', { currentReputation: clampInt(e.target.value, staffMember.currentReputation, 1, 10_000) })}
-                  />
-                </label>
-                {staffMember.weeklyWageGbp !== null && (
-                  <label className="editor-field">
-                    <span>{t('Weekly wage')} (£)</span>
-                    <input
-                      type="number"
-                      min={0}
-                      max={10_000_000}
-                      step={500}
-                      value={staffMember.weeklyWageGbp}
-                      onChange={e => applyStaffField('Edit Staff Wage', { weeklyWageGbp: clampInt(e.target.value, staffMember.weeklyWageGbp ?? 0, 0, 10_000_000) })}
-                    />
-                  </label>
-                )}
-              </div>
-            </div>}
-            {recordSection === 'attributes' && (staffMember.attributes ? (
-              <AttributePropertyGroup
-                title={t('Coaching, Scouting, Mental & Medical Attributes (1–20)')}
-                fields={STAFF_ATTR_KEYS.map(item => ({
-                  key: item.key, label: t(item.label), value: staffMember.attributes?.[item.key]
-                }))}
-                onChange={(key, raw, previous) => applyStaffField(`Edit ${key}`, {
-                  attributes: { [key]: clampInt(raw, previous, 1, 20) }
-                })}
-              />
-            ) : <p className="editor-notice">{t('No staff attribute data.')}</p>)}
-            </div>
-          </>
-        )}
-
-        {target.kind === 'club' && club && (
-          <>
-            <SectionTabs<EditorSection> id={sectionId} label={t('Club editor sections')}
-              items={CLUB_SECTIONS.map(item => ({ ...item, label: t(item.label) }))}
-              active={recordSection} onChange={setRecordSection}/>
-            <div className="editor-record-panel" role="tabpanel" id={sectionId + '-panel'}
-              aria-labelledby={sectionId + '-tab-' + recordSection}>
-            {recordSection === 'presets' && <div className="editor-presets">
-              <strong>{t('Club presets')}:</strong>
-              <Button type="button" onClick={() => applyClubPreset(club.uid, 'inspire_team', 'Inspire Squad')}>
-                {t('Inspire squad')}
-              </Button>
-              <Button type="button" onClick={() => applyClubPreset(club.uid, 'heal_fitness_morale_team', 'Heal & Boost Fitness')}>
-                {t('Heal & max fitness squad')}
-              </Button>
-              <Button type="button" onClick={() => applyClubPreset(club.uid, 'match_squad_ca_pa', 'Match Squad CA to PA')}>
-                {t('Match squad CA to PA')}
-              </Button>
-              <Button type="button" onClick={() => applyClubPreset(club.uid, 'boost_finances_facilities', 'Boost Finances & Facilities')}>
-                {t('Max facilities & £250M balance')}
-              </Button>
-            </div>}
-            {recordSection === 'general' && <div className="editor-section">
-              <h3>{t('Finances')}</h3>
-              <div className="editor-field-grid">
-                {club.financeType !== 'none' && (
-                  <label className="editor-field">
-                    <span>{t('Balance')} (£)</span>
-                    <input
-                      type="number"
-                      min={-1_000_000_000}
-                      max={1_500_000_000}
-                      step={250_000}
-                      value={club.balanceGbp ?? 0}
-                      onChange={e => applyClubField('Edit Club Balance', { balanceGbp: clampInt(e.target.value, club.balanceGbp ?? 0, -1_000_000_000, 1_500_000_000) })}
-                    />
-                  </label>
-                )}
-                {club.financeType === 'full' && (
-                  <>
-                    <label className="editor-field">
-                      <span>{t('Transfer budget')} (£)</span>
-                      <input
-                        type="number"
-                        min={0}
-                        max={1_500_000_000}
-                        step={250_000}
-                        value={club.transferBudgetGbp ?? 0}
-                        onChange={e => applyClubField('Edit Transfer Budget', { transferBudgetGbp: clampInt(e.target.value, club.transferBudgetGbp ?? 0, 0, 1_500_000_000) })}
-                      />
-                    </label>
-                    <label className="editor-field">
-                      <span>{t('Wage budget')} (£)</span>
-                      <input
-                        type="number"
-                        min={0}
-                        max={50_000_000}
-                        step={10_000}
-                        value={club.weeklyWageBudgetGbp ?? 0}
-                        onChange={e => applyClubField('Edit Wage Budget', { weeklyWageBudgetGbp: clampInt(e.target.value, club.weeklyWageBudgetGbp ?? 0, 0, 50_000_000) })}
-                      />
-                    </label>
-                  </>
-                )}
-              </div>
-              {club.financeType === 'none' && <p className="editor-notice">{t('No club finance data.')}</p>}
-            </div>}
-            {recordSection === 'facilities' && <div className="editor-section">
-              <h3>{t('Facilities')}</h3>
-              <div className="editor-field-grid">
-                <label className="editor-field">
-                  <span>{t('Training facilities')} (1–20)</span>
-                  <input
-                    type="number"
-                    min={1}
-                    max={20}
-                    value={club.trainingFacilities ?? 10}
-                    onChange={e => applyClubField('Edit Training Facilities', { trainingFacilities: clampInt(e.target.value, club.trainingFacilities ?? 10, 1, 20) })}
-                  />
-                </label>
-                <label className="editor-field">
-                  <span>{t('Youth facilities')} (1–20)</span>
-                  <input
-                    type="number"
-                    min={1}
-                    max={20}
-                    value={club.youthFacilities ?? 10}
-                    onChange={e => applyClubField('Edit Youth Facilities', { youthFacilities: clampInt(e.target.value, club.youthFacilities ?? 10, 1, 20) })}
-                  />
-                </label>
-                <label className="editor-field">
-                  <span>{t('Youth coaching')} (1–20)</span>
-                  <input
-                    type="number"
-                    min={1}
-                    max={20}
-                    value={club.youthCoaching ?? 10}
-                    onChange={e => applyClubField('Edit Youth Coaching', { youthCoaching: clampInt(e.target.value, club.youthCoaching ?? 10, 1, 20) })}
-                  />
-                </label>
-                <label className="editor-field">
-                  <span>{t('Youth recruitment')} (1–20)</span>
-                  <input
-                    type="number"
-                    min={1}
-                    max={20}
-                    value={club.youthRecruitment ?? 10}
-                    onChange={e => applyClubField('Edit Youth Recruitment', { youthRecruitment: clampInt(e.target.value, club.youthRecruitment ?? 10, 1, 20) })}
-                  />
-                </label>
-              </div>
-            </div>}
-            </div>
-          </>
-        )}
-
-        {target.kind === 'stadium' && stadium && (
-          <div className="editor-section">
-            <h3>{t('Stadium Capacities')}</h3>
-            <div className="editor-field-grid">
-              <label className="editor-field">
-                <span>{t('Capacity')}</span>
-                <input
-                  type="number"
-                  min={100}
-                  max={500_000}
-                  step={500}
-                  value={stadium.capacity}
-                  onChange={e => applyStadiumField('Edit Stadium Capacity', { capacity: clampInt(e.target.value, stadium.capacity, 100, 500_000) })}
-                />
-              </label>
-              <label className="editor-field">
-                <span>{t('Seating')}</span>
-                <input
-                  type="number"
-                  min={0}
-                  max={500_000}
-                  step={500}
-                  value={stadium.seatingCapacity}
-                  onChange={e => applyStadiumField('Edit Stadium Seating', { seatingCapacity: clampInt(e.target.value, stadium.seatingCapacity, 0, 500_000) })}
-                />
-              </label>
-              <label className="editor-field">
-                <span>{t('Expansion')}</span>
-                <input
-                  type="number"
-                  min={0}
-                  max={500_000}
-                  step={500}
-                  value={stadium.expansionCapacity}
-                  onChange={e => applyStadiumField('Edit Expansion Capacity', { expansionCapacity: clampInt(e.target.value, stadium.expansionCapacity, 0, 500_000) })}
-                />
-              </label>
-            </div>
-          </div>
-        )}
+        {target.kind === 'stadium' && stadium && <StadiumEditorRecord key={stadium.uid} stadium={stadium} applyStadiumField={applyStadiumField}/>}
 
         {target.kind === 'mass_edit' && (
           <>

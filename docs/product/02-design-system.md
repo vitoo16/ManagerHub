@@ -135,3 +135,6 @@ One shared A/B plan and formation control, followed by five task sections (XI, c
 
 ### Recruitment and explorer density follow-up
 Shortlist candidates, role comparison and club-group recruitment use shared section navigation. Candidate list is paged at eight items; comparison/scenario modules load on first visit and retain local selection state while hidden. The database explorer filters/sorts only the active entity family; existing 50-row pagination and visibility checks remain unchanged. Filtered arrays are already new copies and are sorted directly rather than copied again. Source-level work reduction only; actual timing and browser acceptance pending.
+
+### Editor source ownership
+The modal is a session/transaction controller; four record-specific presentation components own their bounded views. Shared EditorRecordSections handles local navigation, and EditorNumberField handles clamping, native missingness and form markup. Native unknown numeric/date fields are blank and disabled instead of displaying fabricated fallback values. All actual mutations remain in the existing parent transaction callbacks. Runtime and exact native field compatibility verification remain pending.
