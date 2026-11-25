@@ -271,7 +271,11 @@ function SaveInspector({
           saveActivity={decodedLibrary.activity}
           onSetSaveMode={onSetSaveMode}
           onSwitchDecodedSave={onSwitchDecodedSave}
-          onPersistDatabase={db => void decodedLibrary.save(db)}
+          onPersistDatabase={() => {
+            // Cache only the immutable decoded source, not the working projection.
+            const base = decodedSaves[activeDecodedSave.source.saveId];
+            if (base) void decodedLibrary.save(base);
+          }}
           onRemovePersistedDatabase={onRemovePersistedDatabase}
           onOpenPlayerInLab={onOpenPlayerFromSave}
           onLoadClubInSquad={onLoadClubInSquad}

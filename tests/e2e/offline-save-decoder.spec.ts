@@ -425,3 +425,30 @@ test('P0 unified SaveSession (S01-S08): non-remounting continuity, decoupled clu
   await expect(explorer.locator('tbody tr', { hasText: 'Owen Shaw' })).toContainText('191');
   await expect(explorer.locator('tbody tr', { hasText: 'Owen Shaw' })).toContainText('198');
 });
+
+test('browser cache stores immutable source rather than dirty editor projection (R01)', async ({ page }) => {
+  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+  await page.goto('/#/saves');
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'cache-source.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const toolbar = page.getByRole('region', { name: 'Active save session' });
+  const explorer = page.locator('.save-db-explorer');
+  await expect(toolbar).toBeVisible({ timeout: 20_000 });
+  await toolbar.getByRole('group', { name: 'Global display mode' }).getByRole('button', { name: 'Editor mode' }).click();
+  const row = explorer.locator('tbody tr', { hasText: 'Owen Shaw' });
+  const originalText = (await row.innerText()).replace(/\s+/g, ' ').trim();
+  await row.getByRole('button', { name: 'Edit' }).click();
+  const modal = page.getByRole('dialog');
+  await modal.getByLabel('Actual CA (1–200)').fill('199');
+  await modal.getByRole('button', { name: 'Done' }).click();
+  await expect(row).toContainText('199');
+  await explorer.getByRole('button', { name: 'Save database on this browser' }).click();
+  await expect(explorer.getByRole('button', { name: 'Remove saved database' })).toBeVisible();
+  await page.reload();
+  await page.getByRole('button', { name: 'Open save', exact: true }).click();
+  await expect(toolbar).toBeVisible();
+  await toolbar.getByRole('group', { name: 'Global display mode' }).getByRole('button', { name: 'Editor mode' }).click();
+  await expect(row).toHaveText(originalText, { useInnerText: true });
+  await expect(toolbar).not.toContainText('unsaved edits');
+});

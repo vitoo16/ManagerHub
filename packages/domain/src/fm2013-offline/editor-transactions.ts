@@ -261,7 +261,38 @@ export function validateStadiumDraftPatch(patch: StadiumDraftPatch): void {
   if (patch.expansionCapacity !== undefined) assertSafeInt('expansionCapacity', patch.expansionCapacity, 0, 500_000);
 }
 
+function assertKnownPatchKeys(value: unknown, allowed: readonly string[], label: string): void {
+  if (!value || typeof value !== 'object' || Array.isArray(value) ||
+      (Object.getPrototypeOf(value) !== Object.prototype && Object.getPrototypeOf(value) !== null)) {
+    throw new FM2013DecodeError('INVALID_FILE', `Invalid ${label} patch object.`);
+  }
+  for (const key of Object.keys(value)) {
+    if (!allowed.includes(key)) {
+      throw new FM2013DecodeError('INVALID_FILE', `Unknown ${label} field "${key}".`);
+    }
+  }
+}
+
+function assertKnownNestedPatch(value: unknown, base: object | null, label: string): void {
+  if (value === undefined) return;
+  assertKnownPatchKeys(value, base ? Object.keys(base) : [], label);
+}
+
 function normalizePlayerPatch(base: DecodedSavePlayer, merged: PlayerDraftPatch): PlayerDraftPatch | null {
+  assertKnownPatchKeys(merged, [
+    'actualCa', 'potentialAbility', 'homeReputation', 'currentReputation', 'worldReputation',
+    'morale', 'marketValueGbp', 'heightCm', 'weightKg', 'leftFoot', 'rightFoot',
+    'intCaps', 'intGoals', 'weeklyWageGbp', 'contractExpiresAt', 'squadNumber',
+    'positions', 'attributes', 'hiddenPlaying', 'personality'
+  ], 'player');
+  assertKnownNestedPatch(merged.positions, base.positions, 'player.positions');
+  assertKnownNestedPatch(merged.attributes, base.attributes, 'player.attributes');
+  assertKnownNestedPatch(merged.hiddenPlaying, base.hiddenPlaying, 'player.hiddenPlaying');
+  assertKnownNestedPatch(merged.personality, base.personality, 'player.personality');
+  if (merged.attributes?.punching !== undefined && merged.attributes.tendencyToPunch !== undefined &&
+      merged.attributes.punching !== merged.attributes.tendencyToPunch) {
+    throw new FM2013DecodeError('INVALID_FILE', 'Conflicting values for shared punching attribute.');
+  }
   validatePlayerDraftPatch(merged, base);
   const out: Record<string, unknown> = {};
   const scalarPairs: ReadonlyArray<readonly [keyof PlayerDraftPatch, unknown]> = [
@@ -338,6 +369,11 @@ function normalizePlayerPatch(base: DecodedSavePlayer, merged: PlayerDraftPatch)
 }
 
 function normalizeStaffPatch(base: DecodedSaveStaff, merged: StaffDraftPatch): StaffDraftPatch | null {
+  assertKnownPatchKeys(merged, [
+    'staffCa', 'staffPa', 'homeReputation', 'currentReputation', 'worldReputation',
+    'weeklyWageGbp', 'contractExpiresAt', 'attributes'
+  ], 'staff');
+  assertKnownNestedPatch(merged.attributes, base.attributes, 'staff.attributes');
   validateStaffDraftPatch(merged, base);
   const out: Record<string, unknown> = {};
   const scalarPairs: ReadonlyArray<readonly [keyof StaffDraftPatch, unknown]> = [
@@ -366,6 +402,10 @@ function normalizeStaffPatch(base: DecodedSaveStaff, merged: StaffDraftPatch): S
 }
 
 function normalizeClubPatch(base: DecodedSaveClub, merged: ClubDraftPatch): ClubDraftPatch | null {
+  assertKnownPatchKeys(merged, [
+    'balanceGbp', 'transferBudgetGbp', 'transferBudgetSeasonGbp', 'weeklyWageBudgetGbp',
+    'trainingFacilities', 'youthFacilities', 'youthCoaching', 'youthRecruitment', 'yearFounded'
+  ], 'club');
   validateClubDraftPatch(merged, base);
   const out: Record<string, unknown> = {};
   const pairs: ReadonlyArray<readonly [keyof ClubDraftPatch, unknown]> = [
@@ -387,7 +427,12 @@ function normalizeClubPatch(base: DecodedSaveClub, merged: ClubDraftPatch): Club
 }
 
 function normalizeStadiumPatch(base: DecodedSaveStadium, merged: StadiumDraftPatch): StadiumDraftPatch | null {
+  assertKnownPatchKeys(merged, ['capacity', 'seatingCapacity', 'expansionCapacity'], 'stadium');
   validateStadiumDraftPatch(merged);
+  if ((merged.capacity !== undefined || merged.seatingCapacity !== undefined) &&
+      (merged.seatingCapacity ?? base.seatingCapacity) > (merged.capacity ?? base.capacity)) {
+    throw new FM2013DecodeError('INVALID_FILE', 'Stadium seating capacity cannot exceed total capacity.');
+  }
   const out: Record<string, unknown> = {};
   if (merged.capacity !== undefined && merged.capacity !== base.capacity) out.capacity = merged.capacity;
   if (merged.seatingCapacity !== undefined && merged.seatingCapacity !== base.seatingCapacity) {
@@ -423,6 +468,17 @@ export function normalizeOverlayAgainstDatabase(
   baseDb: DecodedSaveDatabase,
   candidate: SaveDraftOverlay
 ): SaveDraftOverlay {
+  assertKnownPatchKeys(candidate, ['players', 'staff', 'clubs', 'stadiums'], 'overlay');
+  for (const [label, records] of Object.entries(candidate)) {
+    if (!records || typeof records !== 'object' || Array.isArray(records)) {
+      throw new FM2013DecodeError('INVALID_FILE', `Invalid ${label} overlay.`);
+    }
+    for (const uid of Object.keys(records)) {
+      if (!/^(0|[1-9][0-9]*)$/.test(uid) || !Number.isSafeInteger(Number(uid))) {
+        throw new FM2013DecodeError('INVALID_FILE', `Invalid ${label} UID.`);
+      }
+    }
+  }
   const playerMap = new Map(baseDb.players.map(p => [p.uid, p] as const));
   const staffMap = new Map(baseDb.staff.map(s => [s.uid, s] as const));
   const clubMap = new Map(baseDb.clubs.map(c => [c.uid, c] as const));

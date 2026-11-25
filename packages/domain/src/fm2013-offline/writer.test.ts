@@ -139,6 +139,8 @@ describe('FM2013 P0 integrity, mode-independent persistence, transactions, and l
     expect(originalBytes).toEqual(immutableSnapshot);
     expect(noopWritten.fileName).toBe('career-edited.fm');
     expect(noopWritten.patchedFieldCount).toBe(0);
+    expect(noopWritten.bytes).toEqual(originalBytes);
+    expect(noopWritten.sha256).toBe(noopWritten.originalSha256);
     expect(noopWritten.database.players).toEqual(baseDb.players);
     expect(noopWritten.database.clubs).toEqual(baseDb.clubs);
     expect(noopWritten.database.staff).toEqual(baseDb.staff);
@@ -278,6 +280,22 @@ describe('FM2013 P0 integrity, mode-independent persistence, transactions, and l
     expect(editedStadium.capacity).toBe(68_000);
     expect(editedStadium.seatingCapacity).toBe(68_000);
     expect(editedStadium.expansionCapacity).toBe(80_000);
+  });
+
+  it('rejects invalid direct writer overlays before serializing (R02)', async () => {
+    const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+    const original = bytes.slice();
+    const options = { signingKey: SYNTHETIC_TEST_HMAC_KEY };
+    await expect(writePatchedFm2013Save(bytes, {
+      ...EMPTY_SAVE_DRAFT_OVERLAY, players: { 10011: { actualCa: 999 } }
+    }, options)).rejects.toThrow('actualCa');
+    await expect(writePatchedFm2013Save(bytes, {
+      ...EMPTY_SAVE_DRAFT_OVERLAY, players: { 10011: { attributes: { punching: 1, tendencyToPunch: 20 } } }
+    }, options)).rejects.toThrow('Conflicting values');
+    await expect(writePatchedFm2013Save(bytes, {
+      ...EMPTY_SAVE_DRAFT_OVERLAY, stadiums: { 8000: { capacity: 100, seatingCapacity: 200 } }
+    }, options)).rejects.toThrow('seating capacity');
+    expect(bytes).toEqual(original);
   });
 
   it('supports canonical AFE v4 container saves and printable ASCII space (0x20) in PE key derivation', async () => {

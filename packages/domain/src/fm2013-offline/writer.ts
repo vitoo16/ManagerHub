@@ -17,7 +17,9 @@ import {
 } from './afe-container';
 import { isoToSiDate } from './binary-reader';
 import {
+  applyDraftOverlayToDatabase,
   countDirtyFields,
+  normalizeOverlayAgainstDatabase,
   type ClubDraftPatch,
   type PlayerDraftPatch,
   type SaveDraftOverlay,
@@ -379,7 +381,7 @@ export interface WrittenFm2013SaveResult {
  *
  * Guarantees:
  * 1. Original `source` (`File` or `Uint8Array`) is NEVER mutated.
- * 2. Requires an exact-build `'verified'` FM2013 `afe` v5 save AND valid incoming 64B `HMAC-SHA512`.
+ * 2. Requires an exact-build `'verified'` FM2013 `afe` v4 save AND valid incoming 64B `HMAC-SHA512`.
  * 3. Modifies ONLY verified fixed-width scalar offsets inside a copy of `game_db.dat` and recomputes `HMAC-SHA512`.
  * 4. Preserves all 770+ non-`game_db.dat` members (including `rgman/` subdirectories and inter-member slack gaps) byte-for-byte.
  * 5. Independently re-decodes and schema-validates the output `.fm` bytes before returning, failing closed on any discrepancy.
@@ -445,6 +447,24 @@ export async function writePatchedFm2013Save(
     );
   }
 
+  // Revalidate against source bytes, never a caller-supplied working database.
+  const input = source instanceof Uint8Array ? source : await readSlice(source, 0, source.size);
+  const baseDb = await decodeFm2013Save(input, { signingKey: options.signingKey });
+  if (baseDb.source.sha256 !== originalSha256) {
+    throw new FM2013DecodeError('UNSUPPORTED_WRITE_TARGET', 'Source changed during write preparation.');
+  }
+  const normalized = normalizeOverlayAgainstDatabase(baseDb, overlay);
+  const expectedDb = applyDraftOverlayToDatabase(baseDb, normalized);
+  const outputFileName = options.outputFileName?.toLowerCase().endsWith('.fm')
+    ? options.outputFileName
+    : `${(options.outputFileName ?? 'edited-career').replace(/\.fm$/iu, '')}.fm`;
+  if (countDirtyFields(normalized) === 0) {
+    return {
+      bytes: input.slice(), fileName: outputFileName, sha256: originalSha256, originalSha256,
+      patchedFieldCount: 0, database: { ...baseDb, source: { ...baseDb.source, fileName: outputFileName } }
+    };
+  }
+
   const parsed = parseFm2013GameDb(gameDbBytes, summary?.gameDate ?? null, undefined, { collectOffsets: true });
   if (!parsed.editableOffsets) {
     throw new FM2013DecodeError('CORRUPT_DATABASE', 'Failed to collect editable field offset map.');
@@ -453,16 +473,16 @@ export async function writePatchedFm2013Save(
   const patchedGameDb = gameDbBytes.slice();
   const dv = new DataView(patchedGameDb.buffer, patchedGameDb.byteOffset, patchedGameDb.byteLength);
 
-  for (const [uidStr, patch] of Object.entries(overlay.players)) {
+  for (const [uidStr, patch] of Object.entries(normalized.players)) {
     applyPlayerBinaryPatch(dv, patchedGameDb, parsed.editableOffsets, Number(uidStr), patch);
   }
-  for (const [uidStr, patch] of Object.entries(overlay.staff)) {
+  for (const [uidStr, patch] of Object.entries(normalized.staff)) {
     applyStaffBinaryPatch(dv, patchedGameDb, parsed.editableOffsets, Number(uidStr), patch);
   }
-  for (const [uidStr, patch] of Object.entries(overlay.clubs)) {
+  for (const [uidStr, patch] of Object.entries(normalized.clubs)) {
     applyClubBinaryPatch(dv, patchedGameDb, parsed.editableOffsets, Number(uidStr), patch);
   }
-  for (const [uidStr, patch] of Object.entries(overlay.stadiums)) {
+  for (const [uidStr, patch] of Object.entries(normalized.stadiums)) {
     applyStadiumBinaryPatch(dv, parsed.editableOffsets, Number(uidStr), patch);
   }
 
@@ -522,41 +542,27 @@ export async function writePatchedFm2013Save(
   outHeaderDv.setUint32(9, newDirectoryOffset - 9, true);
   outHeaderDv.setUint32(13, 9, true);
 
-  const outputFileName = options.outputFileName?.toLowerCase().endsWith('.fm')
-    ? options.outputFileName
-    : `${(options.outputFileName ?? 'edited-career').replace(/\.fm$/iu, '')}.fm`;
-
-  // Mandatory independent re-decode + HMAC verification + post-write assertion!
+  // Re-decode with the same decoder and compare all normalized entity records.
   const verifiedDb = await decodeFm2013Save(outBytes, {
     fileName: outputFileName,
     signingKey: options.signingKey
   });
   validateDecodedSaveDatabase(verifiedDb, verifiedDb.source.saveId);
 
-  for (const [uidStr, patch] of Object.entries(overlay.players)) {
-    const uid = Number(uidStr);
-    const p = verifiedDb.players.find(item => item.uid === uid);
-    if (!p) throw new FM2013DecodeError('CORRUPT_DATABASE', `Post-write verification lost player UID ${uid}.`);
-    if (patch.actualCa !== undefined && p.actualCa !== patch.actualCa) {
-      throw new FM2013DecodeError('CORRUPT_DATABASE', `Post-write CA mismatch on player UID ${uid}.`);
+  for (const domain of ['players', 'staff', 'clubs', 'stadiums', 'teams', 'nations', 'competitions', 'humans'] as const) {
+    const expected = expectedDb[domain];
+    const actual = verifiedDb[domain];
+    if (expected.length !== actual.length) {
+      throw new FM2013DecodeError('CORRUPT_DATABASE', `Post-write ${domain} count mismatch.`);
     }
-    if (patch.potentialAbility !== undefined && p.potentialAbility !== patch.potentialAbility) {
-      throw new FM2013DecodeError('CORRUPT_DATABASE', `Post-write PA mismatch on player UID ${uid}.`);
-    }
-    if (patch.weeklyWageGbp !== undefined && p.contract?.weeklyWageGbp !== patch.weeklyWageGbp) {
-      throw new FM2013DecodeError('CORRUPT_DATABASE', `Post-write wage mismatch on player UID ${uid}.`);
+    for (let i = 0; i < expected.length; i++) {
+      if (JSON.stringify(expected[i]) !== JSON.stringify(actual[i])) {
+        throw new FM2013DecodeError('CORRUPT_DATABASE', `Post-write ${domain} record mismatch at index ${i}.`);
+      }
     }
   }
-  for (const [uidStr, patch] of Object.entries(overlay.clubs)) {
-    const uid = Number(uidStr);
-    const c = verifiedDb.clubs.find(item => item.uid === uid);
-    if (!c) throw new FM2013DecodeError('CORRUPT_DATABASE', `Post-write verification lost club UID ${uid}.`);
-    if (patch.balanceGbp !== undefined && c.balanceGbp !== patch.balanceGbp) {
-      throw new FM2013DecodeError('CORRUPT_DATABASE', `Post-write balance mismatch on club UID ${uid}.`);
-    }
-    if (patch.transferBudgetGbp !== undefined && c.transferBudgetGbp !== patch.transferBudgetGbp) {
-      throw new FM2013DecodeError('CORRUPT_DATABASE', `Post-write transfer budget mismatch on club UID ${uid}.`);
-    }
+  if (JSON.stringify(expectedDb.counts) !== JSON.stringify(verifiedDb.counts)) {
+    throw new FM2013DecodeError('CORRUPT_DATABASE', 'Post-write entity count mismatch.');
   }
 
   return {
@@ -564,7 +570,7 @@ export async function writePatchedFm2013Save(
     fileName: outputFileName,
     sha256: verifiedDb.source.sha256,
     originalSha256,
-    patchedFieldCount: countDirtyFields(overlay),
+    patchedFieldCount: countDirtyFields(normalized),
     database: verifiedDb
   };
 }
