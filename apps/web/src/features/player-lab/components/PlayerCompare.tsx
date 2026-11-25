@@ -70,8 +70,8 @@ function PlayerCompare({ primary, dataset }: { primary: PlayerExport; dataset: P
               <thead><tr><th scope="col">{t('Attributes')}</th><th scope="col">{primary.name}</th><th scope="col">{other.name}</th></tr></thead>
               <tbody>{sorted.slice(range.start, range.end).map(key => <tr key={key}>
                 <th scope="row">{t(ATTRIBUTE_LABELS[key])}</th>
-                <td><AttributeValue value={primary.attributes[key]}/></td>
-                <td><AttributeValue value={other.attributes[key]}/></td>
+                <td className={primary.attributes[key]! > other.attributes[key]! ? 'compare-leading' : ''}><AttributeValue value={primary.attributes[key]}/></td>
+                <td className={other.attributes[key]! > primary.attributes[key]! ? 'compare-leading' : ''}><AttributeValue value={other.attributes[key]}/></td>
               </tr>)}</tbody>
             </table>
             <ReportPagination label={t('Attribute comparison page')} range={range} onChange={setPage}/>

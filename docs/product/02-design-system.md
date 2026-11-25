@@ -152,3 +152,5 @@ The editable tactical pitch and phase/instruction controls remain available whil
 
 ### Comparison report density
 Head-to-head comparison has distinct attribute and role panels. Every mutually observed exact attribute is reachable in 12-row pages ordered by absolute difference, instead of silently limiting results to the top 12. Native accessible table headers identify both players. Role scoring runs only on its panel. Comparison search stops after 30 matches and defers typing. Shortlist role ranking shares ReportPagination, retaining absolute rank across pages. No heuristic changes, missing-value fabrication or new dependencies. Runtime acceptance pending.
+
+ReportPagination is shared across head-to-head attribute comparison, shortlist candidate list, shortlist rankings and Save As diff preview. The same clamped page range and visible count semantics apply to each; retained per-view page sizes reflect the respective task density. No duplicated page math in these views.

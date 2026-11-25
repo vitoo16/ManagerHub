@@ -19,6 +19,7 @@ import {
 } from '@managerhub/domain/fm2013-offline';
 import { Button, Icon, Status } from '@managerhub/ui';
 import { MassEditPlayerPanel } from './MassEditPlayerPanel';
+import { ReportPagination, reportPage } from '../ReportPagination';
 import { useDialogFocus } from '../../useDialogFocus';
 import { PlayerEditorRecord } from './PlayerEditorRecord';
 import { StaffEditorRecord } from './StaffEditorRecord';
@@ -118,10 +119,7 @@ function SaveEntityEditorModal({
     [baseDatabase, overlay, target.kind]
   );
 
-  const diffPageSize = 50;
-  const diffPageCount = Math.max(1, Math.ceil(diffEntries.length / diffPageSize));
-  const currentDiffPage = Math.min(diffPage, diffPageCount - 1);
-  const diffStart = currentDiffPage * diffPageSize;
+  const diffRange = reportPage(diffEntries.length, diffPage, 50);
 
   const applyPlayerField = (label: string, patch: PlayerDraftPatch) => {
     if (!player) return;
@@ -305,7 +303,7 @@ function SaveEntityEditorModal({
                     </tr>
                   </thead>
                   <tbody>
-                    {diffEntries.slice(diffStart, diffStart + diffPageSize).map((item, idx) => (
+                    {diffEntries.slice(diffRange.start, diffRange.end).map((item, idx) => (
                       <tr key={`${item.entityKind}-${item.uid}-${item.field}-${idx}`}>
                         <td>{item.entityKind}</td>
                         <td><strong>{item.entityName}</strong></td>
@@ -318,13 +316,7 @@ function SaveEntityEditorModal({
                 </table>
               </div>
             )}
-            {diffPageCount > 1 && <div className="save-db-actions" role="group" aria-label={t('Pending field changes')}>
-              <Button type="button" disabled={currentDiffPage === 0} onClick={() => setDiffPage(currentDiffPage - 1)}>{t('Previous page')}</Button>
-              <span aria-live="polite">{t('Showing {{from}}–{{to}} of {{total}}', {
-                from: diffStart + 1, to: Math.min(diffEntries.length, diffStart + diffPageSize), total: diffEntries.length
-              })}</span>
-              <Button type="button" disabled={currentDiffPage + 1 >= diffPageCount} onClick={() => setDiffPage(currentDiffPage + 1)}>{t('Next page')}</Button>
-            </div>}
+            <ReportPagination label={t('Pending field changes')} range={diffRange} onChange={setDiffPage}/>
           </div>
         )}
 

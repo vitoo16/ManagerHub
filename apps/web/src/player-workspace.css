@@ -84,18 +84,10 @@
 .compare-selector label{font-size:10px;font-weight:700;color:var(--text-sub)}
 .compare-selector input,.compare-selector select{min-width:0;width:100%;height:40px;background:var(--surface-up);border:1px solid var(--line);border-radius:10px;color:var(--text);padding:0 11px;font-size:12px}
 .compare-selector small{grid-column:1/-1;color:var(--text-faint);font-size:10px}
-.compare-head,.compare-attribute{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.7fr) minmax(0,1fr);align-items:center;text-align:center;gap:10px}
-.compare-head{padding:15px 10px;background:var(--surface-up);border-radius:12px;font-size:12px;margin-bottom:20px}
-.compare-head strong{overflow-wrap:anywhere}
-.compare-head span{font-size:10px;color:var(--text-faint);font-weight:800}
 .compare-results h3{margin:20px 0 10px;font-size:12px}
-.compare-grid{display:grid;gap:2px}
-.compare-attribute{padding:11px 9px;border-bottom:1px solid var(--line);font-size:11px}
-.compare-attribute [role="cell"]:first-child,.compare-attribute [role="cell"]:last-child{font-weight:700;font-variant-numeric:tabular-nums}
-.compare-attribute [role="cell"]:nth-child(2){color:var(--text-sub)}
 .compare-leading{color:var(--accent-strong)}
 .compare-leading .mh-attribute-value{text-decoration:underline;text-underline-offset:.16em}
-@media(max-width:570px){.compare-selector{grid-template-columns:1fr}.compare-selector label:nth-of-type(2){grid-row:3}.compare-selector small{grid-column:1}.compare-head{font-size:11px}}
+@media(max-width:570px){.compare-selector{grid-template-columns:1fr}.compare-selector label:nth-of-type(2){grid-row:3}.compare-selector small{grid-column:1}}
 
 /* Player snapshots stay on-device and never imply a supported native save parser. */
 .saved-player-library{padding:17px 19px;margin-bottom:20px;}

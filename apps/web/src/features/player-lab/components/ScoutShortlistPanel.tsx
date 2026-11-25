@@ -1,3 +1,4 @@
+import { ReportPagination, reportPage } from '../../ReportPagination';
 import { lazy, memo, Suspense, useCallback, useEffect, useId, useMemo, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { PlayerDataset, PlayerExport } from '@managerhub/domain';
@@ -52,8 +53,7 @@ function ScoutShortlistPanel({ dataset, selected, candidateIds, setCandidateIds,
   }), [candidateIds, playerById]);
   const selectedAlready = selected !== null && candidateIds.includes(selected.id);
   const activeSection = candidates.length > 0 ? section : 'candidates';
-  const totalPages = Math.max(1, Math.ceil(candidates.length / CANDIDATES_PER_PAGE));
-  const page = Math.min(candidatePage, totalPages - 1);
+  const range = reportPage(candidates.length, candidatePage, CANDIDATES_PER_PAGE);
   const openSection = (next: ShortlistSection) => {
     setSection(next);
     setVisited(current => current.has(next) ? current : new Set([...current, next]));
@@ -174,16 +174,12 @@ function ScoutShortlistPanel({ dataset, selected, candidateIds, setCandidateIds,
       aria-labelledby={sectionId + '-tab-' + activeSection}>
       {activeSection === 'candidates' && <>
     {candidates.length ? <ul className="scout-shortlist__candidates">
-      {candidates.slice(page * CANDIDATES_PER_PAGE, (page + 1) * CANDIDATES_PER_PAGE).map(candidate => <li key={candidate.id}>
+      {candidates.slice(range.start, range.end).map(candidate => <li key={candidate.id}>
         <div><strong>{candidate.name}</strong><small>{candidate.position ?? t('Unknown position')} · {candidate.club ?? t('Unknown club')}</small></div>
         <Button variant="quiet" onClick={() => onSelectPlayer(candidate.id)}>{t('View scouting report')}</Button>
       </li>)}
     </ul> : <p className="scout-shortlist__empty">{t('No candidates selected. Choose a player from the list, then add them here.')}</p>}
-        {totalPages > 1 && <div className="save-db-actions" role="group" aria-label={t('Shortlist page')}>
-          <Button type="button" disabled={page === 0} onClick={() => setCandidatePage(page - 1)}>{t('Previous page')}</Button>
-          <span aria-live="polite">{page + 1} / {totalPages}</span>
-          <Button type="button" disabled={page + 1 >= totalPages} onClick={() => setCandidatePage(page + 1)}>{t('Next page')}</Button>
-        </div>}
+        <ReportPagination label={t('Shortlist page')} range={range} onChange={setCandidatePage}/>
       </>}
       <Suspense fallback={<p role="status">{t('Loading…')}</p>}>
         {candidates.length > 0 && visited.has('roles') && <div hidden={activeSection !== 'roles'}>
