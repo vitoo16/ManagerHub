@@ -406,6 +406,18 @@ test('P0 unified SaveSession (S01-S08): non-remounting continuity, decoupled clu
 
   await modal.getByLabel('Actual CA (1–200)').fill('191');
   await modal.getByLabel('Actual PA (1–200)').fill('198');
+  const sectionTabs = modal.getByRole('tablist', { name: 'Player editor sections' });
+  await sectionTabs.getByRole('tab', { name: 'Active Contract' }).click();
+  await expect(modal.getByLabel('Weekly wage (£)')).toBeVisible();
+  await expect(modal.getByLabel('Contract expiry')).toBeVisible();
+  await expect(modal.getByLabel('Actual CA (1–200)')).toHaveCount(0);
+  await sectionTabs.getByRole('tab', { name: 'Personality (1–20)' }).click();
+  await expect(modal.getByLabel('Professionalism', { exact: true })).toBeVisible();
+  await sectionTabs.getByRole('tab', { name: 'Hidden Playing Traits (1–20)' }).click();
+  await expect(modal.getByLabel('Consistency', { exact: true })).toBeVisible();
+  await sectionTabs.getByRole('tab', { name: 'Ability, Reputation & Bio' }).click();
+  await expect(modal.getByLabel('Actual CA (1–200)')).toHaveValue('191');
+  await expect(modal.getByLabel('Actual PA (1–200)')).toHaveValue('198');
   await modal.getByRole('tab', { name: 'Quick presets' }).click();
   await modal.getByRole('button', { name: 'Inspire morale' }).click();
   await modal.getByRole('button', { name: 'Done' }).click();
