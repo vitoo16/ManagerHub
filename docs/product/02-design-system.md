@@ -129,3 +129,6 @@ Related: [features](01-full-feature-catalog.md) · [skills workflow](../engineer
 
 ### Editor density follow-up
 Player information, contract, exact attribute groups, hidden traits, personality, positions and presets now have independent sections. Staff ability and attributes, and club finances, facilities and presets are separately selectable. Player Lab and Editor reuse the same attribute group selector, sort/pagination and numeric property primitive. Shared SectionTabs provides native keyboard controls and labels a single active panel. Mass Edit roster filtering/sorting is scoped to Mass Edit; no inactive mass scan for normal records. Source changes only, pending runtime verification.
+
+### Squad Planner bounded workbench
+One shared A/B plan and formation control, followed by five task sections (XI, constraints, tactical editor, comparison, coverage). Only the active task renders initially. The tactical editor is lazy-loaded on first visit and then kept mounted but hidden when inactive to retain its local adjustment/undo state. This deliberately trades a bounded retained tactical subtree for correctness; measure actual memory/interaction costs before acceptance. No optimizer or plan persistence changes.

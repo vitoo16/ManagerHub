@@ -1,4 +1,7 @@
 export default {
+  "Squad planner sections": "Các mục lập đội hình",
+  "Adjust squad": "Điều chỉnh đội hình",
+  "Starting eleven": "Đội hình xuất phát",
   "Overview": "Tổng quan",
   "Command center": "Trung tâm quản lý",
   "Save Library": "Thư viện save",

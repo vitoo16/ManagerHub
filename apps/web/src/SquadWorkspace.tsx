@@ -1,18 +1,14 @@
-import { memo, useId, useMemo, type Dispatch, type SetStateAction } from 'react';
+import { lazy, memo, Suspense, useId, useMemo, useState, type Dispatch, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FORMATIONS, type PlayerDataset, type SquadPlanKey, type SquadPlans, type TacticalScenarios } from '@managerhub/domain';
 import type { DecodedSaveDatabase } from '@managerhub/domain/fm2013-offline';
-import { Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
+import { Icon, SectionHeading, SectionTabs, Status, Surface } from '@managerhub/ui';
 import TacticalPitch from './features/squad-planner/components/TacticalPitch';
-import TacticalLab from './features/squad-planner/components/TacticalLab';
 import LineupResults from './features/squad-planner/components/LineupResults';
-import PinEditor from './features/squad-planner/components/PinEditor';
-import ScenarioComparison from './features/squad-planner/components/ScenarioComparison';
 import SquadScenarioHeader from './features/squad-planner/components/SquadScenarioHeader';
 import SquadControlBar from './features/squad-planner/components/SquadControlBar';
 import SquadPlanLibraryControls from './features/squad-planner/components/SquadPlanLibraryControls';
 import SquadSummaryCards from './features/squad-planner/components/SquadSummaryCards';
-import PositionCoverageTable from './features/squad-planner/components/PositionCoverageTable';
 import SquadEmptyState from './features/squad-planner/components/SquadEmptyState';
 import SavedSquadRosterPicker from './features/squad-planner/components/SavedSquadRosterPicker';
 import SquadReportActions from './features/squad-planner/components/SquadReportActions';
@@ -21,6 +17,20 @@ import { registerSaveDbI18n } from './i18n/register-save-db-i18n';
 import './squad-workspace.css';
 
 registerSaveDbI18n();
+
+const TacticalLab = lazy(() => import('./features/squad-planner/components/TacticalLab'));
+const PinEditor = lazy(() => import('./features/squad-planner/components/PinEditor'));
+const ScenarioComparison = lazy(() => import('./features/squad-planner/components/ScenarioComparison'));
+const PositionCoverageTable = lazy(() => import('./features/squad-planner/components/PositionCoverageTable'));
+
+const SQUAD_SECTIONS = [
+  { id: 'lineup', label: 'Starting eleven' },
+  { id: 'constraints', label: 'Adjust squad' },
+  { id: 'tactics', label: 'Tactical Lab' },
+  { id: 'compare', label: 'Plan comparison' },
+  { id: 'coverage', label: 'Position coverage and blockers' }
+] as const;
+type SquadSection = typeof SQUAD_SECTIONS[number]['id'];
 
 function SquadWorkspaceView({
   dataset,
@@ -53,6 +63,13 @@ function SquadWorkspaceView({
 }) {
   const { t } = useTranslation();
   const clubSelectId = useId();
+  const sectionId = useId();
+  const [section, setSection] = useState<SquadSection>('lineup');
+  const [tacticsVisited, setTacticsVisited] = useState(false);
+  const changeSection = (next: SquadSection) => {
+    setSection(next);
+    if (next === 'tactics') setTacticsVisited(true);
+  };
   const {
     plan, solution, solutions, unknownPositions,
     changeFormation, onPin, onExclude, reset, onCopyPlanAtoB
@@ -116,20 +133,31 @@ function SquadWorkspaceView({
       <SquadControlBar formation={plan.formation} dataset={dataset} solution={solution} onChangeFormation={changeFormation}/>
       <SquadSummaryCards solution={solution} plan={plan} unknownPositions={unknownPositions}/>
 
-      {solution && <div className="squad-workspace-grid">
-        <TacticalPitch solution={solution}/>
-        <LineupResults solution={solution}/>
-      </div>}
-      <TacticalLab dataset={dataset} plans={plans} active={active} solution={solution}
-        scenarios={tacticalScenarios} setScenarios={setTacticalScenarios}/>
-      {solutions && <ScenarioComparison left={solutions.A} right={solutions.B}/>}
-
-      <SectionHeading eyebrow={t("WHAT-IF PLANNING")} title={t('Adjust Plan') + ' ' + active}/>
-      <PinEditor key={active + plan.formation} slots={FORMATIONS[plan.formation]} dataset={dataset}
-        locks={plan.lockedSlots} excluded={plan.excludedPlayerIds}
-        onPin={onPin} onExclude={onExclude} onClear={reset}/>
-
-      <PositionCoverageTable solution={solution}/>
+      <SectionTabs<SquadSection> id={sectionId} label={t('Squad planner sections')}
+        items={SQUAD_SECTIONS.map(item => ({ ...item, label: t(item.label) }))}
+        active={section} onChange={changeSection}/>
+      <div className="squad-section-panel" role="tabpanel" id={sectionId + '-panel'}
+        aria-labelledby={sectionId + '-tab-' + section}>
+        <Suspense fallback={<p role="status">{t('Loading…')}</p>}>
+          {section === 'lineup' && solution && <div className="squad-workspace-grid">
+            <TacticalPitch solution={solution}/>
+            <LineupResults solution={solution}/>
+          </div>}
+          {section === 'constraints' && <>
+            <SectionHeading eyebrow={t('WHAT-IF PLANNING')} title={t('Adjust Plan') + ' ' + active}/>
+            <PinEditor key={active + plan.formation} slots={FORMATIONS[plan.formation]} dataset={dataset}
+              locks={plan.lockedSlots} excluded={plan.excludedPlayerIds}
+              onPin={onPin} onExclude={onExclude} onClear={reset}/>
+          </>}
+          {/* Keep the visited tactical editor mounted to preserve its local adjustment history. */}
+          {tacticsVisited && <div hidden={section !== 'tactics'}>
+            <TacticalLab dataset={dataset} plans={plans} active={active} solution={solution}
+              scenarios={tacticalScenarios} setScenarios={setTacticalScenarios}/>
+          </div>}
+          {section === 'compare' && solutions && <ScenarioComparison left={solutions.A} right={solutions.B}/>}
+          {section === 'coverage' && <PositionCoverageTable solution={solution}/>}
+        </Suspense>
+      </div>
 
       <div className="coverage-note"><Icon name="shield" size={17}/>
         <p><strong>{t("Interpretation:")}</strong> {t("Plans A and B stay available while you browse this session. Role-fit estimates don't include match fitness, chemistry or hidden CA and PA.")}</p>

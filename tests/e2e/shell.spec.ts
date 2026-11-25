@@ -574,11 +574,16 @@ test('Plan A/B supports versatile player pins, exclusions and honest comparisons
 
   await page.getByRole('group',{name:'Squad scenarios'})
     .getByRole('button',{name:'Plan B',exact:true}).click();
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Adjust squad', exact: true }).click();
   await page.getByRole('combobox',{name:'Lock RB'}).selectOption('export-row-12');
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Starting eleven', exact: true }).click();
   const lineup=page.getByRole('list',{name:'Assigned starting eleven'});
   await expect(lineup).toContainText('Bench Versatile');
   await expect(lineup.getByRole('listitem')).toHaveCount(11);
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Plan comparison', exact: true }).click();
   await expect(page.getByText('New players in B')).toBeVisible();
+
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Adjust squad', exact: true }).click();
 
   // A versatile player cannot be pinned to both RB and RW.
   await page.getByRole('combobox',{name:'Lock RW'}).selectOption('export-row-12');
@@ -596,6 +601,7 @@ test('Plan A/B supports versatile player pins, exclusions and honest comparisons
 
   // Explicit scenario copy restores a comparable unmodified XI.
   await page.getByRole('button',{name:'Copy Plan A to Plan B'}).click();
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Plan comparison', exact: true }).click();
   await expect(page.getByText('Position assignments changed')).toBeVisible();
   await page.getByLabel('Formation').selectOption('4-2-3-1');
   await expect(page.getByText('Starting eleven incomplete', { exact: true }).first()).toBeVisible();
@@ -621,6 +627,7 @@ test('saves Plan A/B per export, restores after reload, rejects another career a
   await page.getByRole('dialog', { name: 'Quick navigation' })
     .getByRole('button', { name: /Squad Planner/ }).click();
   await page.getByRole('button', { name: 'Plan B', exact: true }).click();
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Adjust squad', exact: true }).click();
   await page.getByRole('combobox', { name: 'Lock RB' }).selectOption('export-row-12');
   await page.getByRole('button', { name: 'Save plans locally' }).click();
   await expect(page.getByText('Plans A and B saved for this exact player export on this browser.')).toBeVisible();
@@ -631,6 +638,7 @@ test('saves Plan A/B per export, restores after reload, rejects another career a
   await page.getByRole('button', { name: 'Open saved list' }).click();
   await page.getByRole('button', { name: 'Restore saved plans' }).click();
   await expect(page.getByRole('button', { name: 'Plan B', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Adjust squad', exact: true }).click();
   await expect(page.getByRole('combobox', { name: 'Lock RB' })).toHaveValue('export-row-12');
 
   const downloading = page.waitForEvent('download');
@@ -674,6 +682,7 @@ test('Tactical Lab preserves independent A/B and phase positions, and restores s
   await page.getByRole('dialog', { name: 'Quick navigation' })
     .getByRole('button', { name: /Squad Planner/ }).click();
 
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Tactical Lab', exact: true }).click();
   const lab = page.getByRole('region', { name: 'Tactical Lab' });
   const rightWinger = lab.locator('[data-slot="rw"]');
   await expect(rightWinger).toHaveAttribute('data-x', '18');
@@ -722,6 +731,7 @@ test('Tactical Lab preserves independent A/B and phase positions, and restores s
   await page.getByRole('combobox', { name: 'Saved player list' })
     .selectOption({ label: 'tactical-source.csv (11 players)' });
   await page.getByRole('button', { name: 'Open saved list' }).click();
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Tactical Lab', exact: true }).click();
   await lab.getByRole('button', { name: 'Restore tactical scenarios' }).click();
   await expect(rightWinger).toHaveAttribute('data-x', '17');
   await page.getByRole('button', { name: 'Plan B', exact: true }).click();
@@ -744,6 +754,7 @@ test('Tactical diagnostics react to scenario edits, plan switching and Vietnames
   await page.getByRole('dialog', { name: 'Quick navigation' })
     .getByRole('button', { name: /Squad Planner/ }).click();
 
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Tactical Lab', exact: true }).click();
   const lab = page.getByRole('region', { name: 'Tactical Lab' });
   const diagnostics = lab.getByRole('region', { name: 'Tactical diagnostics' });
   await expect(diagnostics.getByText('No shape risks detected by these rules')).toBeVisible();
@@ -773,6 +784,7 @@ test('Tactical diagnostics allow explicit correction and undo without changing P
   await page.keyboard.press('Control+k');
   await page.getByRole('dialog', { name: 'Quick navigation' })
     .getByRole('button', { name: /Squad Planner/ }).click();
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Tactical Lab', exact: true }).click();
   const lab = page.getByRole('region', { name: 'Tactical Lab' });
   const diagnostics = lab.getByRole('region', { name: 'Tactical diagnostics' });
   await lab.getByRole('button', { name: 'Defending' }).click();
@@ -808,6 +820,7 @@ test('Tactical report exports the active edited scenario and localized action wi
   await page.keyboard.press('Control+k');
   await page.getByRole('dialog', { name: 'Quick navigation' })
     .getByRole('button', { name: /Squad Planner/ }).click();
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Tactical Lab', exact: true }).click();
   const lab = page.getByRole('region', { name: 'Tactical Lab' });
   await lab.getByRole('button', { name: 'Defending' }).click();
   await lab.getByLabel('Proposed defensive line').selectOption('high');
@@ -838,6 +851,7 @@ test('MH-09 role interactions respond to selected XI positions and VI translatio
   await page.keyboard.press('Control+k');
   await page.getByRole('dialog', { name: 'Quick navigation' })
     .getByRole('button', { name: /Squad Planner/ }).click();
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Tactical Lab', exact: true }).click();
   const lab = page.getByRole('region', { name: 'Tactical Lab' });
   const report = lab.getByRole('region', { name: 'Role partnerships' });
   await expect(report.getByText('No role interaction findings under these bounded rules')).toBeVisible();
@@ -882,11 +896,14 @@ test('MH-09 role partnerships keep Plan B formation and cover independent', asyn
   await page.keyboard.press('Control+k');
   await page.getByRole('dialog', { name: 'Quick navigation' })
     .getByRole('button', { name: /Squad Planner/ }).click();
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Tactical Lab', exact: true }).click();
   const lab = page.getByRole('region', { name: 'Tactical Lab' });
   const report = lab.getByRole('region', { name: 'Role partnerships' });
   await page.getByRole('button', { name: 'Plan B', exact: true }).click();
   await page.getByLabel('Formation').selectOption('4-2-3-1');
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Adjust squad', exact: true }).click();
   await page.getByRole('combobox', { name: 'Lock LDM' }).selectOption('export-row-12');
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Tactical Lab', exact: true }).click();
   await lab.getByLabel('Select tactical position').selectOption('rb');
   for (let i = 0; i < 4; i++) await lab.getByRole('button', { name: 'Move up', exact: true }).click();
   await expect(report.getByText('Assigned players: Right Defender, Right Wing', { exact: true })).toBeVisible();
@@ -912,6 +929,7 @@ test('MH-09 Step 3 central dynamics: detects uncovered pivot and congestion with
   await page.keyboard.press('Control+k');
   await page.getByRole('dialog', { name: 'Quick navigation' })
     .getByRole('button', { name: /Squad Planner/ }).click();
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Tactical Lab', exact: true }).click();
   const lab = page.getByRole('region', { name: 'Tactical Lab' });
   const report = lab.getByRole('region', { name: 'Role partnerships' });
 
@@ -948,6 +966,7 @@ test('MH-09 applies the selected flank card and preserves independent undo histo
   await page.keyboard.press('Control+k');
   await page.getByRole('dialog', { name: 'Quick navigation' })
     .getByRole('button', { name: /Squad Planner/ }).click();
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Tactical Lab', exact: true }).click();
   const lab = page.getByRole('region', { name: 'Tactical Lab' });
   const report = lab.getByRole('region', { name: 'Role partnerships' });
   const left = lab.locator('[data-slot="lb"]');
@@ -988,6 +1007,7 @@ test('Tactical diagnostics suppress shape warnings for incomplete XI', async ({ 
   await page.keyboard.press('Control+k');
   await page.getByRole('dialog', { name: 'Quick navigation' })
     .getByRole('button', { name: /Squad Planner/ }).click();
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Tactical Lab', exact: true }).click();
   const lab = page.getByRole('region', { name: 'Tactical Lab' });
   const diagnostics = lab.getByRole('region', { name: 'Tactical diagnostics' });
   await expect(diagnostics.getByText('Complete XI needed for shape diagnostics')).toBeVisible();
@@ -1013,7 +1033,9 @@ test('Plan B remains intact across workspace navigation and resets for a differe
   await page.getByRole('dialog',{name:'Quick navigation'})
     .getByRole('button',{name:/Squad Planner/}).click();
   await page.getByRole('button',{name:'Plan B',exact:true}).click();
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Adjust squad', exact: true }).click();
   await page.getByRole('combobox',{name:'Lock RB'}).selectOption('export-row-12');
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Starting eleven', exact: true }).click();
   await expect(page.getByRole('list',{name:'Assigned starting eleven'})).toContainText('Bench Versatile');
 
   await page.keyboard.press('Control+k');
@@ -1023,6 +1045,7 @@ test('Plan B remains intact across workspace navigation and resets for a differe
   await page.getByRole('dialog',{name:'Quick navigation'})
     .getByRole('button',{name:/Squad Planner/}).click();
   await expect(page.getByRole('button',{name:'Plan B',exact:true})).toHaveAttribute('aria-pressed','true');
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Adjust squad', exact: true }).click();
   await expect(page.getByRole('combobox',{name:'Lock RB'})).toHaveValue('export-row-12');
 
   await page.keyboard.press('Control+k');
@@ -1036,6 +1059,7 @@ test('Plan B remains intact across workspace navigation and resets for a differe
     .getByRole('button',{name:/Squad Planner/}).click();
   await expect(page.getByRole('button',{name:'Plan A',exact:true})).toHaveAttribute('aria-pressed','true');
   await page.getByRole('button',{name:'Plan B',exact:true}).click();
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Adjust squad', exact: true }).click();
   await expect(page.getByRole('combobox',{name:'Lock RB'})).toHaveValue('');
 });
 
@@ -1624,4 +1648,37 @@ test('player attribute report uses bounded exact-value groups and preserves glob
   await expect(panel.getByRole('group', { name: 'Attribute page' })).toContainText('2 /');
   await report.getByRole('tab', { name: 'Role fit' }).click();
   await expect(page.locator('.role-results')).toBeVisible();
+});
+
+
+test('squad workbench loads one task at a time and preserves tactical state across section navigation', async ({ page }) => {
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'squad-sections.csv', mimeType: 'text/csv', buffer: Buffer.from(makeSquadExport())
+  });
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' }).getByRole('button', { name: /Squad Planner/ }).click();
+  const tabs = page.getByRole('tablist', { name: 'Squad planner sections' });
+  await expect(tabs.getByRole('tab', { name: 'Starting eleven', exact: true })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('.tactical-lab, .squad-edit-card')).toHaveCount(0);
+  const lineupTab = tabs.getByRole('tab', { name: 'Starting eleven', exact: true });
+  await lineupTab.focus();
+  await lineupTab.press('ArrowRight');
+  const constraints = tabs.getByRole('tab', { name: 'Adjust squad' });
+  await expect(constraints).toBeFocused();
+  await constraints.press('Enter');
+  await expect(page.getByRole('group', { name: 'Lock player positions' })).toBeVisible();
+  await expect(page.getByRole('list', { name: 'Assigned starting eleven' })).toHaveCount(0);
+  await tabs.getByRole('tab', { name: 'Tactical Lab' }).click();
+  const lab = page.getByRole('region', { name: 'Tactical Lab' });
+  const winger = lab.locator('[data-slot="rw"]');
+  await winger.press('ArrowLeft');
+  await expect(winger).toHaveAttribute('data-x', '17');
+  await tabs.getByRole('tab', { name: 'Plan comparison' }).click();
+  await expect(lab).toHaveCount(0);
+  await expect(page.getByText('Plan comparison', { exact: true }).last()).toBeVisible();
+  await tabs.getByRole('tab', { name: 'Tactical Lab' }).click();
+  await expect(winger).toHaveAttribute('data-x', '17');
+  await tabs.getByRole('tab', { name: 'Position coverage and blockers' }).click();
+  await expect(page.getByRole('heading', { name: 'Position coverage and blockers' })).toBeVisible();
 });

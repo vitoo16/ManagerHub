@@ -147,6 +147,7 @@ test('complete offline FM2013 save workflow: decode, explore, Realism/Editor iso
   await expect(page.getByRole('heading', { name: 'Squad Planner' })).toBeVisible();
   await expect(page.locator('.squad-decoded-bar')).toContainText('northbridge-career.fm');
   await expect(page.getByText('Starting eleven ready').first()).toBeVisible();
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Tactical Lab', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Tactical Lab' })).toBeVisible();
 
   // 9. Persist decoded database in browser IndexedDB (never saving raw .fm), reload, and reopen
