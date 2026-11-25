@@ -24,10 +24,19 @@ function exactKeys(value: unknown, keys: readonly string[]): value is Record<str
     keys.every(key => Object.hasOwn(value, key));
 }
 
+function isSupportedShortlistSource(dataset: PlayerDataset): boolean {
+  if (dataset.source === 'game_export') {
+    return dataset.actualCaAvailable === false && dataset.potentialAbilityAvailable === false;
+  }
+  if (dataset.source === 'decoded_save') {
+    return typeof dataset.saveId === 'string' && /^[a-f0-9]{64}$/u.test(dataset.saveId);
+  }
+  return false;
+}
+
 export function validateScoutShortlistIds(value: unknown, dataset: PlayerDataset): string[] {
   if (!Array.isArray(value) || value.length > MAX_SCOUT_SHORTLIST_PLAYERS ||
-    dataset.source !== 'game_export' || dataset.actualCaAvailable !== false ||
-    dataset.potentialAbilityAvailable !== false) throw new Error('invalid_shortlist');
+    !isSupportedShortlistSource(dataset)) throw new Error('invalid_shortlist');
   const roster = new Set(dataset.players.map(player => player.id));
   if (roster.size !== dataset.players.length || roster.size === 0) throw new Error('invalid_roster');
   const seen = new Set<string>();
@@ -98,6 +107,12 @@ export function createScoutShortlistCsv(dataset: PlayerDataset, playerIds: reado
     'Role fit / 100 (heuristic)', 'Attribute coverage (%)', 'Source', 'Interpretation'
   ];
   const rows: (string | number)[][] = [columns];
+  const sourceLabel = dataset.source === 'decoded_save'
+    ? `decoded_save (${dataset.saveEdition ?? 'FM2013'}${dataset.saveBuild ? ' ' + dataset.saveBuild : ''} · ${dataset.saveMode ?? 'realism'})`
+    : 'game_export (provisional)';
+  const interpretation = dataset.source === 'decoded_save'
+    ? 'Visible attributes decoded offline from .fm save; role-fit heuristic only. CA/PA and hidden attributes are never exported here.'
+    : 'Observed exported attributes only; not verified CA/PA, transfer value or a signing recommendation.';
   for (const id of ids) {
     const player = byId.get(id)!;
     const topRole = analyzeRoles(player).find(role => role.score !== null);
@@ -105,8 +120,8 @@ export function createScoutShortlistCsv(dataset: PlayerDataset, playerIds: reado
       player.name, player.position ?? '', player.club ?? '', player.age ?? '',
       topRole?.title ?? '', topRole?.score ?? '',
       topRole ? Math.round(topRole.coverage * 100) : '',
-      'game_export (provisional)',
-      'Observed exported attributes only; not verified CA/PA, transfer value or a signing recommendation.'
+      sourceLabel,
+      interpretation
     ]);
   }
   return '\uFEFF' + rows.map(row => row.map(csvCell).join(',')).join('\r\n') + '\r\n';

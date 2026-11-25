@@ -5,8 +5,29 @@ export const DECODED_SAVE_DB_SCHEMA_VERSION = 1 as const;
 export const FM2013_OFFLINE_ADAPTER_VERSION = 'fm2013-offline-1.0.0' as const;
 export const FM2013_MIN_GAME_DB_VERSION = 0x757;
 export const FM2013_MAX_GAME_DB_VERSION = 0x774;
+export const OBSERVED_FM2013_GAME_DB_VERSIONS = [
+  0x757,
+  0x75f,
+  0x763,
+  0x765,
+  0x76e,
+  0x773,
+  0x774
+] as const;
 
 export type DecodedSaveMode = 'realism' | 'editor';
+
+export type ChecksumVerificationStatus =
+  | 'verified_hmac_sha512'
+  | 'structural_64b_unverified';
+
+export type CompatibilityVerificationStatus =
+  | 'verified'
+  | 'research_only'
+  | 'unsupported_build'
+  | 'edition_build_unknown'
+  | 'ambiguous_profile'
+  | 'unknown_format';
 
 export type FM2013DecodeErrorCode =
   | 'INVALID_FILE'
@@ -19,6 +40,8 @@ export type FM2013DecodeErrorCode =
   | 'UNSUPPORTED_DB_VERSION'
   | 'TRUNCATED_DATABASE'
   | 'CORRUPT_DATABASE'
+  | 'TAMPERED_CHECKSUM'
+  | 'UNSUPPORTED_WRITE_TARGET'
   | 'CRYPTO_UNAVAILABLE'
   | 'DECOMPRESSION_UNAVAILABLE';
 
@@ -82,6 +105,31 @@ export interface DecodedPersonalityAttributes {
   readonly controversy: number;
 }
 
+/**
+ * Complete FMRTE13 staff Coaching + Mental/Scouting/Medical attributes
+ * decoded from T28 `NON_PLAYING_DATA` (`0x29` = 41 bytes, verified against `fm.exe` `0x1247480`).
+ */
+export interface DecodedStaffAttributes {
+  readonly attacking: number;
+  readonly defending: number;
+  readonly fitness: number;
+  readonly goalkeepers: number;
+  readonly mental: number;
+  readonly player: number;
+  readonly tactical: number;
+  readonly technical: number;
+  readonly manManagement: number;
+  readonly workingWithYoungsters: number;
+  readonly adaptability: number;
+  readonly determination: number;
+  readonly judgingPlayerAbility: number;
+  readonly judgingPlayerPotential: number;
+  readonly levelOfDiscipline: number;
+  readonly motivating: number;
+  readonly physiotherapy: number;
+  readonly tacticalKnowledge: number;
+}
+
 export interface DecodedPlayerContract {
   readonly clubUid: number | null;
   readonly clubName: string | null;
@@ -107,6 +155,7 @@ export interface DecodedSavePlayer {
   readonly primaryNationUid: number | null;
   readonly primaryNationName: string | null;
   readonly birthCityUid: number | null;
+  readonly birthCityName?: string | null;
   readonly clubUid: number | null;
   readonly clubName: string | null;
   readonly clubShortName: string | null;
@@ -156,6 +205,7 @@ export interface DecodedSaveStaff {
   readonly jobType: number | null;
   readonly weeklyWageGbp: number | null;
   readonly contractExpiresAt: string | null;
+  readonly attributes?: DecodedStaffAttributes | null;
   /** Editor-only verified staff ability fields; redacted in Realism mode. */
   readonly staffCa: number;
   readonly staffPa: number;
@@ -174,6 +224,7 @@ export interface DecodedSaveClub {
   readonly nationUid: number | null;
   readonly nationName: string | null;
   readonly cityUid: number | null;
+  readonly cityName?: string | null;
   readonly yearFounded: number | null;
   readonly trainingFacilities: number | null;
   readonly youthFacilities: number | null;
@@ -206,17 +257,20 @@ export interface DecodedSaveTeam {
   readonly managerPersonUid: number | null;
 }
 
+export type ExternalNameProvenance = 'decoded_save' | 'lang_db' | 'not_stored_in_save';
+
 export interface DecodedSaveStadium {
   readonly uid: number;
   readonly rowId: number;
   readonly customName: string | null;
-  readonly nameProvenance: 'decoded_save' | 'not_stored_in_save';
+  readonly nameProvenance: ExternalNameProvenance;
   readonly capacity: number;
   readonly seatingCapacity: number;
   readonly expansionCapacity: number;
   readonly ownerClubUid: number | null;
   readonly ownerClubName: string | null;
   readonly cityUid: number | null;
+  readonly cityName?: string | null;
   readonly latitude: number | null;
   readonly longitude: number | null;
 }
@@ -235,7 +289,8 @@ export interface DecodedSaveCompetition {
   readonly uid: number;
   readonly rowId: number;
   readonly customName: string | null;
-  readonly nameProvenance: 'decoded_save' | 'not_stored_in_save';
+  readonly shortName?: string | null;
+  readonly nameProvenance: ExternalNameProvenance;
   readonly teamCount: number;
   readonly sampleClubs: readonly string[];
 }
@@ -277,12 +332,16 @@ export interface DecodedSaveSourceMetadata {
   readonly compressed: boolean;
   readonly edition: 'FM2013';
   readonly build: string;
+  readonly compatibilityStatus?: CompatibilityVerificationStatus;
+  readonly checksumStatus?: ChecksumVerificationStatus;
+  readonly langDbAttached?: boolean;
   readonly gameDbVersion: number;
   readonly gameDbVersionHex: string;
   readonly gameDbBytes: number;
   readonly dbString: string | null;
   readonly gameDate: string | null;
   readonly memberCount: number;
+  readonly totalArchiveMemberCount?: number;
   readonly decodedAt: string;
   readonly adapterVersion: typeof FM2013_OFFLINE_ADAPTER_VERSION;
   readonly writeCapability: false;

@@ -1,7 +1,50 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  src: url('./fonts/BeVietnamPro-Regular.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  src: url('./fonts/BeVietnamPro-Medium.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  src: url('./fonts/BeVietnamPro-SemiBold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  src: url('./fonts/BeVietnamPro-Bold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  src: url('./fonts/BeVietnamPro-ExtraBold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  src: url('./fonts/BeVietnamPro-Italic.woff2') format('woff2');
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
 
 :root {
-  font-family: 'DM Sans', ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif;
+  --font-ui: 'Be Vietnam Pro', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: var(--font-ui);
+  font-variant-numeric: tabular-nums;
   font-synthesis: none;
   color-scheme: dark;
   --bg: #080d12;
@@ -18,6 +61,13 @@
   --warning: #e4bc7c;
   --negative: #f1a39e;
   --info: #93b9eb;
+  --attribute-very-low: #8993A0;
+  --attribute-low: #B2BAC5;
+  --attribute-average: #C29B6A;
+  --attribute-above-average: #D9B34C;
+  --attribute-good: #F6DC63;
+  --attribute-excellent: #55CE8A;
+  --attribute-maximum: #FF9D42;
   --glass-tint: rgba(25, 36, 45, .73);
   --glass-border: rgba(209, 231, 238, .17);
   --radius-sm: 10px;
@@ -40,13 +90,20 @@
   --warning: #8a5812;
   --negative: #b84e41;
   --info: #245a91;
+  --attribute-very-low: #46525e;
+  --attribute-low: #606a74;
+  --attribute-average: #805522;
+  --attribute-above-average: #79600c;
+  --attribute-good: #6e5800;
+  --attribute-excellent: #17683b;
+  --attribute-maximum: #a64406;
   --glass-tint: rgba(255, 255, 255, .84);
   --glass-border: rgba(72, 103, 105, .18);
 }
 * { box-sizing: border-box; }
 html { height: 100%; background: var(--bg); }
 body { margin: 0; min-height: 100%; color: var(--text); background: var(--bg); -webkit-font-smoothing: antialiased; }
-button, input, select { font: inherit; }
+button, input, select, textarea, optgroup { font: inherit; font-variant-numeric: inherit; }
 button { cursor: pointer; }
 button:disabled { cursor: not-allowed; opacity: .48; }
 a { color: inherit; }
@@ -54,7 +111,7 @@ a:hover { color: var(--accent-strong); }
 :focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 3px; }
 ::selection { background: #4e957c88; color: var(--text); }
 h1,h2,h3,h4,p { margin: 0; }
-h1,h2,h3,h4 { font-family: Manrope, 'DM Sans', sans-serif; letter-spacing: -.035em; }
+h1,h2,h3,h4 { font-family: var(--font-ui); letter-spacing: -.035em; }
 small { font-size: 12px; }
 .mh-button { display: inline-flex; justify-content: center; align-items: center; gap: 9px; min-height: 38px; padding: 0 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--surface-up); color: var(--text); font-weight: 600; font-size: 13px; transition: background .14s ease, border-color .14s ease, transform .14s ease; white-space: nowrap; }
 .mh-button:hover { background: var(--surface-hover); border-color: var(--text-faint); }
@@ -83,3 +140,14 @@ small { font-size: 12px; }
  .mh-button {border:1px solid ButtonBorder;}
  .mh-status__dot{border:1px solid currentColor}
 }
+
+/* FM attribute magnitude; never reuse for CA, PA, morale, reputation or role fit. */
+[data-attribute-tier="very-low"] { --attribute-color: var(--attribute-very-low); }
+[data-attribute-tier="low"] { --attribute-color: var(--attribute-low); }
+[data-attribute-tier="average"] { --attribute-color: var(--attribute-average); }
+[data-attribute-tier="above-average"] { --attribute-color: var(--attribute-above-average); }
+[data-attribute-tier="good"] { --attribute-color: var(--attribute-good); }
+[data-attribute-tier="excellent"] { --attribute-color: var(--attribute-excellent); }
+[data-attribute-tier="maximum"] { --attribute-color: var(--attribute-maximum); }
+.mh-attribute-value[data-attribute-tier] { color: var(--attribute-color); font-variant-numeric: tabular-nums; }
+.mh-attribute-value { font-variant-numeric: tabular-nums; }

@@ -3,8 +3,6 @@ import { calculateCalendarAge } from '../fm2013-calendar-age';
 import { Fm2013BinaryReader, siDateToIso } from './binary-reader';
 import {
   FM2013DecodeError,
-  FM2013_MAX_GAME_DB_VERSION,
-  FM2013_MIN_GAME_DB_VERSION,
   type DecodedPlayerContract,
   type DecodedPositionRatings,
   type DecodedSaveClub,
@@ -14,7 +12,8 @@ import {
   type DecodedSavePlayer,
   type DecodedSaveStaff,
   type DecodedSaveStadium,
-  type DecodedSaveTeam
+  type DecodedSaveTeam,
+  type DecodedStaffAttributes
 } from './types';
 
 const MAX_RECORDS_PER_TABLE = 2_000_000;
@@ -25,8 +24,75 @@ function scaleAttr(rawByte: number): number {
   return scaled < 1 ? 1 : scaled > 20 ? 20 : scaled;
 }
 
+/** Scale FM2013 1–100 staff NON_PLAYING_DATA byte (`0x1247480`: `floor((raw + 3) / 5)`). */
+function scaleStaffAttr(rawByte: number): number {
+  const signed = rawByte > 127 ? rawByte - 256 : rawByte;
+  const scaled = Math.floor((signed + 3) / 5);
+  return scaled < 1 ? 1 : scaled > 20 ? 20 : scaled;
+}
+
 function clampPosition(rawByte: number): number {
   return rawByte < 1 ? 1 : rawByte > 20 ? 20 : rawByte;
+}
+
+export interface PlayerEditableOffsets {
+  readonly uid: number;
+  readonly homeRepOffset: number;
+  readonly currentRepOffset: number;
+  readonly worldRepOffset: number;
+  readonly actualCaOffset: number;
+  readonly potentialAbilityOffset: number;
+  readonly marketValueOffset: number;
+  readonly moraleOffset: number;
+  readonly weightKgOffset: number;
+  readonly heightCmOffset: number;
+  readonly intCapsOffset: number;
+  readonly intGoalsOffset: number;
+  readonly playingDataStartOffset: number; // 69 bytes
+  readonly personDataStartOffset: number | null; // 8 bytes
+  readonly contractWageOffset: number | null;
+  readonly contractExpiresOffset: number | null;
+  readonly contractSquadNumberOffset: number | null;
+}
+
+export interface StaffEditableOffsets {
+  readonly uid: number;
+  readonly homeRepOffset: number;
+  readonly currentRepOffset: number;
+  readonly worldRepOffset: number;
+  readonly staffCaOffset: number;
+  readonly staffPaOffset: number;
+  readonly nonPlayingDataStartOffset: number | null; // 41 bytes
+  readonly contractWageOffset: number | null;
+  readonly contractExpiresOffset: number | null;
+}
+
+export interface ClubEditableOffsets {
+  readonly uid: number;
+  readonly trainingFacilitiesOffset: number;
+  readonly youthFacilitiesOffset: number;
+  readonly youthCoachingOffset: number;
+  readonly yearFoundedOffset: number;
+  readonly youthRecruitmentOffset: number;
+  readonly balanceGbpOffset: number | null;
+  readonly transferBudgetGbpOffset: number | null;
+  readonly transferBudgetSeasonGbpOffset: number | null;
+  readonly weeklyWageBudgetGbpOffset: number | null;
+}
+
+export interface StadiumEditableOffsets {
+  readonly uid: number;
+  readonly capacityOffset: number;
+  readonly seatingCapacityOffset: number;
+  readonly expansionCapacityOffset: number;
+}
+
+export interface GameDbEditableOffsetMap {
+  readonly gameDbVersion: number;
+  readonly playersByUid: ReadonlyMap<number, PlayerEditableOffsets>;
+  readonly staffByUid: ReadonlyMap<number, StaffEditableOffsets>;
+  readonly clubsByUid: ReadonlyMap<number, ClubEditableOffsets>;
+  readonly stadiumsByUid: ReadonlyMap<number, StadiumEditableOffsets>;
 }
 
 /** Format a Football Manager position string compatible with ManagerHub's Squad Optimizer. */
@@ -188,19 +254,26 @@ interface ParsedClubFinance {
   readonly transferBudgetSeasonGbp: number | null;
   readonly weeklyWageBillGbp: number | null;
   readonly weeklyWageBudgetGbp: number | null;
+  readonly balanceGbpOffset: number | null;
+  readonly transferBudgetGbpOffset: number | null;
+  readonly transferBudgetSeasonGbpOffset: number | null;
+  readonly weeklyWageBudgetGbpOffset: number | null;
 }
 
-function parseFinanceBasic(r: Fm2013BinaryReader): number {
+function parseFinanceBasic(r: Fm2013BinaryReader): { readonly balance: number; readonly balanceOffset: number } {
+  const balanceOffset = r.cursor;
   const balance = r.i32();
   r.skip(4); r.date4(); r.date4(); r.date4();
   if (r.ver >= 0x768) r.u8();
   if (r.ver < 0x748) { r.i32(); r.date4(); }
   r.i32(); r.skip(2); r.i32(); r.i32(); r.skip(5 * 4); r.i32();
-  return balance;
+  return { balance, balanceOffset };
 }
 
 function parseFinanceFull(r: Fm2013BinaryReader): ParsedClubFinance {
+  const transferBudgetGbpOffset = r.cursor;
   const transferBudgetGbp = r.i32();
+  const transferBudgetSeasonGbpOffset = r.cursor;
   const transferBudgetSeasonGbp = r.i32();
   r.skip(21 * 4);
   if (r.ver < 0x748) r.u8();
@@ -210,6 +283,7 @@ function parseFinanceFull(r: Fm2013BinaryReader): ParsedClubFinance {
   r.skip(3 * 4);
   if (r.ver >= 0x748) { r.i32(); r.u8(); }
   r.skip(4 * 4);
+  const weeklyWageBudgetGbpOffset = r.cursor;
   const weeklyWageBudgetGbp = r.i32();
   r.skip(4 * 33 * 4); r.skip(4 * 4); r.skip(2);
   r.i32(); r.skip(8); r.skip(5); r.i32(); r.skip(3); r.date4(); r.date4();
@@ -222,14 +296,18 @@ function parseFinanceFull(r: Fm2013BinaryReader): ParsedClubFinance {
   r.date4(); r.i32();
   if (r.ver >= 0x735) r.i32();
   if (r.ver >= 0x770) r.i32();
-  const balanceGbp = parseFinanceBasic(r);
+  const basic = parseFinanceBasic(r);
   return {
     financeType: 'full',
-    balanceGbp,
+    balanceGbp: basic.balance,
     transferBudgetGbp,
     transferBudgetSeasonGbp,
     weeklyWageBillGbp,
-    weeklyWageBudgetGbp
+    weeklyWageBudgetGbp,
+    balanceGbpOffset: basic.balanceOffset,
+    transferBudgetGbpOffset,
+    transferBudgetSeasonGbpOffset,
+    weeklyWageBudgetGbpOffset
   };
 }
 
@@ -340,12 +418,17 @@ interface RawContractRecord {
   readonly teamRowId: number | null;
   readonly jobType: number;
   readonly squadNumber: number | null;
+  readonly wageOffset: number | null;
+  readonly expiresOffset: number | null;
+  readonly squadNumberOffset: number | null;
 }
 
 function parseContractBase(r: Fm2013BinaryReader, ctag: number): RawContractRecord {
+  const wageOffset = r.cursor;
   const wage = r.i32();
   r.i32();
   if (r.ver >= 0x753) r.i32();
+  const expiresOffset = r.cursor;
   const exp = r.date4();
   r.date4();
   r.skip(3);
@@ -353,7 +436,9 @@ function parseContractBase(r: Fm2013BinaryReader, ctag: number): RawContractReco
   if (nc > 0) r.skip(nc * 22);
   r.u8();
   const join = r.date4();
-  const b0 = r.u8(); const b1 = r.u8(); const squadByte = r.u8();
+  const b0 = r.u8(); const b1 = r.u8();
+  const squadNumberOffset = r.cursor;
+  const squadByte = r.u8();
   void b0; void b1;
   r.skip(3);
   if (r.ver >= 0x75b) r.u16();
@@ -371,7 +456,10 @@ function parseContractBase(r: Fm2013BinaryReader, ctag: number): RawContractReco
     joinedAt: siDateToIso(join.dayOfYear, join.year),
     teamRowId: teamRowId >= 0 ? teamRowId : null,
     jobType,
-    squadNumber: squadByte >= 1 && squadByte <= 99 ? squadByte : null
+    squadNumber: squadByte >= 1 && squadByte <= 99 ? squadByte : null,
+    wageOffset,
+    expiresOffset,
+    squadNumberOffset
   };
 }
 
@@ -404,7 +492,10 @@ function parseContractObj(r: Fm2013BinaryReader, ctag: number): RawContractRecor
       joinedAt: null,
       teamRowId: teamRowId >= 0 ? teamRowId : null,
       jobType,
-      squadNumber: null
+      squadNumber: null,
+      wageOffset: null,
+      expiresOffset: null,
+      squadNumberOffset: null
     };
   }
   return null;
@@ -428,6 +519,8 @@ function skip183b0f0(r: Fm2013BinaryReader): void {
 interface RawPersonJob {
   readonly intCaps: number;
   readonly intGoals: number;
+  readonly intCapsOffset: number;
+  readonly intGoalsOffset: number;
   readonly currentTeamRowId: number;
   readonly contracts: readonly RawContractRecord[];
 }
@@ -435,7 +528,9 @@ interface RawPersonJob {
 function parsePersonJob(r: Fm2013BinaryReader): RawPersonJob {
   r.i16();
   r.i32();
+  const intCapsOffset = r.cursor;
   const intCaps = r.u8();
+  const intGoalsOffset = r.cursor;
   const intGoals = r.u8();
   r.skip(2);
   r.i32(); r.date4();
@@ -467,7 +562,7 @@ function parsePersonJob(r: Fm2013BinaryReader): RawPersonJob {
   r.i16(); r.date4(); r.u8(); r.date4(); r.date4();
   r.i32(); r.i32(); r.date4(); r.u8(); r.date4();
   if (r.ver >= 0x73a) r.skip(8);
-  return { intCaps, intGoals, currentTeamRowId, contracts };
+  return { intCaps, intGoals, intCapsOffset, intGoalsOffset, currentTeamRowId, contracts };
 }
 
 function skipIntlBase(r: Fm2013BinaryReader): void {
@@ -519,21 +614,39 @@ interface RawPlayerBody {
   readonly morale: number;
   readonly weightKg: number;
   readonly heightCm: number;
+  readonly homeRepOffset: number;
+  readonly currentRepOffset: number;
+  readonly worldRepOffset: number;
+  readonly actualCaOffset: number;
+  readonly potentialAbilityOffset: number;
+  readonly marketValueOffset: number;
+  readonly moraleOffset: number;
+  readonly weightKgOffset: number;
+  readonly heightCmOffset: number;
 }
 
 function parseActualPlayerBody(r: Fm2013BinaryReader): RawPlayerBody {
+  const homeRepOffset = r.cursor;
   const homeRep = r.i16();
+  const currentRepOffset = r.cursor;
   const currentRep = r.i16();
+  const worldRepOffset = r.cursor;
   const worldRep = r.i16();
+  const actualCaOffset = r.cursor;
   const actualCa = r.i16();
+  const potentialAbilityOffset = r.cursor;
   const potentialAbility = r.i16();
   const playingDataRowId = r.i32();
+  const marketValueOffset = r.cursor;
   const marketValueGbp = r.i32();
+  const moraleOffset = r.cursor;
   const morale = r.u8();
   r.date4();
   r.skip(5 * 2);
   r.u8();
+  const weightKgOffset = r.cursor;
   const weightKg = r.i16();
+  const heightCmOffset = r.cursor;
   const heightCm = r.i16();
   r.skip(8); r.u8();
   let n = r.i32();
@@ -630,7 +743,9 @@ function parseActualPlayerBody(r: Fm2013BinaryReader): RawPlayerBody {
   r.date4(); r.date4(); r.i32(); r.u8(); r.i32(); r.u8(); r.i32(); r.skip(2); r.i16(); r.skip(2);
   return {
     homeRep, currentRep, worldRep, actualCa, potentialAbility,
-    playingDataRowId, marketValueGbp, morale, weightKg, heightCm
+    playingDataRowId, marketValueGbp, morale, weightKg, heightCm,
+    homeRepOffset, currentRepOffset, worldRepOffset, actualCaOffset, potentialAbilityOffset,
+    marketValueOffset, moraleOffset, weightKgOffset, heightCmOffset
   };
 }
 
@@ -641,13 +756,23 @@ interface RawNonPlayerBody {
   readonly staffCa: number;
   readonly staffPa: number;
   readonly nonPlayingDataRowId: number;
+  readonly homeRepOffset: number;
+  readonly currentRepOffset: number;
+  readonly worldRepOffset: number;
+  readonly staffCaOffset: number;
+  readonly staffPaOffset: number;
 }
 
 function parseActualNonPlayerBody(r: Fm2013BinaryReader): RawNonPlayerBody {
+  const homeRepOffset = r.cursor;
   const homeRep = r.i16();
+  const currentRepOffset = r.cursor;
   const currentRep = r.i16();
+  const worldRepOffset = r.cursor;
   const worldRep = r.i16();
+  const staffCaOffset = r.cursor;
   const staffCa = r.i16();
+  const staffPaOffset = r.cursor;
   const staffPa = r.i16();
   r.skip(4);
   const nonPlayingDataRowId = r.i32();
@@ -662,7 +787,10 @@ function parseActualNonPlayerBody(r: Fm2013BinaryReader): RawNonPlayerBody {
     if (m > 0) r.skip(m * 2);
   }
   if (r.u8() !== 0) skipIntlBase(r);
-  return { homeRep, currentRep, worldRep, staffCa, staffPa, nonPlayingDataRowId };
+  return {
+    homeRep, currentRep, worldRep, staffCa, staffPa, nonPlayingDataRowId,
+    homeRepOffset, currentRepOffset, worldRepOffset, staffCaOffset, staffPaOffset
+  };
 }
 
 interface RawActualPerson {
@@ -928,6 +1056,11 @@ interface RawClub {
   readonly youthRecruitment: number | null;
   readonly professionalStatus: number | null;
   readonly finance: ParsedClubFinance;
+  readonly trainingFacilitiesOffset: number;
+  readonly youthFacilitiesOffset: number;
+  readonly youthCoachingOffset: number;
+  readonly yearFoundedOffset: number;
+  readonly youthRecruitmentOffset: number;
 }
 
 interface RawTeam {
@@ -953,6 +1086,9 @@ interface RawStadium {
   readonly cityRowId: number;
   readonly latitude: number;
   readonly longitude: number;
+  readonly capacityOffset: number;
+  readonly seatingCapacityOffset: number;
+  readonly expansionCapacityOffset: number;
 }
 
 interface RawNation {
@@ -999,6 +1135,7 @@ export interface ParsedGameDbResult {
   readonly nations: readonly DecodedSaveNation[];
   readonly competitions: readonly DecodedSaveCompetition[];
   readonly staffByRowId: ReadonlyMap<number, DecodedSaveStaff>;
+  readonly editableOffsets?: GameDbEditableOffsetMap;
 }
 
 function readTableHeader(r: Fm2013BinaryReader, tableName: string): number {
@@ -1080,7 +1217,8 @@ function skipPersonRecord(r: Fm2013BinaryReader, tag: number): void {
 export function parseFm2013GameDb(
   bytes: Uint8Array,
   overrideGameDate: string | null = null,
-  onProgress?: (percent: number, tableName: string) => void
+  onProgress?: (percent: number, tableName: string) => void,
+  options: { readonly collectOffsets?: boolean } = {}
 ): ParsedGameDbResult {
   const r = new Fm2013BinaryReader(bytes);
   if (bytes.byteLength < 64 ||
@@ -1091,10 +1229,10 @@ export function parseFm2013GameDb(
   r.cursor = 6;
   r.ver = r.u16();
   r.u8(); // header flag
-  if (r.ver < FM2013_MIN_GAME_DB_VERSION || r.ver > FM2013_MAX_GAME_DB_VERSION) {
+  if (![0x757, 0x75f, 0x763, 0x765, 0x76e, 0x773, 0x774].includes(r.ver)) {
     throw new FM2013DecodeError(
       'UNSUPPORTED_DB_VERSION',
-      `Unsupported FM2013 game_db version 0x${r.ver.toString(16)} (verified range: 0x${FM2013_MIN_GAME_DB_VERSION.toString(16)}..0x${FM2013_MAX_GAME_DB_VERSION.toString(16)}).`
+      `Unsupported FM2013 game_db version 0x${r.ver.toString(16)} (not in observed schema set).`
     );
   }
 
@@ -1126,8 +1264,9 @@ export function parseFm2013GameDb(
   const rawTeams = new Map<number, RawTeam>();
   const rawPlayers: RawPlayerEntry[] = [];
   const rawStaff: RawStaffEntry[] = [];
-  const personDataByRow = new Map<number, Uint8Array>();
-  const playingDataByRow = new Map<number, Uint8Array>();
+  const personDataByRow = new Map<number, { readonly bytes: Uint8Array; readonly offset: number }>();
+  const playingDataByRow = new Map<number, { readonly bytes: Uint8Array; readonly offset: number }>();
+  const nonPlayingDataByRow = new Map<number, { readonly bytes: Uint8Array; readonly offset: number }>();
 
   // T01 AWARD
   const awardCount = readTableHeader(r, 'T01_AWARD');
@@ -1160,12 +1299,17 @@ export function parseFm2013GameDb(
     const cityRowId = r.i32();
     r.u8();
     const nickname = r.siStr();
+    const trainingFacilitiesOffset = r.cursor;
     const trainingFacilities = r.u8();
+    const youthFacilitiesOffset = r.cursor;
     const youthFacilities = r.u8();
+    const youthCoachingOffset = r.cursor;
     const youthCoaching = r.u8();
+    const yearFoundedOffset = r.cursor;
     const yearFoundedRaw = r.u16();
     r.skip(4);
     const professionalStatus = r.u8();
+    const youthRecruitmentOffset = r.cursor;
     const youthRecruitment = r.u8();
     r.skip(9);
     let m = r.i8();
@@ -1179,10 +1323,20 @@ export function parseFm2013GameDb(
       transferBudgetGbp: null,
       transferBudgetSeasonGbp: null,
       weeklyWageBillGbp: null,
-      weeklyWageBudgetGbp: null
+      weeklyWageBudgetGbp: null,
+      balanceGbpOffset: null,
+      transferBudgetGbpOffset: null,
+      transferBudgetSeasonGbpOffset: null,
+      weeklyWageBudgetGbpOffset: null
     };
     if (finType === 0) {
-      finance = { ...finance, financeType: 'basic', balanceGbp: parseFinanceBasic(r) };
+      const basic = parseFinanceBasic(r);
+      finance = {
+        ...finance,
+        financeType: 'basic',
+        balanceGbp: basic.balance,
+        balanceGbpOffset: basic.balanceOffset
+      };
     } else if (finType === 1) {
       finance = parseFinanceFull(r);
     }
@@ -1236,7 +1390,12 @@ export function parseFm2013GameDb(
       youthCoaching: youthCoaching >= 1 && youthCoaching <= 20 ? youthCoaching : null,
       youthRecruitment: youthRecruitment >= 1 && youthRecruitment <= 20 ? youthRecruitment : null,
       professionalStatus,
-      finance
+      finance,
+      trainingFacilitiesOffset,
+      youthFacilitiesOffset,
+      youthCoachingOffset,
+      yearFoundedOffset,
+      youthRecruitmentOffset
     });
   }
   r.tableFooter();
@@ -1434,8 +1593,11 @@ export function parseFm2013GameDb(
   const stadiumCount = readTableHeader(r, 'T17_STADIUM');
   for (let i = 0; i < stadiumCount; i++) {
     r.u8();
+    const capacityOffset = r.cursor;
     const capacity = r.i32();
+    const seatingCapacityOffset = r.cursor;
     const seatingCapacity = r.i32();
+    const expansionCapacityOffset = r.cursor;
     const expansionCapacity = r.i32();
     r.i32(); // used capacity
     const ownerClubRowId = r.i32();
@@ -1458,7 +1620,10 @@ export function parseFm2013GameDb(
       ownerClubRowId,
       cityRowId,
       latitude,
-      longitude
+      longitude,
+      capacityOffset,
+      seatingCapacityOffset,
+      expansionCapacityOffset
     });
   }
   r.tableFooter();
@@ -1617,9 +1782,10 @@ export function parseFm2013GameDb(
   cnt = readTableHeader(r, 'T26_PERSON_DATA');
   for (let i = 0; i < cnt; i++) {
     r.u8();
+    const startOffset = r.cursor;
     const raw8 = r.subarray(8);
     const rec = r.dbRecord();
-    personDataByRow.set(rec.rowId, raw8);
+    personDataByRow.set(rec.rowId, { bytes: raw8, offset: startOffset });
   }
   r.tableFooter();
 
@@ -1627,15 +1793,22 @@ export function parseFm2013GameDb(
   cnt = readTableHeader(r, 'T27_PLAYING_DATA');
   for (let i = 0; i < cnt; i++) {
     r.u8();
+    const startOffset = r.cursor;
     const raw69 = r.subarray(0x45);
     const rec = r.dbRecord();
-    playingDataByRow.set(rec.rowId, raw69);
+    playingDataByRow.set(rec.rowId, { bytes: raw69, offset: startOffset });
   }
   r.tableFooter();
 
-  // T28 NON_PLAYING_DATA (41 bytes)
+  // T28 NON_PLAYING_DATA (41 bytes: coaching, mental, scouting, and medical attributes)
   cnt = readTableHeader(r, 'T28_NON_PLAYING_DATA');
-  for (let i = 0; i < cnt; i++) { r.u8(); r.skip(0x29); r.dbRecord(); }
+  for (let i = 0; i < cnt; i++) {
+    r.u8();
+    const startOffset = r.cursor;
+    const raw41 = r.subarray(0x29);
+    const rec = r.dbRecord();
+    nonPlayingDataByRow.set(rec.rowId, { bytes: raw41, offset: startOffset });
+  }
   r.tableFooter();
 
   // T29 COMP_HISTORY
@@ -1769,8 +1942,11 @@ export function parseFm2013GameDb(
   r.i32();
   skipVariantList(r);
   const hashLen = r.i32();
-  if (hashLen < 0 || hashLen > 128) {
-    throw new FM2013DecodeError('CORRUPT_DATABASE', `Unexpected trailing checksum length ${hashLen}.`);
+  if (hashLen !== 64) {
+    throw new FM2013DecodeError(
+      'CORRUPT_DATABASE',
+      `Unexpected trailing checksum length ${hashLen}; expected exact 64-byte HMAC-SHA512 footer.`
+    );
   }
   r.skip(hashLen);
   const exactEof = r.remaining === 0;
@@ -1831,11 +2007,18 @@ export function parseFm2013GameDb(
     }
   }
 
+  const playerOffsets = options.collectOffsets ? new Map<number, PlayerEditableOffsets>() : null;
+  const staffOffsets = options.collectOffsets ? new Map<number, StaffEditableOffsets>() : null;
+  const clubOffsets = options.collectOffsets ? new Map<number, ClubEditableOffsets>() : null;
+  const stadiumOffsets = options.collectOffsets ? new Map<number, StadiumEditableOffsets>() : null;
+
   const players: DecodedSavePlayer[] = [];
   for (const entry of rawPlayers) {
-    const pd = playingDataByRow.get(entry.body.playingDataRowId);
+    const pdRec = playingDataByRow.get(entry.body.playingDataRowId);
+    const pd = pdRec?.bytes;
     if (!pd || pd.byteLength < 69) continue;
-    const pdat = entry.person.personDataRowId >= 0 ? personDataByRow.get(entry.person.personDataRowId) : undefined;
+    const pdatRec = entry.person.personDataRowId >= 0 ? personDataByRow.get(entry.person.personDataRowId) : undefined;
+    const pdat = pdatRec?.bytes;
     const names = resolvePersonName(entry.person);
     const nation = rawNations.get(entry.person.primaryNationRowId) ?? null;
 
@@ -1846,6 +2029,28 @@ export function parseFm2013GameDb(
     const loanContract = entry.job.contracts.find(c => c.ctag === 1) ?? null;
     const fullContract = entry.job.contracts.find(c => c.ctag === 0 || c.ctag === 2 || c.ctag === 3 || c.ctag === 6) ?? null;
     const activeContract = loanContract ?? fullContract ?? entry.job.contracts[0] ?? null;
+
+    if (playerOffsets && pdRec) {
+      playerOffsets.set(entry.uid, {
+        uid: entry.uid,
+        homeRepOffset: entry.body.homeRepOffset,
+        currentRepOffset: entry.body.currentRepOffset,
+        worldRepOffset: entry.body.worldRepOffset,
+        actualCaOffset: entry.body.actualCaOffset,
+        potentialAbilityOffset: entry.body.potentialAbilityOffset,
+        marketValueOffset: entry.body.marketValueOffset,
+        moraleOffset: entry.body.moraleOffset,
+        weightKgOffset: entry.body.weightKgOffset,
+        heightCmOffset: entry.body.heightCmOffset,
+        intCapsOffset: entry.job.intCapsOffset,
+        intGoalsOffset: entry.job.intGoalsOffset,
+        playingDataStartOffset: pdRec.offset,
+        personDataStartOffset: pdatRec ? pdatRec.offset : null,
+        contractWageOffset: activeContract?.wageOffset ?? null,
+        contractExpiresOffset: activeContract?.expiresOffset ?? null,
+        contractSquadNumberOffset: activeContract?.squadNumberOffset ?? null
+      });
+    }
 
     let parentClub: RawClub | null = null;
     if (loanContract && fullContract && fullContract.teamRowId !== null) {
@@ -2019,12 +2224,53 @@ export function parseFm2013GameDb(
     const team = entry.job.currentTeamRowId >= 0 ? (rawTeams.get(entry.job.currentTeamRowId) ?? null) : null;
     const club = team && !team.isNationalTeam ? (rawClubs.get(team.ownerClubRowId) ?? null) : null;
     const contract = entry.job.contracts[0] ?? null;
+    const npdRec = entry.nonPlayer.nonPlayingDataRowId >= 0
+      ? nonPlayingDataByRow.get(entry.nonPlayer.nonPlayingDataRowId)
+      : undefined;
+    const npd = npdRec?.bytes;
     if (club) clubStaffCounts.set(club.rowId, (clubStaffCounts.get(club.rowId) ?? 0) + 1);
     if (nation) nationStaffCounts.set(nation.rowId, (nationStaffCounts.get(nation.rowId) ?? 0) + 1);
     const ageResult = entry.person.birthDate && effectiveGameDate
       ? calculateCalendarAge(entry.person.birthDate, effectiveGameDate)
       : null;
     const calendarAge = ageResult?.status === 'calculated' ? ageResult.value : null;
+
+    const staffAttrs: DecodedStaffAttributes | null = npd && npd.byteLength >= 40
+      ? {
+          adaptability: clampPosition(npd[2]!),
+          levelOfDiscipline: clampPosition(npd[4]!),
+          workingWithYoungsters: clampPosition(npd[12]!),
+          determination: scaleStaffAttr(npd[13]!),
+          player: scaleStaffAttr(npd[26]!),
+          goalkeepers: scaleStaffAttr(npd[27]!),
+          judgingPlayerAbility: scaleStaffAttr(npd[28]!),
+          judgingPlayerPotential: scaleStaffAttr(npd[29]!),
+          manManagement: scaleStaffAttr(npd[30]!),
+          motivating: scaleStaffAttr(npd[31]!),
+          physiotherapy: scaleStaffAttr(npd[32]!),
+          tacticalKnowledge: scaleStaffAttr(npd[33]!),
+          attacking: scaleStaffAttr(npd[34]!),
+          defending: scaleStaffAttr(npd[35]!),
+          fitness: scaleStaffAttr(npd[36]!),
+          mental: scaleStaffAttr(npd[37]!),
+          technical: scaleStaffAttr(npd[38]!),
+          tactical: scaleStaffAttr(npd[39]!)
+        }
+      : null;
+
+    if (staffOffsets) {
+      staffOffsets.set(entry.uid, {
+        uid: entry.uid,
+        homeRepOffset: entry.nonPlayer.homeRepOffset,
+        currentRepOffset: entry.nonPlayer.currentRepOffset,
+        worldRepOffset: entry.nonPlayer.worldRepOffset,
+        staffCaOffset: entry.nonPlayer.staffCaOffset,
+        staffPaOffset: entry.nonPlayer.staffPaOffset,
+        nonPlayingDataStartOffset: npdRec ? npdRec.offset : null,
+        contractWageOffset: contract?.wageOffset ?? null,
+        contractExpiresOffset: contract?.expiresOffset ?? null
+      });
+    }
 
     const record: DecodedSaveStaff = {
       uid: entry.uid,
@@ -2044,6 +2290,7 @@ export function parseFm2013GameDb(
       jobType: contract?.jobType ?? null,
       weeklyWageGbp: contract?.weeklyWageGbp ?? null,
       contractExpiresAt: contract?.expiresAt ?? null,
+      attributes: staffAttrs,
       staffCa: entry.nonPlayer.staffCa,
       staffPa: entry.nonPlayer.staffPa,
       homeReputation: entry.nonPlayer.homeRep,
@@ -2061,6 +2308,20 @@ export function parseFm2013GameDb(
     const primaryTeam = clubPrimaryTeam.get(club.rowId) ?? null;
     const stadium = primaryTeam && primaryTeam.stadiumRowId >= 0 ? (rawStadiums.get(primaryTeam.stadiumRowId) ?? null) : null;
     const comp = primaryTeam && primaryTeam.compRowId >= 0 ? (rawComps.get(primaryTeam.compRowId) ?? null) : null;
+    if (clubOffsets) {
+      clubOffsets.set(club.uid, {
+        uid: club.uid,
+        trainingFacilitiesOffset: club.trainingFacilitiesOffset,
+        youthFacilitiesOffset: club.youthFacilitiesOffset,
+        youthCoachingOffset: club.youthCoachingOffset,
+        yearFoundedOffset: club.yearFoundedOffset,
+        youthRecruitmentOffset: club.youthRecruitmentOffset,
+        balanceGbpOffset: club.finance.balanceGbpOffset,
+        transferBudgetGbpOffset: club.finance.transferBudgetGbpOffset,
+        transferBudgetSeasonGbpOffset: club.finance.transferBudgetSeasonGbpOffset,
+        weeklyWageBudgetGbpOffset: club.finance.weeklyWageBudgetGbpOffset
+      });
+    }
     clubs.push({
       uid: club.uid,
       rowId: club.rowId,
@@ -2114,6 +2375,14 @@ export function parseFm2013GameDb(
   for (const stadium of rawStadiums.values()) {
     const owner = stadium.ownerClubRowId >= 0 ? (rawClubs.get(stadium.ownerClubRowId) ?? null) : null;
     const trimmed = stadium.customName.trim();
+    if (stadiumOffsets) {
+      stadiumOffsets.set(stadium.uid, {
+        uid: stadium.uid,
+        capacityOffset: stadium.capacityOffset,
+        seatingCapacityOffset: stadium.seatingCapacityOffset,
+        expansionCapacityOffset: stadium.expansionCapacityOffset
+      });
+    }
     stadiums.push({
       uid: stadium.uid,
       rowId: stadium.rowId,
@@ -2186,6 +2455,17 @@ export function parseFm2013GameDb(
     stadiums,
     nations,
     competitions,
-    staffByRowId
+    staffByRowId,
+    ...(playerOffsets && staffOffsets && clubOffsets && stadiumOffsets
+      ? {
+          editableOffsets: {
+            gameDbVersion: r.ver,
+            playersByUid: playerOffsets,
+            staffByUid: staffOffsets,
+            clubsByUid: clubOffsets,
+            stadiumsByUid: stadiumOffsets
+          }
+        }
+      : {})
   };
 }

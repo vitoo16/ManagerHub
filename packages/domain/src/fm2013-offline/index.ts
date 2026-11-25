@@ -1,4 +1,5 @@
 import { getSignature } from '../save';
+import { resolveSaveCompatibility } from '../save-compatibility';
 import {
   extractFm2013Member,
   MAX_FM_SAVE_BYTES,
@@ -6,9 +7,11 @@ import {
   parseFm2013Container,
   parseHumansMember,
   parseSaveGameSummary,
+  verifyGameDbHmacSha512,
   type BinarySliceSource
 } from './afe-container';
 import { parseFm2013GameDb } from './game-db-parser';
+import { applyLangDbToSaveDatabase, type Fm2013LangDbLookup } from './lang-db';
 import {
   DECODED_SAVE_DB_SCHEMA_VERSION,
   FM2013_OFFLINE_ADAPTER_VERSION,
@@ -21,15 +24,21 @@ export * from './types';
 export * from './binary-reader';
 export * from './afe-container';
 export * from './game-db-parser';
+export * from './lang-db';
 export * from './projection';
+export * from './validation';
+export * from './editor-transactions';
+export * from './writer';
 
 export interface DecodeFm2013SaveOptions {
   readonly fileName?: string;
   readonly lastModified?: number;
+  readonly signingKey?: Uint8Array;
+  readonly langDb?: Fm2013LangDbLookup;
   readonly onProgress?: (progress: FM2013DecodeProgress) => void;
 }
 
-async function computeSha256Hex(source: BinarySliceSource): Promise<string> {
+export async function computeSha256Hex(source: BinarySliceSource): Promise<string> {
   if (typeof crypto === 'undefined' || !crypto.subtle) {
     throw new FM2013DecodeError('CRYPTO_UNAVAILABLE', 'Web Crypto API is unavailable for SHA-256 hashing.');
   }
@@ -52,7 +61,8 @@ async function readHeadSignature(source: BinarySliceSource): Promise<string> {
 /**
  * End-to-end, read-only offline FM2013 `.fm` save decoder.
  * Never mutates the original file, requires zero running FM process or CSV export,
- * and decodes the full persisted football database directly from `.fm`.
+ * enforces exact member sizes + 64-byte footer structure (+ optional HMAC-SHA512 verification),
+ * and derives verified domain claims strictly from `resolveSaveCompatibility`.
  */
 export async function decodeFm2013Save(
   input: File | Uint8Array,
@@ -93,6 +103,16 @@ export async function decodeFm2013Save(
     throw new FM2013DecodeError('MISSING_GAME_DB', 'Archive does not contain a game_db.dat database member.');
   }
 
+  if (options.signingKey) {
+    const validHmac = await verifyGameDbHmacSha512(gameDbBytes, options.signingKey);
+    if (!validHmac) {
+      throw new FM2013DecodeError(
+        'TAMPERED_CHECKSUM',
+        'game_db.dat failed 64-byte HMAC-SHA512 cryptographic checksum verification.'
+      );
+    }
+  }
+
   const summary = summaryBytes ? parseSaveGameSummary(summaryBytes) : null;
   const humanRowIds = humansBytes ? parseHumansMember(humansBytes) : [];
 
@@ -125,15 +145,22 @@ export async function decodeFm2013Save(
     }
   );
 
-  const build = summary?.gameVersion
-    ? summary.gameVersion
-    : `game_db-0x${parsedDb.gameDbVersion.toString(16)}`;
+  const summaryBuild = summary?.gameVersion?.trim() || null;
+  const compatibility = resolveSaveCompatibility({
+    detectedFamily: container.family,
+    edition: summaryBuild ? 'FM2013' : null,
+    build: summaryBuild
+  });
 
+  const build = summaryBuild ?? `game_db-0x${parsedDb.gameDbVersion.toString(16)}`;
   const gameDate = summary?.gameDate ?? parsedDb.headerGameDate;
+  const verifiedDomains = compatibility.status === 'verified'
+    ? [...compatibility.profile.readableDomains]
+    : [];
 
   options.onProgress?.({ stage: 'indexing_database', percent: 100 });
 
-  return {
+  const baseDatabase: DecodedSaveDatabase = {
     schemaVersion: DECODED_SAVE_DB_SCHEMA_VERSION,
     source: {
       saveId: sha256,
@@ -146,35 +173,29 @@ export async function decodeFm2013Save(
       compressed: container.compressed,
       edition: 'FM2013',
       build,
+      compatibilityStatus: compatibility.status,
+      checksumStatus: options.signingKey ? 'verified_hmac_sha512' : 'structural_64b_unverified',
+      langDbAttached: Boolean(options.langDb),
       gameDbVersion: parsedDb.gameDbVersion,
       gameDbVersionHex: `0x${parsedDb.gameDbVersion.toString(16)}`,
       gameDbBytes: gameDbBytes.byteLength,
       dbString: summary?.dbString ?? null,
       gameDate,
       memberCount: container.members.length,
+      totalArchiveMemberCount: container.allMembers.length,
       decodedAt: new Date().toISOString(),
       adapterVersion: FM2013_OFFLINE_ADAPTER_VERSION,
       writeCapability: false
     },
     counts: parsedDb.counts,
     coverage: {
-      verifiedDomains: [
-        'player_identity',
-        'attributes',
-        'actual_ca',
-        'potential_ability',
-        'positions',
-        'club_links',
-        'contracts',
-        'finance'
-      ],
+      verifiedDomains,
       notStoredInSave: [
-        'Unedited base-DB localized names for stadiums, competitions, cities, awards, and injuries reside in FM2013 lang_db.dat rather than inside .fm.'
+        'Unedited base-DB localized names for stadiums, competitions, cities, awards, and injuries reside in FM2013 lang_db.dat rather than inside .fm (attach local lang_db.dat to resolve).'
       ],
       notDecoded: [
         'tactics',
-        'matches',
-        'Detailed 41-byte staff sub-attributes (Staff CA/PA, clubs, contracts, and reputations are decoded)'
+        'matches'
       ],
       gameDbExactEof: parsedDb.exactEof
     },
@@ -187,4 +208,6 @@ export async function decodeFm2013Save(
     nations: parsedDb.nations,
     competitions: parsedDb.competitions
   };
+
+  return options.langDb ? applyLangDbToSaveDatabase(baseDatabase, options.langDb) : baseDatabase;
 }

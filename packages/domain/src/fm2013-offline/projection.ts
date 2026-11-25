@@ -9,6 +9,7 @@ import {
   type DecodedSaveMode,
   type DecodedSavePlayer,
   type DecodedSaveStaff,
+  type DecodedStaffAttributes,
   type ProjectedPlayerHiddenFields
 } from './types';
 
@@ -91,7 +92,7 @@ export function projectPlayerHiddenFields(
   };
 }
 
-/** Project staff CA/PA cleanly under Editor vs Realism isolation. */
+/** Project staff CA/PA and coaching/mental attributes cleanly under Editor vs Realism isolation. */
 export function projectStaffAbility(
   staff: DecodedSaveStaff,
   mode: DecodedSaveMode,
@@ -101,18 +102,24 @@ export function projectStaffAbility(
   readonly staffCa: EvidenceField<number>;
   readonly staffPa: EvidenceField<number>;
   readonly currentReputation: EvidenceField<number>;
+  readonly attributes: EvidenceField<DecodedStaffAttributes>;
 } {
+  const attrsField = staff.attributes
+    ? verifiedField(staff.attributes, edition, build)
+    : notPresentField<DecodedStaffAttributes>(edition, build);
   if (mode === 'realism') {
     return {
       staffCa: redactedField<number>(edition, build),
       staffPa: redactedField<number>(edition, build),
-      currentReputation: redactedField<number>(edition, build)
+      currentReputation: redactedField<number>(edition, build),
+      attributes: attrsField
     };
   }
   return {
     staffCa: verifiedField(staff.staffCa, edition, build),
     staffPa: verifiedField(staff.staffPa, edition, build),
-    currentReputation: verifiedField(staff.currentReputation, edition, build)
+    currentReputation: verifiedField(staff.currentReputation, edition, build),
+    attributes: attrsField
   };
 }
 

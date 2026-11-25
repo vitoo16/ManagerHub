@@ -80,10 +80,12 @@ function SaveInspector({
   activeDecodedSave,
   saveMode,
   onSetSaveMode,
-  onActivateDecodedSave,
+  onOpenDecodedSave,
   onSwitchDecodedSave,
   onOpenPlayerFromSave,
-  onLoadClubInSquad
+  onLoadClubInSquad,
+  onEditEntity,
+  onOpenSaveAsModal
 }: {
   imports: readonly SaveInspectionResult[];
   selected: SaveInspectionResult | null;
@@ -100,10 +102,12 @@ function SaveInspector({
   activeDecodedSave: DecodedSaveDatabase | null;
   saveMode: DecodedSaveMode;
   onSetSaveMode: (mode: DecodedSaveMode) => void;
-  onActivateDecodedSave: (db: DecodedSaveDatabase) => void;
+  onOpenDecodedSave: (saveId: string, read: (saveId: string) => Promise<DecodedSaveDatabase | null>) => Promise<void>;
   onSwitchDecodedSave: (saveId: string) => void;
   onOpenPlayerFromSave: (playerUid: number, clubUid: number | null) => void;
   onLoadClubInSquad: (clubUid: number | null) => void;
+  onEditEntity?: (target: { readonly kind: 'player' | 'staff' | 'club' | 'stadium'; readonly uid: number }) => void;
+  onOpenSaveAsModal?: () => void;
 }) {
   const { t } = useTranslation();
   const saveLibrary = useSaveInspectionLibrary();
@@ -152,10 +156,7 @@ function SaveInspector({
       onSwitchDecodedSave(saveId);
       return;
     }
-    const restored = await decodedLibrary.open(saveId);
-    if (restored) {
-      onActivateDecodedSave(restored);
-    }
+    await onOpenDecodedSave(saveId, decodedLibrary.open);
   };
   const onRemovePersistedDatabase = (saveId: string, fileName: string) => {
     const message = t('Remove saved inspection metadata for "{{fileName}}" from this browser? The original .fm file will remain untouched. This cannot be undone. Continue?', { fileName });
@@ -270,10 +271,16 @@ function SaveInspector({
           saveActivity={decodedLibrary.activity}
           onSetSaveMode={onSetSaveMode}
           onSwitchDecodedSave={onSwitchDecodedSave}
-          onPersistDatabase={db => void decodedLibrary.save(db)}
+          onPersistDatabase={() => {
+            // Cache only the immutable decoded source, not the working projection.
+            const base = decodedSaves[activeDecodedSave.source.saveId];
+            if (base) void decodedLibrary.save(base);
+          }}
           onRemovePersistedDatabase={onRemovePersistedDatabase}
           onOpenPlayerInLab={onOpenPlayerFromSave}
           onLoadClubInSquad={onLoadClubInSquad}
+          onEditEntity={onEditEntity}
+          onOpenSaveAsModal={onOpenSaveAsModal}
         />
       </Suspense>
     )}

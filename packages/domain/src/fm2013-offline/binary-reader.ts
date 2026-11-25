@@ -42,6 +42,27 @@ export function siDateToIso(dayOfYear: number, year: number): string | null {
   return `${y}-${m}-${d}`;
 }
 
+export function isoToSiDate(iso: string): SiDate4 | null {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/u.exec(iso.trim());
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  if (year < 1850 || year > 2200 || month < 1 || month > 12 || day < 1 || day > 31) return null;
+  const date = new Date(Date.UTC(year, month - 1, day));
+  if (
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() !== month - 1 ||
+    date.getUTCDate() !== day
+  ) {
+    return null;
+  }
+  const jan1 = Date.UTC(year, 0, 1);
+  const dayOfYear = Math.round((date.getTime() - jan1) / 86_400_000);
+  if (dayOfYear < 0 || dayOfYear > 366) return null;
+  return { dayOfYear, year };
+}
+
 export class Fm2013BinaryReader {
   readonly bytes: Uint8Array;
   readonly view: DataView;

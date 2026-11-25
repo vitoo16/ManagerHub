@@ -13,7 +13,7 @@ Every feature has a stable ID so engineering and design docs can cross-reference
 |---|---|---|---|
 | MH-01 | Save Manager & Reader | User-selected local import, format/build detection, multiple careers, import diagnostics, historical snapshots, coverage per domain | Never mutate original; unknown binary family -> Unsupported, no invented squad |
 | MH-02 | Player Database & Advanced Explorer | Player search/filter, nationality, positions/foot, CA/PA when verified, technical/mental/physical/hidden attributes, contracts, comparisons, exports | Every field has source/version; null != 0; privacy modes apply |
-| MH-03 | Advanced Save Editor | Draft and preview CA, PA, attrs, position familiarity; future optional club/budget edits and batch changes, backup/diff/revert | **Deferred** until exact-build decoder AND writer pass independent reparse/in-game validation; separate memory bridge if ever justified |
+| MH-03 | Advanced Save Editor | FMRTE13-grade player/staff/club/finance/stadium editing, presets, mass edit, Undo/Redo draft overlay, semantic diff preview, and certified lossless `Save As .fm` copy writer | Certified exact-build `afe` v4 decoder + `HMAC-SHA512` writer with independent reparse validation; original `.fm` never mutated; disabled in Realism mode and on unverified builds/editions |
 | MH-04 | Development History | Multi-snapshot CA/attribute graphs, seasonal progress, minutes and interventions, trends and cautions | Same player identity, scale, game version and chronology verified; model changes flagged |
 | MH-05 | Data Integrity & Compatibility | Adapter matrix, corruption checks, field coverage/lineage, immutable copies, parser diagnostics | Prevent unsupported writes; full provenance and recovery |
 

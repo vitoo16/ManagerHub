@@ -1,4 +1,8 @@
-import type { DecodedSaveDatabase, FM2013DecodeProgress } from '@managerhub/domain/fm2013-offline';
+import {
+  validateDecodedSaveDatabase,
+  type DecodedSaveDatabase,
+  type FM2013DecodeProgress
+} from '@managerhub/domain/fm2013-offline';
 import type { SaveInspectionResult } from '@managerhub/domain/save-library';
 
 const DECODE_TIMEOUT_MS = 90_000;
@@ -96,14 +100,24 @@ export async function decodeSaveInWorker(
         finish(new Error('Background save inspection returned an invalid result.'));
         return;
       }
-      const database = data.database === null
-        ? null
-        : isRecord(data.database) && isRecord(data.database.source) && data.database.source.fileName === file.name
-          ? (data.database as unknown as DecodedSaveDatabase)
-          : undefined;
-      if (database === undefined) {
-        finish(new Error('Background save inspection returned an invalid result.'));
-        return;
+      let database: DecodedSaveDatabase | null;
+      if (data.database === null) {
+        database = null;
+      } else {
+        try {
+          const validated = validateDecodedSaveDatabase(
+            data.database,
+            typeof inspection.sha256 === 'string' && inspection.sha256.length === 64 ? inspection.sha256 : undefined
+          );
+          if (validated.source.fileName !== file.name || validated.source.fileSize !== file.size) {
+            finish(new Error('Background save inspection returned an invalid result.'));
+            return;
+          }
+          database = validated;
+        } catch {
+          finish(new Error('Background save inspection returned an invalid result.'));
+          return;
+        }
       }
       const decodeNotice = typeof data.decodeNotice === 'string' ? data.decodeNotice : null;
       finish(undefined, {

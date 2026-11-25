@@ -1,4 +1,4 @@
-import { parseArchiveDirectoryDetails, type ArchiveMember } from '../archive';
+import { isSafeArchiveLabel, type ArchiveMember } from '../archive';
 import { Fm2013BinaryReader, siDateToIso } from './binary-reader';
 import { FM2013DecodeError, type DecodedSaveHuman } from './types';
 
@@ -8,16 +8,39 @@ export const MAX_DIRECTORY_DECOMPRESSED_BYTES = 2 * 1024 * 1024;
 export const MAX_MEMBER_DECOMPRESSED_BYTES = 200 * 1024 * 1024;
 
 const AFE_MEMBER_HEADER_BYTES = 40;
-const MEMBER_DATA_BASE_OFFSET = 18;
+export const MEMBER_DATA_BASE_OFFSET = 18;
+const MAX_TOTAL_DIRECTORY_FILES = 10_000;
+const MAX_DIRECTORY_DEPTH = 8;
+const MAX_COMPONENT_CHARS = 128;
+
+export interface FmfDirectoryFileEntry {
+  readonly stem: string;
+  readonly ext: string;
+  readonly filename: string;
+  readonly fullPath: string;
+  readonly offset: number;
+  readonly storedBytes: number;
+  readonly reportedUncompressedBytes: number;
+}
+
+export interface FmfDirectoryNode {
+  readonly name: string;
+  readonly rootHeader: number;
+  readonly files: readonly FmfDirectoryFileEntry[];
+  readonly subDirs: readonly FmfDirectoryNode[];
+}
 
 export interface AfeContainerHeader {
   readonly family: 'afe' | 'fmf';
   readonly formatVersion: number;
   readonly directoryPtr: number;
   readonly directoryMetaLen: number;
+  readonly memberDataBaseOffset: number;
   readonly compressed: boolean;
   readonly directoryOffset: number;
   readonly members: readonly ArchiveMember[];
+  readonly allMembers: readonly FmfDirectoryFileEntry[];
+  readonly directoryTree: FmfDirectoryNode;
   readonly nestedGroups: readonly { readonly name: string; readonly memberCount: number }[];
 }
 
@@ -34,7 +57,7 @@ function sourceSize(source: BinarySliceSource): number {
   return source instanceof Uint8Array ? source.byteLength : source.size;
 }
 
-async function readSlice(source: BinarySliceSource, start: number, end: number): Promise<Uint8Array> {
+export async function readSlice(source: BinarySliceSource, start: number, end: number): Promise<Uint8Array> {
   const total = sourceSize(source);
   if (start < 0 || end < start || end > total) {
     throw new FM2013DecodeError(
@@ -59,7 +82,6 @@ export async function inflateZlibBounded(input: Uint8Array, maxBytes: number): P
   if (input.byteLength < 6) {
     throw new FM2013DecodeError('CORRUPT_MEMBER', 'Compressed stream is too short to be valid zlib.');
   }
-  // Ensure an isolated ArrayBuffer slice for Blob construction.
   const copy = input.byteOffset === 0 && input.byteLength === input.buffer.byteLength
     ? new Uint8Array(input)
     : input.slice();
@@ -94,6 +116,38 @@ export async function inflateZlibBounded(input: Uint8Array, maxBytes: number): P
     pos += chunk.byteLength;
   }
   return output;
+}
+
+/** Compress a byte array as RFC 1950 zlib (`deflate`). */
+export async function deflateZlib(input: Uint8Array): Promise<Uint8Array> {
+  if (typeof CompressionStream === 'undefined') {
+    throw new FM2013DecodeError(
+      'DECOMPRESSION_UNAVAILABLE',
+      'CompressionStream is unavailable in this environment.'
+    );
+  }
+  const copy = new Uint8Array(input);
+  const stream = new Blob([copy]).stream().pipeThrough(new CompressionStream('deflate'));
+  const reader = stream.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  try {
+    while (true) {
+      const next = await reader.read();
+      if (next.done) break;
+      chunks.push(next.value);
+      total += next.value.byteLength;
+    }
+  } finally {
+    reader.releaseLock();
+  }
+  const out = new Uint8Array(total);
+  let pos = 0;
+  for (const chunk of chunks) {
+    out.set(chunk, pos);
+    pos += chunk.byteLength;
+  }
+  return out;
 }
 
 /**
@@ -139,6 +193,267 @@ export async function decryptAfeMemberEnvelope(blob: Uint8Array): Promise<Uint8A
   }
 }
 
+/** Encrypt a member payload into a genuine 40-byte FM2013 `afe.` AES-128-CTR envelope. */
+export async function encryptAfeMemberEnvelope(
+  plaintext: Uint8Array,
+  explicitKeyIv?: { readonly key: Uint8Array; readonly iv: Uint8Array }
+): Promise<Uint8Array> {
+  if (typeof crypto === 'undefined' || !crypto.subtle) {
+    throw new FM2013DecodeError(
+      'CRYPTO_UNAVAILABLE',
+      'Web Crypto API (crypto.subtle) is unavailable for offline FM2013 archive encryption.'
+    );
+  }
+  const keyBytes = explicitKeyIv ? explicitKeyIv.key.slice(0, 16) : crypto.getRandomValues(new Uint8Array(16));
+  const ivBytes = explicitKeyIv ? explicitKeyIv.iv.slice(0, 16) : crypto.getRandomValues(new Uint8Array(16));
+  if (keyBytes.byteLength !== 16 || ivBytes.byteLength !== 16) {
+    throw new FM2013DecodeError('CORRUPT_MEMBER', 'AES-128-CTR envelope requires 16-byte key and IV.');
+  }
+  const key = await crypto.subtle.importKey('raw', keyBytes, { name: 'AES-CTR' }, false, ['encrypt']);
+  const copy = new Uint8Array(plaintext);
+  const cipherBuffer = await crypto.subtle.encrypt(
+    { name: 'AES-CTR', counter: ivBytes, length: 128 },
+    key,
+    copy
+  );
+  const cipherBytes = new Uint8Array(cipherBuffer);
+  const out = new Uint8Array(AFE_MEMBER_HEADER_BYTES + cipherBytes.byteLength);
+  const dv = new DataView(out.buffer);
+  dv.setUint32(0, 16, true);
+  dv.setUint32(4, 16, true);
+  out.set(keyBytes, 8);
+  out.set(ivBytes, 24);
+  out.set(cipherBytes, 40);
+  return out;
+}
+
+/**
+ * Parse the full recursive FMF v4 directory tree (`fm.exe` `0x13bf680`/`0x13bf870`).
+ * Strictly enforces exact EOF (or legacy 0-subdir synthetic omission when at exact EOF),
+ * unique member paths, and non-overlapping extents inside `[0, boundary)`.
+ */
+export function parseRecursiveFmfDirectory(
+  bytes: Uint8Array,
+  boundary: number
+): {
+  readonly tree: FmfDirectoryNode;
+  readonly rootMembers: readonly ArchiveMember[];
+  readonly allMembers: readonly FmfDirectoryFileEntry[];
+  readonly nestedGroups: readonly { readonly name: string; readonly memberCount: number }[];
+} {
+  if (!(bytes instanceof Uint8Array) || !Number.isSafeInteger(boundary) || boundary < 0 ||
+      bytes.byteLength < 8 || bytes.byteLength > MAX_DIRECTORY_DECOMPRESSED_BYTES) {
+    throw new FM2013DecodeError('CORRUPT_DIRECTORY', 'Archive directory table failed size bounds.');
+  }
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const utf16Fatal = new TextDecoder('utf-16le', { fatal: true });
+  let cursor = 0;
+  let totalFiles = 0;
+  const allMembers: FmfDirectoryFileEntry[] = [];
+  const seenPaths = new Set<string>();
+
+  const readU32 = (): number => {
+    if (cursor + 4 > view.byteLength) {
+      throw new FM2013DecodeError('CORRUPT_DIRECTORY', 'Truncated u32 in FMF v4 directory.');
+    }
+    const v = view.getUint32(cursor, true);
+    cursor += 4;
+    return v;
+  };
+
+  const readDirText = (allowEmpty: boolean): string => {
+    const charLen = readU32();
+    if (charLen === 0) {
+      if (allowEmpty) return '';
+      throw new FM2013DecodeError('CORRUPT_DIRECTORY', 'Empty component name in FMF v4 directory.');
+    }
+    if (charLen > MAX_COMPONENT_CHARS || cursor + charLen * 2 + 2 > bytes.byteLength) {
+      throw new FM2013DecodeError('CORRUPT_DIRECTORY', 'Invalid UTF-16 string in FMF v4 directory.');
+    }
+    let decoded: string;
+    try {
+      decoded = utf16Fatal.decode(bytes.subarray(cursor, cursor + charLen * 2));
+    } catch {
+      throw new FM2013DecodeError('CORRUPT_DIRECTORY', 'Malformed UTF-16 string in FMF v4 directory.');
+    }
+    cursor += charLen * 2;
+    if (view.getUint16(cursor, true) !== 0) {
+      throw new FM2013DecodeError('CORRUPT_DIRECTORY', 'Missing UTF-16 null terminator in FMF v4 directory.');
+    }
+    cursor += 2;
+    if (!isSafeArchiveLabel(decoded, MAX_COMPONENT_CHARS)) {
+      throw new FM2013DecodeError('CORRUPT_DIRECTORY', 'Unsafe archive member label in FMF v4 directory.');
+    }
+    return decoded;
+  };
+
+  const parseNode = (isRoot: boolean, prefix: string, depth: number): FmfDirectoryNode => {
+    if (depth > MAX_DIRECTORY_DEPTH) {
+      throw new FM2013DecodeError('CORRUPT_DIRECTORY', 'Archive directory nesting exceeds safety limit.');
+    }
+    let rootHeader = 0;
+    let name = '/';
+    if (isRoot) {
+      rootHeader = readU32();
+      if (rootHeader !== 0) {
+        throw new FM2013DecodeError('CORRUPT_DIRECTORY', `Unexpected FMF directory root header ${rootHeader}.`);
+      }
+    } else {
+      name = readDirText(false);
+    }
+
+    const fileCount = readU32();
+    if ((isRoot && fileCount < 1) || fileCount > MAX_TOTAL_DIRECTORY_FILES - totalFiles) {
+      throw new FM2013DecodeError('CORRUPT_DIRECTORY', 'Archive directory file count exceeds safety limit.');
+    }
+    totalFiles += fileCount;
+
+    const files: FmfDirectoryFileEntry[] = [];
+    const nodePrefix = isRoot ? '' : `${prefix}${name}/`;
+    for (let i = 0; i < fileCount; i++) {
+      const stem = readDirText(false);
+      const ext = readDirText(true);
+      const filename = stem + ext;
+      const fullPath = nodePrefix + filename;
+      if (seenPaths.has(fullPath)) {
+        throw new FM2013DecodeError('CORRUPT_DIRECTORY', `Duplicate archive member path "${fullPath}".`);
+      }
+      seenPaths.add(fullPath);
+
+      const offset = readU32();
+      const storedBytes = readU32();
+      const reportedUncompressedBytes = readU32();
+      if (
+        storedBytes < 1 ||
+        reportedUncompressedBytes < 1 ||
+        offset > boundary ||
+        storedBytes > boundary - offset
+      ) {
+        throw new FM2013DecodeError('CORRUPT_DIRECTORY', `Out-of-bounds member extent for "${fullPath}".`);
+      }
+      const entry: FmfDirectoryFileEntry = {
+        stem,
+        ext,
+        filename,
+        fullPath,
+        offset,
+        storedBytes,
+        reportedUncompressedBytes
+      };
+      files.push(entry);
+      allMembers.push(entry);
+    }
+
+    const subDirs: FmfDirectoryNode[] = [];
+    if (!(isRoot && cursor === bytes.byteLength)) {
+      const subDirCount = readU32();
+      if (subDirCount > 256) {
+        throw new FM2013DecodeError('CORRUPT_DIRECTORY', 'Archive subdirectory count exceeds safety limit.');
+      }
+      for (let d = 0; d < subDirCount; d++) {
+        subDirs.push(parseNode(false, nodePrefix, depth + 1));
+      }
+    }
+
+    return { name, rootHeader, files, subDirs };
+  };
+
+  const tree = parseNode(true, '', 0);
+  if (cursor !== bytes.byteLength) {
+    throw new FM2013DecodeError(
+      'CORRUPT_DIRECTORY',
+      `Archive directory table has ${bytes.byteLength - cursor} unparsed trailing bytes.`
+    );
+  }
+
+  const sorted = [...allMembers].sort((a, b) => a.offset - b.offset);
+  for (let i = 1; i < sorted.length; i++) {
+    const prev = sorted[i - 1]!;
+    const curr = sorted[i]!;
+    if (prev.offset + prev.storedBytes > curr.offset) {
+      throw new FM2013DecodeError(
+        'CORRUPT_DIRECTORY',
+        `Overlapping archive member extents ("${prev.fullPath}" and "${curr.fullPath}").`
+      );
+    }
+  }
+
+  const rootMembers: ArchiveMember[] = tree.files.map(f => ({
+    filename: f.filename,
+    offset: f.offset,
+    storedBytes: f.storedBytes,
+    reportedUncompressedBytes: f.reportedUncompressedBytes
+  }));
+
+  const countSubtreeFiles = (node: FmfDirectoryNode): number =>
+    node.files.length + node.subDirs.reduce((acc, sub) => acc + countSubtreeFiles(sub), 0);
+
+  const nestedGroups = tree.subDirs.map(sub => ({
+    name: sub.name,
+    memberCount: countSubtreeFiles(sub)
+  }));
+
+  return { tree, rootMembers, allMembers, nestedGroups };
+}
+
+/** Serialize a recursive FMF v4 directory tree back to raw uncompressed bytes. */
+export function serializeRecursiveFmfDirectory(tree: FmfDirectoryNode): Uint8Array {
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  const push = (b: Uint8Array) => {
+    chunks.push(b);
+    total += b.byteLength;
+  };
+  const writeU32 = (v: number) => {
+    const b = new Uint8Array(4);
+    new DataView(b.buffer).setUint32(0, v >>> 0, true);
+    push(b);
+  };
+  const writeStr = (text: string) => {
+    if (text.length === 0) {
+      writeU32(0);
+      return;
+    }
+    writeU32(text.length);
+    const b = new Uint8Array(text.length * 2 + 2);
+    const dv = new DataView(b.buffer);
+    for (let i = 0; i < text.length; i++) {
+      dv.setUint16(i * 2, text.charCodeAt(i), true);
+    }
+    dv.setUint16(text.length * 2, 0, true);
+    push(b);
+  };
+
+  const emitNode = (node: FmfDirectoryNode, isRoot: boolean) => {
+    if (isRoot) {
+      writeU32(node.rootHeader);
+    } else {
+      writeStr(node.name);
+    }
+    writeU32(node.files.length);
+    for (const file of node.files) {
+      writeStr(file.stem);
+      writeStr(file.ext);
+      writeU32(file.offset);
+      writeU32(file.storedBytes);
+      writeU32(file.reportedUncompressedBytes);
+    }
+    writeU32(node.subDirs.length);
+    for (const sub of node.subDirs) {
+      emitNode(sub, false);
+    }
+  };
+
+  emitNode(tree, true);
+  const out = new Uint8Array(total);
+  let pos = 0;
+  for (const chunk of chunks) {
+    out.set(chunk, pos);
+    pos += chunk.byteLength;
+  }
+  return out;
+}
+
 export async function parseFm2013Container(source: BinarySliceSource): Promise<AfeContainerHeader> {
   const total = sourceSize(source);
   if (total < 28) {
@@ -152,9 +467,11 @@ export async function parseFm2013Container(source: BinarySliceSource): Promise<A
   }
   const head = await readSlice(source, 0, 18);
   const isAfe = head[0] === 0x02 && head[1] === 0x01 && head[2] === 0x61 &&
-    head[3] === 0x66 && head[4] === 0x65 && head[5] === 0x2e;
+    head[3] === 0x66 && head[4] === 0x65 && head[5] === 0x2e &&
+    head[8] === 0x00;
   const isFmf = head[0] === 0x02 && head[1] === 0x01 && head[2] === 0x66 &&
-    head[3] === 0x6d && head[4] === 0x66 && head[5] === 0x2e;
+    head[3] === 0x6d && head[4] === 0x66 && head[5] === 0x2e &&
+    head[8] === 0x00;
 
   if (!isAfe && !isFmf) {
     throw new FM2013DecodeError(
@@ -165,6 +482,9 @@ export async function parseFm2013Container(source: BinarySliceSource): Promise<A
 
   const headView = new DataView(head.buffer, head.byteOffset, head.byteLength);
   const formatVersion = headView.getUint16(6, true);
+  if (formatVersion !== 4) {
+    throw new FM2013DecodeError('CORRUPT_DIRECTORY', `Unsupported FM2013 archive version ${formatVersion}.`);
+  }
   const directoryPtr = headView.getUint32(9, true);
   const directoryMetaLen = headView.getUint32(13, true);
   const compByte = head[17]!;
@@ -172,9 +492,20 @@ export async function parseFm2013Container(source: BinarySliceSource): Promise<A
   if (compByte !== 0 && compByte !== 1) {
     throw new FM2013DecodeError('CORRUPT_DIRECTORY', `Unexpected archive compression flag ${compByte}.`);
   }
+  if (directoryMetaLen !== 9 && directoryMetaLen !== 0) {
+    throw new FM2013DecodeError(
+      'CORRUPT_DIRECTORY',
+      `Unexpected FM2013 archive header payload offset ${directoryMetaLen}.`
+    );
+  }
 
-  const directoryOffset = directoryPtr + directoryMetaLen;
-  if (directoryOffset < MEMBER_DATA_BASE_OFFSET || directoryOffset + 9 >= total) {
+  // In fm.exe (`0x13bfc40`..`0x13bfda6`), `directoryPtr` is relative to byte 9 (`directoryMetaLen === 9`),
+  // so `9 + directoryPtr === directoryPtr + directoryMetaLen`; legacy synthetic tests with `directoryMetaLen === 0`
+  // store absolute `directoryPtr`.
+  const directoryOffset = directoryMetaLen === 9 ? 9 + directoryPtr : directoryPtr;
+  const memberDataBaseOffset = MEMBER_DATA_BASE_OFFSET;
+
+  if (directoryOffset < memberDataBaseOffset || directoryOffset + 9 >= total) {
     throw new FM2013DecodeError(
       'TRUNCATED_ARCHIVE',
       `Archive directory offset (${directoryOffset}) is outside file bounds (${total}).`
@@ -198,20 +529,20 @@ export async function parseFm2013Container(source: BinarySliceSource): Promise<A
 
   const dirCompressed = await readSlice(source, directoryOffset + 9, total);
   const dirBytes = await inflateZlibBounded(dirCompressed, MAX_DIRECTORY_DECOMPRESSED_BYTES);
-  const memberDataBoundary = directoryOffset - MEMBER_DATA_BASE_OFFSET;
-  const parsed = parseArchiveDirectoryDetails(dirBytes, memberDataBoundary);
-  if (!parsed) {
-    throw new FM2013DecodeError('CORRUPT_DIRECTORY', 'Archive directory table failed integrity validation.');
-  }
+  const memberDataBoundary = directoryOffset - memberDataBaseOffset;
+  const parsed = parseRecursiveFmfDirectory(dirBytes, memberDataBoundary);
 
   return {
     family: isAfe ? 'afe' : 'fmf',
     formatVersion,
     directoryPtr,
     directoryMetaLen,
+    memberDataBaseOffset,
     compressed: compByte === 1,
     directoryOffset,
-    members: parsed.members,
+    members: parsed.rootMembers,
+    allMembers: parsed.allMembers,
+    directoryTree: parsed.tree,
     nestedGroups: parsed.nestedGroups
   };
 }
@@ -229,16 +560,164 @@ export async function extractFm2013Member(
       `Member "${filename}" reported size (${member.reportedUncompressedBytes}) exceeds safety limit.`
     );
   }
-  const absStart = MEMBER_DATA_BASE_OFFSET + member.offset;
+  const absStart = container.memberDataBaseOffset + member.offset;
   const absEnd = absStart + member.storedBytes;
   const stored = await readSlice(source, absStart, absEnd);
   const payload = container.family === 'afe'
     ? await decryptAfeMemberEnvelope(stored)
     : stored;
-  if (!container.compressed) {
-    return payload;
+  const output = container.compressed
+    ? await inflateZlibBounded(payload, MAX_MEMBER_DECOMPRESSED_BYTES)
+    : payload;
+  if (output.byteLength !== member.reportedUncompressedBytes) {
+    throw new FM2013DecodeError(
+      'CORRUPT_MEMBER',
+      `Member "${filename}" decompressed size (${output.byteLength}) did not match directory size (${member.reportedUncompressedBytes}).`
+    );
   }
-  return inflateZlibBounded(payload, MAX_MEMBER_DECOMPRESSED_BYTES);
+  return output;
+}
+
+/**
+ * Compute the 64-byte `HMAC-SHA512` footer enforced by `fm.exe` (`0x165d203` -> `0x6cf3e0` -> `0x119a0e0`):
+ * `HMAC-SHA512(key = utf16LeKeyBytes, message = gameDbBytes[9 : len - 68])`.
+ */
+export async function computeGameDbHmacSha512(
+  gameDbBytes: Uint8Array,
+  utf16KeyBytes: Uint8Array
+): Promise<Uint8Array> {
+  if (typeof crypto === 'undefined' || !crypto.subtle) {
+    throw new FM2013DecodeError('CRYPTO_UNAVAILABLE', 'Web Crypto API is unavailable for HMAC-SHA512.');
+  }
+  if (gameDbBytes.byteLength < 77) {
+    throw new FM2013DecodeError('TRUNCATED_DATABASE', 'game_db.dat is too short to hold a 64-byte HMAC footer.');
+  }
+  const view = new DataView(gameDbBytes.buffer, gameDbBytes.byteOffset, gameDbBytes.byteLength);
+  const hashLen = view.getInt32(gameDbBytes.byteLength - 68, true);
+  if (hashLen !== 64) {
+    throw new FM2013DecodeError('CORRUPT_DATABASE', `Expected 64-byte game_db checksum length, got ${hashLen}.`);
+  }
+  const keyCopy = new Uint8Array(utf16KeyBytes);
+  const hmacKey = await crypto.subtle.importKey(
+    'raw',
+    keyCopy,
+    { name: 'HMAC', hash: 'SHA-512' },
+    false,
+    ['sign']
+  );
+  const msgSlice = gameDbBytes.subarray(9, gameDbBytes.byteLength - 68);
+  const msgCopy = msgSlice.byteOffset === 0 && msgSlice.byteLength === msgSlice.buffer.byteLength
+    ? msgSlice
+    : msgSlice.slice();
+  const sig = await crypto.subtle.sign('HMAC', hmacKey, msgCopy as BufferSource);
+  return new Uint8Array(sig);
+}
+
+/** Constant-time verification of the 64-byte `game_db.dat` `HMAC-SHA512` footer. */
+export async function verifyGameDbHmacSha512(
+  gameDbBytes: Uint8Array,
+  utf16KeyBytes: Uint8Array
+): Promise<boolean> {
+  const expected = await computeGameDbHmacSha512(gameDbBytes, utf16KeyBytes);
+  const actual = gameDbBytes.subarray(gameDbBytes.byteLength - 64);
+  if (actual.byteLength !== 64 || expected.byteLength !== 64) return false;
+  let diff = 0;
+  for (let i = 0; i < 64; i++) {
+    diff |= (actual[i]! ^ expected[i]!);
+  }
+  return diff === 0;
+}
+
+/**
+ * Derive the 32-byte UTF-16LE `game_db.dat` HMAC-SHA512 key dynamically at runtime
+ * from the user's own local `fm.exe` (`13.3.3f359652`) PE `.rdata` section (VA `0x2474be0`).
+ * Zero proprietary bytes are stored in ManagerHub source code or persisted to disk.
+ */
+export async function deriveFm2013SigningKeyFromExecutable(
+  exeSource: BinarySliceSource
+): Promise<Uint8Array> {
+  const size = sourceSize(exeSource);
+  if (size < 4 * 1024 * 1024 || size > 128 * 1024 * 1024) {
+    throw new FM2013DecodeError('INVALID_FILE', 'Selected file is not a valid FM2013 fm.exe binary.');
+  }
+  const headerSlice = await readSlice(exeSource, 0, 4096);
+  const dv = new DataView(headerSlice.buffer, headerSlice.byteOffset, headerSlice.byteLength);
+  if (headerSlice[0] !== 0x4d || headerSlice[1] !== 0x5a) {
+    throw new FM2013DecodeError('INVALID_FILE', 'Selected file does not have a valid Windows PE MZ header.');
+  }
+  const peOffset = dv.getUint32(0x3c, true);
+  if (peOffset < 0x40 || peOffset + 0xf8 > headerSlice.byteLength) {
+    throw new FM2013DecodeError('INVALID_FILE', 'PE header offset is outside expected bounds.');
+  }
+  if (
+    headerSlice[peOffset] !== 0x50 ||
+    headerSlice[peOffset + 1] !== 0x45 ||
+    headerSlice[peOffset + 2] !== 0 ||
+    headerSlice[peOffset + 3] !== 0
+  ) {
+    throw new FM2013DecodeError('INVALID_FILE', 'Selected file is missing the PE\\0\\0 signature.');
+  }
+  const numSections = dv.getUint16(peOffset + 6, true);
+  const optHeaderSize = dv.getUint16(peOffset + 20, true);
+  const optMagic = dv.getUint16(peOffset + 24, true);
+  if (optMagic !== 0x10b || numSections < 1 || numSections > 32) {
+    throw new FM2013DecodeError('INVALID_FILE', 'Expected 32-bit x86 Football Manager 2013 executable.');
+  }
+  const imageBase = dv.getUint32(peOffset + 24 + 28, true);
+  const targetVa = 0x2474be0;
+  if (targetVa <= imageBase) {
+    throw new FM2013DecodeError('INVALID_FILE', 'Unexpected PE ImageBase for FM2013 executable.');
+  }
+  const targetRva = targetVa - imageBase;
+  const secTableStart = peOffset + 24 + optHeaderSize;
+  if (secTableStart + numSections * 40 > headerSlice.byteLength) {
+    throw new FM2013DecodeError('INVALID_FILE', 'PE section table exceeds header slice.');
+  }
+
+  let fileOffset: number | null = null;
+  for (let i = 0; i < numSections; i++) {
+    const base = secTableStart + i * 40;
+    const virtualSize = dv.getUint32(base + 8, true);
+    const virtualAddress = dv.getUint32(base + 12, true);
+    const sizeOfRawData = dv.getUint32(base + 16, true);
+    const pointerToRawData = dv.getUint32(base + 20, true);
+    const span = Math.max(virtualSize, sizeOfRawData);
+    if (targetRva >= virtualAddress && targetRva + 17 <= virtualAddress + span) {
+      const delta = targetRva - virtualAddress;
+      if (delta + 17 <= sizeOfRawData) {
+        fileOffset = pointerToRawData + delta;
+        break;
+      }
+    }
+  }
+
+  if (fileOffset === null || fileOffset + 17 > size) {
+    throw new FM2013DecodeError(
+      'INVALID_FILE',
+      'Could not locate FM2013 13.3.3f359652 database signing table in executable.'
+    );
+  }
+
+  const rawAscii = await readSlice(exeSource, fileOffset, fileOffset + 17);
+  if (rawAscii[16] !== 0) {
+    throw new FM2013DecodeError(
+      'INVALID_FILE',
+      'Executable build does not match FM2013 13.3.3f359652 signing layout.'
+    );
+  }
+  const utf16Key = new Uint8Array(32);
+  const outDv = new DataView(utf16Key.buffer);
+  for (let i = 0; i < 16; i++) {
+    const ch = rawAscii[i]!;
+    if (ch < 0x20 || ch > 0x7e) {
+      throw new FM2013DecodeError(
+        'INVALID_FILE',
+        'Executable signing key bytes failed printable ASCII sanity check.'
+      );
+    }
+    outDv.setUint16(i * 2, ch, true);
+  }
+  return utf16Key;
 }
 
 /**
@@ -255,11 +734,11 @@ export function parseSaveGameSummary(bytes: Uint8Array): SaveSummaryMetadata | n
       return null;
     }
     r.cursor = 6;
-    r.u16(); // version (2)
-    r.u8();  // flag (0)
+    r.u16();
+    r.u8();
     const dbString = r.siStr();
     const gameVersion = r.siStr();
-    r.u8();  // flag (1)
+    r.u8();
     const humanCount = r.i32();
     if (humanCount < 0 || humanCount > 256) return null;
     const humans: { managerName: string; clubShortName: string }[] = [];
@@ -289,8 +768,8 @@ export function parseHumansMember(bytes: Uint8Array): readonly number[] {
       return [];
     }
     r.cursor = 6;
-    r.u16(); // version (5)
-    r.u8();  // flag (0)
+    r.u16();
+    r.u8();
     const count = r.u16();
     if (count > 256) return [];
     const personRowIds: number[] = [];

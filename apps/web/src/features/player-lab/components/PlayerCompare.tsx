@@ -1,7 +1,7 @@
 import { memo, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ATTRIBUTE_LABELS, analyzeRoles, type AttributeKey, type PlayerDataset, type PlayerExport } from '@managerhub/domain';
-import { Surface } from '@managerhub/ui';
+import { AttributeValue, getAttributeTier, Surface } from '@managerhub/ui';
 
 function PlayerCompare({primary,dataset}:{primary:PlayerExport;dataset:PlayerDataset}){
   const { t } = useTranslation();
@@ -19,7 +19,8 @@ function PlayerCompare({primary,dataset}:{primary:PlayerExport;dataset:PlayerDat
   const ownRoles=useMemo(()=>analyzeRoles(primary),[primary]);
   const otherRoles=useMemo(()=>other?analyzeRoles(other):[],[other]);
   const sorted=useMemo(()=>{
-    const seen=(Object.keys(primary.attributes) as AttributeKey[]).filter(key=>other?.attributes[key]!==undefined);
+    const seen=(Object.keys(primary.attributes) as AttributeKey[]).filter(key=>
+      getAttributeTier(primary.attributes[key])!==undefined && getAttributeTier(other?.attributes[key])!==undefined);
     return [...seen].sort((a,b)=>Math.abs((primary.attributes[b]??0)-(other?.attributes[b]??0))-
       Math.abs((primary.attributes[a]??0)-(other?.attributes[a]??0))).slice(0,12);
   },[primary.attributes,other?.attributes]);
@@ -45,9 +46,9 @@ function PlayerCompare({primary,dataset}:{primary:PlayerExport;dataset:PlayerDat
       <h3>{t("Largest observed attribute differences")}</h3>
       {sorted.length ? <div className="compare-grid" role="table" aria-label={t("Observed player attribute comparisons")}>
         {sorted.map(key=><div className="compare-attribute" role="row" key={key}>
-          <span role="cell" className={(primary.attributes[key]??0)>(other.attributes[key]??0)?'compare-leading':''}>{primary.attributes[key]}</span>
+          <span role="cell" className={(primary.attributes[key]??0)>(other.attributes[key]??0)?'compare-leading':''}><AttributeValue value={primary.attributes[key]}/></span>
           <span role="cell">{t(ATTRIBUTE_LABELS[key])}</span>
-          <span role="cell" className={(other.attributes[key]??0)>(primary.attributes[key]??0)?'compare-leading':''}>{other.attributes[key]}</span>
+          <span role="cell" className={(other.attributes[key]??0)>(primary.attributes[key]??0)?'compare-leading':''}><AttributeValue value={other.attributes[key]}/></span>
         </div>)}
       </div> : <p className="module-disclaimer">{t("These two exports have no matching exact attributes. A numerical comparison would be misleading.")}</p>}
       <h3>{t("Role score comparison")}</h3>
