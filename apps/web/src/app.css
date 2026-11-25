@@ -9,9 +9,9 @@
 .logo-mark {display:grid;place-items:center;width:39px;height:39px;border-radius:12px;background:linear-gradient(145deg,#a8e8c0,#448764);box-shadow:0 0 0 1px #d5ffe022 inset,0 10px 22px #0003;}
 .logo-mark__inner {position:relative;width:23px;height:23px;border:2px solid #163f2e;border-radius:7px;transform:rotate(-12deg)}
 .logo-orbit {position:absolute;left:5px;top:5px;width:9px;height:9px;border:2px solid #163f2e;border-radius:50%;transform:rotate(12deg)}
-.logo-row strong {font:800 16px Manrope,sans-serif;letter-spacing:-.045em;}
+.logo-row strong {font:800 16px var(--font-ui);letter-spacing:-.045em;}
 .logo-row strong span {color:var(--accent-strong)}
-.logo-row small {display:block;font:700 8px Manrope,sans-serif;color:var(--text-faint);letter-spacing:.16em;margin-top:2px}
+.logo-row small {display:block;font:700 8px var(--font-ui);color:var(--text-faint);letter-spacing:.16em;margin-top:2px}
 .rail-caption {font-size:10px;font-weight:800;letter-spacing:.17em;color:var(--text-faint);padding:0 15px;margin-bottom:16px;}
 .rail-links {display:grid;gap:5px;}
 .rail-link {display:flex;position:relative;gap:13px;align-items:center;text-align:left;width:100%;border:1px solid transparent;border-radius:13px;background:transparent;color:var(--text-sub);padding:12px 12px;min-height:61px;}
@@ -67,8 +67,8 @@
 .headline-stats {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-top:16px}
 .stat-card {padding:22px 23px;min-height:130px}
 .stat-label {font-size:10px;color:var(--text-sub);font-weight:700}
-.stat-value {display:flex;align-items:baseline;gap:8px;font-size:35px;font-weight:800;font-family:Manrope,sans-serif;letter-spacing:-.065em;margin:11px 0 4px;font-variant-numeric:tabular-nums}
-.stat-value span {font-family:'DM Sans',sans-serif;color:var(--text-sub);font-weight:500;font-size:12px;letter-spacing:0}
+.stat-value {display:flex;align-items:baseline;gap:8px;font-size:35px;font-weight:800;font-family:var(--font-ui);letter-spacing:-.065em;margin:11px 0 4px;font-variant-numeric:tabular-nums}
+.stat-value span {font-family:var(--font-ui);color:var(--text-sub);font-weight:500;font-size:12px;letter-spacing:0}
 .stat-value--word {font-size:23px;letter-spacing:-.04em;margin-top:19px}
 .stat-sub {font-size:10px;color:var(--text-faint)}
 .text-link {display:inline-flex;align-items:center;gap:6px;color:var(--accent-strong);border:0;background:none;padding:5px 0;font-size:11px;font-weight:700;text-decoration:none}
@@ -79,7 +79,7 @@
 .panel-heading>span:first-child {font-size:10px;letter-spacing:.13em;font-weight:800;color:var(--text-sub)}
 .phase-list {display:grid}
 .phase-row {display:flex;align-items:center;gap:14px;min-height:70px;padding:10px 0;border-bottom:1px solid var(--line)}
-.phase-marker {display:grid;place-items:center;flex:none;width:35px;height:35px;font-family:Manrope,sans-serif;font-size:11px;font-weight:700;color:var(--text-faint);border-radius:10px;background:var(--surface-up)}
+.phase-marker {display:grid;place-items:center;flex:none;width:35px;height:35px;font-family:var(--font-ui);font-size:11px;font-weight:700;color:var(--text-faint);border-radius:10px;background:var(--surface-up)}
 .phase-marker--active {background:color-mix(in srgb,var(--accent) 12%,var(--surface-up));color:var(--accent-strong)}
 .phase-row__copy {min-width:0;display:grid;gap:5px}
 .phase-row__copy strong {font-size:12px}
@@ -161,7 +161,7 @@
 .architecture-node p {font-size:11px;color:var(--text-sub);line-height:1.7}
 .trust-metrics {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
 .metric-explainer {padding:23px;display:flex;align-items:flex-start;gap:17px}
-.metric-explainer>span {width:53px;height:53px;border:1px solid var(--line);border-radius:14px;background:var(--surface-up);flex:none;display:grid;place-items:center;color:var(--accent-strong);font:800 18px Manrope,sans-serif}
+.metric-explainer>span {width:53px;height:53px;border:1px solid var(--line);border-radius:14px;background:var(--surface-up);flex:none;display:grid;place-items:center;color:var(--accent-strong);font:800 18px var(--font-ui)}
 .metric-explainer h3 {font-size:14px}
 .metric-explainer p {font-size:11px;line-height:1.75;color:var(--text-sub);margin-top:7px}
 .app-footer {display:flex;justify-content:space-between;gap:12px;margin-top:45px;padding:25px 5px;border-top:1px solid var(--line);font-size:9px;letter-spacing:.06em;color:var(--text-faint)}
@@ -228,7 +228,7 @@
 
 
 .language-switch{display:inline-flex;align-items:center;gap:2px;padding:3px;border:1px solid var(--line);border-radius:10px;background:var(--surface-up)}
-.language-switch button{height:29px;min-width:33px;border:0;border-radius:7px;background:transparent;color:var(--text-sub);font:700 11px Manrope,sans-serif}
+.language-switch button{height:29px;min-width:33px;border:0;border-radius:7px;background:transparent;color:var(--text-sub);font:700 11px var(--font-ui)}
 .language-switch button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
 .language-switch button:hover:not([aria-pressed="true"]){background:var(--surface-hover);color:var(--text)}
 @media(max-width:480px){.language-switch button{min-width:28px}.topbar{gap:6px}}

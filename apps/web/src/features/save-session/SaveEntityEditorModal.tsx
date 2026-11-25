@@ -1,6 +1,6 @@
 import { memo, useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ATTRIBUTE_GROUPS, type AttributeKey } from '@managerhub/domain';
+import { ATTRIBUTE_GROUPS, ATTRIBUTE_LABELS, type AttributeKey } from '@managerhub/domain';
 import {
   buildClubSquadPresetOverlay,
   buildEditedSaveFileName,
@@ -21,6 +21,7 @@ import {
   type StaffDraftPatch
 } from '@managerhub/domain/fm2013-offline';
 import { Button, Icon, Status } from '@managerhub/ui';
+import { EditorAttributeGroup } from './EditorAttributeGroup';
 import { registerSaveDbI18n } from '../../i18n/register-save-db-i18n';
 import './save-session.css';
 
@@ -93,13 +94,6 @@ const STAFF_ATTR_KEYS: readonly { readonly key: keyof DecodedStaffAttributes; re
   { key: 'determination', label: 'Determination' },
   { key: 'adaptability', label: 'Adaptability' },
   { key: 'physiotherapy', label: 'Physiotherapy' }
-];
-
-const VISIBLE_ATTR_LIST: readonly AttributeKey[] = [
-  ...ATTRIBUTE_GROUPS.Technical,
-  ...ATTRIBUTE_GROUPS.Mental,
-  ...ATTRIBUTE_GROUPS.Physical,
-  ...ATTRIBUTE_GROUPS.Goalkeeping
 ];
 
 type PlayerSubTab = 'general' | 'attributes' | 'positions';
@@ -523,27 +517,15 @@ function SaveEntityEditorModal({
                 )}
 
                 {player.personality && (
-                  <div className="editor-section">
-                    <h3>{t('Personality (1–20)')}</h3>
-                    <div className="editor-field-grid editor-field-grid--compact">
-                      {PERSONALITY_KEYS.map(item => (
-                        <label className="editor-field" key={item.key}>
-                          <span>{t(item.label)}</span>
-                          <input
-                            type="number"
-                            min={1}
-                            max={20}
-                            value={player.personality![item.key]}
-                            onChange={e =>
-                              applyPlayerField(`Edit ${item.label}`, {
-                                personality: { [item.key]: clampInt(e.target.value, player.personality![item.key], 1, 20) }
-                              })
-                            }
-                          />
-                        </label>
-                      ))}
-                    </div>
-                  </div>
+                  <EditorAttributeGroup
+                    title={t('Personality (1–20)')}
+                    fields={PERSONALITY_KEYS.map(item => ({
+                      key: item.key, label: t(item.label), value: player.personality?.[item.key]
+                    }))}
+                    onChange={(key, raw, previous) => applyPlayerField(`Edit ${key}`, {
+                      personality: { [key]: clampInt(raw, previous, 1, 20) }
+                    })}
+                  />
                 )}
               </>
             )}
@@ -551,47 +533,31 @@ function SaveEntityEditorModal({
             {playerSubTab === 'attributes' && (
               <>
                 <div className="editor-section">
-                  <h3>{t('Hidden Playing Traits (1–20)')}</h3>
-                  <div className="editor-field-grid editor-field-grid--compact">
-                    {HIDDEN_KEYS.map(item => (
-                      <label className="editor-field" key={item.key}>
-                        <span>{t(item.label)}</span>
-                        <input
-                          type="number"
-                          min={1}
-                          max={20}
-                          value={player.hiddenPlaying[item.key]}
-                          onChange={e =>
-                            applyPlayerField(`Edit ${item.label}`, {
-                              hiddenPlaying: { [item.key]: clampInt(e.target.value, player.hiddenPlaying[item.key], 1, 20) }
-                            })
-                          }
-                        />
-                      </label>
-                    ))}
-                  </div>
-                </div>
-                <div className="editor-section">
                   <h3>{t('Visible Technical, Mental, Physical & GK Attributes (1–20)')}</h3>
-                  <div className="editor-field-grid editor-field-grid--compact">
-                    {VISIBLE_ATTR_LIST.map(attrKey => (
-                      <label className="editor-field" key={attrKey}>
-                        <span>{attrKey}</span>
-                        <input
-                          type="number"
-                          min={1}
-                          max={20}
-                          value={player.attributes[attrKey] ?? 10}
-                          onChange={e =>
-                            applyPlayerField(`Edit ${attrKey}`, {
-                              attributes: { [attrKey]: clampInt(e.target.value, player.attributes[attrKey] ?? 10, 1, 20) }
-                            })
-                          }
-                        />
-                      </label>
+                  <div className="editor-attribute-groups">
+                    {Object.entries(ATTRIBUTE_GROUPS).map(([group, keys]) => (
+                      <EditorAttributeGroup<AttributeKey>
+                        key={group}
+                        title={t(group)}
+                        fields={keys.map(key => ({
+                          key, label: t(ATTRIBUTE_LABELS[key]), value: player.attributes[key]
+                        }))}
+                        onChange={(key, raw, previous) => applyPlayerField(`Edit ${key}`, {
+                          attributes: { [key]: clampInt(raw, previous, 1, 20) }
+                        })}
+                      />
                     ))}
                   </div>
                 </div>
+                <EditorAttributeGroup
+                  title={t('Hidden Playing Traits (1–20)')}
+                  fields={HIDDEN_KEYS.map(item => ({
+                    key: item.key, label: t(item.label), value: player.hiddenPlaying[item.key]
+                  }))}
+                  onChange={(key, raw, previous) => applyPlayerField(`Edit ${key}`, {
+                    hiddenPlaying: { [key]: clampInt(raw, previous, 1, 20) }
+                  })}
+                />
               </>
             )}
 
@@ -699,27 +665,15 @@ function SaveEntityEditorModal({
               </div>
             </div>
             {staffMember.attributes && (
-              <div className="editor-section">
-                <h3>{t('Coaching, Scouting, Mental & Medical Attributes (1–20)')}</h3>
-                <div className="editor-field-grid editor-field-grid--compact">
-                  {STAFF_ATTR_KEYS.map(item => (
-                    <label className="editor-field" key={item.key}>
-                      <span>{t(item.label)}</span>
-                      <input
-                        type="number"
-                        min={1}
-                        max={20}
-                        value={staffMember.attributes![item.key]}
-                        onChange={e =>
-                          applyStaffField(`Edit ${item.label}`, {
-                            attributes: { [item.key]: clampInt(e.target.value, staffMember.attributes![item.key], 1, 20) }
-                          })
-                        }
-                      />
-                    </label>
-                  ))}
-                </div>
-              </div>
+              <EditorAttributeGroup
+                title={t('Coaching, Scouting, Mental & Medical Attributes (1–20)')}
+                fields={STAFF_ATTR_KEYS.map(item => ({
+                  key: item.key, label: t(item.label), value: staffMember.attributes?.[item.key]
+                }))}
+                onChange={(key, raw, previous) => applyStaffField(`Edit ${key}`, {
+                  attributes: { [key]: clampInt(raw, previous, 1, 20) }
+                })}
+              />
             )}
           </>
         )}
