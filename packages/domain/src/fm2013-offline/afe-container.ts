@@ -165,6 +165,9 @@ export async function parseFm2013Container(source: BinarySliceSource): Promise<A
 
   const headView = new DataView(head.buffer, head.byteOffset, head.byteLength);
   const formatVersion = headView.getUint16(6, true);
+  if (formatVersion !== 5) {
+    throw new FM2013DecodeError('CORRUPT_DIRECTORY', `Unsupported FM2013 archive version ${formatVersion}.`);
+  }
   const directoryPtr = headView.getUint32(9, true);
   const directoryMetaLen = headView.getUint32(13, true);
   const compByte = head[17]!;

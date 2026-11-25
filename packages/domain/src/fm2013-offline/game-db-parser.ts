@@ -3,8 +3,6 @@ import { calculateCalendarAge } from '../fm2013-calendar-age';
 import { Fm2013BinaryReader, siDateToIso } from './binary-reader';
 import {
   FM2013DecodeError,
-  FM2013_MAX_GAME_DB_VERSION,
-  FM2013_MIN_GAME_DB_VERSION,
   type DecodedPlayerContract,
   type DecodedPositionRatings,
   type DecodedSaveClub,
@@ -1091,10 +1089,10 @@ export function parseFm2013GameDb(
   r.cursor = 6;
   r.ver = r.u16();
   r.u8(); // header flag
-  if (r.ver < FM2013_MIN_GAME_DB_VERSION || r.ver > FM2013_MAX_GAME_DB_VERSION) {
+  if (![0x757, 0x75f, 0x763, 0x765, 0x76e, 0x773, 0x774].includes(r.ver)) {
     throw new FM2013DecodeError(
       'UNSUPPORTED_DB_VERSION',
-      `Unsupported FM2013 game_db version 0x${r.ver.toString(16)} (verified range: 0x${FM2013_MIN_GAME_DB_VERSION.toString(16)}..0x${FM2013_MAX_GAME_DB_VERSION.toString(16)}).`
+      `Unsupported FM2013 game_db version 0x${r.ver.toString(16)} (not in observed schema set).`
     );
   }
 
