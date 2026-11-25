@@ -237,3 +237,8 @@
 
 .scout-shortlist__panel { min-width: 0; display: grid; gap: 10px; }
 .scout-shortlist__panel > [hidden] { display: none; }
+
+.compare-table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 12px; margin-bottom: 10px; }
+.compare-table th, .compare-table td { padding: 7px 5px; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; text-align: center; }
+.compare-table th:first-child { width: 40%; text-align: start; color: var(--text-sub); }
+.compare-table td { font-weight: 700; font-variant-numeric: tabular-nums; }

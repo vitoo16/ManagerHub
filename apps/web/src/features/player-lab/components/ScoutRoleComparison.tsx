@@ -4,6 +4,7 @@ import {
   ATTRIBUTE_LABELS, ROLE_PROFILES, scoreRole, type PlayerExport
 } from '@managerhub/domain';
 import { Button } from '@managerhub/ui';
+import { ReportPagination, reportPage } from '../../ReportPagination';
 
 type Props = {
   candidates: readonly PlayerExport[];
@@ -15,6 +16,7 @@ type Props = {
 /** Every candidate is evaluated against the same source-independent role demands. */
 function ScoutRoleComparison({ candidates, players, selected, onSelectPlayer }: Props) {
   const { t } = useTranslation();
+  const [page, setPage] = useState(0);
   const [roleId, setRoleId] = useState('advanced-forward');
   const [referenceId, setReferenceId] = useState<string | null>(null);
   const role = ROLE_PROFILES.find(profile => profile.id === roleId) ?? ROLE_PROFILES[0]!;
@@ -27,11 +29,13 @@ function ScoutRoleComparison({ candidates, players, selected, onSelectPlayer }: 
   })).sort((a, b) => (b.result.score ?? -1) - (a.result.score ?? -1)
     || b.result.coverage - a.result.coverage || a.sourceIndex - b.sourceIndex), [candidates, role]);
 
+  const range = reportPage(ranked.length, page, 12);
+
   return <section className="scout-role-compare" aria-label={t('Shortlist role comparison')}>
     <div className="scout-role-compare__heading">
       <h3>{t('Shortlist role comparison')}</h3>
       <label htmlFor="shortlist-role">{t('Compare for role')}
-        <select id="shortlist-role" value={role.id} onChange={event => setRoleId(event.target.value)}>
+        <select id="shortlist-role" value={role.id} onChange={event => { setRoleId(event.target.value); setPage(0); }}>
           {ROLE_PROFILES.map(profile => <option value={profile.id} key={profile.id}>{t(profile.title)} · {profile.slot}</option>)}
         </select>
       </label>
@@ -67,8 +71,8 @@ function ScoutRoleComparison({ candidates, players, selected, onSelectPlayer }: 
           <th scope="col">{t('Evidence')}</th>
           <th scope="col">{t('Report')}</th>
         </tr></thead>
-        <tbody>{ranked.map(({ player, result }, index) => <tr key={player.id}>
-          <td>{result.score === null ? '—' : index + 1}</td>
+        <tbody>{ranked.slice(range.start, range.end).map(({ player, result }, index) => <tr key={player.id}>
+          <td>{result.score === null ? '—' : range.start + index + 1}</td>
           <th scope="row">{player.name}</th>
           <td>{player.position ?? t('Unknown position')}</td>
           <td>{result.score === null ? t('Insufficient data') : `${result.score}/100`}</td>
@@ -85,6 +89,7 @@ function ScoutRoleComparison({ candidates, players, selected, onSelectPlayer }: 
         </tr>)}</tbody>
       </table>
     </div>
+    <ReportPagination label={t('Candidate ranking page')} range={range} onChange={setPage}/>
   </section>;
 }
 

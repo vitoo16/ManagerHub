@@ -462,7 +462,10 @@ test('imports real observed attributes into Player Lab without fake CA/PA', asyn
   await expect(page.getByText('Deep-Lying Playmaker')).toBeVisible();
   await page.getByRole('tab',{name:'Compare'}).click();
   await expect(page.getByText('Head-to-head analysis')).toBeVisible();
+  await expect(page.getByRole('table', { name: 'Observed player attribute comparisons' })).toBeVisible();
+  await page.getByRole('tablist', { name: 'Comparison sections' }).getByRole('tab', { name: 'Role fit' }).click();
   await expect(page.getByRole('table',{name:'Role fit comparisons'})).toBeVisible();
+  await expect(page.getByRole('table', { name: 'Observed player attribute comparisons' })).toHaveCount(0);
   await page.getByRole('tab',{name:'Recruitment'}).click();
   await expect(page.getByRole('heading',{name:'Squad contribution preview'})).toBeVisible();
   await expect(page.getByLabel('Formation to test')).toHaveValue('4-3-3');

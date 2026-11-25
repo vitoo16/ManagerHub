@@ -149,3 +149,6 @@ Single player/staff/club edits reuse existing domain mass-overlay builders (incl
 
 ### Tactical analysis density
 The editable tactical pitch and phase/instruction controls remain available while analysis switches between shape diagnostics and role partnerships. Shared SectionTabs mounts only the selected report; the domain analysis is memoized against scenario/lineup and selected report. Diagnostic cards use responsive bounded columns, preserve reasons, limitations and reversible adjustments. Undo history remains parent-owned and survives analysis tab switches. Pointer movement within an unchanged grid cell skips the position update. Existing projection/CSV semantics unchanged; runtime measurement and tests pending.
+
+### Comparison report density
+Head-to-head comparison has distinct attribute and role panels. Every mutually observed exact attribute is reachable in 12-row pages ordered by absolute difference, instead of silently limiting results to the top 12. Native accessible table headers identify both players. Role scoring runs only on its panel. Comparison search stops after 30 matches and defers typing. Shortlist role ranking shares ReportPagination, retaining absolute rank across pages. No heuristic changes, missing-value fabrication or new dependencies. Runtime acceptance pending.
