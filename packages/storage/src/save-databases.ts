@@ -67,6 +67,7 @@ export function isDecodedSaveDatabaseSummary(value: unknown): value is DecodedSa
 }
 
 interface StoredDecodedSaveEnvelope {
+  readonly sourceKind: 'immutable_decoded';
   readonly saveId: string;
   readonly savedAt: string;
   readonly database: DecodedSaveDatabase;
@@ -76,7 +77,7 @@ export function isStoredDecodedSaveEnvelope(
   value: unknown,
   expectedSaveId?: string
 ): value is StoredDecodedSaveEnvelope {
-  if (!isObject(value) || typeof value.saveId !== 'string' || !/^[a-f0-9]{64}$/.test(value.saveId)) return false;
+  if (!isObject(value) || value.sourceKind !== 'immutable_decoded' || typeof value.saveId !== 'string' || !/^[a-f0-9]{64}$/.test(value.saveId)) return false;
   if (expectedSaveId !== undefined && value.saveId !== expectedSaveId) return false;
   if (typeof value.savedAt !== 'string' || !Number.isFinite(Date.parse(value.savedAt))) return false;
   return isValidDecodedSaveDatabase(value.database, value.saveId);
@@ -103,6 +104,11 @@ export async function getDecodedSaveDatabase(saveId: string): Promise<DecodedSav
     const raw = await readRequest<unknown>(tx.objectStore(STORE_RECORDS).get(saveId));
     await transactionCompleted(tx);
     if (!raw) return null;
+    // Old candidates could cache the dirty working projection under the source SHA.
+    // Preserve the record for explicit user removal, but never restore it as source.
+    if (isObject(raw) && raw.sourceKind !== 'immutable_decoded') {
+      throw new Error('Saved database provenance is unverified. Remove this browser cache and reopen the original .fm file.');
+    }
     if (!isStoredDecodedSaveEnvelope(raw, saveId)) {
       throw new Error('Stored decoded save record failed schema validation.');
     }
@@ -120,6 +126,7 @@ export async function saveDecodedSaveDatabase(
   const savedAt = new Date().toISOString();
   const summary = summarizeSaveDatabase(validated, savedAt);
   const envelope: StoredDecodedSaveEnvelope = {
+    sourceKind: 'immutable_decoded',
     saveId: validated.source.saveId,
     savedAt,
     database: validated

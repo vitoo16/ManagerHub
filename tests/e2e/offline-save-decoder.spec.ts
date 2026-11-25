@@ -478,3 +478,43 @@ test('browser cache stores immutable source rather than dirty editor projection 
   await expect(row).toHaveText(originalText, { useInnerText: true });
   await expect(toolbar).not.toContainText('unsaved edits');
 });
+
+test('legacy decoded browser cache without source provenance is rejected (R01)', async ({ page }) => {
+  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+  await page.goto('/#/saves');
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'legacy-cache.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const explorer = page.locator('.save-db-explorer');
+  await expect(explorer).toBeVisible({ timeout: 20_000 });
+  await explorer.getByRole('button', { name: 'Save database on this browser' }).click();
+  await expect(explorer.getByRole('button', { name: 'Remove saved database' })).toBeVisible();
+
+  // Emulate a cache created by the old editor candidate, preserving its contents.
+  await page.evaluate(() => new Promise<void>((resolve, reject) => {
+    const open = indexedDB.open('managerhub-save-db');
+    open.onerror = () => reject(open.error);
+    open.onsuccess = () => {
+      const db = open.result;
+      const tx = db.transaction('save-db-records', 'readwrite');
+      const store = tx.objectStore('save-db-records');
+      const cursor = store.openCursor();
+      cursor.onsuccess = () => {
+        const row = cursor.result;
+        if (row) {
+          const value = row.value;
+          delete value.sourceKind;
+          row.update(value);
+          row.continue();
+        }
+      };
+      tx.oncomplete = () => { db.close(); resolve(); };
+      tx.onerror = () => { db.close(); reject(tx.error); };
+    };
+  }));
+  await page.reload();
+  await page.getByRole('button', { name: 'Open save', exact: true }).click();
+  await expect(page.getByText('Saved database provenance is unverified. Remove this browser cache and reopen the original .fm file.')).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Active save session' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Remove saved database' })).toBeVisible();
+});
