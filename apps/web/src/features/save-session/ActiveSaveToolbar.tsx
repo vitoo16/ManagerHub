@@ -148,6 +148,7 @@ function ActiveSaveToolbar({
             <span>{t('Active save')}</span>
             <select
               id={saveSwitchId}
+              disabled={busy}
               value={database.source.saveId}
               onChange={event => onSwitchSave(event.currentTarget.value)}
             >
@@ -183,6 +184,7 @@ function ActiveSaveToolbar({
         <div className="active-save-toolbar__mode" role="group" aria-label={t('Global display mode')}>
           <button
             type="button"
+            disabled={busy}
             aria-pressed={saveMode === 'realism'}
             onClick={() => onSetSaveMode('realism')}
           >
@@ -190,6 +192,7 @@ function ActiveSaveToolbar({
           </button>
           <button
             type="button"
+            disabled={busy}
             aria-pressed={saveMode === 'editor'}
             onClick={() => onSetSaveMode('editor')}
           >
@@ -203,7 +206,7 @@ function ActiveSaveToolbar({
               <Button
                 type="button"
                 variant="quiet"
-                disabled={!canUndo}
+                disabled={busy || !canUndo}
                 onClick={onUndo}
                 aria-label={t('Undo last edit')}
               >
@@ -212,7 +215,7 @@ function ActiveSaveToolbar({
               <Button
                 type="button"
                 variant="quiet"
-                disabled={!canRedo}
+                disabled={busy || !canRedo}
                 onClick={onRedo}
                 aria-label={t('Redo edit')}
               >
@@ -221,6 +224,7 @@ function ActiveSaveToolbar({
               <Button
                 type="button"
                 variant="default"
+                disabled={busy}
                 onClick={onOpenMassEditModal}
               >
                 {t('Presets & Mass Edit')}
@@ -228,7 +232,7 @@ function ActiveSaveToolbar({
               <Button
                 type="button"
                 variant="primary"
-                disabled={!hasRawSaveBytes}
+                disabled={busy || !hasRawSaveBytes}
                 onClick={onOpenSaveAsModal}
               >
                 <Icon name="download" size={14} /> {t('Save As .fm')}

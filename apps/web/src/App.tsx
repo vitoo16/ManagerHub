@@ -180,6 +180,10 @@ export default function App() {
   const [decodeNotice, setDecodeNotice] = useState<string | null>(null);
   const inspectionAbortRef = useRef<AbortController | null>(null);
   const inspectionRevisionRef = useRef(0);
+  const openPendingRef = useRef(false);
+  const writePendingRef = useRef(false);
+  const langRequestRef = useRef(0);
+  const authorizationRequestRef = useRef(0);
   const viewScope = useRef<HTMLElement>(null);
   const commandDialogRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
@@ -277,6 +281,7 @@ export default function App() {
 
   const onCancelDecode = useCallback(() => {
     inspectionRevisionRef.current += 1;
+    openPendingRef.current = false;
     inspectionAbortRef.current?.abort();
     inspectionAbortRef.current = null;
     setBusy(false);
@@ -284,7 +289,7 @@ export default function App() {
   }, []);
 
   const onPlayerDatasetChange = useCallback((next: PlayerDataset | null) => {
-    if (next?.source === 'decoded_save') return;
+    if (writePendingRef.current || next?.source === 'decoded_save') return;
     if (!confirmDiscardIfDirty()) return;
     onCancelDecode();
     setEditorModalTarget(null);
@@ -321,6 +326,10 @@ export default function App() {
     rawFile?: File
   ) => {
     const initialClubUid = defaultClubUidForSave(db);
+    langRequestRef.current += 1;
+    authorizationRequestRef.current += 1;
+    setLangDbLookup(null);
+    setRuntimeSigningKey(null);
     setDecodedSaves(prev => ({ ...prev, [db.source.saveId]: db }));
     if (rawFile) {
       setRawSaveFiles(prev => ({ ...prev, [db.source.saveId]: rawFile }));
@@ -348,10 +357,14 @@ export default function App() {
   const openDecodedSave = useCallback(async (
     saveId: string, read: (saveId: string) => Promise<DecodedSaveDatabase | null>
   ) => {
-    if (saveId === activeSaveId) return;
+    if (writePendingRef.current) return;
+    if (saveId === activeSaveId) { onCancelDecode(); return; }
     if (!confirmDiscardIfDirty()) return;
     onCancelDecode();
     const revision = inspectionRevisionRef.current;
+    openPendingRef.current = true;
+    setBusy(true);
+    setEditorModalTarget(null);
     setError(null);
     setDecodeNotice(null);
     try {
@@ -361,16 +374,22 @@ export default function App() {
       commitDecodedSave(db, tools, buildInspectionFromDecoded(db));
     } catch (exception) {
       if (revision === inspectionRevisionRef.current) setError(readableSaveInspectionError(exception));
+    } finally {
+      if (revision === inspectionRevisionRef.current) {
+        openPendingRef.current = false;
+        setBusy(false);
+      }
     }
   }, [activeSaveId, confirmDiscardIfDirty, onCancelDecode, loadOfflineTools, commitDecodedSave]);
 
   const onSwitchDecodedSave = useCallback((saveId: string) => {
     const target = decodedSaves[saveId];
-    if (!target || saveId === activeSaveId) return;
+    if (!target) return;
     void openDecodedSave(saveId, () => Promise.resolve(target));
-  }, [decodedSaves, activeSaveId, openDecodedSave]);
+  }, [decodedSaves, openDecodedSave]);
 
   const onSetSaveMode = useCallback((nextMode: DecodedSaveMode) => {
+    if (writePendingRef.current) return;
     if (nextMode === 'realism') {
       setEditorModalTarget(null);
     }
@@ -405,6 +424,7 @@ export default function App() {
     label: string,
     mutator: (current: SaveDraftOverlay) => SaveDraftOverlay
   ) => {
+    if (openPendingRef.current || writePendingRef.current) return;
     setWriteError(null);
     setSession(current => {
       if (current.source?.kind !== 'save' || !baseDecodedSave) return current;
@@ -431,8 +451,9 @@ export default function App() {
   }, [baseDecodedSave]);
 
   const onUndoEdit = useCallback(() => {
+    if (openPendingRef.current || writePendingRef.current) return;
     setSession(current => {
-      if (current.source?.kind !== 'save') return current;
+      if (current.source?.kind !== 'save' || current.mode !== 'editor') return current;
       return {
         ...current,
         source: {
@@ -444,8 +465,9 @@ export default function App() {
   }, []);
 
   const onRedoEdit = useCallback(() => {
+    if (openPendingRef.current || writePendingRef.current) return;
     setSession(current => {
-      if (current.source?.kind !== 'save') return current;
+      if (current.source?.kind !== 'save' || current.mode !== 'editor') return current;
       return {
         ...current,
         source: {
@@ -457,8 +479,9 @@ export default function App() {
   }, []);
 
   const onDiscardAllEdits = useCallback(() => {
+    if (openPendingRef.current || writePendingRef.current) return;
     setSession(current => {
-      if (current.source?.kind !== 'save') return current;
+      if (current.source?.kind !== 'save' || current.mode !== 'editor') return current;
       return {
         ...current,
         source: {
@@ -470,24 +493,33 @@ export default function App() {
   }, []);
 
   const onAttachLangDb = useCallback(async (file: File) => {
+    if (!saveSource || openPendingRef.current || writePendingRef.current) return;
+    const revision = inspectionRevisionRef.current;
+    const request = ++langRequestRef.current;
+    const isCurrent = () => revision === inspectionRevisionRef.current && request === langRequestRef.current;
     setError(null);
     try {
       const tools = saveSource?.tools ?? await loadOfflineTools();
       const parsed = await tools.parseFm2013LangDb(file);
-      setLangDbLookup(parsed);
+      if (isCurrent()) setLangDbLookup(parsed);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not parse lang_db.dat.');
+      if (isCurrent()) setError(err instanceof Error ? err.message : 'Could not parse lang_db.dat.');
     }
   }, [saveSource, loadOfflineTools]);
 
   const onAuthorizeFmExe = useCallback(async (file: File) => {
+    if (!saveSource || openPendingRef.current || writePendingRef.current) return;
+    const revision = inspectionRevisionRef.current;
+    const request = ++authorizationRequestRef.current;
+    const isCurrent = () => revision === inspectionRevisionRef.current && request === authorizationRequestRef.current;
     setWriteError(null);
     setError(null);
     try {
       const tools = saveSource?.tools ?? await loadOfflineTools();
       const key = await tools.deriveFm2013SigningKeyFromExecutable(file);
-      setRuntimeSigningKey(key);
+      if (isCurrent()) setRuntimeSigningKey(key);
     } catch (err) {
+      if (!isCurrent()) return;
       const msg = err instanceof Error ? err.message : 'Could not authorize FM2013 executable.';
       setWriteError(msg);
       setError(msg);
@@ -495,7 +527,10 @@ export default function App() {
   }, [saveSource, loadOfflineTools]);
 
   const onSaveAsFm = useCallback(async (outputFileName: string) => {
-    if (!saveSource || !baseDecodedSave || !activeRawSaveFile || !effectiveSigningKey) return;
+    if (saveMode !== 'editor' || openPendingRef.current || writePendingRef.current ||
+        !saveSource || !baseDecodedSave || !activeRawSaveFile || !effectiveSigningKey) return;
+    writePendingRef.current = true;
+    const revision = inspectionRevisionRef.current;
     setWritingSave(true);
     setWriteError(null);
     let url: string | null = null;
@@ -509,6 +544,7 @@ export default function App() {
           expectedOriginalSha256: baseDecodedSave.source.sha256
         }
       );
+      if (revision !== inspectionRevisionRef.current) return;
       const blob = new Blob([new Uint8Array(result.bytes)], { type: 'application/octet-stream' });
       url = URL.createObjectURL(blob);
       const anchor = document.createElement('a');
@@ -523,15 +559,18 @@ export default function App() {
       }
       setEditorModalTarget(null);
     } catch (err) {
-      setWriteError(err instanceof Error ? err.message : 'Failed to write certified Save As .fm copy.');
+      if (revision === inspectionRevisionRef.current) {
+        setWriteError(err instanceof Error ? err.message : 'Failed to write Save As .fm copy.');
+      }
     } finally {
+      writePendingRef.current = false;
       setWritingSave(false);
       if (url !== null) {
         const pending = url;
         window.setTimeout(() => URL.revokeObjectURL(pending), 30_000);
       }
     }
-  }, [saveSource, baseDecodedSave, activeRawSaveFile, effectiveSigningKey]);
+  }, [saveMode, saveSource, baseDecodedSave, activeRawSaveFile, effectiveSigningKey]);
 
   useEffect(() => () => {
     inspectionRevisionRef.current += 1;
@@ -614,7 +653,9 @@ export default function App() {
   }, []);
 
   const onInspect = useCallback(async (file: File) => {
-    if (!confirmDiscardIfDirty()) return;
+    if (writePendingRef.current || !confirmDiscardIfDirty()) return;
+    openPendingRef.current = true;
+    setEditorModalTarget(null);
     const revision = ++inspectionRevisionRef.current;
     inspectionAbortRef.current?.abort();
     const controller = new AbortController();
@@ -649,6 +690,7 @@ export default function App() {
       }
     } finally {
       if (revision === inspectionRevisionRef.current) {
+        openPendingRef.current = false;
         inspectionAbortRef.current = null;
         setBusy(false);
         setDecodeProgress(null);
@@ -657,6 +699,7 @@ export default function App() {
   }, [confirmDiscardIfDirty, loadOfflineTools, commitDecodedSave]);
 
   const remove = useCallback((id: string) => {
+    if (writePendingRef.current) return;
     if (activeSaveId === id && !confirmDiscardIfDirty()) return;
     setImports(prev => prev.filter(file => file.id !== id));
     setSelectedId(current => current === id ? null : current);
@@ -727,7 +770,7 @@ export default function App() {
             canRedo={(saveSource?.editorState.future.length ?? 0) > 0}
             hasRawSaveBytes={activeRawSaveFile !== null}
             writerKeyReady={effectiveSigningKey !== null}
-            busy={busy}
+            busy={busy || writingSave}
             onOpenSaveFile={file => void onInspect(file)}
             onSwitchSave={onSwitchDecodedSave}
             onSetSaveMode={onSetSaveMode}
@@ -828,8 +871,8 @@ export default function App() {
                 onSwitchDecodedSave={onSwitchDecodedSave}
                 onOpenPlayerFromSave={onOpenPlayerFromSave}
                 onLoadClubInSquad={onLoadClubInSquad}
-                onEditEntity={saveMode === 'editor' ? target => setEditorModalTarget(target) : undefined}
-                onOpenSaveAsModal={saveMode === 'editor' ? () => setEditorModalTarget({ kind: 'save_as' }) : undefined}
+                onEditEntity={saveMode === 'editor' && !busy && !writingSave ? target => setEditorModalTarget(target) : undefined}
+                onOpenSaveAsModal={saveMode === 'editor' && !busy && !writingSave ? () => setEditorModalTarget({ kind: 'save_as' }) : undefined}
               />
             </Suspense>
           </div>
@@ -852,7 +895,7 @@ export default function App() {
       </main>
     </div>
 
-    {editorModalTarget && saveMode === 'editor' && baseDecodedSave && activeDecodedSave && saveSource && (
+    {editorModalTarget && !busy && saveMode === 'editor' && baseDecodedSave && activeDecodedSave && saveSource && (
       <Suspense fallback={null}>
         <SaveEntityEditorModal
           target={editorModalTarget}
@@ -864,7 +907,7 @@ export default function App() {
           writerKeyReady={effectiveSigningKey !== null}
           writingSave={writingSave}
           writeError={writeError}
-          onClose={() => setEditorModalTarget(null)}
+          onClose={() => { if (!writePendingRef.current) setEditorModalTarget(null); }}
           onCommitOverlay={onCommitEditorOverlay}
           onDiscardAll={onDiscardAllEdits}
           onAuthorizeFmExe={file => void onAuthorizeFmExe(file)}
