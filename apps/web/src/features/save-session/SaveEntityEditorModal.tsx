@@ -22,18 +22,14 @@ import {
 } from '@managerhub/domain/fm2013-offline';
 import { Button, Icon, Status } from '@managerhub/ui';
 import { EditorAttributeGroup } from './EditorAttributeGroup';
+import { EditorRecordNavigator } from './EditorRecordNavigator';
+import { closeEditorRecord, createRecordState, isRecordTarget, openEditorRecord, recordKey, type EditorModalTarget, type EditorRecordTarget } from './editor-records';
 import { registerSaveDbI18n } from '../../i18n/register-save-db-i18n';
 import './save-session.css';
 
 registerSaveDbI18n();
 
-export type EditorModalTarget =
-  | { readonly kind: 'player'; readonly uid: number }
-  | { readonly kind: 'staff'; readonly uid: number }
-  | { readonly kind: 'club'; readonly uid: number }
-  | { readonly kind: 'stadium'; readonly uid: number }
-  | { readonly kind: 'mass_edit' }
-  | { readonly kind: 'save_as' };
+export type { EditorModalTarget } from './editor-records';
 
 export interface SaveEntityEditorModalProps {
   readonly target: EditorModalTarget;
@@ -105,7 +101,7 @@ function clampInt(val: string, fallback: number, min: number, max: number): numb
 }
 
 function SaveEntityEditorModal({
-  target,
+  target: initialTarget,
   baseDatabase,
   workingDatabase,
   overlay,
@@ -125,6 +121,28 @@ function SaveEntityEditorModal({
   const dialogRef = useRef<HTMLDivElement>(null);
   const [playerSubTab, setPlayerSubTab] = useState<PlayerSubTab>('general');
   const [notice, setNotice] = useState<string | null>(null);
+  const [recordState, setRecordState] = useState(() => isRecordTarget(initialTarget) ? createRecordState(initialTarget) : null);
+  const target = recordState?.active ?? initialTarget;
+  const openRecord = (record: EditorRecordTarget) => {
+    if (!recordState || writingSave) return;
+    const next = openEditorRecord(recordState, record);
+    if (next === recordState) return;
+    setRecordState(next);
+    if (recordKey(next.active) !== recordKey(recordState.active)) {
+      setPlayerSubTab('general');
+      setNotice(null);
+    }
+  };
+  const closeRecord = (record: EditorRecordTarget) => {
+    if (!recordState || writingSave) return;
+    const next = closeEditorRecord(recordState, record);
+    if (next === recordState) return;
+    setRecordState(next);
+    if (recordKey(next.active) !== recordKey(recordState.active)) {
+      setPlayerSubTab('general');
+      setNotice(null);
+    }
+  };
   const [outputName, setOutputName] = useState(() => buildEditedSaveFileName(baseDatabase.source.fileName));
 
   // Mass-edit filter state
@@ -301,7 +319,7 @@ function SaveEntityEditorModal({
     >
       <div
         ref={dialogRef}
-        className="editor-modal"
+        className={recordState ? "editor-modal editor-modal--records" : "editor-modal"}
         role="dialog"
         aria-modal="true"
         aria-label={modalTitle}
@@ -327,6 +345,7 @@ function SaveEntityEditorModal({
           </Button>
         </div>
 
+        {recordState && <EditorRecordNavigator database={workingDatabase} state={recordState} onOpen={openRecord} onClose={closeRecord}/>}
         {notice && <div className="editor-notice" role="status">{notice}</div>}
         {writeError && <div className="inline-alert" role="alert">{writeError}</div>}
 

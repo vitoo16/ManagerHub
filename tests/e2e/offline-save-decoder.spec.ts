@@ -567,3 +567,38 @@ test('compact player attribute groups retain draft editing and undo/redo', async
   dialog = await openAttributes();
   await expect(dialog.getByRole('spinbutton', { name: 'Finishing', exact: true })).toHaveValue(changed);
 });
+
+
+test('editor record navigation shares a single draft across player and club records', async ({ page }) => {
+  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+  await page.goto('/#/saves');
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'editor-records.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const toolbar = page.getByRole('region', { name: 'Active save session' });
+  await expect(toolbar).toBeVisible({ timeout: 20_000 });
+  await toolbar.getByRole('button', { name: 'Editor mode' }).click();
+  const row = page.locator('.save-db-explorer tbody tr', { hasText: 'Owen Shaw' });
+  await row.getByRole('button', { name: 'Edit' }).click();
+  const dialog = page.getByRole('dialog');
+  const records = dialog.getByRole('group', { name: 'Open records' });
+  await expect(records.getByRole('button', { name: /Owen Shaw/ })).toHaveAttribute('aria-pressed', 'true');
+  await dialog.getByLabel('Actual CA (1–200)').fill('191');
+  await dialog.getByLabel('Record type').selectOption('club');
+  await dialog.getByLabel('Find record by name or UID').fill('Northbridge');
+  await dialog.getByRole('group', { name: 'Matching records' }).getByRole('button', { name: /Northbridge Athletic/ }).click();
+  await expect(dialog).toContainText('Edit club & finances · Northbridge Athletic');
+  await expect(records.getByRole('button', { name: /Northbridge Athletic/ }).filter({ hasNotText: 'Close record' }).first()).toHaveAttribute('aria-pressed', 'true');
+  await records.getByRole('button', { name: /Owen Shaw/, exact: false }).first().click();
+  await expect(dialog.getByLabel('Actual CA (1–200)')).toHaveValue('191');
+  await records.getByRole('button', { name: /Close record Northbridge Athletic/ }).click();
+  await expect(records.getByRole('button', { name: /Northbridge Athletic/ })).toHaveCount(0);
+  await dialog.getByRole('button', { name: 'Done' }).click();
+  await expect(row).toContainText('191');
+  await toolbar.getByRole('button', { name: 'Undo last edit' }).click();
+  await expect(row).toContainText('168');
+  await toolbar.getByRole('button', { name: 'Redo edit' }).click();
+  await expect(row).toContainText('191');
+  await toolbar.getByRole('button', { name: 'Realism mode' }).click();
+  await expect(row.getByRole('button', { name: 'Edit' })).toHaveCount(0);
+});

@@ -879,6 +879,7 @@ export default function App() {
     {editorModalTarget && !busy && saveMode === 'editor' && baseDecodedSave && activeDecodedSave && saveSource && (
       <Suspense fallback={null}>
         <SaveEntityEditorModal
+          key={`${baseDecodedSave.source.saveId}:${editorModalTarget.kind}:${'uid' in editorModalTarget ? editorModalTarget.uid : ''}`}
           target={editorModalTarget}
           baseDatabase={baseDecodedSave}
           workingDatabase={activeDecodedSave}

@@ -250,5 +250,13 @@ export default {
   "Discard all edits": "Hủy mọi chỉnh sửa",
   "Signing & verifying .fm copy…": "Đang ký HMAC-SHA512 & kiểm chứng bản sao .fm…",
   "Download experimental Save As .fm": "Tải xuống bản sao Save As .fm thử nghiệm",
+  "Editor record navigation": "Điều hướng hồ sơ chỉnh sửa",
+  "Open records": "Hồ sơ đang mở",
+  "Record type": "Loại hồ sơ",
+  "Find record by name or UID": "Tìm hồ sơ theo tên hoặc UID",
+  "Matching records": "Hồ sơ phù hợp",
+  "Close record {{name}} ({{kind}} #{{uid}})": "Đóng hồ sơ {{name}} ({{kind}} #{{uid}})",
+  "Close a record before opening another.": "Đóng một hồ sơ trước khi mở thêm.",
+  "Showing up to 24 records. Refine your search to narrow results.": "Hiển thị tối đa 24 hồ sơ. Thu hẹp từ khóa để tìm chính xác hơn.",
   "Done": "Xong"
 } as const;
