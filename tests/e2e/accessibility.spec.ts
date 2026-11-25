@@ -4,6 +4,7 @@ import { expect, test } from '@playwright/test';
 const WORKSPACES = [
   'overview',
   'saves',
+  'editor',
   'players',
   'history',
   'squad',

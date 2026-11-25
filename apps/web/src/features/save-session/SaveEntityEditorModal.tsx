@@ -23,7 +23,7 @@ import { StaffEditorRecord } from './StaffEditorRecord';
 import { ClubEditorRecord } from './ClubEditorRecord';
 import { StadiumEditorRecord } from './StadiumEditorRecord';
 import { EditorRecordNavigator } from './EditorRecordNavigator';
-import { closeEditorRecord, createRecordState, isRecordTarget, openEditorRecord, recordKey, type EditorModalTarget, type EditorRecordTarget } from './editor-records';
+import { isRecordTarget, recordKey, type EditorViewTarget, type EditorRecordState, type EditorRecordTarget } from './editor-records';
 import { registerSaveDbI18n } from '../../i18n/register-save-db-i18n';
 import './save-session.css';
 
@@ -32,7 +32,13 @@ registerSaveDbI18n();
 export type { EditorModalTarget } from './editor-records';
 
 export interface SaveEntityEditorModalProps {
-  readonly target: EditorModalTarget;
+  readonly target: EditorViewTarget;
+  readonly embedded?: boolean;
+  readonly recordState: EditorRecordState | null;
+  readonly onOpenRecord: (record: EditorRecordTarget) => void;
+  readonly onCloseRecord: (record: EditorRecordTarget) => void;
+  readonly onOpenWorkspace?: () => void;
+  readonly dirtyFieldCount: number;
   readonly baseDatabase: DecodedSaveDatabase;
   readonly workingDatabase: DecodedSaveDatabase;
   readonly overlay: SaveDraftOverlay;
@@ -51,6 +57,12 @@ export interface SaveEntityEditorModalProps {
 
 function SaveEntityEditorModal({
   target: initialTarget,
+  embedded = false,
+  recordState,
+  onOpenRecord,
+  onCloseRecord,
+  onOpenWorkspace,
+  dirtyFieldCount,
   baseDatabase,
   workingDatabase,
   overlay,
@@ -68,28 +80,12 @@ function SaveEntityEditorModal({
   const { t } = useTranslation();
   const exeInputRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
-  useDialogFocus(dialogRef, true, '.editor-record-tab__select[aria-pressed="true"]');
+  useDialogFocus(dialogRef, !embedded, '.editor-record-tab__select[aria-pressed="true"]');
   const [notice, setNotice] = useState<string | null>(null);
-  const [recordState, setRecordState] = useState(() => isRecordTarget(initialTarget) ? createRecordState(initialTarget) : null);
-  const target = recordState?.active ?? initialTarget;
-  const openRecord = (record: EditorRecordTarget) => {
-    if (!recordState || writingSave) return;
-    const next = openEditorRecord(recordState, record);
-    if (next === recordState) return;
-    setRecordState(next);
-    if (recordKey(next.active) !== recordKey(recordState.active)) {
-      setNotice(null);
-    }
-  };
-  const closeRecord = (record: EditorRecordTarget) => {
-    if (!recordState || writingSave) return;
-    const next = closeEditorRecord(recordState, record);
-    if (next === recordState) return;
-    setRecordState(next);
-    if (recordKey(next.active) !== recordKey(recordState.active)) {
-      setNotice(null);
-    }
-  };
+  const browsing = initialTarget.kind === 'browse' || isRecordTarget(initialTarget);
+  const target = browsing ? recordState?.active ?? initialTarget : initialTarget;
+  const activeRecordKey = browsing && recordState ? recordKey(recordState.active) : null;
+  useEffect(() => { setNotice(null); }, [activeRecordKey]);
   const [outputName, setOutputName] = useState(() => buildEditedSaveFileName(baseDatabase.source.fileName));
 
   // Mass-edit filter state
@@ -101,12 +97,13 @@ function SaveEntityEditorModal({
   const [massCaBoost, setMassCaBoost] = useState<string>('');
 
   useEffect(() => {
+    if (embedded) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [onClose]);
+  }, [embedded, onClose]);
 
   const player = target.kind === 'player'
     ? workingDatabase.players.find(p => p.uid === target.uid) ?? null
@@ -122,8 +119,8 @@ function SaveEntityEditorModal({
     : null;
 
   const diffEntries = useMemo(
-    () => summarizeDraftChanges(baseDatabase, overlay),
-    [baseDatabase, overlay]
+    () => target.kind === 'save_as' ? summarizeDraftChanges(baseDatabase, overlay) : [],
+    [baseDatabase, overlay, target.kind]
   );
 
   const clubsWithPlayers = useMemo(
@@ -254,23 +251,24 @@ function SaveEntityEditorModal({
     target.kind === 'staff' ? `${t('Edit staff')} · ${staffMember?.displayName ?? ''}` :
     target.kind === 'club' ? `${t('Edit club & finances')} · ${club?.fullName ?? ''}` :
     target.kind === 'stadium' ? `${t('Edit stadium')} · ${stadium?.customName ?? `#${target.uid}`}` :
+    target.kind === 'browse' ? t('Find a record to edit') :
     target.kind === 'mass_edit' ? t('FMRTE13 Presets & Mass Edit') :
     t('Save As .fm (Experimental Offline Copy)');
 
   return (
     <div
-      className="editor-modal-backdrop"
+      className={embedded ? "editor-workspace-shell" : "editor-modal-backdrop"}
       role="presentation"
       onMouseDown={event => {
-        if (event.target === event.currentTarget) onClose();
+        if (!embedded && event.target === event.currentTarget) onClose();
       }}
     >
       <div
         ref={dialogRef}
-        className={recordState ? "editor-modal editor-modal--records" : "editor-modal"}
-        role="dialog"
-        tabIndex={-1}
-        aria-modal="true"
+        className={embedded ? "editor-workspace-body" : browsing ? "editor-modal editor-modal--records" : "editor-modal"}
+        role={embedded ? "region" : "dialog"}
+        tabIndex={embedded ? undefined : -1}
+        aria-modal={embedded ? undefined : true}
         aria-label={modalTitle}
       >
         <input
@@ -289,12 +287,16 @@ function SaveEntityEditorModal({
             <h2>{modalTitle}</h2>
             <p>{t('Changes update all ManagerHub workspaces immediately and never touch your original .fm file.')}</p>
           </div>
-          <Button type="button" variant="quiet" onClick={onClose} aria-label={t('Close editor')}>
-            <Icon name="close" size={16} />
-          </Button>
+          {!embedded && <div className="save-db-actions">
+            {browsing && onOpenWorkspace && <Button type="button" onClick={onOpenWorkspace}>{t('Open in Classic Editor')}</Button>}
+            <Button type="button" variant="quiet" onClick={onClose} aria-label={t('Close editor')}>
+              <Icon name="close" size={16} />
+            </Button>
+          </div>}
         </div>
 
-        {recordState && <EditorRecordNavigator database={workingDatabase} state={recordState} onOpen={openRecord} onClose={closeRecord}/>}
+        {browsing && <EditorRecordNavigator database={workingDatabase} state={recordState} onOpen={onOpenRecord} onClose={onCloseRecord}/>}
+        {target.kind === 'browse' && <p className="module-disclaimer">{t('Search players, staff, clubs or stadiums by name or UID. Open records stay available while you browse this save.')}</p>}
         {notice && <div className="editor-notice" role="status">{notice}</div>}
         {writeError && <div className="inline-alert" role="alert">{writeError}</div>}
 
@@ -446,7 +448,7 @@ function SaveEntityEditorModal({
 
         <div className="editor-modal__foot">
           <div>
-            {diffEntries.length > 0 && (
+            {dirtyFieldCount > 0 && (
               <Button
                 type="button"
                 variant="danger"
@@ -457,7 +459,7 @@ function SaveEntityEditorModal({
                   }
                 }}
               >
-                {t('Discard all edits')} ({diffEntries.length})
+                {t('Discard all edits')} ({dirtyFieldCount})
               </Button>
             )}
           </div>
@@ -473,9 +475,9 @@ function SaveEntityEditorModal({
                 {t(writingSave ? 'Signing & verifying .fm copy…' : 'Download experimental Save As .fm')}
               </Button>
             )}
-            <Button type="button" variant="default" onClick={onClose}>
+            {!embedded && <Button type="button" variant="default" onClick={onClose}>
               {t('Done')}
-            </Button>
+            </Button>}
           </div>
         </div>
       </div>

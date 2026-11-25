@@ -636,3 +636,43 @@ test('editor record navigation shares a single draft across player and club reco
   await toolbar.getByRole('button', { name: 'Realism mode' }).click();
   await expect(row.getByRole('button', { name: 'Edit' })).toHaveCount(0);
 });
+
+
+test('Classic Editor shares Quick Edit records and draft state across workspaces and clears records in Realism', async ({ page }) => {
+  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+  await page.goto('/#/editor');
+  await expect(page.getByRole('heading', { name: 'Classic Editor', exact: true })).toBeVisible();
+  await expect(page.getByText('Open a decoded FM2013 save in Save Library to use Classic Editor.')).toBeVisible();
+  await page.getByRole('button', { name: 'Save Library', exact: true }).click();
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'classic-workbench.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const toolbar = page.getByRole('region', { name: 'Active save session' });
+  await expect(toolbar).toBeVisible({ timeout: 20_000 });
+  await toolbar.getByRole('button', { name: 'Editor mode' }).click();
+  await page.locator('.save-db-explorer tbody tr', { hasText: 'Owen Shaw' }).getByRole('button', { name: 'Edit' }).click();
+  const dialog = page.getByRole('dialog');
+  await dialog.getByLabel('Actual CA (1–200)').fill('191');
+  await dialog.getByRole('button', { name: 'Open in Classic Editor' }).click();
+  await expect(dialog).toHaveCount(0);
+  const editor = page.locator('.editor-workspace-body');
+  await expect(editor.getByLabel('Actual CA (1–200)')).toHaveValue('191');
+  await editor.getByLabel('Record type').selectOption('club');
+  await editor.getByLabel('Find record by name or UID').fill('Northbridge');
+  await editor.getByRole('group', { name: 'Matching records' }).getByRole('button', { name: /Northbridge Athletic/ }).click();
+  await editor.getByLabel('Balance (£)').fill('120000000');
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' }).getByRole('button', { name: 'Overview' }).click();
+  await expect(page.locator('.editor-workspace-body')).toHaveCount(0);
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' }).getByRole('button', { name: 'Classic Editor' }).click();
+  await expect(editor.getByLabel('Balance (£)')).toHaveValue('120000000');
+  await editor.getByRole('group', { name: 'Open records' }).locator('button[aria-pressed]').filter({ hasText: 'Owen Shaw' }).click();
+  await expect(editor.getByLabel('Actual CA (1–200)')).toHaveValue('191');
+  await toolbar.getByRole('button', { name: 'Realism mode' }).click();
+  await expect(editor).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Enable Editor mode' })).toBeVisible();
+  await page.getByRole('button', { name: 'Enable Editor mode' }).click();
+  await expect(editor.getByRole('group', { name: 'Open records' })).toHaveCount(0);
+  await expect(editor.getByLabel('Actual CA (1–200)')).toHaveCount(0);
+});

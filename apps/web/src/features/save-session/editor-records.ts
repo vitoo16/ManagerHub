@@ -3,6 +3,7 @@ import type { DecodedSaveDatabase } from '@managerhub/domain/fm2013-offline';
 export type EditorRecordKind = 'player' | 'staff' | 'club' | 'stadium';
 export type EditorRecordTarget = { readonly kind: EditorRecordKind; readonly uid: number };
 export type EditorModalTarget = EditorRecordTarget | { readonly kind: 'mass_edit' } | { readonly kind: 'save_as' };
+export type EditorViewTarget = EditorModalTarget | { readonly kind: 'browse' };
 export const MAX_EDITOR_RECORDS = 12;
 export const MAX_EDITOR_SEARCH_RESULTS = 24;
 
@@ -12,7 +13,7 @@ export interface EditorRecordState {
 }
 
 export const recordKey = (record: EditorRecordTarget): string => `${record.kind}:${record.uid}`;
-export const isRecordTarget = (target: EditorModalTarget): target is EditorRecordTarget => 'uid' in target;
+export const isRecordTarget = (target: EditorViewTarget): target is EditorRecordTarget => 'uid' in target;
 
 export function createRecordState(record: EditorRecordTarget): EditorRecordState {
   return { records: [record], active: record };

@@ -9,40 +9,42 @@ import {
 
 interface Props {
   readonly database: DecodedSaveDatabase;
-  readonly state: EditorRecordState;
+  readonly state: EditorRecordState | null;
   readonly onOpen: (target: EditorRecordTarget) => void;
   readonly onClose: (target: EditorRecordTarget) => void;
 }
 
 export function EditorRecordNavigator({ database, state, onOpen, onClose }: Props) {
   const { t } = useTranslation();
-  const [kind, setKind] = useState<EditorRecordKind>(state.active.kind);
+  const [kind, setKind] = useState<EditorRecordKind>(state?.active.kind ?? 'player');
   const [query, setQuery] = useState('');
   const activeRecordRef = useRef<HTMLButtonElement>(null);
   useEffect(() => { activeRecordRef.current?.focus(); }, [state]);
   const deferredQuery = useDeferredValue(query);
   const searching = deferredQuery !== query;
   const results = useMemo(() => searchEditorRecords(database, kind, deferredQuery), [database, kind, deferredQuery]);
-  const atLimit = state.records.length >= MAX_EDITOR_RECORDS;
+  const records = state?.records ?? [];
+  const activeKey = state ? recordKey(state.active) : null;
+  const atLimit = records.length >= MAX_EDITOR_RECORDS;
   const kindLabels: Record<EditorRecordKind, string> = {
     player: t('Players'), staff: t('Staff & Managers'), club: t('Clubs & Finances'), stadium: t('Stadiums')
   };
   return (
     <section className="editor-record-navigator" aria-label={t('Editor record navigation')}>
-      <div className="editor-record-tabs" role="group" aria-label={t('Open records')}>
-        {state.records.map(record => {
+      {records.length > 0 && <div className="editor-record-tabs" role="group" aria-label={t('Open records')}>
+        {records.map(record => {
           const key = recordKey(record);
           const name = recordName(database, record);
           return (
             <div className="editor-record-tab" key={key}>
               <button type="button" className="editor-record-tab__select"
-                ref={key === recordKey(state.active) ? activeRecordRef : undefined}
-                aria-pressed={key === recordKey(state.active)}
+                ref={key === activeKey ? activeRecordRef : undefined}
+                aria-pressed={key === activeKey}
                 onClick={() => onOpen(record)}>
                 <small>{kindLabels[record.kind]} · #{record.uid}</small>
                 <strong>{name}</strong>
               </button>
-              {state.records.length > 1 && (
+              {records.length > 1 && (
                 <Button type="button" variant="quiet" className="editor-record-tab__close"
                   aria-label={t('Close record {{name}} ({{kind}} #{{uid}})', { name, kind: kindLabels[record.kind], uid: record.uid })}
                   onClick={() => onClose(record)}>
@@ -52,7 +54,7 @@ export function EditorRecordNavigator({ database, state, onOpen, onClose }: Prop
             </div>
           );
         })}
-      </div>
+      </div>}
       <div className="editor-record-search">
         <label className="editor-field">
           <span>{t('Record type')}</span>
@@ -75,11 +77,11 @@ export function EditorRecordNavigator({ database, state, onOpen, onClose }: Prop
           {!searching && results.length === 0 && <p className="editor-record-hint" role="status">{t('No matching records.')}</p>}
           {results.map(result => (
             <Button key={recordKey(result.target)} type="button"
-              disabled={searching || (atLimit && !state.records.some(record => recordKey(record) === recordKey(result.target)))}
+              disabled={searching || (atLimit && !records.some(record => recordKey(record) === recordKey(result.target)))}
               onClick={() => {
                 onOpen(result.target);
                 setQuery('');
-                if (recordKey(result.target) === recordKey(state.active)) activeRecordRef.current?.focus();
+                if (recordKey(result.target) === activeKey) activeRecordRef.current?.focus();
               }}>
               <span>{result.name}</span><small>#{result.target.uid}</small>
             </Button>

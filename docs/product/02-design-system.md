@@ -138,3 +138,6 @@ Shortlist candidates, role comparison and club-group recruitment use shared sect
 
 ### Editor source ownership
 The modal is a session/transaction controller; four record-specific presentation components own their bounded views. Shared EditorRecordSections handles local navigation, and EditorNumberField handles clamping, native missingness and form markup. Native unknown numeric/date fields are blank and disabled instead of displaying fabricated fallback values. All actual mutations remain in the existing parent transaction callbacks. Runtime and exact native field compatibility verification remain pending.
+
+### Classic Editor navigation
+The dedicated `#/editor` workspace and Quick Edit dialog share one record list in the active application session and the existing transaction callbacks. Record UIDs and active selection persist while navigating workspaces; they are not persisted to browser storage and are cleared on a successful source replacement, active source removal or Realism switch. The workspace mounts only while visible, so record-local subsection/search UI resets on navigation. Quick Edit can transfer into the workspace; mass edit and Save As remain explicit dialogs. No extra decode, writer capability or new product module. Runtime acceptance pending.

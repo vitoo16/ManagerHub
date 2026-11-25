@@ -15,8 +15,8 @@ import type {
   Fm2013LangDbLookup,
   SaveDraftOverlay
 } from '@managerhub/domain/fm2013-offline';
-import type { EditorModalTarget } from './features/save-session/SaveEntityEditorModal';
-import { Icon, Status } from '@managerhub/ui';
+import { closeEditorRecord, createRecordState, openEditorRecord, type EditorModalTarget, type EditorRecordState, type EditorRecordTarget } from './features/save-session/editor-records';
+import { Button, Icon, Status, Surface } from '@managerhub/ui';
 import { useReducedMotion } from '@managerhub/motion/reduced';
 import { readableSaveInspectionError } from './i18n/save-inspection-copy';
 import { registerSaveDbI18n } from './i18n/register-save-db-i18n';
@@ -39,6 +39,7 @@ const SaveEntityEditorModal = lazy(() => import('./features/save-session/SaveEnt
 const NAV: { key: WorkspaceKey; title: string; detail: string; icon: 'grid' | 'database' | 'layers' | 'shield' | 'compass' | 'history' }[] = [
   { key: 'overview', title: 'Overview', detail: 'Command center', icon: 'grid' },
   { key: 'saves', title: 'Save Library', detail: 'Local inspection', icon: 'database' },
+  { key: 'editor', title: 'Classic Editor', detail: 'Edit decoded records', icon: 'layers' },
   { key: 'players', title: 'Player Lab', detail: 'Exported player scouting', icon: 'compass' },
   { key: 'history', title: 'Historical snapshots', detail: 'FM2013 research captures', icon: 'history' },
   { key: 'squad', title: 'Squad Planner', detail: 'Verified position assignments', icon: 'layers' },
@@ -164,6 +165,7 @@ export default function App() {
   const [runtimeSigningKey, setRuntimeSigningKey] = useState<Uint8Array | null>(null);
   const [session, setSession] = useState<SaveSession>({ mode: 'realism', source: null });
   const [editorModalTarget, setEditorModalTarget] = useState<EditorModalTarget | null>(null);
+  const [editorRecords, setEditorRecords] = useState<EditorRecordState | null>(null);
   const [writingSave, setWritingSave] = useState(false);
   const [writeError, setWriteError] = useState<string | null>(null);
   const [selectedPlayerIdForLab, setSelectedPlayerIdForLab] = useState<string | null>(null);
@@ -285,6 +287,7 @@ export default function App() {
     if (!confirmDiscardIfDirty()) return;
     onCancelDecode();
     setEditorModalTarget(null);
+    setEditorRecords(null);
     setSession(current => ({ ...current, source: next ? { kind: 'export', dataset: next } : null }));
     resetSquadSessionState();
     resetPlayerLabSessionState();
@@ -312,6 +315,7 @@ export default function App() {
     setImports(prev => [inspection, ...prev.filter(item => item.id !== inspection.id)]);
     setSelectedId(inspection.id);
     setEditorModalTarget(null);
+    setEditorRecords(null);
     setWriteError(null);
     setSession(current => ({
       ...current,
@@ -367,6 +371,7 @@ export default function App() {
     if (nextMode === 'realism') {
       authorizationRequestRef.current += 1;
       setEditorModalTarget(null);
+      setEditorRecords(null);
     }
     setSession(current => (current.mode === nextMode ? current : { ...current, mode: nextMode }));
   }, []);
@@ -596,6 +601,25 @@ export default function App() {
   const openPlayers = useCallback(() => navigate('players'), [navigate]);
   const openSaves = useCallback(() => navigate('saves'), [navigate]);
 
+  const onOpenEditorRecord = useCallback((record: EditorRecordTarget) => {
+    if (saveMode !== 'editor' || !activeSaveId || openPendingRef.current || writePendingRef.current) return;
+    setEditorRecords(current => current ? openEditorRecord(current, record) : createRecordState(record));
+  }, [saveMode, activeSaveId]);
+  const onCloseEditorRecord = useCallback((record: EditorRecordTarget) => {
+    if (saveMode !== 'editor' || openPendingRef.current || writePendingRef.current) return;
+    setEditorRecords(current => current ? closeEditorRecord(current, record) : null);
+  }, [saveMode]);
+  const onQuickEdit = useCallback((record: EditorRecordTarget) => {
+    if (saveMode !== 'editor' || !activeSaveId || openPendingRef.current || writePendingRef.current) return;
+    onOpenEditorRecord(record);
+    setEditorModalTarget(record);
+  }, [saveMode, activeSaveId, onOpenEditorRecord]);
+  const onOpenClassicEditor = useCallback(() => {
+    if (writePendingRef.current) return;
+    setEditorModalTarget(null);
+    navigate('editor');
+  }, [navigate]);
+
   const onOpenPlayerFromSave = useCallback((playerUid: number, clubUid: number | null) => {
     if (!activeDecodedSave) return;
     const targetPlayerId = `${activeDecodedSave.source.saveId.slice(0, 12)}:${playerUid}`;
@@ -685,6 +709,7 @@ export default function App() {
     if (activeSaveId === id) {
       onCancelDecode();
       setEditorModalTarget(null);
+      setEditorRecords(null);
       setSession(current =>
         current.source?.kind === 'save' && current.source.baseDatabase.source.saveId === id
           ? { ...current, source: null }
@@ -694,6 +719,26 @@ export default function App() {
       resetPlayerLabSessionState();
     }
   }, [activeSaveId, confirmDiscardIfDirty, onCancelDecode, resetSquadSessionState, resetPlayerLabSessionState]);
+
+  const editorProps = baseDecodedSave && activeDecodedSave && saveSource ? {
+    baseDatabase: baseDecodedSave,
+    workingDatabase: activeDecodedSave,
+    overlay: saveSource.editorState.present,
+    managedClubUid,
+    hasRawSaveBytes: activeRawSaveFile !== null,
+    writerKeyReady: effectiveSigningKey !== null,
+    writingSave,
+    writeError,
+    dirtyFieldCount,
+    recordState: editorRecords,
+    onOpenRecord: onOpenEditorRecord,
+    onCloseRecord: onCloseEditorRecord,
+    onClose: () => { if (!writePendingRef.current) setEditorModalTarget(null); },
+    onCommitOverlay: onCommitEditorOverlay,
+    onDiscardAll: onDiscardAllEdits,
+    onAuthorizeFmExe: (file: File) => void onAuthorizeFmExe(file),
+    onSaveAsFm: (fileName: string) => void onSaveAsFm(fileName)
+  } : null;
 
   const selected = imports.find(f => f.id === selectedId) ?? imports[0] ?? null;
   const activeItem = NAV.find(n => n.key === view) ?? NAV[0];
@@ -782,7 +827,7 @@ export default function App() {
                 clubFilterUid={playerLabClubFilterUid}
                 onClubFilterChange={onPlayerLabClubFilterChange}
                 initialPlayerId={selectedPlayerIdForLab}
-                onEditPlayer={saveMode === 'editor' ? uid => setEditorModalTarget({ kind: 'player', uid }) : undefined}
+                onEditPlayer={saveMode === 'editor' && !busy && !writingSave ? uid => onQuickEdit({ kind: 'player', uid }) : undefined}
               />
             </Suspense>
           </div>
@@ -838,12 +883,29 @@ export default function App() {
                 onSwitchDecodedSave={onSwitchDecodedSave}
                 onOpenPlayerFromSave={onOpenPlayerFromSave}
                 onLoadClubInSquad={onLoadClubInSquad}
-                onEditEntity={saveMode === 'editor' && !busy && !writingSave ? target => setEditorModalTarget(target) : undefined}
+                onEditEntity={saveMode === 'editor' && !busy && !writingSave ? onQuickEdit : undefined}
                 onOpenSaveAsModal={saveMode === 'editor' && !busy && !writingSave ? () => setEditorModalTarget({ kind: 'save_as' }) : undefined}
               />
             </Suspense>
           </div>
         )}
+        {view === 'editor' && <div className="view-flow" data-animate="workspace">
+          <div className="page-title">
+            <h1>{t('Classic Editor')}</h1>
+            <p>{t('Edit records from the active save without leaving your other workspaces.')}</p>
+          </div>
+          {!editorProps ? <Surface className="editor-workspace-empty">
+            <p>{t('Open a decoded FM2013 save in Save Library to use Classic Editor.')}</p>
+            <Button onClick={openSaves}>{t('Save Library')}</Button>
+          </Surface> : saveMode !== 'editor' ? <Surface className="editor-workspace-empty">
+            <p>{t('Classic Editor is unavailable in Realism mode. Enable Editor mode to edit native records.')}</p>
+            <Button disabled={busy || writingSave} onClick={() => onSetSaveMode('editor')}>{t('Enable Editor mode')}</Button>
+          </Surface> : busy || writingSave ? <p role="status">{t('Loading workspace…')}</p> : !editorModalTarget && (
+            <Suspense fallback={<WorkspaceLoading/>}>
+              <SaveEntityEditorModal key={baseDecodedSave?.source.saveId} {...editorProps} target={{ kind: 'browse' }} embedded/>
+            </Suspense>
+          )}
+        </div>}
         {visitedViews.has('modules') && (
           <div hidden={view !== 'modules'} data-animate={view === 'modules' ? 'workspace' : undefined}>
             <Suspense fallback={<WorkspaceLoading/>}>
@@ -862,24 +924,13 @@ export default function App() {
       </main>
     </div>
 
-    {editorModalTarget && !busy && saveMode === 'editor' && baseDecodedSave && activeDecodedSave && saveSource && (
+    {editorModalTarget && !busy && saveMode === 'editor' && editorProps && (
       <Suspense fallback={null}>
         <SaveEntityEditorModal
-          key={`${baseDecodedSave.source.saveId}:${editorModalTarget.kind}:${'uid' in editorModalTarget ? editorModalTarget.uid : ''}`}
+          key={`${editorProps.baseDatabase.source.saveId}:${editorModalTarget.kind}:${'uid' in editorModalTarget ? editorModalTarget.uid : ''}`}
           target={editorModalTarget}
-          baseDatabase={baseDecodedSave}
-          workingDatabase={activeDecodedSave}
-          overlay={saveSource.editorState.present}
-          managedClubUid={managedClubUid}
-          hasRawSaveBytes={activeRawSaveFile !== null}
-          writerKeyReady={effectiveSigningKey !== null}
-          writingSave={writingSave}
-          writeError={writeError}
-          onClose={() => { if (!writePendingRef.current) setEditorModalTarget(null); }}
-          onCommitOverlay={onCommitEditorOverlay}
-          onDiscardAll={onDiscardAllEdits}
-          onAuthorizeFmExe={file => void onAuthorizeFmExe(file)}
-          onSaveAsFm={fileName => void onSaveAsFm(fileName)}
+          {...editorProps}
+          onOpenWorkspace={onOpenClassicEditor}
         />
       </Suspense>
     )}
