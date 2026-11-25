@@ -1,4 +1,4 @@
-import { memo, useCallback, useRef, useState, type Dispatch, type KeyboardEvent, type PointerEvent, type SetStateAction } from 'react';
+import { memo, useCallback, useId, useMemo, useRef, useState, type Dispatch, type KeyboardEvent, type PointerEvent, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FORMATIONS, analyzeRoleInteractions, applyRoleInteractionAdjustment, applyTacticalDiagnosticAdjustment, createTacticalScenarioCsv, defaultTacticalScenario, diagnoseTacticalScenario, isRoleAdjustmentId, makeSavedTacticalScenarios, positionTacticalSlot,
@@ -8,7 +8,8 @@ import {
   type TacticalInstructions, type TacticalPhase, type TacticalPoint,
   type TacticalDiagnosticId, type TacticalScenario, type TacticalScenarios, type TacticalWidth, type TacticalIntensity
 } from '@managerhub/domain';
-import { Button, Surface } from '@managerhub/ui';
+import { Button, SectionTabs, Surface } from '@managerhub/ui';
+import { TacticalRoleReport, TacticalShapeReport } from './TacticalAnalysisPanels';
 
 type Props = {
   dataset: PlayerDataset;
@@ -19,6 +20,9 @@ type Props = {
   setScenarios: Dispatch<SetStateAction<TacticalScenarios>>;
 };
 
+const ANALYSIS_SECTIONS = [{ id: 'shape', label: 'Tactical diagnostics' }, { id: 'roles', label: 'Role partnerships' }] as const;
+type AnalysisSection = typeof ANALYSIS_SECTIONS[number]['id'];
+
 const PHASES: readonly TacticalPhase[] = ['possession', 'defending'];
 const LEVELS: readonly TacticalIntensity[] = ['low', 'balanced', 'high'];
 const WIDTHS: readonly TacticalWidth[] = ['narrow', 'balanced', 'wide'];
@@ -26,6 +30,8 @@ type AdjustmentHistory = { before: TacticalScenario; after: TacticalScenario; ki
 
 function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios }: Props) {
   const { t } = useTranslation();
+  const analysisId = useId();
+  const [analysis, setAnalysis] = useState<AnalysisSection>('shape');
   const [phase, setPhase] = useState<TacticalPhase>('possession');
   const [selectedId, setSelectedId] = useState('gk');
   const [busy, setBusy] = useState(false);
@@ -35,14 +41,14 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
   const lastAdjustment = adjustmentHistory[active];
   const dragging = useRef<string | null>(null);
   const formation = plans[active].formation;
-  const scenario = tacticalScenarioForFormation(scenarios[active], formation);
+  const scenario = useMemo(() => tacticalScenarioForFormation(scenarios[active], formation), [scenarios, active, formation]);
   const slots = FORMATIONS[formation];
-  const lineup = new Map(solution?.lineup.map(item => [item.slot.id, item] as const) ?? []);
+  const lineup = useMemo(() => new Map(solution?.lineup.map(item => [item.slot.id, item] as const) ?? []), [solution]);
   const selectedSlot = slots.find(item => item.id === selectedId) ?? slots[0]!;
   const selectedPoint = tacticalPosition(scenario, phase, selectedSlot.id);
   const changedPositions = Object.keys(scenario.placements[phase]).length;
-  const report = diagnoseTacticalScenario(scenario, solution);
-  const roleInteractions = analyzeRoleInteractions(scenario, solution);
+  const report = useMemo(() => analysis === 'shape' ? diagnoseTacticalScenario(scenario, solution) : null, [analysis, scenario, solution]);
+  const roleInteractions = useMemo(() => analysis === 'roles' ? analyzeRoleInteractions(scenario, solution) : null, [analysis, scenario, solution]);
 
   const updateScenario = useCallback((update: (current: TacticalScenario) => TacticalScenario) => {
     setAdjustmentHistory(previous => ({ ...previous, [active]: undefined }));
@@ -105,10 +111,14 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
     const pitch = event.currentTarget.closest<HTMLElement>('.tactical-lab__pitch');
     if (!pitch) return;
     const rect = pitch.getBoundingClientRect();
-    position(id, {
+    if (!rect.width || !rect.height) return;
+    const point = {
       x: Math.max(1, Math.min(19, Math.round((event.clientX - rect.left) / rect.width * 20))),
       y: Math.max(1, Math.min(19, Math.round((event.clientY - rect.top) / rect.height * 20)))
-    });
+    };
+    // Pointer events within the same tactical grid cell need no state update.
+    if (point.x === Number(event.currentTarget.dataset.x) && point.y === Number(event.currentTarget.dataset.y)) return;
+    position(id, point);
   };
 
   const changeInstructions = (next: Partial<TacticalInstructions>) => {
@@ -268,63 +278,21 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
             </select></label>
           </>}
         </div>
-        <section className="tactical-lab__diagnostics" aria-label={t('Tactical diagnostics')}>
-          <h3>{t('Tactical diagnostics')}</h3>
-          <p className="tactical-lab__diagnostic-summary" role="status">
-            {report.lineupEvidence === 'incomplete-xi'
-              ? t('Complete XI needed for shape diagnostics')
-              : report.diagnostics.length === 0
-                ? t('No shape risks detected by these rules')
-                : t('{{count}} tactical cautions', { count: report.diagnostics.length })}
-          </p>
-          {report.diagnostics.length > 0 && <ul className="tactical-lab__diagnostic-list">
-            {report.diagnostics.map(item => <li key={item.id} className="tactical-lab__diagnostic">
-              <strong>{t(item.title)}</strong>
-              <p><b>{t('Why flagged')}</b> {t(item.trigger)}</p>
-              <p><b>{t('Consider')}</b> {t(item.adjustment)}</p>
-              <p><b>{t('Limit')}</b> {t(item.limitation)}</p>
-              {item.id !== 'incomplete-xi' && <Button variant="quiet" disabled={busy}
-                aria-label={t('Apply suggested adjustment to {{finding}}', { finding: t(item.title) })}
-                onClick={() => applyAdjustment(item.id)}>{t('Apply suggested adjustment')}</Button>}
-            </li>)}
-          </ul>}
-          {lastAdjustment?.kind === 'shape' && lastAdjustment.after === scenario && <Button variant="quiet" disabled={busy}
-            onClick={undoAdjustment}>{t('Undo last tactical adjustment')}</Button>}
-          <p className="tactical-lab__diagnostic-provenance">{t('Rule set {{version}}. These checks use manager-authored positions and instructions, and cannot predict match outcomes.', { version: report.model })}</p>
-        </section>
-        <section className="tactical-lab__diagnostics" aria-label={t('Role partnerships')}>
-          <h3>{t('Role partnerships')}</h3>
-          <p className="tactical-lab__diagnostic-summary" role="status">
-            {roleInteractions.status === 'incomplete-xi'
-              ? t('Complete XI needed for role partnership checks')
-              : roleInteractions.findings.length === 0
-                ? t('No role interaction findings under these bounded rules')
-                : t('Role interaction findings: {{count}}', { count: roleInteractions.findings.length })}
-          </p>
-          {roleInteractions.findings.length > 0 && <ul className="tactical-lab__diagnostic-list">
-              {roleInteractions.findings.map(finding => <li key={finding.id + '-' + finding.slotIds.join('-')} className="tactical-lab__diagnostic">
-                <strong>{t(finding.title)}</strong>
-                {finding.playerNames.length > 0 && <p>{t('Assigned players')}: {finding.playerNames.join(', ')}</p>}
-                <p><b>{t('Why flagged')}</b> {t(finding.reason)}</p>
-                <p><b>{t('Consider')}</b> {t(finding.suggestion)}</p>
-                <p><b>{t('Limit')}</b> {t(finding.limitation)}</p>
-                {isRoleAdjustmentId(finding.id) && (
-                  <Button variant="quiet" disabled={busy}
-                    aria-label={finding.id === 'uncovered-central-pivot'
-                      ? t('Apply suggested adjustment to {{finding}}', { finding: t(finding.title) })
-                      : t('Apply suggested adjustment to {{finding}} for {{players}}', {
-                        finding: t(finding.title), players: finding.playerNames.join(', ')
-                      })}
-                    onClick={() => applyRoleAdjustment(finding)}>{t('Apply suggested adjustment')}</Button>
-                )}
-              </li>)}
-            </ul>}
-          {lastAdjustment?.kind === 'role' && lastAdjustment.after === scenario && <Button variant="quiet" disabled={busy}
-            onClick={undoAdjustment}>{t('Undo last tactical adjustment')}</Button>}
-          <p className="tactical-lab__diagnostic-provenance">{t('Role model {{version}} uses roles assigned by Squad Planner and manager-authored positions only, not native FM roles.', { version: roleInteractions.model })}</p>
-        </section>
         <p className="tactical-lab__source">{t('Source: imported player export. Position labels and roles come from the current lineup. Tactical coordinates and instructions are user assumptions. Changing formations resets this plan’s tactical coordinates.')}</p>
       </Surface>
+    </div>
+    <div className="tactical-lab__analysis">
+      <SectionTabs<AnalysisSection> id={analysisId} label={t('Tactical analysis sections')}
+        items={ANALYSIS_SECTIONS.map(item => ({ ...item, label: t(item.label) }))}
+        active={analysis} onChange={setAnalysis}/>
+      <div role="tabpanel" id={analysisId + '-panel'} aria-labelledby={analysisId + '-tab-' + analysis}>
+        {report && <TacticalShapeReport report={report} busy={busy}
+          canUndo={lastAdjustment?.kind === 'shape' && lastAdjustment.after === scenario}
+          undoAdjustment={undoAdjustment} applyAdjustment={applyAdjustment}/>}
+        {roleInteractions && <TacticalRoleReport roleInteractions={roleInteractions} busy={busy}
+          canUndo={lastAdjustment?.kind === 'role' && lastAdjustment.after === scenario}
+          undoAdjustment={undoAdjustment} applyRoleAdjustment={applyRoleAdjustment}/>}
+      </div>
     </div>
   </section>;
 }

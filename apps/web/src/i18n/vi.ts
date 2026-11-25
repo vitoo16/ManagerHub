@@ -806,6 +806,7 @@ export default {
   "low": "Thấp",
   "high": "Cao",
   "Source: imported player export. Position labels and roles come from the current lineup. Tactical coordinates and instructions are user assumptions. Changing formations resets this plan’s tactical coordinates.": "Nguồn: file dữ liệu cầu thủ đã nhập. Nhãn vị trí và vai trò dựa trên đội hình hiện tại. Tọa độ và chỉ dẫn chiến thuật là giả định của bạn. Khi thay đổi sơ đồ, tọa độ chiến thuật của phương án sẽ được đặt lại.",
+  "Tactical analysis sections": "Các mục phân tích chiến thuật",
   "Tactical diagnostics": "Chẩn đoán chiến thuật",
   "Role partnerships": "Tương tác giữa các vai trò",
   "Assigned players": "Cầu thủ liên quan",

@@ -170,13 +170,13 @@
 .tactical-lab__fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .tactical-lab__diagnostics{display:grid;gap:10px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--surface-up)}
 .tactical-lab__diagnostics h3{margin:0}
-.tactical-lab__settings .tactical-lab__diagnostic-summary{margin:0;font-weight:700;color:var(--text);font-size:12px}
+.tactical-lab__analysis .tactical-lab__diagnostic-summary{margin:0;font-weight:700;color:var(--text);font-size:12px}
 .tactical-lab__diagnostic-list{display:grid;gap:10px;list-style:none;margin:0;padding:0}
 .tactical-lab__diagnostic{padding:12px;border:1px solid var(--line);border-left:3px solid var(--accent-strong);border-radius:8px;background:var(--surface)}
 .tactical-lab__diagnostic>strong{display:block;font-size:12px;line-height:1.5}
-.tactical-lab__settings .tactical-lab__diagnostic p{margin:7px 0 0;font-size:11px;max-width:none}
+.tactical-lab__analysis .tactical-lab__diagnostic p{margin:7px 0 0;font-size:11px;max-width:none}
 .tactical-lab__diagnostic b{font-weight:700;color:var(--text)}
-.tactical-lab__settings .tactical-lab__diagnostic-provenance{margin:0;font-size:10px;overflow-wrap:anywhere}
+.tactical-lab__analysis .tactical-lab__diagnostic-provenance{margin:0;font-size:10px;overflow-wrap:anywhere}
 .tactical-lab__settings .tactical-lab__source{border-top:1px solid var(--line);margin:0;padding-top:14px;font-size:10px}
 @media(max-width:950px){.tactical-lab__layout{grid-template-columns:1fr}.tactical-lab__pitch{aspect-ratio:11/10;min-height:430px}}
 @media(max-width:600px){.tactical-lab__pitch{aspect-ratio:9/12;min-height:440px}.tactical-lab__settings{padding:15px}.tactical-lab__actions{width:100%}.tactical-lab__actions .mh-button{flex:1 1 auto}.tactical-lab__fields{grid-template-columns:1fr}}
@@ -192,3 +192,8 @@
 
 .squad-section-panel { min-width: 0; display: grid; gap: 12px; }
 .squad-section-panel > [hidden] { display: none; }
+
+.tactical-lab__analysis { display: grid; gap: 8px; min-width: 0; margin-top: 12px; }
+.tactical-lab__analysis .tactical-lab__diagnostics h3 { font-size: 14px; }
+.tactical-lab__analysis .tactical-lab__diagnostic p, .tactical-lab__analysis .tactical-lab__diagnostic-provenance { color: var(--text-sub); line-height: 1.6; }
+.tactical-lab__analysis .tactical-lab__diagnostic-list { grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); }

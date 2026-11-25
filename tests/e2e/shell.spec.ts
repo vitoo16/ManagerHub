@@ -857,8 +857,10 @@ test('MH-09 role interactions respond to selected XI positions and VI translatio
     .getByRole('button', { name: /Squad Planner/ }).click();
   await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Tactical Lab', exact: true }).click();
   const lab = page.getByRole('region', { name: 'Tactical Lab' });
+  await lab.getByRole('tab', { name: 'Role partnerships', exact: true }).click();
   const report = lab.getByRole('region', { name: 'Role partnerships' });
   await expect(report.getByText('No role interaction findings under these bounded rules')).toBeVisible();
+  await expect(lab.getByRole('region', { name: 'Tactical diagnostics' })).toHaveCount(0);
   await lab.getByLabel('Select tactical position').selectOption('lb');
   const leftBack = lab.locator('[data-slot="lb"]');
   await leftBack.focus();
@@ -883,6 +885,8 @@ test('MH-09 role interactions respond to selected XI positions and VI translatio
   await page.getByRole('combobox', { name: 'Saved player list' })
     .selectOption({ label: 'role-interactions.csv (11 players)' });
   await page.getByRole('button', { name: 'Open saved list' }).click();
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Tactical Lab', exact: true }).click();
+  await lab.getByRole('tab', { name: 'Role partnerships', exact: true }).click();
   await lab.getByRole('button', { name: 'Restore tactical scenarios' }).click();
   await expect(report.getByText('Assigned players: Left Defender, Left Wing', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Switch language to Vietnamese' }).click();
@@ -902,6 +906,7 @@ test('MH-09 role partnerships keep Plan B formation and cover independent', asyn
     .getByRole('button', { name: /Squad Planner/ }).click();
   await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Tactical Lab', exact: true }).click();
   const lab = page.getByRole('region', { name: 'Tactical Lab' });
+  await lab.getByRole('tab', { name: 'Role partnerships', exact: true }).click();
   const report = lab.getByRole('region', { name: 'Role partnerships' });
   await page.getByRole('button', { name: 'Plan B', exact: true }).click();
   await page.getByLabel('Formation').selectOption('4-2-3-1');
@@ -935,6 +940,7 @@ test('MH-09 Step 3 central dynamics: detects uncovered pivot and congestion with
     .getByRole('button', { name: /Squad Planner/ }).click();
   await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Tactical Lab', exact: true }).click();
   const lab = page.getByRole('region', { name: 'Tactical Lab' });
+  await lab.getByRole('tab', { name: 'Role partnerships', exact: true }).click();
   const report = lab.getByRole('region', { name: 'Role partnerships' });
 
   // In 4-3-3: move all 3 central midfielders (lcm, cm, rcm) up to attacking depth (y <= 8)
@@ -951,6 +957,10 @@ test('MH-09 Step 3 central dynamics: detects uncovered pivot and congestion with
   // Apply suggested adjustment to uncovered central pivot
   await report.getByRole('button', { name: 'Apply suggested adjustment to Uncovered central pivot' }).click();
   await expect(report.getByText('Uncovered central pivot')).not.toBeVisible();
+  await lab.getByRole('tab', { name: 'Tactical diagnostics', exact: true }).click();
+  await expect(report).toHaveCount(0);
+  await lab.getByRole('tab', { name: 'Role partnerships', exact: true }).click();
+  await expect(report.getByRole('button', { name: 'Undo last tactical adjustment' })).toBeVisible();
 
   // Undo restores the warning
   await report.getByRole('button', { name: 'Undo last tactical adjustment' }).click();
@@ -972,6 +982,7 @@ test('MH-09 applies the selected flank card and preserves independent undo histo
     .getByRole('button', { name: /Squad Planner/ }).click();
   await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Tactical Lab', exact: true }).click();
   const lab = page.getByRole('region', { name: 'Tactical Lab' });
+  await lab.getByRole('tab', { name: 'Role partnerships', exact: true }).click();
   const report = lab.getByRole('region', { name: 'Role partnerships' });
   const left = lab.locator('[data-slot="lb"]');
   const right = lab.locator('[data-slot="rb"]');
@@ -1021,6 +1032,7 @@ test('Tactical diagnostics suppress shape warnings for incomplete XI', async ({ 
   await expect(diagnostics.getByText('Complete the XI to assess tactical shape')).toBeVisible();
   await expect(diagnostics.getByText('High line with low pressing')).toHaveCount(0);
   await expect(diagnostics.getByRole('button', { name: /Apply suggested adjustment/ })).toHaveCount(0);
+  await lab.getByRole('tab', { name: 'Role partnerships', exact: true }).click();
   const roleReport = lab.getByRole('region', { name: 'Role partnerships' });
   await expect(roleReport.getByText('Role partnership checks need a complete XI')).toBeVisible();
   await expect(roleReport.getByText('Advancing wing-back and winger share a flank')).toHaveCount(0);

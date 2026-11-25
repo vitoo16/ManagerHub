@@ -146,3 +146,6 @@ Classic Editor capacity is checked by the same pure helper at search and Quick E
 
 ### Mass Edit safety and reuse
 Single player/staff/club edits reuse existing domain mass-overlay builders (including canonical alias handling); stadium keeps its existing small patch. Mass Edit player controls live in their own component, accept only explicitly entered whole numbers in range, exclude unknown age when filtering, preview the first eight matching records and require explicit confirmation of exact field values and target count. Blank fields mean unchanged; no implicit morale or PA edits. Existing club presets remain available. Tests added; runtime verification pending.
+
+### Tactical analysis density
+The editable tactical pitch and phase/instruction controls remain available while analysis switches between shape diagnostics and role partnerships. Shared SectionTabs mounts only the selected report; the domain analysis is memoized against scenario/lineup and selected report. Diagnostic cards use responsive bounded columns, preserve reasons, limitations and reversible adjustments. Undo history remains parent-owned and survives analysis tab switches. Pointer movement within an unchanged grid cell skips the position update. Existing projection/CSV semantics unchanged; runtime measurement and tests pending.
