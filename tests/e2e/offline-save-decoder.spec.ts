@@ -676,3 +676,37 @@ test('Classic Editor shares Quick Edit records and draft state across workspaces
   await expect(editor.getByRole('group', { name: 'Open records' })).toHaveCount(0);
   await expect(editor.getByLabel('Actual CA (1–200)')).toHaveCount(0);
 });
+
+
+test('mass edit requires explicit fields and confirmation and leaves PA and morale unchanged for CA-only edits', async ({ page }) => {
+  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+  await page.goto('/#/saves');
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'mass-explicit.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const toolbar = page.getByRole('region', { name: 'Active save session' });
+  await expect(toolbar).toBeVisible({ timeout: 20_000 });
+  await toolbar.getByRole('button', { name: 'Editor mode' }).click();
+  const row = page.locator('.save-db-explorer tbody tr', { hasText: 'Owen Shaw' });
+  await row.getByRole('button', { name: 'Edit' }).click();
+  const dialog = page.getByRole('dialog');
+  const beforePa = await dialog.getByLabel('Actual PA (1–200)').inputValue();
+  const beforeMorale = await dialog.getByLabel('Morale (1–20)').inputValue();
+  await dialog.getByRole('button', { name: 'Done' }).click();
+  await toolbar.getByRole('button', { name: 'Presets & Mass Edit' }).click();
+  const apply = dialog.getByRole('button', { name: 'Apply mass edit to draft' });
+  await expect(apply).toBeDisabled();
+  await dialog.getByLabel('Filter by club', { exact: true }).selectOption('all');
+  await dialog.getByLabel('Optional Actual CA (1–200)').fill('190');
+  page.once('dialog', prompt => prompt.dismiss());
+  await apply.click();
+  await expect(toolbar.getByRole('button', { name: 'Undo last edit' })).toBeDisabled();
+  page.once('dialog', prompt => prompt.accept());
+  await apply.click();
+  await expect(toolbar.getByRole('button', { name: 'Undo last edit' })).toBeEnabled();
+  await dialog.getByRole('button', { name: 'Done' }).click();
+  await row.getByRole('button', { name: 'Edit' }).click();
+  await expect(dialog.getByLabel('Actual CA (1–200)')).toHaveValue('190');
+  await expect(dialog.getByLabel('Actual PA (1–200)')).toHaveValue(beforePa);
+  await expect(dialog.getByLabel('Morale (1–20)')).toHaveValue(beforeMorale);
+});

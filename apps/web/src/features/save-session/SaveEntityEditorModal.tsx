@@ -4,6 +4,8 @@ import {
   buildClubSquadPresetOverlay,
   buildEditedSaveFileName,
   buildMassEditPlayersOverlay,
+  buildMassEditStaffOverlay,
+  buildMassEditClubsOverlay,
   buildPlayerPresetPatch,
   summarizeDraftChanges,
   type ClubDraftPatch,
@@ -16,7 +18,7 @@ import {
   type StaffDraftPatch
 } from '@managerhub/domain/fm2013-offline';
 import { Button, Icon, Status } from '@managerhub/ui';
-import { clampInt } from './editor-number';
+import { MassEditPlayerPanel } from './MassEditPlayerPanel';
 import { useDialogFocus } from '../../useDialogFocus';
 import { PlayerEditorRecord } from './PlayerEditorRecord';
 import { StaffEditorRecord } from './StaffEditorRecord';
@@ -89,14 +91,6 @@ function SaveEntityEditorModal({
   const [diffPage, setDiffPage] = useState(0);
   const [outputName, setOutputName] = useState(() => buildEditedSaveFileName(baseDatabase.source.fileName));
 
-  // Mass-edit filter state
-  const [massClubUid, setMassClubUid] = useState<string>(() =>
-    managedClubUid !== null ? String(managedClubUid) : 'all'
-  );
-  const [massMaxAge, setMassMaxAge] = useState<string>('99');
-  const [massMorale, setMassMorale] = useState<string>('20');
-  const [massCaBoost, setMassCaBoost] = useState<string>('');
-
   useEffect(() => {
     if (embedded) return;
     const onKeyDown = (event: KeyboardEvent) => {
@@ -129,48 +123,9 @@ function SaveEntityEditorModal({
   const currentDiffPage = Math.min(diffPage, diffPageCount - 1);
   const diffStart = currentDiffPage * diffPageSize;
 
-  const clubsWithPlayers = useMemo(
-    () => target.kind === 'mass_edit' ? workingDatabase.clubs
-      .filter(c => c.playerCount > 0)
-      .sort((a, b) => b.playerCount - a.playerCount || a.fullName.localeCompare(b.fullName)) : [],
-    [workingDatabase.clubs, target.kind]
-  );
-
-  const massTargetPlayers = useMemo(() => {
-    if (target.kind !== 'mass_edit') return [];
-    const clubUid = massClubUid === 'all' ? null : Number(massClubUid);
-    const maxAge = clampInt(massMaxAge, 99, 14, 99);
-    return workingDatabase.players.filter(p => {
-      if (clubUid !== null && p.clubUid !== clubUid) return false;
-      if (p.calendarAge !== null && p.calendarAge > maxAge) return false;
-      return true;
-    });
-  }, [workingDatabase.players, massClubUid, massMaxAge, target.kind]);
-
   const applyPlayerField = (label: string, patch: PlayerDraftPatch) => {
     if (!player) return;
-    onCommitOverlay(label, cur => ({
-      ...cur,
-      players: {
-        ...cur.players,
-        [player.uid]: {
-          ...cur.players[player.uid],
-          ...patch,
-          ...(cur.players[player.uid]?.positions || patch.positions
-            ? { positions: { ...cur.players[player.uid]?.positions, ...patch.positions } }
-            : {}),
-          ...(cur.players[player.uid]?.attributes || patch.attributes
-            ? { attributes: { ...cur.players[player.uid]?.attributes, ...patch.attributes } }
-            : {}),
-          ...(cur.players[player.uid]?.hiddenPlaying || patch.hiddenPlaying
-            ? { hiddenPlaying: { ...cur.players[player.uid]?.hiddenPlaying, ...patch.hiddenPlaying } }
-            : {}),
-          ...(cur.players[player.uid]?.personality || patch.personality
-            ? { personality: { ...cur.players[player.uid]?.personality, ...patch.personality } }
-            : {})
-        }
-      }
-    }));
+    onCommitOverlay(label, cur => buildMassEditPlayersOverlay(cur, [player.uid], patch));
   };
 
   const applyPlayerPreset = (preset: PlayerPresetKind, label: string) => {
@@ -182,33 +137,12 @@ function SaveEntityEditorModal({
 
   const applyStaffField = (label: string, patch: StaffDraftPatch) => {
     if (!staffMember) return;
-    onCommitOverlay(label, cur => ({
-      ...cur,
-      staff: {
-        ...cur.staff,
-        [staffMember.uid]: {
-          ...cur.staff[staffMember.uid],
-          ...patch,
-          ...(cur.staff[staffMember.uid]?.attributes || patch.attributes
-            ? { attributes: { ...cur.staff[staffMember.uid]?.attributes, ...patch.attributes } }
-            : {})
-        }
-      }
-    }));
+    onCommitOverlay(label, cur => buildMassEditStaffOverlay(cur, [staffMember.uid], patch));
   };
 
   const applyClubField = (label: string, patch: ClubDraftPatch) => {
     if (!club) return;
-    onCommitOverlay(label, cur => ({
-      ...cur,
-      clubs: {
-        ...cur.clubs,
-        [club.uid]: {
-          ...cur.clubs[club.uid],
-          ...patch
-        }
-      }
-    }));
+    onCommitOverlay(label, cur => buildMassEditClubsOverlay(cur, [club.uid], patch));
   };
 
   const applyClubPreset = (targetClubUid: number, preset: ClubSquadPresetKind, label: string) => {
@@ -228,22 +162,6 @@ function SaveEntityEditorModal({
         }
       }
     }));
-  };
-
-  const applyMassEdit = () => {
-    if (massTargetPlayers.length === 0) return;
-    const patch: PlayerDraftPatch = {
-      morale: clampInt(massMorale, 20, 1, 20),
-      ...(massCaBoost.trim() !== ''
-        ? { actualCa: clampInt(massCaBoost, 160, 1, 200) }
-        : {})
-    };
-    const uids = massTargetPlayers.map(p => p.uid);
-    onCommitOverlay(
-      `Mass edit (${uids.length})`,
-      cur => buildMassEditPlayersOverlay(cur, uids, patch)
-    );
-    setNotice(t('Applied mass edit to {{count}} players in draft.', { count: uids.length }));
   };
 
   const handleExeChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -334,58 +252,9 @@ function SaveEntityEditorModal({
               </div>
             )}
 
-            <div className="editor-section">
-              <h3>{t('Mass Edit Players')} ({massTargetPlayers.length.toLocaleString()} {t('matched')})</h3>
-              <div className="editor-field-grid">
-                <label className="editor-field">
-                  <span>{t('Filter by club')}</span>
-                  <select value={massClubUid} onChange={e => setMassClubUid(e.target.value)}>
-                    <option value="all">{t('All clubs')}</option>
-                    {clubsWithPlayers.map(c => (
-                      <option key={c.uid} value={String(c.uid)}>
-                        {c.shortName || c.fullName} ({c.playerCount})
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="editor-field">
-                  <span>{t('Maximum age')}</span>
-                  <input
-                    type="number"
-                    min={14}
-                    max={99}
-                    value={massMaxAge}
-                    onChange={e => setMassMaxAge(e.target.value)}
-                  />
-                </label>
-                <label className="editor-field">
-                  <span>{t('Set morale')} (1–20)</span>
-                  <input
-                    type="number"
-                    min={1}
-                    max={20}
-                    value={massMorale}
-                    onChange={e => setMassMorale(e.target.value)}
-                  />
-                </label>
-                <label className="editor-field">
-                  <span>{t('Optional Actual CA')} (1–200)</span>
-                  <input
-                    type="number"
-                    min={1}
-                    max={200}
-                    placeholder="—"
-                    value={massCaBoost}
-                    onChange={e => setMassCaBoost(e.target.value)}
-                  />
-                </label>
-              </div>
-              <div>
-                <Button type="button" variant="primary" disabled={massTargetPlayers.length === 0} onClick={applyMassEdit}>
-                  {t('Apply mass edit to draft')}
-                </Button>
-              </div>
-            </div>
+            <MassEditPlayerPanel database={workingDatabase} managedClubUid={managedClubUid}
+              onApply={(uids, patch) => onCommitOverlay(`Mass edit (${uids.length})`,
+                cur => buildMassEditPlayersOverlay(cur, uids, patch))}/>
           </>
         )}
 
