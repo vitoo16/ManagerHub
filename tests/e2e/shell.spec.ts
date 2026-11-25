@@ -1578,6 +1578,8 @@ test('loads the shared Be Vietnam Pro faces locally without a font CDN', async (
     return route.abort();
   });
   await page.goto('/');
+  const heading = page.locator('.hero').getByRole('heading', { level: 1 });
+  await expect(heading).toBeVisible();
   const result = await page.evaluate(async () => {
     const sample = 'Tiếng Việt: Đặng Nguyễn Ứng dụng 0123456789';
     const descriptors = ['400', '500', '600', '700', '800'].map(weight => `${weight} 16px "Be Vietnam Pro"`);
@@ -1586,12 +1588,11 @@ test('loads the shared Be Vietnam Pro faces locally without a font CDN', async (
     await document.fonts.ready;
     return {
       family: getComputedStyle(document.body).fontFamily,
-      headingFamily: getComputedStyle(document.querySelector('h1')!).fontFamily,
       loaded: faces.every(group => group.length > 0 && group.every(face => face.status === 'loaded'))
     };
   });
   expect(result.family).toContain('Be Vietnam Pro');
-  expect(result.headingFamily).toContain('Be Vietnam Pro');
+  await expect(heading).toHaveCSS('font-family', /Be Vietnam Pro/);
   expect(result.loaded).toBe(true);
   expect(externalFontRequests).toEqual([]);
 });
