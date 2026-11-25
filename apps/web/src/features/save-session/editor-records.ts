@@ -19,10 +19,15 @@ export function createRecordState(record: EditorRecordTarget): EditorRecordState
   return { records: [record], active: record };
 }
 
+export function canOpenEditorRecord(state: EditorRecordState | null, record: EditorRecordTarget): boolean {
+  return !state || state.records.length < MAX_EDITOR_RECORDS ||
+    state.records.some(item => recordKey(item) === recordKey(record));
+}
+
 export function openEditorRecord(state: EditorRecordState, record: EditorRecordTarget): EditorRecordState {
   const existing = state.records.find(item => recordKey(item) === recordKey(record));
   if (existing) return recordKey(state.active) === recordKey(existing) ? state : { ...state, active: existing };
-  if (state.records.length >= MAX_EDITOR_RECORDS) return state;
+  if (!canOpenEditorRecord(state, record)) return state;
   return { records: [...state.records, record], active: record };
 }
 

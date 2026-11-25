@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { closeEditorRecord, createRecordState, MAX_EDITOR_RECORDS, MAX_EDITOR_SEARCH_RESULTS, openEditorRecord, recordKey, recordName, searchEditorRecords, type EditorRecordTarget } from './editor-records';
+import { canOpenEditorRecord, closeEditorRecord, createRecordState, MAX_EDITOR_RECORDS, MAX_EDITOR_SEARCH_RESULTS, openEditorRecord, recordKey, recordName, searchEditorRecords, type EditorRecordTarget } from './editor-records';
 
 const player = (uid: number): EditorRecordTarget => ({ kind: 'player', uid });
 const club: EditorRecordTarget = { kind: 'club', uid: 1 };
@@ -29,6 +29,9 @@ describe('editor record navigation', () => {
   it('bounds open records but still allows switching to an existing record', () => {
     let state = createRecordState(player(1));
     for (let uid = 2; uid <= MAX_EDITOR_RECORDS; uid++) state = openEditorRecord(state, player(uid));
+    expect(canOpenEditorRecord(null, club)).toBe(true);
+    expect(canOpenEditorRecord(state, club)).toBe(false);
+    expect(canOpenEditorRecord(state, player(1))).toBe(true);
     expect(openEditorRecord(state, club)).toBe(state);
     const switched = openEditorRecord(state, player(1));
     expect(switched.active).toEqual(player(1));

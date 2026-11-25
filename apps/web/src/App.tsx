@@ -15,7 +15,7 @@ import type {
   Fm2013LangDbLookup,
   SaveDraftOverlay
 } from '@managerhub/domain/fm2013-offline';
-import { closeEditorRecord, createRecordState, openEditorRecord, type EditorModalTarget, type EditorRecordState, type EditorRecordTarget } from './features/save-session/editor-records';
+import { canOpenEditorRecord, closeEditorRecord, createRecordState, openEditorRecord, type EditorModalTarget, type EditorRecordState, type EditorRecordTarget } from './features/save-session/editor-records';
 import { Button, Icon, Status, Surface } from '@managerhub/ui';
 import { useReducedMotion } from '@managerhub/motion/reduced';
 import { readableSaveInspectionError } from './i18n/save-inspection-copy';
@@ -190,49 +190,46 @@ export default function App() {
 
   const saveMode = session.mode;
   const saveSource = session.source?.kind === 'save' ? session.source : null;
+  // Depend on the actual projection inputs, not the whole session source.
+  // Club filters and navigation must not rebuild the decoded database or the unrelated dataset.
+  const nativeDatabase = saveSource?.baseDatabase ?? null;
+  const offlineTools = saveSource?.tools ?? null;
+  const draftOverlay = saveSource?.editorState.present ?? null;
+  const exportedDataset = session.source?.kind === 'export' ? session.source.dataset : null;
   const baseDecodedSave = useMemo(() => {
-    if (!saveSource) return null;
+    if (!nativeDatabase || !offlineTools) return null;
     return langDbLookup
-      ? saveSource.tools.applyLangDbToSaveDatabase(saveSource.baseDatabase, langDbLookup)
-      : saveSource.baseDatabase;
-  }, [saveSource, langDbLookup]);
+      ? offlineTools.applyLangDbToSaveDatabase(nativeDatabase, langDbLookup)
+      : nativeDatabase;
+  }, [nativeDatabase, offlineTools, langDbLookup]);
 
   const activeDecodedSave = useMemo(() => {
-    if (!saveSource || !baseDecodedSave) return null;
-    return saveSource.tools.applyDraftOverlayToDatabase(baseDecodedSave, saveSource.editorState.present);
-  }, [saveSource, baseDecodedSave]);
+    if (!offlineTools || !baseDecodedSave || !draftOverlay) return null;
+    return offlineTools.applyDraftOverlayToDatabase(baseDecodedSave, draftOverlay);
+  }, [offlineTools, baseDecodedSave, draftOverlay]);
 
   const activeSaveId = activeDecodedSave?.source.saveId ?? null;
   const managedClubUid = saveSource?.managedClubUid ?? null;
   const playerLabClubFilterUid = saveSource?.playerLabClubFilterUid ?? null;
 
   const dirtyEntityCount = useMemo(
-    () => (saveSource ? saveSource.tools.countDirtyEntities(saveSource.editorState.present) : 0),
-    [saveSource]
+    () => offlineTools && draftOverlay ? offlineTools.countDirtyEntities(draftOverlay) : 0,
+    [offlineTools, draftOverlay]
   );
   const dirtyFieldCount = useMemo(
-    () => (saveSource ? saveSource.tools.countDirtyFields(saveSource.editorState.present) : 0),
-    [saveSource]
+    () => offlineTools && draftOverlay ? offlineTools.countDirtyFields(draftOverlay) : 0,
+    [offlineTools, draftOverlay]
   );
 
-  // Squad Planner & Overview bind to `managedClubUid`; Player Lab binds independently to `playerLabClubFilterUid` (`AUD-03`).
-  const squadDataset = useMemo(() => {
-    const source = session.source;
-    if (!source) return null;
-    if (source.kind === 'export') return source.dataset;
-    return activeDecodedSave
-      ? source.tools.saveDatabaseToPlayerDataset(activeDecodedSave, session.mode, { clubUid: source.managedClubUid })
-      : null;
-  }, [session.source, session.mode, activeDecodedSave]);
+  const squadDataset = useMemo(() => activeDecodedSave && offlineTools
+    ? offlineTools.saveDatabaseToPlayerDataset(activeDecodedSave, saveMode, { clubUid: managedClubUid })
+    : exportedDataset,
+  [activeDecodedSave, offlineTools, saveMode, managedClubUid, exportedDataset]);
 
-  const playerLabDataset = useMemo(() => {
-    const source = session.source;
-    if (!source) return null;
-    if (source.kind === 'export') return source.dataset;
-    return activeDecodedSave
-      ? source.tools.saveDatabaseToPlayerDataset(activeDecodedSave, session.mode, { clubUid: source.playerLabClubFilterUid })
-      : null;
-  }, [session.source, session.mode, activeDecodedSave]);
+  const playerLabDataset = useMemo(() => activeDecodedSave && offlineTools
+    ? offlineTools.saveDatabaseToPlayerDataset(activeDecodedSave, saveMode, { clubUid: playerLabClubFilterUid })
+    : exportedDataset,
+  [activeDecodedSave, offlineTools, saveMode, playerLabClubFilterUid, exportedDataset]);
 
   const activeRawSaveFile = activeSaveId ? (rawSaveFiles[activeSaveId] ?? null) : null;
   const effectiveSigningKey = runtimeSigningKey;
@@ -407,7 +404,8 @@ export default function App() {
     if (openPendingRef.current || writePendingRef.current) return;
     setWriteError(null);
     setSession(current => {
-      if (current.source?.kind !== 'save' || !baseDecodedSave) return current;
+      if (current.source?.kind !== 'save' || current.mode !== 'editor' || !baseDecodedSave ||
+          current.source.baseDatabase.source.saveId !== baseDecodedSave.source.saveId) return current;
       try {
         const nextEditorState = current.source.tools.commitEditorTransaction(
           current.source.editorState,
@@ -611,9 +609,15 @@ export default function App() {
   }, [saveMode]);
   const onQuickEdit = useCallback((record: EditorRecordTarget) => {
     if (saveMode !== 'editor' || !activeSaveId || openPendingRef.current || writePendingRef.current) return;
+    if (!canOpenEditorRecord(editorRecords, record)) {
+      // Never show another record under the requested edit action when capacity is exhausted.
+      setEditorModalTarget(null);
+      navigate('editor');
+      return;
+    }
     onOpenEditorRecord(record);
     setEditorModalTarget(record);
-  }, [saveMode, activeSaveId, onOpenEditorRecord]);
+  }, [saveMode, activeSaveId, editorRecords, onOpenEditorRecord, navigate]);
   const onOpenClassicEditor = useCallback(() => {
     if (writePendingRef.current) return;
     setEditorModalTarget(null);

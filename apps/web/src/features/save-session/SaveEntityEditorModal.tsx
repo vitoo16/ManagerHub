@@ -86,6 +86,7 @@ function SaveEntityEditorModal({
   const target = browsing ? recordState?.active ?? initialTarget : initialTarget;
   const activeRecordKey = browsing && recordState ? recordKey(recordState.active) : null;
   useEffect(() => { setNotice(null); }, [activeRecordKey]);
+  const [diffPage, setDiffPage] = useState(0);
   const [outputName, setOutputName] = useState(() => buildEditedSaveFileName(baseDatabase.source.fileName));
 
   // Mass-edit filter state
@@ -122,6 +123,11 @@ function SaveEntityEditorModal({
     () => target.kind === 'save_as' ? summarizeDraftChanges(baseDatabase, overlay) : [],
     [baseDatabase, overlay, target.kind]
   );
+
+  const diffPageSize = 50;
+  const diffPageCount = Math.max(1, Math.ceil(diffEntries.length / diffPageSize));
+  const currentDiffPage = Math.min(diffPage, diffPageCount - 1);
+  const diffStart = currentDiffPage * diffPageSize;
 
   const clubsWithPlayers = useMemo(
     () => target.kind === 'mass_edit' ? workingDatabase.clubs
@@ -430,7 +436,7 @@ function SaveEntityEditorModal({
                     </tr>
                   </thead>
                   <tbody>
-                    {diffEntries.slice(0, 200).map((item, idx) => (
+                    {diffEntries.slice(diffStart, diffStart + diffPageSize).map((item, idx) => (
                       <tr key={`${item.entityKind}-${item.uid}-${item.field}-${idx}`}>
                         <td>{item.entityKind}</td>
                         <td><strong>{item.entityName}</strong></td>
@@ -443,6 +449,13 @@ function SaveEntityEditorModal({
                 </table>
               </div>
             )}
+            {diffPageCount > 1 && <div className="save-db-actions" role="group" aria-label={t('Pending field changes')}>
+              <Button type="button" disabled={currentDiffPage === 0} onClick={() => setDiffPage(currentDiffPage - 1)}>{t('Previous page')}</Button>
+              <span aria-live="polite">{t('Showing {{from}}–{{to}} of {{total}}', {
+                from: diffStart + 1, to: Math.min(diffEntries.length, diffStart + diffPageSize), total: diffEntries.length
+              })}</span>
+              <Button type="button" disabled={currentDiffPage + 1 >= diffPageCount} onClick={() => setDiffPage(currentDiffPage + 1)}>{t('Next page')}</Button>
+            </div>}
           </div>
         )}
 

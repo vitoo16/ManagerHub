@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { DecodedSaveDatabase } from '@managerhub/domain/fm2013-offline';
 import { Button, Icon } from '@managerhub/ui';
 import {
-  MAX_EDITOR_RECORDS, MAX_EDITOR_SEARCH_RESULTS, recordKey, recordName, searchEditorRecords,
+  MAX_EDITOR_RECORDS, MAX_EDITOR_SEARCH_RESULTS, canOpenEditorRecord, recordKey, recordName, searchEditorRecords,
   type EditorRecordKind, type EditorRecordState, type EditorRecordTarget
 } from './editor-records';
 
@@ -77,7 +77,7 @@ export function EditorRecordNavigator({ database, state, onOpen, onClose }: Prop
           {!searching && results.length === 0 && <p className="editor-record-hint" role="status">{t('No matching records.')}</p>}
           {results.map(result => (
             <Button key={recordKey(result.target)} type="button"
-              disabled={searching || (atLimit && !records.some(record => recordKey(record) === recordKey(result.target)))}
+              disabled={searching || !canOpenEditorRecord(state, result.target)}
               onClick={() => {
                 onOpen(result.target);
                 setQuery('');
