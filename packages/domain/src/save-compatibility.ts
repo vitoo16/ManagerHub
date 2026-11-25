@@ -31,7 +31,50 @@ export interface SaveCompatibilityProfile {
   readonly readableDomains: readonly SaveDataDomain[];
 }
 
-export const SAVE_COMPATIBILITY_PROFILES: readonly SaveCompatibilityProfile[] = [];
+export const FM2013_VERIFIED_READ_DOMAINS: readonly SaveDataDomain[] = [
+  'player_identity',
+  'attributes',
+  'actual_ca',
+  'potential_ability',
+  'positions',
+  'club_links',
+  'contracts',
+  'finance'
+];
+
+const OBSERVED_VERIFIED_FM2013_AFE_BUILDS = [
+  '13.0.0d288310',
+  '13.0.0d293246',
+  '13.0.0d293986',
+  '13.0.0d302366',
+  '13.0.0d308866',
+  '13.0.2b325285',
+  '13.0.2b326143',
+  '13.3',
+  '13.3.3',
+  '13.3.3f359652'
+] as const;
+
+export const SAVE_COMPATIBILITY_PROFILES: readonly SaveCompatibilityProfile[] = [
+  ...OBSERVED_VERIFIED_FM2013_AFE_BUILDS.map((build): SaveCompatibilityProfile => ({
+    id: `fm2013-${build}-afe-offline`,
+    family: 'afe',
+    edition: 'FM2013',
+    build,
+    adapterVersion: 'fm2013-offline-1.0.0',
+    verification: 'verified',
+    readableDomains: FM2013_VERIFIED_READ_DOMAINS
+  })),
+  {
+    id: 'fm2013-13.3.3-fmf-offline',
+    family: 'fmf',
+    edition: 'FM2013',
+    build: '13.3.3',
+    adapterVersion: 'fm2013-offline-1.0.0',
+    verification: 'research',
+    readableDomains: FM2013_VERIFIED_READ_DOMAINS
+  }
+];
 
 export type SaveCompatibilityResolution =
   | {

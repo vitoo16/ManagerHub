@@ -1,7 +1,8 @@
-import { memo, type Dispatch, type SetStateAction } from 'react';
+import { memo, useId, useMemo, type Dispatch, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FORMATIONS, type PlayerDataset, type SquadPlanKey, type SquadPlans, type TacticalScenarios } from '@managerhub/domain';
-import { Icon, SectionHeading } from '@managerhub/ui';
+import type { DecodedSaveDatabase } from '@managerhub/domain/fm2013-offline';
+import { Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
 import TacticalPitch from './features/squad-planner/components/TacticalPitch';
 import TacticalLab from './features/squad-planner/components/TacticalLab';
 import LineupResults from './features/squad-planner/components/LineupResults';
@@ -16,11 +17,29 @@ import SquadEmptyState from './features/squad-planner/components/SquadEmptyState
 import SavedSquadRosterPicker from './features/squad-planner/components/SavedSquadRosterPicker';
 import SquadReportActions from './features/squad-planner/components/SquadReportActions';
 import { useSquadPlannerModel } from './features/squad-planner/hooks/useSquadPlannerModel';
+import { registerSaveDbI18n } from './i18n/register-save-db-i18n';
 import './squad-workspace.css';
 
-function SquadWorkspaceView({dataset,onImport,onDataset,plans,setPlans,active,setActive,tacticalScenarios,setTacticalScenarios}:{
+registerSaveDbI18n();
+
+function SquadWorkspaceView({
+  dataset,
+  onImport,
+  onOpenSaves,
+  onDataset,
+  plans,
+  setPlans,
+  active,
+  setActive,
+  tacticalScenarios,
+  setTacticalScenarios,
+  activeDecodedSave = null,
+  clubFilterUid = null,
+  onClubFilterChange
+}: {
   dataset: PlayerDataset | null;
   onImport: () => void;
+  onOpenSaves?: () => void;
   onDataset: (dataset: PlayerDataset) => void;
   plans: SquadPlans;
   setPlans: Dispatch<SetStateAction<SquadPlans>>;
@@ -28,12 +47,25 @@ function SquadWorkspaceView({dataset,onImport,onDataset,plans,setPlans,active,se
   setActive: Dispatch<SetStateAction<SquadPlanKey>>;
   tacticalScenarios: TacticalScenarios;
   setTacticalScenarios: Dispatch<SetStateAction<TacticalScenarios>>;
-}){
+  activeDecodedSave?: DecodedSaveDatabase | null;
+  clubFilterUid?: number | null;
+  onClubFilterChange?: (clubUid: number | null) => void;
+}) {
   const { t } = useTranslation();
+  const clubSelectId = useId();
   const {
     plan, solution, solutions, unknownPositions,
     changeFormation, onPin, onExclude, reset, onCopyPlanAtoB
   } = useSquadPlannerModel({ dataset, plans, setPlans, active, setActive });
+
+  const clubsWithPlayers = useMemo(() => {
+    if (!activeDecodedSave) return [];
+    return activeDecodedSave.clubs
+      .filter(club => club.playerCount > 0)
+      .sort((a, b) => b.playerCount - a.playerCount || a.fullName.localeCompare(b.fullName));
+  }, [activeDecodedSave]);
+
+  const isDecodedSource = dataset?.source === 'decoded_save' && activeDecodedSave !== null;
 
   return <div className="view-flow">
     <div className="page-title">
@@ -43,8 +75,39 @@ function SquadWorkspaceView({dataset,onImport,onDataset,plans,setPlans,active,se
     </div>
     {!dataset ? <>
       <SavedSquadRosterPicker onDataset={onDataset}/>
-      <SquadEmptyState onImport={onImport}/>
+      <SquadEmptyState onImport={onImport} onOpenSaves={onOpenSaves}/>
     </> : <>
+      {isDecodedSource && activeDecodedSave && onClubFilterChange && (
+        <Surface className="squad-decoded-bar">
+          <div className="squad-decoded-bar__meta">
+            <Status tone="positive">{t('Decoded save active')}</Status>
+            <strong>{activeDecodedSave.source.fileName}</strong>
+            <span>
+              {activeDecodedSave.source.edition} {activeDecodedSave.source.build}
+              {activeDecodedSave.source.gameDate ? ` · ${activeDecodedSave.source.gameDate}` : ''}
+            </span>
+          </div>
+          <label className="squad-decoded-bar__select" htmlFor={clubSelectId}>
+            <span>{t('Active squad club')}</span>
+            <select
+              id={clubSelectId}
+              aria-label={t('Select club squad from save')}
+              value={clubFilterUid === null ? 'all' : String(clubFilterUid)}
+              onChange={event => {
+                const value = event.currentTarget.value;
+                onClubFilterChange(value === 'all' ? null : Number(value));
+              }}
+            >
+              <option value="all">{t('All players in save')} ({activeDecodedSave.counts.players.toLocaleString()})</option>
+              {clubsWithPlayers.map(club => (
+                <option key={club.uid} value={String(club.uid)}>
+                  {club.shortName || club.fullName} ({club.playerCount})
+                </option>
+              ))}
+            </select>
+          </label>
+        </Surface>
+      )}
       <SquadScenarioHeader active={active} onSetActive={setActive} onCopyPlanAtoB={onCopyPlanAtoB}/>
       <SquadPlanLibraryControls key={dataset.importedAt + ':' + dataset.fileName}
         dataset={dataset} plans={plans} active={active}

@@ -6,13 +6,26 @@ import { readableImportWarning } from '../../../i18n/player-import-copy';
 
 function PlayerDatasetSummary({ dataset }: { dataset: PlayerDataset }) {
   const { t } = useTranslation();
+  const isDecoded = dataset.source === 'decoded_save';
   return <>
     <div className="dataset-banner">
-      <div><strong>{dataset.players.length.toLocaleString()} {t('player records')}</strong><span>{dataset.fileName} · {dataset.attributeColumns.length} {t('recognized attributes')}</span></div>
-      <Status tone="warning">{t("From your export (not game-verified)")}</Status>
+      <div>
+        <strong>{dataset.players.length.toLocaleString()} {t('player records')}</strong>
+        <span>{dataset.fileName} · {dataset.attributeColumns.length} {t('recognized attributes')}</span>
+      </div>
+      <Status tone={isDecoded ? 'positive' : 'warning'}>
+        {t(isDecoded ? 'Decoded from save · Verified' : 'From your export (not game-verified)')}
+      </Status>
     </div>
     {dataset.warnings.length > 0 && <div className="dataset-warnings" role="status">
-      {dataset.warnings.map((warning, index) => <p key={index}><Icon name="warning" size={14}/>{t(readableImportWarning(warning))}</p>)}
+      {dataset.warnings.map((warning, index) => (
+        <p key={index}>
+          <Icon name={isDecoded ? 'shield' : 'warning'} size={14}/>
+          {isDecoded
+            ? t('Realism mode hides Actual CA, Actual PA, reputations, and hidden personality/playing traits.')
+            : t(readableImportWarning(warning))}
+        </p>
+      ))}
     </div>}
   </>;
 }

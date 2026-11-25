@@ -60,7 +60,7 @@ export function isSaveIdentity(value: unknown): value is SaveIdentity {
       !(detectedFamily === null || detectedFamily === 'afe' || detectedFamily === 'fmf') ||
       !(edition === null || (typeof edition === 'string' && edition.length <= 128)) ||
       !(build === null || (typeof build === 'string' && build.length <= 128)) ||
-      !(support === 'signature_only' || support === 'unrecognized') ||
+      !(support === 'decoded' || support === 'signature_only' || support === 'unrecognized') ||
       !(inspectionStatus === 'inspected' || inspectionStatus === 'rejected') ||
       !isDenseArray<string>(warnings, 32) ||
       !warnings.every(warning => typeof warning === 'string' && warning.length <= 1024) ||
@@ -72,7 +72,8 @@ export function isSaveIdentity(value: unknown): value is SaveIdentity {
       (Object.hasOwn(archiveIndex, 'probes') || Object.hasOwn(archiveIndex, 'gapObservations'))) return false;
   if (archiveIndex !== null && detectedFamily !== 'afe') return false;
   if (detectedFamily === null && support !== 'unrecognized') return false;
-  if (detectedFamily !== null && support !== 'signature_only') return false;
+  if (detectedFamily !== null && support === 'unrecognized') return false;
+  if (support === 'decoded' && (edition === null || build === null)) return false;
   return true;
 }
 

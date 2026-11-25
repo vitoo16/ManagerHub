@@ -68,20 +68,52 @@ function canonicalPlans(value: unknown, dataset: PlayerDataset): SquadPlans {
 }
 
 /**
- * Binds a plan to the *complete imported roster*. SHA-256 prevents accidental
- * cross-career restore; it is not an authentication signature against local JS.
+ * Binds a plan to the *complete imported or decoded roster*. SHA-256 prevents
+ * accidental cross-career restore; for `decoded_save`, the hash excludes
+ * `saveMode` (`realism` vs `editor`), CA/PA, reputations, and hidden fields so
+ * toggling Realism ↔ Editor keeps saved plans, tactical scenarios, and shortlists intact.
  */
 export async function squadDatasetSha256(dataset: PlayerDataset): Promise<string> {
-  if (!dataset || dataset.source !== 'game_export' || !Array.isArray(dataset.players) ||
-      dataset.players.length === 0 || dataset.players.length > 20_000) throw new Error('invalid_roster');
-  // ImportedAt is the local import clock, not source identity. Reimporting the
-  // same file may restore the same plans; any changed player data changes the hash.
-  const bytes = new TextEncoder().encode(JSON.stringify({
-    fileName: dataset.fileName,
-    source: dataset.source,
-    players: dataset.players,
-    attributeColumns: dataset.attributeColumns
-  }));
+  if (
+    !dataset ||
+    (dataset.source !== 'game_export' && dataset.source !== 'decoded_save') ||
+    !Array.isArray(dataset.players) ||
+    dataset.players.length === 0 ||
+    dataset.players.length > 20_000
+  ) {
+    throw new Error('invalid_roster');
+  }
+
+  let canonicalPayload: unknown;
+  if (dataset.source === 'decoded_save') {
+    if (typeof dataset.saveId !== 'string' || !/^[a-f0-9]{64}$/u.test(dataset.saveId)) {
+      throw new Error('invalid_roster');
+    }
+    canonicalPayload = {
+      source: 'decoded_save',
+      saveId: dataset.saveId,
+      clubFilterUid: dataset.clubFilterUid ?? null,
+      attributeColumns: dataset.attributeColumns,
+      players: dataset.players.map(player => ({
+        id: player.id,
+        nativeId: player.nativeId ?? null,
+        name: player.name,
+        position: player.position,
+        club: player.club,
+        attributes: player.attributes,
+        positions: player.positions ?? null
+      }))
+    };
+  } else {
+    canonicalPayload = {
+      fileName: dataset.fileName,
+      source: dataset.source,
+      players: dataset.players,
+      attributeColumns: dataset.attributeColumns
+    };
+  }
+
+  const bytes = new TextEncoder().encode(JSON.stringify(canonicalPayload));
   if (bytes.byteLength === 0 || bytes.byteLength > MAX_DATASET_BYTES ||
       !globalThis.crypto?.subtle) throw new Error('dataset_hash_unavailable');
   const hash = new Uint8Array(await globalThis.crypto.subtle.digest('SHA-256', bytes));

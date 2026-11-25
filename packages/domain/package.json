@@ -10,6 +10,8 @@
     "./tactical-scenarios": "./src/tactical-scenarios.ts",
     "./tactical-state": "./src/tactical-state.ts",
     "./types": "./src/types.ts",
-    "./historical-live-snapshot": "./src/historical-live-snapshot.ts"
+    "./historical-live-snapshot": "./src/historical-live-snapshot.ts",
+    "./fm2013-offline": "./src/fm2013-offline/index.ts",
+    "./fm2013-synthetic": "./src/fm2013-offline/synthetic.ts"
   }
 }

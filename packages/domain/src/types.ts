@@ -26,7 +26,7 @@ export interface SaveIdentity {
   readonly detectedFamily: string | null;
   readonly edition: string | null;
   readonly build: string | null;
-  readonly support: 'signature_only' | 'unrecognized';
+  readonly support: 'decoded' | 'signature_only' | 'unrecognized';
   readonly inspectionStatus: 'inspected' | 'rejected';
   readonly warnings: readonly string[];
   readonly archiveIndex: PersistedArchiveIndex | null;

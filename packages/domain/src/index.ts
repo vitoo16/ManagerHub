@@ -26,3 +26,4 @@ export * from './fm2013-calendar-age';
 export * from './live-session';
 export * from './historical-live-snapshot';
 export * from './historical-observation-comparison';
+export * from './fm2013-offline';

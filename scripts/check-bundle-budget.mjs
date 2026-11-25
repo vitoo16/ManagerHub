@@ -13,7 +13,8 @@ const budgets = {
   entryRaw: 450 * KiB,
   entryGzip: 150 * KiB,
   chunkRaw: 400 * KiB,
-  chunkGzip: 145 * KiB
+  chunkGzip: 145 * KiB,
+  fontRaw: 256 * KiB
 };
 
 const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
@@ -43,7 +44,21 @@ console.log('Initial static asset budget (JS + CSS; gzip is the sum of per-file 
 for (const item of initial) console.log(`  ${item.file}: ${(item.raw / KiB).toFixed(1)} KiB raw, ${(item.gzip / KiB).toFixed(1)} KiB gzip`);
 console.log(`  TOTAL: ${(initialRaw / KiB).toFixed(1)} KiB raw, ${(initialGzip / KiB).toFixed(1)} KiB gzip`);
 
-const jsFiles = (await readdir(assets)).filter(file => file.endsWith('.js'));
+const emittedAssets = await readdir(assets);
+const fontFiles = emittedAssets.filter(file => /\.woff2$/i.test(file));
+const fonts = await Promise.all(fontFiles.map(file => readAsset(path.join('assets', file))));
+const fontRaw = fonts.reduce((sum, item) => sum + item.raw, 0);
+const requiredFontFaces = ['Regular', 'Medium', 'SemiBold', 'Bold', 'ExtraBold', 'Italic'];
+const missingFaces = requiredFontFaces.filter(face =>
+  !fontFiles.some(file => file.startsWith(`BeVietnamPro-${face}-`))
+);
+if (missingFaces.length) throw new Error('Missing emitted Be Vietnam Pro faces: ' + missingFaces.join(', '));
+if (fontRaw > budgets.fontRaw) throw new Error(`Font budget exceeded: ${fontRaw} > ${budgets.fontRaw} bytes`);
+const fontLicense = await readFile(path.join(dist, 'licenses/be-vietnam-pro-OFL.txt'), 'utf8');
+if (!fontLicense.includes('SIL OPEN FONT LICENSE Version 1.1')) throw new Error('Be Vietnam Pro license missing from build.');
+console.log(`Font assets: ${fontFiles.length} WOFF2 files, ${(fontRaw / KiB).toFixed(1)} / ${budgets.fontRaw / KiB} KiB`);
+
+const jsFiles = emittedAssets.filter(file => file.endsWith('.js'));
 if (jsFiles.length === 0) throw new Error('Bundle budget: no JavaScript chunks were emitted.');
 const chunks = await Promise.all(jsFiles.map(file => readAsset(path.join('assets', file))));
 chunks.sort((left, right) => right.raw - left.raw);

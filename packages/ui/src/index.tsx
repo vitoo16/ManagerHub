@@ -1,4 +1,7 @@
-import type { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from 'react';
+import type { ButtonHTMLAttributes, HTMLAttributes, InputHTMLAttributes, ReactNode } from 'react';
+import { getAttributeTier } from './attribute-tier';
+
+export { getAttributeTier, type AttributeTier } from './attribute-tier';
 
 type IconName = 'grid' | 'database' | 'layers' | 'shield' | 'compass' | 'sun' | 'moon' |
   'settings' | 'chevron' | 'arrow' | 'plus' | 'search' | 'close' | 'file' | 'menu' | 'check' |
@@ -51,4 +54,22 @@ export function Status({ tone = 'neutral', children }: { tone?: 'positive' | 'wa
 
 export function SectionHeading({ eyebrow, title, children, id }: { eyebrow: string; title: string; children?: ReactNode; id?: string }) {
   return <div className="mh-section-heading"><div><span className="mh-eyebrow">{eyebrow}</span><h2 id={id}>{title}</h2></div>{children}</div>;
+}
+
+/** Visible numeric value remains the primary encoding; unknown is not zero. */
+export function AttributeValue({ value, allowZero = false }: { value: number | null | undefined; allowZero?: boolean }) {
+  const tier = getAttributeTier(value, allowZero);
+  return <span className="mh-attribute-value" data-attribute-tier={tier}>{tier ? value : '—'}</span>;
+}
+
+/** Decorative fill for an existing labeled attribute row; not a score or a progress indicator. */
+export function AttributeBar({ value, allowZero = false }: { value: number | null | undefined; allowZero?: boolean }) {
+  const tier = getAttributeTier(value, allowZero);
+  return <div aria-hidden="true" className="mh-attribute-bar" data-attribute-tier={tier}
+    style={{ width: tier && value != null ? `${value / 20 * 100}%` : '0%' }}/>;
+}
+
+export function AttributeInput({ value, allowZero = false, ...props }:
+  Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'value'> & { value: number | null | undefined; allowZero?: boolean }) {
+  return <input {...props} type="number" value={value ?? ''} data-attribute-tier={getAttributeTier(value, allowZero)}/>;
 }

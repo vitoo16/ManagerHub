@@ -4,7 +4,7 @@
 
 # P02 — ManagerHub Design System / UI-UX Product Brief
 
-**Status:** target design contract for future implementation; no frontend code shipped yet. **Product type:** dense desktop-first football analytics workstation with responsive mobile read-only/secondary usage.
+**Status:** living target design contract; implementation and acceptance must be verified against current source and the feature acceptance ledger. **Product type:** dense desktop-first football analytics workstation with responsive mobile read-only/secondary usage.
 
 ## Experience principle
 ManagerHub should feel like a well-run football analysis department, **not** a marketing landing page or gambling dashboard. Optimize for scanning, comparing and making defensible decisions. Four priorities: (1) accurate labeled data, (2) tactical spatial context, (3) explainable recommendations, (4) fluid but restrained interactions.
@@ -51,6 +51,41 @@ All visualizations offer keyboard-readable equivalent and export of underlying v
 - Clear borders, coherent nested radius, quiet motion 120–220ms for small interactions (illustrative); animations respect prefers-reduced-motion and never delay critical analysis.
 - Performance: prioritize instantaneous-looking search/filter, lazy chart tabs, skeletons with stable layout and responsive charts. Benchmark real saves.
 - Themes: dark-first but implement light equivalent with contrast and color-meaning parity; never rely on pure color to signal data status.
+
+## Typography — Be Vietnam Pro
+
+The global UI uses a single `--font-ui` stack, inherited by controls and headings. Technical identifiers may retain the existing monospace styling. Tabular numerals are requested globally; browser rendering and actual glyph coverage must be validated before acceptance.
+
+Self-hosted WOFF2 sources are copied without modification from [bettergui/BeVietnamPro at 804e62d81abbbcdcce5686069c69b41b8c245192](https://github.com/bettergui/BeVietnamPro/tree/804e62d81abbbcdcce5686069c69b41b8c245192/fonts/webfonts), with the original SIL OFL 1.1 notice shipped at `apps/web/public/licenses/be-vietnam-pro-OFL.txt`. The six faces cover the existing normal 400/500/600/700/800 weights plus 400 italic, with no Google Fonts CDN import. CSS uses `font-display: swap` and a system fallback; no font preload is forced. Exact source assets total 240048 bytes; a separate 256 KiB emitted WOFF2 budget is enforced without weakening the JS/CSS budgets.
+
+| Face | Git blob SHA | Source bytes |
+| --- | --- | ---: |
+| 400 normal (Regular) | `a207d2c87c43cb680e5189fe18164a40aed15817` | 38064 |
+| 500 normal (Medium) | `ddfb15dca96b24e321f9c9d2ff87c9418b7a5c49` | 40232 |
+| 600 normal (SemiBold) | `8a59077b5358addf1941f60196eb2194316a4731` | 40464 |
+| 700 normal (Bold) | `d9e974adc35e771dfad5363d552e12244d0e6d94` | 41212 |
+| 800 normal (ExtraBold) | `b48f480f179d51adf96f4cc236bc041fdae09684` | 41312 |
+| 400 italic (Italic) | `0f52df282628d475cc3a0240b2b9d2601c52481d` | 38764 |
+
+The candidate includes a browser regression for local face loading with Vietnamese sample text and the shared computed family. Layout shift, numeric glyph widths, screenshots, font coverage and cross-workspace accessibility still require real runtime verification.
+
+## Football Manager attribute magnitude — seven tiers
+
+Use the shared `getAttributeTier` classifier and semantic `--attribute-*` tokens in `packages/ui`. This is a display scale, not football desirability.
+
+| Range | Tier | Dark token | Light token |
+| --- | --- | --- | --- |
+| 0–6 | Very Low | #8993A0 | #46525e |
+| 7–9 | Low | #B2BAC5 | #606a74 |
+| 10–11 | Average | #C29B6A | #805522 |
+| 12–14 | Above Average | #D9B34C | #79600c |
+| 15–16 | Good | #F6DC63 | #6e5800 |
+| 17–19 | Excellent | #55CE8A | #17683b |
+| 20 | Maximum | #FF9D42 | #a64406 |
+
+Zero belongs to the lowest tier only when the particular field's verified schema permits zero; absent/invalid values are not silently substituted. Keep the numeric value visible. Do not apply these colors to CA/PA/RCA, role fit, morale, financial values, or other distinct scales. A high value of injury proneness, for example, is not necessarily desirable.
+
+Candidate integration: ranked Player Lab attributes, head-to-head attribute comparison, and visible/hidden/personality/staff attribute inputs in the offline editor. Player and staff attribute entry now use a shared feature-local property-row group with localized legends, compact numeric inputs, wrapped labels and disabled missing values. The player-visible groups use the canonical Technical, Mental, Physical and Goalkeeping schema; no new field or native writer capability is introduced. A synthetic browser regression covers group navigation, color, editing and undo/redo. Other applicable surfaces and browser-based contrast, theme, zoom, and visual verification remain pending; this does not certify global parity or FMRTE field ordering.
 
 ## Chart contract and accuracy
 Every chart displays source class, period/season, cohort and sample when relevant, units/axes, missingness and whether value is modelled. **Actual Game Field**, **Estimated**, **Scenario** are visually distinguishable at all times.

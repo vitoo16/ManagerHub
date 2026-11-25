@@ -90,7 +90,9 @@ function ContinueWorkspace({ current, onDataset, go }: Props) {
         {current ? <>
           <strong className="overview-resume__name" title={current.fileName}>{current.fileName}</strong>
           <p>{current.players.length.toLocaleString()} {t('players')} · {current.attributeColumns.length} {t('exported attribute columns')}</p>
-          <p className="overview-resume__note">{t('Exported attributes only. Actual CA/PA and live game data are not verified.')}</p>
+          <p className="overview-resume__note">{t(current.source === 'decoded_save'
+            ? 'Decoded offline · Read-only'
+            : 'Exported attributes only. Actual CA/PA and live game data are not verified.')}</p>
           <Button variant="primary" onClick={() => go('squad')}>
             {t('Continue in Squad Planner')} <Icon name="arrow" size={15}/>
           </Button>

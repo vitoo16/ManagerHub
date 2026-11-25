@@ -226,7 +226,7 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
             onPointerMove={event => onDrag(event, slot.id)}
             onPointerUp={event => { dragging.current = null; if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId); }}
             onPointerCancel={() => { dragging.current = null; }}>
-            <strong>{slot.label}</strong><span>{assignment?.name ?? '—'}</span>
+            <strong>{slot.label}</strong>{' '}<span>{assignment?.name ?? '—'}</span>
           </button>;
         })}
       </div>
