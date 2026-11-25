@@ -1,4 +1,4 @@
-import type { DecodedHiddenPlayingAttributes, DecodedPersonalityAttributes } from '@managerhub/domain/fm2013-offline';
+import type { DecodedHiddenPlayingAttributes, DecodedPersonalityAttributes, DecodedPositionRatings } from '@managerhub/domain/fm2013-offline';
 
 export const HIDDEN_KEYS: readonly { readonly key: keyof DecodedHiddenPlayingAttributes; readonly label: string }[] = [
   { key: 'consistency', label: 'Consistency' },
@@ -19,3 +19,7 @@ export const PERSONALITY_KEYS: readonly { readonly key: keyof DecodedPersonality
   { key: 'controversy', label: 'Controversy' }
 ];
 
+
+export const POSITION_KEYS: readonly (keyof DecodedPositionRatings)[] = [
+  'GK', 'SW', 'DL', 'DC', 'DR', 'WBL', 'WBR', 'DM', 'ML', 'MC', 'MR', 'AML', 'AMC', 'AMR', 'ST'
+];

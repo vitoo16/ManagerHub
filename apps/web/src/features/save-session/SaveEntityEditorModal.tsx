@@ -9,7 +9,6 @@ import {
   summarizeDraftChanges,
   type ClubDraftPatch,
   type ClubSquadPresetKind,
-  type DecodedPositionRatings,
   type DecodedSaveDatabase,
   type DecodedStaffAttributes,
   type PlayerDraftPatch,
@@ -19,7 +18,7 @@ import {
   type StaffDraftPatch
 } from '@managerhub/domain/fm2013-offline';
 import { AttributePropertyGroup, Button, Icon, Status } from '@managerhub/ui';
-import { HIDDEN_KEYS, PERSONALITY_KEYS } from '../player-attribute-fields';
+import { HIDDEN_KEYS, PERSONALITY_KEYS, POSITION_KEYS } from '../player-attribute-fields';
 import { EditorRecordNavigator } from './EditorRecordNavigator';
 import { closeEditorRecord, createRecordState, isRecordTarget, openEditorRecord, recordKey, type EditorModalTarget, type EditorRecordTarget } from './editor-records';
 import { registerSaveDbI18n } from '../../i18n/register-save-db-i18n';
@@ -45,10 +44,6 @@ export interface SaveEntityEditorModalProps {
   readonly onAuthorizeFmExe: (file: File) => void;
   readonly onSaveAsFm: (outputFileName: string) => void;
 }
-
-const POSITION_KEYS: readonly (keyof DecodedPositionRatings)[] = [
-  'GK', 'SW', 'DL', 'DC', 'DR', 'WBL', 'WBR', 'DM', 'ML', 'MC', 'MR', 'AML', 'AMC', 'AMR', 'ST'
-];
 
 const STAFF_ATTR_KEYS: readonly { readonly key: keyof DecodedStaffAttributes; readonly label: string }[] = [
   { key: 'attacking', label: 'Coaching Attacking' },

@@ -60,7 +60,6 @@
 .insight-line span{color:var(--text-sub)}
 .insight-line strong{font-size:12px;font-variant-numeric:tabular-nums}
 .scout-note{color:var(--text-faint);font-size:10px;line-height:1.75;margin-top:18px}
-.role-overview{margin-top:0}
 .role-results{display:grid;gap:6px}
 .role-results>.module-disclaimer{margin-bottom:11px}
 .role-result{background:var(--surface-up);border:1px solid var(--line);border-radius:11px;overflow:hidden}
