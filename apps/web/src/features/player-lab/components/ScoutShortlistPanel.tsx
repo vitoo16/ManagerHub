@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type SetStateAction } from 'react';
+import { lazy, memo, Suspense, useCallback, useEffect, useId, useMemo, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { PlayerDataset, PlayerExport } from '@managerhub/domain';
 import {
@@ -6,9 +6,17 @@ import {
   restoreSavedScoutShortlist, SCOUT_SHORTLIST_STORAGE_PREFIX,
   scoutShortlistFilename, scoutShortlistStorageKey
 } from '@managerhub/domain';
-import { Button, Icon, Surface } from '@managerhub/ui';
-import ScoutRoleComparison from './ScoutRoleComparison';
-import ScoutClubScenario from './ScoutClubScenario';
+import { Button, Icon, SectionTabs, Surface } from '@managerhub/ui';
+const ScoutRoleComparison = lazy(() => import('./ScoutRoleComparison'));
+const ScoutClubScenario = lazy(() => import('./ScoutClubScenario'));
+
+const SHORTLIST_SECTIONS = [
+  { id: 'candidates', label: 'Shortlisted players' },
+  { id: 'roles', label: 'Candidate role comparison' },
+  { id: 'club', label: 'Club-group recruitment scenario' }
+] as const;
+type ShortlistSection = typeof SHORTLIST_SECTIONS[number]['id'];
+const CANDIDATES_PER_PAGE = 8;
 
 type Props = {
   dataset: PlayerDataset;
@@ -21,6 +29,10 @@ type Props = {
 /** All persistence is an explicit user action. Changing the imported roster remounts this panel. */
 function ScoutShortlistPanel({ dataset, selected, candidateIds, setCandidateIds, onSelectPlayer }: Props) {
   const { t } = useTranslation();
+  const sectionId = useId();
+  const [section, setSection] = useState<ShortlistSection>('candidates');
+  const [visited, setVisited] = useState<ReadonlySet<ShortlistSection>>(() => new Set(['candidates']));
+  const [candidatePage, setCandidatePage] = useState(0);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [confirmForget, setConfirmForget] = useState(false);
@@ -39,6 +51,13 @@ function ScoutShortlistPanel({ dataset, selected, candidateIds, setCandidateIds,
     return candidate ? [candidate] : [];
   }), [candidateIds, playerById]);
   const selectedAlready = selected !== null && candidateIds.includes(selected.id);
+  const activeSection = candidates.length > 0 ? section : 'candidates';
+  const totalPages = Math.max(1, Math.ceil(candidates.length / CANDIDATES_PER_PAGE));
+  const page = Math.min(candidatePage, totalPages - 1);
+  const openSection = (next: ShortlistSection) => {
+    setSection(next);
+    setVisited(current => current.has(next) ? current : new Set([...current, next]));
+  };
 
   const toggleCandidate = useCallback(() => {
     if (!selected || busy) return;
@@ -148,15 +167,34 @@ function ScoutShortlistPanel({ dataset, selected, candidateIds, setCandidateIds,
         {t('Forget saved shortlist')}
       </Button>}
     </div>
+    <SectionTabs<ShortlistSection> id={sectionId} label={t('Shortlist sections')}
+      items={SHORTLIST_SECTIONS.filter(item => candidates.length > 0 || item.id === 'candidates').map(item => ({ ...item, label: t(item.label) }))}
+      active={activeSection} onChange={openSection}/>
+    <div className="scout-shortlist__panel" role="tabpanel" id={sectionId + '-panel'}
+      aria-labelledby={sectionId + '-tab-' + activeSection}>
+      {activeSection === 'candidates' && <>
     {candidates.length ? <ul className="scout-shortlist__candidates">
-      {candidates.map(candidate => <li key={candidate.id}>
+      {candidates.slice(page * CANDIDATES_PER_PAGE, (page + 1) * CANDIDATES_PER_PAGE).map(candidate => <li key={candidate.id}>
         <div><strong>{candidate.name}</strong><small>{candidate.position ?? t('Unknown position')} · {candidate.club ?? t('Unknown club')}</small></div>
         <Button variant="quiet" onClick={() => onSelectPlayer(candidate.id)}>{t('View scouting report')}</Button>
       </li>)}
     </ul> : <p className="scout-shortlist__empty">{t('No candidates selected. Choose a player from the list, then add them here.')}</p>}
-    {candidates.length > 0 && <ScoutRoleComparison candidates={candidates} players={dataset.players}
-      selected={selected} onSelectPlayer={onSelectPlayer}/>}
-    {candidates.length > 0 && <ScoutClubScenario players={dataset.players} candidates={candidates}/>}
+        {totalPages > 1 && <div className="save-db-actions" role="group" aria-label={t('Shortlist page')}>
+          <Button type="button" disabled={page === 0} onClick={() => setCandidatePage(page - 1)}>{t('Previous page')}</Button>
+          <span aria-live="polite">{page + 1} / {totalPages}</span>
+          <Button type="button" disabled={page + 1 >= totalPages} onClick={() => setCandidatePage(page + 1)}>{t('Next page')}</Button>
+        </div>}
+      </>}
+      <Suspense fallback={<p role="status">{t('Loading…')}</p>}>
+        {candidates.length > 0 && visited.has('roles') && <div hidden={activeSection !== 'roles'}>
+          <ScoutRoleComparison candidates={candidates} players={dataset.players}
+            selected={selected} onSelectPlayer={onSelectPlayer}/>
+        </div>}
+        {candidates.length > 0 && visited.has('club') && <div hidden={activeSection !== 'club'}>
+          <ScoutClubScenario players={dataset.players} candidates={candidates}/>
+        </div>}
+      </Suspense>
+    </div>
     {notice && <p className="scout-shortlist__notice" role="status" aria-live="polite">{t(notice)}</p>}
     <p className="scout-shortlist__privacy"><Icon name="shield" size={14}/>{t('Only source-bound player IDs are saved locally. Player names, attributes and original files are not duplicated in shortlist storage.')}</p>
   </Surface>;

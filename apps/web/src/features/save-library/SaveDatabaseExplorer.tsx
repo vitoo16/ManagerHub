@@ -118,6 +118,7 @@ function SaveDatabaseExplorerView({
   }, [database.clubs]);
 
   const filteredPlayers = useMemo(() => {
+    if (tab !== 'players') return [];
     const selectedClubUid = clubFilter === 'all' ? null : Number(clubFilter);
     const list = database.players.filter(player => {
       if (selectedClubUid !== null && player.clubUid !== selectedClubUid) return false;
@@ -130,7 +131,7 @@ function SaveDatabaseExplorerView({
         player.positionSummary.toLowerCase().includes(deferredQuery)
       );
     });
-    const sorted = [...list];
+    const sorted = list;
     sorted.sort((a, b) => {
       switch (playerSort) {
         case 'name': return a.displayName.localeCompare(b.displayName);
@@ -144,9 +145,10 @@ function SaveDatabaseExplorerView({
       }
     });
     return sorted;
-  }, [database.players, clubFilter, deferredQuery, playerSort, saveMode]);
+  }, [tab, database.players, clubFilter, deferredQuery, playerSort, saveMode]);
 
   const filteredClubs = useMemo(() => {
+    if (tab !== 'clubs') return [];
     const list = database.clubs.filter(club => {
       if (clubsWithPlayersOnly && club.playerCount === 0) return false;
       if (!deferredQuery) return true;
@@ -156,7 +158,7 @@ function SaveDatabaseExplorerView({
         (club.nationName?.toLowerCase().includes(deferredQuery) ?? false)
       );
     });
-    const sorted = [...list];
+    const sorted = list;
     sorted.sort((a, b) => {
       switch (clubSort) {
         case 'name': return a.fullName.localeCompare(b.fullName);
@@ -168,9 +170,10 @@ function SaveDatabaseExplorerView({
       }
     });
     return sorted;
-  }, [database.clubs, clubsWithPlayersOnly, deferredQuery, clubSort]);
+  }, [tab, database.clubs, clubsWithPlayersOnly, deferredQuery, clubSort]);
 
   const filteredStaff = useMemo(() => {
+    if (tab !== 'staff') return [];
     const list = database.staff.filter(member => {
       if (!deferredQuery) return true;
       return (
@@ -179,10 +182,11 @@ function SaveDatabaseExplorerView({
         (member.primaryNationName?.toLowerCase().includes(deferredQuery) ?? false)
       );
     });
-    return [...list].sort((a, b) => Number(b.isHuman) - Number(a.isHuman) || a.displayName.localeCompare(b.displayName));
-  }, [database.staff, deferredQuery]);
+    return list.sort((a, b) => Number(b.isHuman) - Number(a.isHuman) || a.displayName.localeCompare(b.displayName));
+  }, [tab, database.staff, deferredQuery]);
 
   const filteredTeams = useMemo(() => {
+    if (tab !== 'teams') return [];
     return database.teams.filter(team => {
       if (!deferredQuery) return true;
       return (
@@ -190,9 +194,10 @@ function SaveDatabaseExplorerView({
         String(team.uid).includes(deferredQuery)
       );
     });
-  }, [database.teams, deferredQuery]);
+  }, [tab, database.teams, deferredQuery]);
 
   const filteredStadiums = useMemo(() => {
+    if (tab !== 'stadiums') return [];
     const list = database.stadiums.filter(stadium => {
       if (!deferredQuery) return true;
       return (
@@ -201,10 +206,11 @@ function SaveDatabaseExplorerView({
         String(stadium.uid).includes(deferredQuery)
       );
     });
-    return [...list].sort((a, b) => b.capacity - a.capacity);
-  }, [database.stadiums, deferredQuery]);
+    return list.sort((a, b) => b.capacity - a.capacity);
+  }, [tab, database.stadiums, deferredQuery]);
 
   const filteredNations = useMemo(() => {
+    if (tab !== 'nations') return [];
     const list = database.nations.filter(nation => {
       if (!deferredQuery) return true;
       return (
@@ -212,10 +218,11 @@ function SaveDatabaseExplorerView({
         nation.shortName.toLowerCase().includes(deferredQuery)
       );
     });
-    return [...list].sort((a, b) => b.playerCount - a.playerCount || a.fullName.localeCompare(b.fullName));
-  }, [database.nations, deferredQuery]);
+    return list.sort((a, b) => b.playerCount - a.playerCount || a.fullName.localeCompare(b.fullName));
+  }, [tab, database.nations, deferredQuery]);
 
   const filteredCompetitions = useMemo(() => {
+    if (tab !== 'competitions') return [];
     const list = database.competitions.filter(comp => {
       if (!deferredQuery) return true;
       return (
@@ -224,8 +231,8 @@ function SaveDatabaseExplorerView({
         String(comp.uid).includes(deferredQuery)
       );
     });
-    return [...list].sort((a, b) => b.teamCount - a.teamCount);
-  }, [database.competitions, deferredQuery]);
+    return list.sort((a, b) => b.teamCount - a.teamCount);
+  }, [tab, database.competitions, deferredQuery]);
 
   const totalCount =
     tab === 'players' ? filteredPlayers.length :

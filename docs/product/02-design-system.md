@@ -132,3 +132,6 @@ Player information, contract, exact attribute groups, hidden traits, personality
 
 ### Squad Planner bounded workbench
 One shared A/B plan and formation control, followed by five task sections (XI, constraints, tactical editor, comparison, coverage). Only the active task renders initially. The tactical editor is lazy-loaded on first visit and then kept mounted but hidden when inactive to retain its local adjustment/undo state. This deliberately trades a bounded retained tactical subtree for correctness; measure actual memory/interaction costs before acceptance. No optimizer or plan persistence changes.
+
+### Recruitment and explorer density follow-up
+Shortlist candidates, role comparison and club-group recruitment use shared section navigation. Candidate list is paged at eight items; comparison/scenario modules load on first visit and retain local selection state while hidden. The database explorer filters/sorts only the active entity family; existing 50-row pagination and visibility checks remain unchanged. Filtered arrays are already new copies and are sorted directly rather than copied again. Source-level work reduction only; actual timing and browser acceptance pending.

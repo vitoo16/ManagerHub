@@ -187,6 +187,7 @@ test('shortlist compares role fit on a shared axis and preserves unknown inputs'
     await shortlist.getByRole('button', { name: 'Add selected player to shortlist' }).click();
   }
 
+  await shortlist.getByRole('tab', { name: 'Candidate role comparison' }).click();
   const table = shortlist.getByRole('table', { name: 'Candidate role-fit ranking' });
   await expect(table.locator('tbody tr')).toHaveCount(3);
   await expect(table.locator('tbody tr').first()).toContainText('High Striker');
@@ -226,6 +227,7 @@ test('shortlist compares with a source-bound reference outside the shortlist and
   await players.getByRole('button', { name: /Candidate B/ }).click();
   await shortlist.getByRole('button', { name: 'Add selected player to shortlist' }).click();
   await players.getByRole('button', { name: /Incumbent/ }).click();
+  await shortlist.getByRole('tab', { name: 'Candidate role comparison' }).click();
   await shortlist.getByRole('button', { name: 'Use viewed player as reference' }).click();
 
   const comparison = shortlist.getByRole('table', { name: 'Candidate role-fit ranking' });
@@ -272,6 +274,7 @@ test('shortlist evaluates an outside candidate against an observed club-group XI
   await players.getByRole('button', { name: /Target Striker/ }).click();
   const shortlist = page.getByRole('region', { name: 'Scouting shortlist' });
   await shortlist.getByRole('button', { name: 'Add selected player to shortlist' }).click();
+  await page.getByRole('region', { name: 'Scouting shortlist' }).getByRole('tab', { name: 'Club-group recruitment scenario' }).click();
   const scenario = page.getByRole('region', { name: 'Club-group recruitment scenario' });
   await scenario.getByLabel('Observed club group').selectOption('Home Club');
   const slotComparison = scenario.getByRole('region', { name: 'Shortlist comparison by squad slot' });
@@ -337,6 +340,7 @@ test('shortlist exposes internal XI depth and recomputes other positions on abse
   await page.getByRole('region', { name: 'Scouting shortlist' })
     .getByRole('button', { name: 'Add selected player to shortlist' }).click();
 
+  await page.getByRole('region', { name: 'Scouting shortlist' }).getByRole('tab', { name: 'Club-group recruitment scenario' }).click();
   const scenario = page.getByRole('region', { name: 'Club-group recruitment scenario' });
   await scenario.getByLabel('Observed club group').selectOption('Home Club');
   const comparison = scenario.getByRole('region', { name: 'Shortlist comparison by squad slot' });
@@ -1681,4 +1685,23 @@ test('squad workbench loads one task at a time and preserves tactical state acro
   await expect(winger).toHaveAttribute('data-x', '17');
   await tabs.getByRole('tab', { name: 'Position coverage and blockers' }).click();
   await expect(page.getByRole('heading', { name: 'Position coverage and blockers' })).toBeVisible();
+});
+
+
+test('shortlist task panels load on demand and retain role selection while switching sections', async ({ page }) => {
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'shortlist-sections.csv', mimeType: 'text/csv', buffer: Buffer.from(makeSquadExport())
+  });
+  const shortlist = page.getByRole('region', { name: 'Scouting shortlist' });
+  await shortlist.getByRole('button', { name: 'Add selected player to shortlist' }).click();
+  await expect(shortlist.locator('.scout-role-compare, .scout-club-scenario')).toHaveCount(0);
+  await shortlist.getByRole('tab', { name: 'Candidate role comparison' }).click();
+  await shortlist.getByLabel('Compare for role').selectOption('goalkeeper');
+  await shortlist.getByRole('tab', { name: 'Shortlisted players' }).click();
+  await expect(shortlist.getByRole('table', { name: 'Candidate role-fit ranking' })).toHaveCount(0);
+  await shortlist.getByRole('tab', { name: 'Candidate role comparison' }).click();
+  await expect(shortlist.getByLabel('Compare for role')).toHaveValue('goalkeeper');
+  await shortlist.getByRole('tab', { name: 'Club-group recruitment scenario' }).click();
+  await expect(shortlist.getByRole('region', { name: 'Club-group recruitment scenario' })).toBeVisible();
 });
