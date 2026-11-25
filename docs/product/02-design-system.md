@@ -85,7 +85,7 @@ Use the shared `getAttributeTier` classifier and semantic `--attribute-*` tokens
 
 Zero belongs to the lowest tier only when the particular field's verified schema permits zero; absent/invalid values are not silently substituted. Keep the numeric value visible. Do not apply these colors to CA/PA/RCA, role fit, morale, financial values, or other distinct scales. A high value of injury proneness, for example, is not necessarily desirable.
 
-Candidate integration: ranked Player Lab attributes, head-to-head attribute comparison, and visible/hidden/personality/staff attribute inputs in the offline editor. Other applicable surfaces and browser-based contrast, theme, zoom, and visual verification remain pending; this does not certify global parity.
+Candidate integration: ranked Player Lab attributes, head-to-head attribute comparison, and visible/hidden/personality/staff attribute inputs in the offline editor. Player and staff attribute entry now use a shared feature-local property-row group with localized legends, compact numeric inputs, wrapped labels and disabled missing values. The player-visible groups use the canonical Technical, Mental, Physical and Goalkeeping schema; no new field or native writer capability is introduced. A synthetic browser regression covers group navigation, color, editing and undo/redo. Other applicable surfaces and browser-based contrast, theme, zoom, and visual verification remain pending; this does not certify global parity or FMRTE field ordering.
 
 ## Chart contract and accuracy
 Every chart displays source class, period/season, cohort and sample when relevant, units/axes, missingness and whether value is modelled. **Actual Game Field**, **Estimated**, **Scenario** are visually distinguishable at all times.

@@ -525,3 +525,45 @@ test('legacy decoded browser cache without source provenance is rejected (R01)',
   await expect(page.getByRole('region', { name: 'Active save session' })).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Remove saved database' })).toBeVisible();
 });
+
+
+test('compact player attribute groups retain draft editing and undo/redo', async ({ page }) => {
+  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+  await page.goto('/#/saves');
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'attribute-groups.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const toolbar = page.getByRole('region', { name: 'Active save session' });
+  const explorer = page.locator('.save-db-explorer');
+  await expect(toolbar).toBeVisible({ timeout: 20_000 });
+  await toolbar.getByRole('group', { name: 'Global display mode' }).getByRole('button', { name: 'Editor mode' }).click();
+  const row = explorer.locator('tbody tr', { hasText: 'Owen Shaw' });
+  const openAttributes = async () => {
+    await row.getByRole('button', { name: 'Edit' }).click();
+    const dialog = page.getByRole('dialog');
+    await dialog.getByRole('tab', { name: 'Visible & Hidden Attributes' }).click();
+    return dialog;
+  };
+  let dialog = await openAttributes();
+  for (const name of ['Technical', 'Mental', 'Physical', 'Goalkeeping']) {
+    await expect(dialog.getByRole('group', { name, exact: true })).toBeVisible();
+  }
+  const technical = dialog.getByRole('group', { name: 'Technical', exact: true });
+  const finishing = technical.getByRole('spinbutton', { name: 'Finishing', exact: true });
+  await expect(finishing).toBeEnabled();
+  const original = await finishing.inputValue();
+  const changed = original === '20' ? '19' : '20';
+  await finishing.fill(changed);
+  await expect(finishing).toHaveValue(changed);
+  await expect(finishing).toHaveAttribute('data-attribute-tier', changed === '20' ? 'maximum' : 'excellent');
+  const attributeAxe = await new AxeBuilder({ page }).include('.editor-modal').withTags(WCAG_AA_TAGS).analyze();
+  expect(summarizeViolations(attributeAxe.violations), 'Grouped editor attributes WCAG').toEqual([]);
+  await dialog.getByRole('button', { name: 'Done' }).click();
+  await toolbar.getByRole('button', { name: 'Undo last edit' }).click();
+  dialog = await openAttributes();
+  await expect(dialog.getByRole('spinbutton', { name: 'Finishing', exact: true })).toHaveValue(original);
+  await dialog.getByRole('button', { name: 'Done' }).click();
+  await toolbar.getByRole('button', { name: 'Redo edit' }).click();
+  dialog = await openAttributes();
+  await expect(dialog.getByRole('spinbutton', { name: 'Finishing', exact: true })).toHaveValue(changed);
+});

@@ -287,3 +287,53 @@
 
 .editor-field input[data-attribute-tier] { color: var(--attribute-color); }
 .editor-field input[data-attribute-tier]:disabled { color: var(--text-sub); }
+
+/* Compact property rows; labels wrap rather than truncating localized names. */
+.editor-attribute-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+  align-items: start;
+  gap: 12px;
+}
+
+.editor-attribute-group {
+  min-inline-size: 0;
+  margin: 0;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.editor-attribute-group legend {
+  max-width: 100%;
+  padding-inline: 4px;
+  color: var(--text-sub);
+  font-size: 12px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.editor-attribute-row {
+  grid-template-columns: minmax(0, 1fr) 64px;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding-block: 2px;
+  border-bottom: 1px solid var(--line);
+}
+
+.editor-attribute-row:last-child { border-bottom: 0; }
+
+.editor-attribute-row span {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  overflow: visible;
+}
+
+.editor-attribute-row input {
+  width: 100%;
+  min-width: 0;
+  height: 30px;
+  padding-inline: 6px;
+  border-radius: 4px;
+}
