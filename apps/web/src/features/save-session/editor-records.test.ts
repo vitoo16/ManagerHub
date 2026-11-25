@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { closeEditorRecord, createRecordState, MAX_EDITOR_RECORDS, openEditorRecord, recordKey, type EditorRecordTarget } from './editor-records';
+import { closeEditorRecord, createRecordState, MAX_EDITOR_RECORDS, MAX_EDITOR_SEARCH_RESULTS, openEditorRecord, recordKey, recordName, searchEditorRecords, type EditorRecordTarget } from './editor-records';
 
 const player = (uid: number): EditorRecordTarget => ({ kind: 'player', uid });
 const club: EditorRecordTarget = { kind: 'club', uid: 1 };
@@ -33,5 +33,28 @@ describe('editor record navigation', () => {
     const switched = openEditorRecord(state, player(1));
     expect(switched.active).toEqual(player(1));
     expect(switched.records).toHaveLength(MAX_EDITOR_RECORDS);
+  });
+});
+
+describe('active save record search', () => {
+  const database = {
+    players: Array.from({ length: 40 }, (_, i) => ({ uid: i + 1, displayName: `Player ${i + 1}` })),
+    staff: [{ uid: 1, displayName: 'Staff One' }],
+    clubs: [{ uid: 1, fullName: 'Northbridge Athletic' }],
+    stadiums: [{ uid: 5, customName: null }]
+  };
+
+  it('limits result count and does not enumerate an empty query', () => {
+    expect(searchEditorRecords(database, 'player', '   ')).toEqual([]);
+    expect(searchEditorRecords(database, 'player', 'PLAYER')).toHaveLength(MAX_EDITOR_SEARCH_RESULTS);
+    expect(searchEditorRecords(database, 'player', 'unmatched')).toEqual([]);
+  });
+
+  it('matches exact numeric UIDs, entity types and only the provided database', () => {
+    expect(searchEditorRecords(database, 'player', '#1')).toEqual([{ target: player(1), name: 'Player 1' }]);
+    expect(searchEditorRecords(database, 'club', ' northbridge ')).toEqual([{ target: club, name: 'Northbridge Athletic' }]);
+    expect(searchEditorRecords(database, 'staff', '1')).toEqual([{ target: { kind: 'staff', uid: 1 }, name: 'Staff One' }]);
+    expect(searchEditorRecords({ ...database, clubs: [] }, 'club', '#1')).toEqual([]);
+    expect(recordName(database, { kind: 'stadium', uid: 5 })).toBe('#5');
   });
 });

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { DecodedSaveDatabase } from '@managerhub/domain/fm2013-offline';
 import { Button, Icon } from '@managerhub/ui';
@@ -18,6 +18,8 @@ export function EditorRecordNavigator({ database, state, onOpen, onClose }: Prop
   const { t } = useTranslation();
   const [kind, setKind] = useState<EditorRecordKind>(state.active.kind);
   const [query, setQuery] = useState('');
+  const activeRecordRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => { activeRecordRef.current?.focus(); }, [state]);
   const results = useMemo(() => searchEditorRecords(database, kind, query), [database, kind, query]);
   const atLimit = state.records.length >= MAX_EDITOR_RECORDS;
   const kindLabels: Record<EditorRecordKind, string> = {
@@ -32,6 +34,7 @@ export function EditorRecordNavigator({ database, state, onOpen, onClose }: Prop
           return (
             <div className="editor-record-tab" key={key}>
               <button type="button" className="editor-record-tab__select"
+                ref={key === recordKey(state.active) ? activeRecordRef : undefined}
                 aria-pressed={key === recordKey(state.active)}
                 onClick={() => onOpen(record)}>
                 <small>{kindLabels[record.kind]} · #{record.uid}</small>
@@ -71,7 +74,11 @@ export function EditorRecordNavigator({ database, state, onOpen, onClose }: Prop
           {results.map(result => (
             <Button key={recordKey(result.target)} type="button"
               disabled={atLimit && !state.records.some(record => recordKey(record) === recordKey(result.target))}
-              onClick={() => { onOpen(result.target); setQuery(''); }}>
+              onClick={() => {
+                onOpen(result.target);
+                setQuery('');
+                if (recordKey(result.target) === recordKey(state.active)) activeRecordRef.current?.focus();
+              }}>
               <span>{result.name}</span><small>#{result.target.uid}</small>
             </Button>
           ))}

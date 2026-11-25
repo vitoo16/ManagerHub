@@ -36,7 +36,12 @@ export function closeEditorRecord(state: EditorRecordState, record: EditorRecord
   return { records, active };
 }
 
-type RecordDatabase = Pick<DecodedSaveDatabase, 'players' | 'staff' | 'clubs' | 'stadiums'>;
+type RecordDatabase = {
+  readonly players: readonly Pick<DecodedSaveDatabase['players'][number], 'uid' | 'displayName'>[];
+  readonly staff: readonly Pick<DecodedSaveDatabase['staff'][number], 'uid' | 'displayName'>[];
+  readonly clubs: readonly Pick<DecodedSaveDatabase['clubs'][number], 'uid' | 'fullName'>[];
+  readonly stadiums: readonly Pick<DecodedSaveDatabase['stadiums'][number], 'uid' | 'customName'>[];
+};
 
 export function recordName(database: RecordDatabase, target: EditorRecordTarget): string {
   switch (target.kind) {
