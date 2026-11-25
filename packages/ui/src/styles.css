@@ -1,7 +1,50 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  src: url('./fonts/BeVietnamPro-Regular.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  src: url('./fonts/BeVietnamPro-Medium.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  src: url('./fonts/BeVietnamPro-SemiBold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  src: url('./fonts/BeVietnamPro-Bold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  src: url('./fonts/BeVietnamPro-ExtraBold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Be Vietnam Pro';
+  src: url('./fonts/BeVietnamPro-Italic.woff2') format('woff2');
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
 
 :root {
-  font-family: 'DM Sans', ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif;
+  --font-ui: 'Be Vietnam Pro', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: var(--font-ui);
+  font-variant-numeric: tabular-nums;
   font-synthesis: none;
   color-scheme: dark;
   --bg: #080d12;
@@ -60,7 +103,7 @@
 * { box-sizing: border-box; }
 html { height: 100%; background: var(--bg); }
 body { margin: 0; min-height: 100%; color: var(--text); background: var(--bg); -webkit-font-smoothing: antialiased; }
-button, input, select { font: inherit; }
+button, input, select, textarea, optgroup { font: inherit; font-variant-numeric: inherit; }
 button { cursor: pointer; }
 button:disabled { cursor: not-allowed; opacity: .48; }
 a { color: inherit; }
@@ -68,7 +111,7 @@ a:hover { color: var(--accent-strong); }
 :focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 3px; }
 ::selection { background: #4e957c88; color: var(--text); }
 h1,h2,h3,h4,p { margin: 0; }
-h1,h2,h3,h4 { font-family: Manrope, 'DM Sans', sans-serif; letter-spacing: -.035em; }
+h1,h2,h3,h4 { font-family: var(--font-ui); letter-spacing: -.035em; }
 small { font-size: 12px; }
 .mh-button { display: inline-flex; justify-content: center; align-items: center; gap: 9px; min-height: 38px; padding: 0 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--surface-up); color: var(--text); font-weight: 600; font-size: 13px; transition: background .14s ease, border-color .14s ease, transform .14s ease; white-space: nowrap; }
 .mh-button:hover { background: var(--surface-hover); border-color: var(--text-faint); }

@@ -42,7 +42,7 @@
 .scout-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:19px}
 .scout-metrics>div{padding:14px 11px;background:var(--surface);border:1px solid var(--line);border-radius:13px;min-width:0}
 .scout-metrics span,.scout-metrics small{display:block;font-size:10px;color:var(--text-faint)}
-.scout-metrics strong{display:block;margin:9px 0 6px;font-size:22px;font-weight:800;font-family:Manrope,sans-serif;min-height:27px;font-variant-numeric:tabular-nums}
+.scout-metrics strong{display:block;margin:9px 0 6px;font-size:22px;font-weight:800;font-family:var(--font-ui);min-height:27px;font-variant-numeric:tabular-nums}
 .scout-metrics strong small{display:inline;font-size:10px}
 .scout-tabs{display:flex;gap:5px;overflow-x:auto;padding:4px 0 0;border-bottom:1px solid var(--line);margin-bottom:16px}
 .scout-tab{padding:10px 12px;border:0;border-bottom:2px solid transparent;background:transparent;color:var(--text-sub);font-size:11px;white-space:nowrap}
