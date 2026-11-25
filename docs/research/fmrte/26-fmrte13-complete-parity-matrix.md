@@ -1,10 +1,12 @@
 # FMRTE 13 (`13.3.3.62`) vs ManagerHub Complete Feature Parity Matrix
 
+**Review status:** PARTIAL inventory, not full feature parity or certified writer. Grouped capability rows below require stable requirement IDs, per-feature installed FMRTE13 evidence and separate offline/live acceptance. Persisted structures not yet decoded or writable must not be assumed live-only. Real-game UAT is pending.
+
 **Date:** 2026-11-25  
 **Scope:** Football Manager 2013 PC (`13.3.3f359652`, verified `afe` v4 container + `game_db.dat` `0x757`–`0x774`) compared against FMRTE 13 (`13.3.3.62` domain inventory: 64 top-level feature sections, XML presets, rating profiles, and live-memory utilities).  
 **Mandate:** Zero fake support. Every FMRTE 13 capability is classified honestly into one of four categories:
 
-- **`offline_read_write`** — Verified offline decoding AND surgical lossless `Save As .fm` writing (when authorized via runtime `fm.exe` key derivation in Editor mode; original `.fm` files are never modified).
+- **`offline_read_write`** — Offline decoding AND implemented surgical `Save As .fm` writing (real-game certification pending) (when authorized via runtime `fm.exe` key derivation in Editor mode; original `.fm` files are never modified).
 - **`offline_read_only`** — Verified offline decoding and interactive browsing/analysis across ManagerHub workspaces, without binary write-back.
 - **`live_only_optional_adapter`** — Operates on transient in-memory runtime structures of a running `fm.exe` process rather than static `game_db.dat` scalar offsets; intentionally excluded from offline `.fm` binary mutation.
 - **`not_in_save`** — Data resides in external static game installation files (such as `lang_db.dat`) or user-authored external presets rather than inside `.fm` save archives.
@@ -19,7 +21,7 @@
 | Realism vs Editor privacy & write gating | `offline_read_write` | `saveMode: 'realism' \| 'editor'` in `SaveSession`; Realism redacts CA/PA/hidden/personality and blocks `commitEditorTransaction` & `writePatchedFm2013Save` | `S04`, `writer.test.ts` |
 | Undo / Redo / Discard draft changes | `offline_read_write` | Immutable transaction stack (`editor-transactions.ts`: `commitEditorTransaction`, `undoEditorTransaction`, `redoEditorTransaction`, `discardEditorTransactions`) | `S06`, `writer.test.ts` |
 | Semantic diff preview before write | `offline_read_write` | `summarizeDraftChanges` + `Save As .fm` review table in `SaveEntityEditorModal.tsx` | `S06`, `S08` |
-| Certified lossless `Save As .fm` export | `offline_read_write` | `writePatchedFm2013Save` (`writer.ts`): validates incoming `HMAC-SHA512`, patches fixed-width offsets in `game_db.dat`, recomputes `HMAC-SHA512`, re-encrypts AES-128-CTR envelope, preserves all other archive members (`rgman/`) byte-for-byte, and independently re-decodes output | `S06`, `S07`, `S08` |
+| Experimental `Save As .fm` export | `offline_read_write` | `writePatchedFm2013Save` (`writer.ts`): validates incoming `HMAC-SHA512`, patches fixed-width offsets in `game_db.dat`, recomputes `HMAC-SHA512`, re-encrypts AES-128-CTR envelope, preserves all other archive members (`rgman/`) byte-for-byte, and independently re-decodes output | `S06`, `S07`, `S08` |
 | Static base-name resolution (`lang_db.dat`) | `not_in_save` (`offline_read_only` when attached) | Optional user-supplied `lang_db.dat` parser (`lang-db.ts`, 15 tables, `remaining === 0`) attached via `ActiveSaveToolbar` (`nameProvenance: 'lang_db'`) | `Gate B`, `writer.test.ts` |
 | Global search & multi-entity filtering | `offline_read_only` | `SaveDatabaseExplorer.tsx`, `PlayerWorkspace.tsx` (virtualized 4,000+ roster search, position/club filters) | `S01`, `S03` |
 | Mass Edit (Players, Staff, Clubs) | `offline_read_write` | `buildMassEditPlayersOverlay`, `buildMassEditStaffOverlay`, `buildMassEditClubsOverlay` + `MassEditModal` in `SaveEntityEditorModal.tsx` | `S06`, `writer.test.ts` |
@@ -34,7 +36,7 @@
 | FMRTE 13 Section / Field Group | Parity Status | ManagerHub Coverage & Provenance | QA / Test Gate |
 | --- | --- | --- | --- |
 | Identity (`UID`, `RowID`, First/Last/Common Name, Nation, Club, Loan Parent, Team) | `offline_read_only` | Decoded from `PERSON`, `FIRST_NAME`, `SECOND_NAME`, `COMMON_NAME`, `TEAM`, `CLUB`, `NATION` (`game-db-parser.ts`) | `S01`, `writer.test.ts` |
-| Date of Birth & Derived Calendar Age | `offline_read_write` | `birthDate` (`SI_DATE` bijection `isoToSiDate` / `siDateToIso`) + exact age vs save game date | `writer.test.ts` |
+| Date of Birth & Derived Calendar Age | `offline_read_only` | `birthDate` and derived age; no PlayerDraftPatch birthDate field or verified write mapping | Read coverage only; write pending |
 | Ability & Reputations (`CA`, `PA`, Home / Current / World Reputation) | `offline_read_write` | Editor-gated read + fixed-offset surgical patch (`CA`/`PA` `1..200`, reputations `0..10000`) | `S06`, `S07`, `S08` |
 | Morale, Market Value, International Caps & Goals, Height, Weight | `offline_read_write` | `morale` (`1..20`), `marketValueGbp`, `intlCaps`, `intlGoals` read/write; `heightCm`/`weightKg` read-only | `S06`, `writer.test.ts` |
 | Contract (`Weekly Wage`, `Expiry Date`, `Squad Number`, `Join Date`, `Loan`, `Job`) | `offline_read_write` | `weeklyWageGbp`, `expiryDate` (`SI_DATE`), and `squadNumber` (`0..99`) editable; join/loan/job decoded read-only | `S06`, `writer.test.ts` |

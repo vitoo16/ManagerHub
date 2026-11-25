@@ -395,14 +395,14 @@ test('P0 unified SaveSession (S01-S08): non-remounting continuity, decoupled clu
 
   // Open Save As .fm modal -> verify diff preview -> download certified .fm -> re-import & verify roundtrip!
   await toolbar.getByRole('button', { name: 'Save As .fm' }).click();
-  await expect(modal).toContainText('Save As .fm (Certified Offline Copy)');
+  await expect(modal).toContainText('Save As .fm (Experimental Offline Copy)');
   await expect(modal).toContainText('HMAC-SHA512 signing key ready');
   await expect(modal.locator('tbody')).toContainText('Owen Shaw');
   await expect(modal.locator('tbody')).toContainText('Northbridge');
   await expect(modal.locator('tbody')).toContainText('120000000');
 
   const downloadPromise = page.waitForEvent('download');
-  await modal.getByRole('button', { name: 'Download certified Save As .fm' }).click();
+  await modal.getByRole('button', { name: 'Download experimental Save As .fm' }).click();
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toBe('northbridge-career-edited.fm');
   const downloadedPath = await download.path();

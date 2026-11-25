@@ -43,6 +43,12 @@ describe('FM2013 P0 integrity, mode-independent persistence, transactions, and l
     expect(db.source.compatibilityStatus).toBe('verified');
     expect(db.coverage.verifiedDomains).toContain('actual_ca');
     expect(validateDecodedSaveDatabase(db, db.source.saveId)).toBe(db);
+    expect(() => validateDecodedSaveDatabase({
+      ...db, source: { ...db.source, build: 'unsupported-build' }
+    })).toThrow('compatibility or coverage');
+    expect(() => validateDecodedSaveDatabase({
+      ...db, coverage: { ...db.coverage, verifiedDomains: ['invented-domain'] }
+    })).toThrow('compatibility or coverage');
 
     // Staff NON_PLAYING_DATA attributes are decoded (Gate B)
     expect(db.staff[0]?.attributes?.workingWithYoungsters).toBe(17);

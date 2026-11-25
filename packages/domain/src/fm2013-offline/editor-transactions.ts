@@ -273,7 +273,7 @@ function assertKnownPatchKeys(value: unknown, allowed: readonly string[], label:
   }
 }
 
-function assertKnownNestedPatch(value: unknown, base: object | null, label: string): void {
+function assertKnownNestedPatch(value: unknown, base: object | null | undefined, label: string): void {
   if (value === undefined) return;
   assertKnownPatchKeys(value, base ? Object.keys(base) : [], label);
 }
@@ -445,11 +445,18 @@ function normalizeStadiumPatch(base: DecodedSaveStadium, merged: StadiumDraftPat
 }
 
 export function mergePlayerPatch(prev: PlayerDraftPatch | undefined, next: PlayerDraftPatch): PlayerDraftPatch {
+  const attributes = next.attributes ? { ...next.attributes } : undefined;
+  // A new single-alias edit must supersede both old aliases together.
+  if (attributes?.punching !== undefined && attributes.tendencyToPunch === undefined) {
+    attributes.tendencyToPunch = attributes.punching;
+  } else if (attributes?.tendencyToPunch !== undefined && attributes.punching === undefined) {
+    attributes.punching = attributes.tendencyToPunch;
+  }
   return {
     ...prev,
     ...next,
     ...(prev?.positions || next.positions ? { positions: { ...prev?.positions, ...next.positions } } : {}),
-    ...(prev?.attributes || next.attributes ? { attributes: { ...prev?.attributes, ...next.attributes } } : {}),
+    ...(prev?.attributes || next.attributes ? { attributes: { ...prev?.attributes, ...attributes } } : {}),
     ...(prev?.hiddenPlaying || next.hiddenPlaying ? { hiddenPlaying: { ...prev?.hiddenPlaying, ...next.hiddenPlaying } } : {}),
     ...(prev?.personality || next.personality ? { personality: { ...prev?.personality, ...next.personality } } : {})
   };

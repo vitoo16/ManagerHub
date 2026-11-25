@@ -295,7 +295,7 @@ function SaveEntityEditorModal({
     target.kind === 'club' ? `${t('Edit club & finances')} · ${club?.fullName ?? ''}` :
     target.kind === 'stadium' ? `${t('Edit stadium')} · ${stadium?.customName ?? `#${target.uid}`}` :
     target.kind === 'mass_edit' ? t('FMRTE13 Presets & Mass Edit') :
-    t('Save As .fm (Certified Offline Copy)');
+    t('Save As .fm (Experimental Offline Copy)');
 
   return (
     <div
@@ -1033,7 +1033,7 @@ function SaveEntityEditorModal({
                 onClick={() => onSaveAsFm(outputName)}
               >
                 <Icon name="download" size={15} />
-                {t(writingSave ? 'Signing & verifying .fm copy…' : 'Download certified Save As .fm')}
+                {t(writingSave ? 'Signing & verifying .fm copy…' : 'Download experimental Save As .fm')}
               </Button>
             )}
             <Button type="button" variant="default" onClick={onClose}>

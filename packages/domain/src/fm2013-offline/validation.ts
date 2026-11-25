@@ -1,3 +1,4 @@
+import { resolveSaveCompatibility } from '../save-compatibility';
 import { MAX_FM_SAVE_BYTES } from './afe-container';
 import {
   DECODED_SAVE_DB_SCHEMA_VERSION,
@@ -101,6 +102,23 @@ export function validateDecodedSaveDatabase(
     typeof cov.gameDbExactEof !== 'boolean'
   ) {
     throw new Error('Decoded save coverage metadata is malformed.');
+  }
+
+  const summaryMissing = src.build === `game_db-0x${(src.gameDbVersion as number).toString(16)}`;
+  const compatibility = resolveSaveCompatibility({
+    detectedFamily: src.family,
+    edition: summaryMissing ? null : 'FM2013',
+    build: summaryMissing ? null : src.build
+  });
+  const expectedDomains = compatibility.status === 'verified' ? compatibility.profile.readableDomains : [];
+  if (src.compatibilityStatus !== compatibility.status ||
+      (src.checksumStatus !== 'verified_hmac_sha512' && src.checksumStatus !== 'structural_64b_unverified') ||
+      cov.gameDbExactEof !== true ||
+      cov.verifiedDomains.length !== expectedDomains.length ||
+      !expectedDomains.every(domain => (cov.verifiedDomains as unknown[]).includes(domain)) ||
+      !cov.notStoredInSave.every(item => typeof item === 'string') ||
+      !cov.notDecoded.every(item => typeof item === 'string')) {
+    throw new Error('Decoded save compatibility or coverage claims failed validation.');
   }
 
   const checkUniqueUids = (items: readonly unknown[], label: string): void => {

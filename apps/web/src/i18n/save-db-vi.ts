@@ -164,7 +164,7 @@ export default {
   "Edit club & finances": "Chỉnh sửa CLB & tài chính",
   "Edit stadium": "Chỉnh sửa sân vận động",
   "FMRTE13 Presets & Mass Edit": "Mẫu nhanh FMRTE13 & Chỉnh sửa hàng loạt",
-  "Save As .fm (Certified Offline Copy)": "Lưu bản sao .fm (Bản sao ngoại tuyến đã chứng nhận)",
+  "Save As .fm (Experimental Offline Copy)": "Lưu bản sao .fm (Bản sao ngoại tuyến thử nghiệm)",
   "Offline Save Editor · Draft Transaction Layer": "Trình biên tập Save ngoại tuyến · Lớp giao dịch nháp",
   "Changes update all ManagerHub workspaces immediately and never touch your original .fm file.": "Thay đổi cập nhật tức thì trên mọi không gian làm việc của ManagerHub và không bao giờ chạm vào tệp .fm gốc.",
   "Close editor": "Đóng trình biên tập",
@@ -249,6 +249,6 @@ export default {
   "All draft edits discarded.": "Đã hủy toàn bộ các chỉnh sửa nháp.",
   "Discard all edits": "Hủy mọi chỉnh sửa",
   "Signing & verifying .fm copy…": "Đang ký HMAC-SHA512 & kiểm chứng bản sao .fm…",
-  "Download certified Save As .fm": "Tải xuống bản sao Save As .fm đã chứng nhận",
+  "Download experimental Save As .fm": "Tải xuống bản sao Save As .fm thử nghiệm",
   "Done": "Xong"
 } as const;

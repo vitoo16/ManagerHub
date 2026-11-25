@@ -542,6 +542,22 @@ export async function writePatchedFm2013Save(
   outHeaderDv.setUint32(9, newDirectoryOffset - 9, true);
   outHeaderDv.setUint32(13, 9, true);
 
+  // Verify rebuilt directory and all bytes outside the changed member/header.
+  const actualContainer = await parseFm2013Container(outBytes);
+  if (JSON.stringify(actualContainer.directoryTree) !== JSON.stringify(updatedTree)) {
+    throw new FM2013DecodeError('CORRUPT_DIRECTORY', 'Post-write archive directory mismatch.');
+  }
+  const equalBytes = (a: Uint8Array, b: Uint8Array): boolean =>
+    a.length === b.length && a.every((byte, i) => byte === b[i]);
+  if (!equalBytes(input.subarray(18, prefixEnd), outBytes.subarray(18, prefixEnd)) ||
+      !equalBytes(input.subarray(suffixStart, container.directoryOffset),
+        outBytes.subarray(prefixEnd + newGameDbStored.length, newDirectoryOffset))) {
+    throw new FM2013DecodeError('CORRUPT_DIRECTORY', 'Post-write unrelated member or gap bytes changed.');
+  }
+  const actualGameDb = await extractFm2013Member(outBytes, actualContainer, 'game_db.dat');
+  if (!actualGameDb || !equalBytes(actualGameDb, patchedGameDb)) {
+    throw new FM2013DecodeError('CORRUPT_DATABASE', 'Post-write raw game_db mismatch.');
+  }
   // Re-decode with the same decoder and compare all normalized entity records.
   const verifiedDb = await decodeFm2013Save(outBytes, {
     fileName: outputFileName,
