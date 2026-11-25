@@ -284,3 +284,6 @@
     padding: 16px;
   }
 }
+
+.editor-field input[data-attribute-tier] { color: var(--attribute-color); }
+.editor-field input[data-attribute-tier]:disabled { color: var(--text-sub); }

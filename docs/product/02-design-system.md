@@ -52,6 +52,24 @@ All visualizations offer keyboard-readable equivalent and export of underlying v
 - Performance: prioritize instantaneous-looking search/filter, lazy chart tabs, skeletons with stable layout and responsive charts. Benchmark real saves.
 - Themes: dark-first but implement light equivalent with contrast and color-meaning parity; never rely on pure color to signal data status.
 
+## Football Manager attribute magnitude — seven tiers
+
+Use the shared `getAttributeTier` classifier and semantic `--attribute-*` tokens in `packages/ui`. This is a display scale, not football desirability.
+
+| Range | Tier | Dark token | Light token |
+| --- | --- | --- | --- |
+| 0–6 | Very Low | #8993A0 | #46525e |
+| 7–9 | Low | #B2BAC5 | #606a74 |
+| 10–11 | Average | #C29B6A | #805522 |
+| 12–14 | Above Average | #D9B34C | #79600c |
+| 15–16 | Good | #F6DC63 | #6e5800 |
+| 17–19 | Excellent | #55CE8A | #17683b |
+| 20 | Maximum | #FF9D42 | #a64406 |
+
+Zero belongs to the lowest tier only when the particular field's verified schema permits zero; absent/invalid values are not silently substituted. Keep the numeric value visible. Do not apply these colors to CA/PA/RCA, role fit, morale, financial values, or other distinct scales. A high value of injury proneness, for example, is not necessarily desirable.
+
+Candidate integration: ranked Player Lab attributes, head-to-head attribute comparison, and visible/hidden/personality/staff attribute inputs in the offline editor. Other applicable surfaces and browser-based contrast, theme, zoom, and visual verification remain pending; this does not certify global parity.
+
 ## Chart contract and accuracy
 Every chart displays source class, period/season, cohort and sample when relevant, units/axes, missingness and whether value is modelled. **Actual Game Field**, **Estimated**, **Scenario** are visually distinguishable at all times.
 - Attribute radar: absolute attributes in their edition range, never label as performance percentile.

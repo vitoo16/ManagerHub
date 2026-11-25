@@ -1,6 +1,6 @@
 import { memo, useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ATTRIBUTE_GROUPS, type AttributeKey } from '@managerhub/domain';
+import { ATTRIBUTE_GROUPS, ATTRIBUTE_LABELS, type AttributeKey } from '@managerhub/domain';
 import {
   buildClubSquadPresetOverlay,
   buildEditedSaveFileName,
@@ -20,7 +20,7 @@ import {
   type StadiumDraftPatch,
   type StaffDraftPatch
 } from '@managerhub/domain/fm2013-offline';
-import { Button, Icon, Status } from '@managerhub/ui';
+import { AttributeInput, Button, Icon, Status } from '@managerhub/ui';
 import { registerSaveDbI18n } from '../../i18n/register-save-db-i18n';
 import './save-session.css';
 
@@ -529,8 +529,7 @@ function SaveEntityEditorModal({
                       {PERSONALITY_KEYS.map(item => (
                         <label className="editor-field" key={item.key}>
                           <span>{t(item.label)}</span>
-                          <input
-                            type="number"
+                          <AttributeInput
                             min={1}
                             max={20}
                             value={player.personality![item.key]}
@@ -556,8 +555,7 @@ function SaveEntityEditorModal({
                     {HIDDEN_KEYS.map(item => (
                       <label className="editor-field" key={item.key}>
                         <span>{t(item.label)}</span>
-                        <input
-                          type="number"
+                        <AttributeInput
                           min={1}
                           max={20}
                           value={player.hiddenPlaying[item.key]}
@@ -576,17 +574,19 @@ function SaveEntityEditorModal({
                   <div className="editor-field-grid editor-field-grid--compact">
                     {VISIBLE_ATTR_LIST.map(attrKey => (
                       <label className="editor-field" key={attrKey}>
-                        <span>{attrKey}</span>
-                        <input
-                          type="number"
+                        <span>{t(ATTRIBUTE_LABELS[attrKey])}</span>
+                        <AttributeInput
                           min={1}
                           max={20}
-                          value={player.attributes[attrKey] ?? 10}
-                          onChange={e =>
+                          value={player.attributes[attrKey]}
+                          disabled={player.attributes[attrKey] == null}
+                          onChange={e => {
+                            const current = player.attributes[attrKey];
+                            if (current == null) return;
                             applyPlayerField(`Edit ${attrKey}`, {
-                              attributes: { [attrKey]: clampInt(e.target.value, player.attributes[attrKey] ?? 10, 1, 20) }
-                            })
-                          }
+                              attributes: { [attrKey]: clampInt(e.target.value, current, 1, 20) }
+                            });
+                          }}
                         />
                       </label>
                     ))}
@@ -705,8 +705,7 @@ function SaveEntityEditorModal({
                   {STAFF_ATTR_KEYS.map(item => (
                     <label className="editor-field" key={item.key}>
                       <span>{t(item.label)}</span>
-                      <input
-                        type="number"
+                      <AttributeInput
                         min={1}
                         max={20}
                         value={staffMember.attributes![item.key]}

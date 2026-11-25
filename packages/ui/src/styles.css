@@ -18,6 +18,13 @@
   --warning: #e4bc7c;
   --negative: #f1a39e;
   --info: #93b9eb;
+  --attribute-very-low: #8993A0;
+  --attribute-low: #B2BAC5;
+  --attribute-average: #C29B6A;
+  --attribute-above-average: #D9B34C;
+  --attribute-good: #F6DC63;
+  --attribute-excellent: #55CE8A;
+  --attribute-maximum: #FF9D42;
   --glass-tint: rgba(25, 36, 45, .73);
   --glass-border: rgba(209, 231, 238, .17);
   --radius-sm: 10px;
@@ -40,6 +47,13 @@
   --warning: #8a5812;
   --negative: #b84e41;
   --info: #245a91;
+  --attribute-very-low: #46525e;
+  --attribute-low: #606a74;
+  --attribute-average: #805522;
+  --attribute-above-average: #79600c;
+  --attribute-good: #6e5800;
+  --attribute-excellent: #17683b;
+  --attribute-maximum: #a64406;
   --glass-tint: rgba(255, 255, 255, .84);
   --glass-border: rgba(72, 103, 105, .18);
 }
@@ -83,3 +97,14 @@ small { font-size: 12px; }
  .mh-button {border:1px solid ButtonBorder;}
  .mh-status__dot{border:1px solid currentColor}
 }
+
+/* FM attribute magnitude; never reuse for CA, PA, morale, reputation or role fit. */
+[data-attribute-tier="very-low"] { --attribute-color: var(--attribute-very-low); }
+[data-attribute-tier="low"] { --attribute-color: var(--attribute-low); }
+[data-attribute-tier="average"] { --attribute-color: var(--attribute-average); }
+[data-attribute-tier="above-average"] { --attribute-color: var(--attribute-above-average); }
+[data-attribute-tier="good"] { --attribute-color: var(--attribute-good); }
+[data-attribute-tier="excellent"] { --attribute-color: var(--attribute-excellent); }
+[data-attribute-tier="maximum"] { --attribute-color: var(--attribute-maximum); }
+.mh-attribute-value[data-attribute-tier] { color: var(--attribute-color); font-variant-numeric: tabular-nums; }
+.mh-attribute-value { font-variant-numeric: tabular-nums; }

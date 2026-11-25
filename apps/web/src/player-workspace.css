@@ -87,6 +87,7 @@
 .player-attribute span{color:var(--text-sub)}
 .player-attribute__track{height:8px;border-radius:8px;background:var(--surface-up);overflow:hidden}
 .player-attribute__track>div{height:100%;border-radius:8px;background:var(--accent-strong)}
+.player-attribute__track>.mh-attribute-bar[data-attribute-tier]{background:var(--attribute-color)}
 .player-attribute strong{font-variant-numeric:tabular-nums;text-align:right}
 .scouting-verdict{max-width:650px;padding:14px 2px}
 .scouting-verdict h3{margin:20px 0 12px;font-size:22px}
@@ -111,6 +112,7 @@
 .compare-attribute [role="cell"]:first-child,.compare-attribute [role="cell"]:last-child{font-weight:700;font-variant-numeric:tabular-nums}
 .compare-attribute [role="cell"]:nth-child(2){color:var(--text-sub)}
 .compare-leading{color:var(--accent-strong)}
+.compare-leading .mh-attribute-value{text-decoration:underline;text-underline-offset:.16em}
 @media(max-width:570px){.compare-selector{grid-template-columns:1fr}.compare-selector label:nth-of-type(2){grid-row:3}.compare-selector small{grid-column:1}.compare-head{font-size:11px}}
 
 /* Player snapshots stay on-device and never imply a supported native save parser. */
