@@ -2,7 +2,28 @@ import { readFile } from 'node:fs/promises';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 import { buildSyntheticFm2013LangDb } from '../../packages/domain/src/fm2013-offline/lang-db';
-import { buildSyntheticFm2013Save } from '../../packages/domain/src/fm2013-offline/synthetic';
+import { buildSyntheticFm2013Save, SYNTHETIC_TEST_HMAC_KEY } from '../../packages/domain/src/fm2013-offline/synthetic';
+
+// Test-only PE fixture exercises the same explicit authorization UI as real input.
+function buildSyntheticAuthorizationExecutable(): Buffer {
+  const bytes = Buffer.alloc(4_500_000);
+  bytes.write('MZ', 0, 'ascii');
+  const pe = 0x80;
+  bytes.writeUInt32LE(pe, 0x3c);
+  bytes.set([0x50, 0x45, 0, 0], pe);
+  bytes.writeUInt16LE(1, pe + 6);
+  bytes.writeUInt16LE(0xe0, pe + 20);
+  bytes.writeUInt16LE(0x10b, pe + 24);
+  bytes.writeUInt32LE(0x400000, pe + 24 + 28);
+  const section = pe + 24 + 0xe0;
+  bytes.writeUInt32LE(0x2000, section + 8);
+  bytes.writeUInt32LE(0x2074000, section + 12);
+  bytes.writeUInt32LE(0x2000, section + 16);
+  bytes.writeUInt32LE(0x1000, section + 20);
+  const keyOffset = 0x1000 + 0xbe0;
+  for (let i = 0; i < 16; i++) bytes[keyOffset + i] = SYNTHETIC_TEST_HMAC_KEY[i * 2]!;
+  return bytes;
+}
 
 const WCAG_AA_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
 
@@ -85,6 +106,11 @@ test('complete offline FM2013 save workflow: decode, explore, Realism/Editor iso
   await expect(modeGroup.getByRole('button', { name: 'Editor mode' })).toHaveAttribute('aria-pressed', 'true');
   await expect(explorer.locator('thead th', { hasText: /^CA$/ })).toBeVisible();
   await expect(explorer.locator('thead th', { hasText: /^PA$/ })).toBeVisible();
+  await toolbar.locator('input[accept=".exe"]').setInputFiles({
+    name: 'synthetic-test-only.exe', mimeType: 'application/octet-stream',
+    buffer: buildSyntheticAuthorizationExecutable()
+  });
+  await expect(toolbar).toContainText('HMAC-SHA512');
   const owenRow = explorer.locator('tbody tr', { hasText: 'Owen Shaw' });
   await expect(owenRow).toContainText('168');
   await expect(owenRow).toContainText('182');
@@ -295,7 +321,7 @@ test('P0 unified SaveSession (S01-S08): non-remounting continuity, decoupled clu
   const explorer = page.locator('.save-db-explorer');
   await expect(toolbar).toBeVisible({ timeout: 20_000 });
   await expect(toolbar).toContainText('northbridge-career.fm');
-  await expect(toolbar).toContainText('HMAC-SHA512');
+  await expect(toolbar).not.toContainText('HMAC-SHA512');
 
   // 2. Attach lang_db.dat via global toolbar (Gate B)
   await toolbar.locator('input[accept=".dat"]').setInputFiles({

@@ -46,9 +46,7 @@ const NAV: { key: WorkspaceKey; title: string; detail: string; icon: 'grid' | 'd
 ];
 
 type Theme = 'dark' | 'light';
-type OfflineDomainModule = typeof import('@managerhub/domain/fm2013-offline') & {
-  readonly SYNTHETIC_TEST_HMAC_KEY?: Uint8Array;
-};
+type OfflineDomainModule = typeof import('@managerhub/domain/fm2013-offline');
 
 interface SaveSessionSource {
   readonly kind: 'save';
@@ -163,7 +161,6 @@ export default function App() {
   const [rawSaveFiles, setRawSaveFiles] = useState<Record<string, File>>({});
   const [langDbLookup, setLangDbLookup] = useState<Fm2013LangDbLookup | null>(null);
   const [runtimeSigningKey, setRuntimeSigningKey] = useState<Uint8Array | null>(null);
-  const [syntheticKeyVerifiedIds, setSyntheticKeyVerifiedIds] = useState<ReadonlySet<string>>(() => new Set());
   const [session, setSession] = useState<SaveSession>({ mode: 'realism', source: null });
   const [editorModalTarget, setEditorModalTarget] = useState<EditorModalTarget | null>(null);
   const [writingSave, setWritingSave] = useState(false);
@@ -235,13 +232,7 @@ export default function App() {
   }, [session.source, session.mode, activeDecodedSave]);
 
   const activeRawSaveFile = activeSaveId ? (rawSaveFiles[activeSaveId] ?? null) : null;
-  const effectiveSigningKey = useMemo(() => {
-    if (runtimeSigningKey) return runtimeSigningKey;
-    if (activeSaveId && syntheticKeyVerifiedIds.has(activeSaveId) && saveSource?.tools.SYNTHETIC_TEST_HMAC_KEY) {
-      return saveSource.tools.SYNTHETIC_TEST_HMAC_KEY;
-    }
-    return null;
-  }, [runtimeSigningKey, activeSaveId, syntheticKeyVerifiedIds, saveSource]);
+  const effectiveSigningKey = runtimeSigningKey;
 
   const allDecodedSaveList = useMemo(() => {
     return Object.values(decodedSaves).map(item =>
@@ -298,26 +289,9 @@ export default function App() {
     resetPlayerLabSessionState();
   }, [confirmDiscardIfDirty, onCancelDecode, resetSquadSessionState, resetPlayerLabSessionState]);
 
-  const loadOfflineTools = useCallback(async (): Promise<OfflineDomainModule> => {
-    const [domainMod, synthMod] = await Promise.all([
-      import('@managerhub/domain/fm2013-offline'),
-      import('@managerhub/domain/fm2013-synthetic')
-    ]);
-    return { ...domainMod, SYNTHETIC_TEST_HMAC_KEY: synthMod.SYNTHETIC_TEST_HMAC_KEY };
-  }, []);
-
-  const probeSyntheticSigningSupport = useCallback(async (file: File, saveId: string, tools: OfflineDomainModule) => {
-    if (!tools.SYNTHETIC_TEST_HMAC_KEY) return;
-    try {
-      const container = await tools.parseFm2013Container(file);
-      const gameDb = await tools.extractFm2013Member(file, container, 'game_db.dat');
-      if (gameDb && await tools.verifyGameDbHmacSha512(gameDb, tools.SYNTHETIC_TEST_HMAC_KEY)) {
-        setSyntheticKeyVerifiedIds(prev => new Set([...prev, saveId]));
-      }
-    } catch {
-      // Non-synthetic real saves will not match the public synthetic test key.
-    }
-  }, []);
+  const loadOfflineTools = useCallback(
+    (): Promise<OfflineDomainModule> => import('@managerhub/domain/fm2013-offline'), []
+  );
 
   const commitDecodedSave = useCallback((
     db: DecodedSaveDatabase,
@@ -333,7 +307,6 @@ export default function App() {
     setDecodedSaves(prev => ({ ...prev, [db.source.saveId]: db }));
     if (rawFile) {
       setRawSaveFiles(prev => ({ ...prev, [db.source.saveId]: rawFile }));
-      void probeSyntheticSigningSupport(rawFile, db.source.saveId, tools);
     }
     setImports(prev => [inspection, ...prev.filter(item => item.id !== inspection.id)]);
     setSelectedId(inspection.id);
@@ -352,7 +325,7 @@ export default function App() {
     }));
     resetSquadSessionState();
     resetPlayerLabSessionState();
-  }, [probeSyntheticSigningSupport, resetSquadSessionState, resetPlayerLabSessionState]);
+  }, [resetSquadSessionState, resetPlayerLabSessionState]);
 
   const openDecodedSave = useCallback(async (
     saveId: string, read: (saveId: string) => Promise<DecodedSaveDatabase | null>
@@ -391,6 +364,7 @@ export default function App() {
   const onSetSaveMode = useCallback((nextMode: DecodedSaveMode) => {
     if (writePendingRef.current) return;
     if (nextMode === 'realism') {
+      authorizationRequestRef.current += 1;
       setEditorModalTarget(null);
     }
     setSession(current => (current.mode === nextMode ? current : { ...current, mode: nextMode }));
@@ -508,15 +482,22 @@ export default function App() {
   }, [saveSource, loadOfflineTools]);
 
   const onAuthorizeFmExe = useCallback(async (file: File) => {
-    if (!saveSource || openPendingRef.current || writePendingRef.current) return;
+    if (!saveSource || !activeRawSaveFile || saveMode !== 'editor' ||
+        openPendingRef.current || writePendingRef.current) return;
     const revision = inspectionRevisionRef.current;
     const request = ++authorizationRequestRef.current;
+    setRuntimeSigningKey(null);
     const isCurrent = () => revision === inspectionRevisionRef.current && request === authorizationRequestRef.current;
     setWriteError(null);
     setError(null);
     try {
       const tools = saveSource?.tools ?? await loadOfflineTools();
       const key = await tools.deriveFm2013SigningKeyFromExecutable(file);
+      const container = await tools.parseFm2013Container(activeRawSaveFile);
+      const member = await tools.extractFm2013Member(activeRawSaveFile, container, 'game_db.dat');
+      if (!member || !await tools.verifyGameDbHmacSha512(member, key)) {
+        throw new Error('The selected executable does not authenticate the active save.');
+      }
       if (isCurrent()) setRuntimeSigningKey(key);
     } catch (err) {
       if (!isCurrent()) return;
@@ -524,7 +505,7 @@ export default function App() {
       setWriteError(msg);
       setError(msg);
     }
-  }, [saveSource, loadOfflineTools]);
+  }, [saveSource, activeRawSaveFile, saveMode, loadOfflineTools]);
 
   const onSaveAsFm = useCallback(async (outputFileName: string) => {
     if (saveMode !== 'editor' || openPendingRef.current || writePendingRef.current ||
