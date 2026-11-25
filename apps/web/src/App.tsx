@@ -37,6 +37,14 @@ const NAV: { key: WorkspaceKey; title: string; detail: string; icon: 'grid' | 'd
 ];
 
 type Theme = 'dark' | 'light';
+
+// The decoded database and its projection inputs form one authoritative source.
+// The projector is loaded only when a decoded source is explicitly opened.
+type SaveProjector = typeof import('@managerhub/domain/fm2013-offline')['saveDatabaseToPlayerDataset'];
+type ActiveSource =
+  | { readonly kind: 'export'; readonly dataset: PlayerDataset }
+  | { readonly kind: 'save'; readonly database: DecodedSaveDatabase; readonly clubUid: number | null; readonly project: SaveProjector };
+type SaveSession = { readonly mode: DecodedSaveMode; readonly source: ActiveSource | null };
 function loadPreference<T extends string>(key: string, fallback: T, allowed: readonly T[]): T {
   try {
     const value = localStorage.getItem(key);
@@ -127,11 +135,8 @@ export default function App() {
   const [glass, setGlass] = useState(() => loadPreference('mh-glass', 'on', ['on', 'off']));
   const [imports, setImports] = useState<SaveInspectionResult[]>([]);
   const [decodedSaves, setDecodedSaves] = useState<Record<string, DecodedSaveDatabase>>({});
-  const [activeSaveId, setActiveSaveId] = useState<string | null>(null);
-  const [saveMode, setSaveMode] = useState<DecodedSaveMode>('realism');
-  const [activeClubFilterUid, setActiveClubFilterUid] = useState<number | null>(null);
+  const [session, setSession] = useState<SaveSession>({ mode: 'realism', source: null });
   const [selectedPlayerIdForLab, setSelectedPlayerIdForLab] = useState<string | null>(null);
-  const [playerDataset, setPlayerDataset] = useState<PlayerDataset | null>(null);
   const [scoutShortlistIds, setScoutShortlistIds] = useState<string[]>([]);
   const [squadPlans, setSquadPlans] = useState<SquadPlans>(createDefaultSquadPlans);
   const [tacticalScenarios, setTacticalScenarios] = useState<TacticalScenarios>(defaultTacticalScenarios);
@@ -143,16 +148,19 @@ export default function App() {
   const [decodeNotice, setDecodeNotice] = useState<string | null>(null);
   const inspectionAbortRef = useRef<AbortController | null>(null);
   const inspectionRevisionRef = useRef(0);
-  const saveModeRef = useRef<DecodedSaveMode>(saveMode);
-  saveModeRef.current = saveMode;
   const viewScope = useRef<HTMLElement>(null);
   const commandDialogRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
 
-  const activeDecodedSave = useMemo(
-    () => (activeSaveId ? decodedSaves[activeSaveId] ?? null : null),
-    [activeSaveId, decodedSaves]
-  );
+  const saveMode = session.mode;
+  const activeDecodedSave = session.source?.kind === 'save' ? session.source.database : null;
+  const activeSaveId = activeDecodedSave?.source.saveId ?? null;
+  const activeClubFilterUid = session.source?.kind === 'save' ? session.source.clubUid : null;
+  const playerDataset = useMemo(() => {
+    const source = session.source;
+    if (!source) return null;
+    return source.kind === 'export' ? source.dataset : source.project(source.database, session.mode, { clubUid: source.clubUid });
+  }, [session]);
 
   useEffect(() => {
     setTacticalScenarios(previous => {
@@ -170,65 +178,72 @@ export default function App() {
     setSelectedPlayerIdForLab(null);
   }, []);
 
-  const onPlayerDatasetChange = useCallback((next: PlayerDataset | null) => {
-    setPlayerDataset(next);
-    if (next === null || next.source !== 'decoded_save') {
-      setActiveSaveId(null);
-      setActiveClubFilterUid(null);
-    }
-    resetDerivedWorkspaceState();
-  }, [resetDerivedWorkspaceState]);
-
-  const projectDecodedDataset = useCallback(async (
-    db: DecodedSaveDatabase,
-    mode: DecodedSaveMode,
-    clubUid: number | null
-  ): Promise<PlayerDataset> => {
-    const { saveDatabaseToPlayerDataset } = await import('@managerhub/domain/fm2013-offline');
-    return saveDatabaseToPlayerDataset(db, mode, { clubUid });
+  // Every explicit source choice invalidates older pending opens, including
+  // IndexedDB restores, worker decodes and optional export selection.
+  const onCancelDecode = useCallback(() => {
+    inspectionRevisionRef.current += 1;
+    inspectionAbortRef.current?.abort();
+    inspectionAbortRef.current = null;
+    setBusy(false);
+    setDecodeProgress(null);
   }, []);
 
-  const activateDecodedSave = useCallback(async (
-    db: DecodedSaveDatabase,
-    options: { readonly clubUid?: number | null; readonly initialPlayerId?: string | null } = {}
+  const onPlayerDatasetChange = useCallback((next: PlayerDataset | null) => {
+    if (next?.source === 'decoded_save') return;
+    onCancelDecode();
+    setSession(current => ({ ...current, source: next ? { kind: 'export', dataset: next } : null }));
+    resetDerivedWorkspaceState();
+  }, [onCancelDecode, resetDerivedWorkspaceState]);
+
+  const commitDecodedSave = useCallback((
+    db: DecodedSaveDatabase, project: SaveProjector, inspection: SaveInspectionResult
   ) => {
-    const targetClubUid = options.clubUid !== undefined ? options.clubUid : defaultClubUidForSave(db);
-    const dataset = await projectDecodedDataset(db, saveModeRef.current, targetClubUid);
-    const inspection = buildInspectionFromDecoded(db);
+    const clubUid = defaultClubUidForSave(db);
     setDecodedSaves(prev => ({ ...prev, [db.source.saveId]: db }));
     setImports(prev => [inspection, ...prev.filter(item => item.id !== inspection.id)]);
     setSelectedId(inspection.id);
-    setActiveSaveId(db.source.saveId);
-    setActiveClubFilterUid(targetClubUid);
-    setPlayerDataset(dataset);
+    setSession(current => ({ ...current, source: { kind: 'save', database: db, clubUid, project } }));
     resetDerivedWorkspaceState();
-    if (options.initialPlayerId) {
-      setSelectedPlayerIdForLab(options.initialPlayerId);
+  }, [resetDerivedWorkspaceState]);
+
+  const openDecodedSave = useCallback(async (
+    saveId: string, read: (saveId: string) => Promise<DecodedSaveDatabase | null>
+  ) => {
+    onCancelDecode();
+    const revision = inspectionRevisionRef.current;
+    if (saveId === activeSaveId) return;
+    setError(null);
+    setDecodeNotice(null);
+    try {
+      const db = await read(saveId);
+      if (!db || revision !== inspectionRevisionRef.current) return;
+      if (db.source.saveId !== saveId) throw new Error('Save identity mismatch');
+      const { saveDatabaseToPlayerDataset } = await import('@managerhub/domain/fm2013-offline');
+      if (revision !== inspectionRevisionRef.current) return;
+      commitDecodedSave(db, saveDatabaseToPlayerDataset, buildInspectionFromDecoded(db));
+    } catch (exception) {
+      if (revision === inspectionRevisionRef.current) setError(readableSaveInspectionError(exception));
     }
-  }, [projectDecodedDataset, resetDerivedWorkspaceState]);
+  }, [activeSaveId, onCancelDecode, commitDecodedSave]);
 
   const onSwitchDecodedSave = useCallback((saveId: string) => {
     const target = decodedSaves[saveId];
-    if (!target || saveId === activeSaveId) return;
-    void activateDecodedSave(target);
-  }, [decodedSaves, activeSaveId, activateDecodedSave]);
+    if (!target) return;
+    void openDecodedSave(saveId, () => Promise.resolve(target));
+  }, [decodedSaves, openDecodedSave]);
 
   const onSetSaveMode = useCallback((nextMode: DecodedSaveMode) => {
-    setSaveMode(nextMode);
-    if (!activeDecodedSave) return;
-    void projectDecodedDataset(activeDecodedSave, nextMode, activeClubFilterUid).then(dataset => {
-      setPlayerDataset(current => (current?.source === 'decoded_save' && current.saveId === activeDecodedSave.source.saveId) ? dataset : current);
-    });
-  }, [activeDecodedSave, activeClubFilterUid, projectDecodedDataset]);
+    setSession(current => current.mode === nextMode ? current : { ...current, mode: nextMode });
+  }, []);
 
   const onClubFilterChange = useCallback((nextClubUid: number | null) => {
-    setActiveClubFilterUid(nextClubUid);
-    if (!activeDecodedSave) return;
-    void projectDecodedDataset(activeDecodedSave, saveModeRef.current, nextClubUid).then(dataset => {
-      setPlayerDataset(dataset);
-      resetDerivedWorkspaceState();
-    });
-  }, [activeDecodedSave, projectDecodedDataset, resetDerivedWorkspaceState]);
+    if (!activeDecodedSave || activeClubFilterUid === nextClubUid) return;
+    const saveId = activeDecodedSave.source.saveId;
+    setSession(current => current.source?.kind === 'save' && current.source.database.source.saveId === saveId
+      ? { ...current, source: { ...current.source, clubUid: nextClubUid } }
+      : current);
+    resetDerivedWorkspaceState();
+  }, [activeDecodedSave, activeClubFilterUid, resetDerivedWorkspaceState]);
 
   useEffect(() => () => {
     inspectionRevisionRef.current += 1;
@@ -290,28 +305,16 @@ export default function App() {
     if (!activeDecodedSave) return;
     const targetPlayerId = `${activeDecodedSave.source.saveId.slice(0, 12)}:${playerUid}`;
     if (activeClubFilterUid !== null && activeClubFilterUid !== clubUid) {
-      setActiveClubFilterUid(clubUid);
-      void projectDecodedDataset(activeDecodedSave, saveModeRef.current, clubUid).then(dataset => {
-        setPlayerDataset(dataset);
-        resetDerivedWorkspaceState();
-        setSelectedPlayerIdForLab(targetPlayerId);
-      });
-    } else {
-      setSelectedPlayerIdForLab(targetPlayerId);
+      onClubFilterChange(clubUid);
     }
+    setSelectedPlayerIdForLab(targetPlayerId);
     navigate('players');
-  }, [activeDecodedSave, activeClubFilterUid, projectDecodedDataset, resetDerivedWorkspaceState, navigate]);
+  }, [activeDecodedSave, activeClubFilterUid, onClubFilterChange, navigate]);
 
   const onLoadClubInSquad = useCallback((clubUid: number | null) => {
-    if (activeDecodedSave && activeClubFilterUid !== clubUid) {
-      setActiveClubFilterUid(clubUid);
-      void projectDecodedDataset(activeDecodedSave, saveModeRef.current, clubUid).then(dataset => {
-        setPlayerDataset(dataset);
-        resetDerivedWorkspaceState();
-      });
-    }
+    onClubFilterChange(clubUid);
     navigate('squad');
-  }, [activeDecodedSave, activeClubFilterUid, projectDecodedDataset, resetDerivedWorkspaceState, navigate]);
+  }, [onClubFilterChange, navigate]);
 
   const onRestoreSaved = useCallback((records: readonly SaveIdentity[]) => {
     setImports(current => {
@@ -319,14 +322,6 @@ export default function App() {
       return [...records.filter(item => !existingIds.has(item.id)), ...current];
     });
     setSelectedId(current => current ?? records[0]?.id ?? null);
-  }, []);
-
-  const onCancelDecode = useCallback(() => {
-    inspectionRevisionRef.current += 1;
-    inspectionAbortRef.current?.abort();
-    inspectionAbortRef.current = null;
-    setBusy(false);
-    setDecodeProgress(null);
   }, []);
 
   const onInspect = useCallback(async (file: File) => {
@@ -351,20 +346,15 @@ export default function App() {
         }
       });
       if (controller.signal.aborted || revision !== inspectionRevisionRef.current) return;
-      setImports(previous => [result.inspection, ...previous.filter(item => item.id !== result.inspection.id)]);
-      setSelectedId(result.inspection.id);
-      setDecodeNotice(result.decodeNotice);
       if (result.database) {
-        const db = result.database;
-        const defaultClubUid = defaultClubUidForSave(db);
-        const dataset = await projectDecodedDataset(db, saveModeRef.current, defaultClubUid);
+        const { saveDatabaseToPlayerDataset } = await import('@managerhub/domain/fm2013-offline');
         if (controller.signal.aborted || revision !== inspectionRevisionRef.current) return;
-        setDecodedSaves(prev => ({ ...prev, [db.source.saveId]: db }));
-        setActiveSaveId(db.source.saveId);
-        setActiveClubFilterUid(defaultClubUid);
-        setPlayerDataset(dataset);
-        resetDerivedWorkspaceState();
+        commitDecodedSave(result.database, saveDatabaseToPlayerDataset, result.inspection);
+      } else {
+        setImports(previous => [result.inspection, ...previous.filter(item => item.id !== result.inspection.id)]);
+        setSelectedId(result.inspection.id);
       }
+      setDecodeNotice(result.decodeNotice);
     } catch (exception) {
       if (!controller.signal.aborted && revision === inspectionRevisionRef.current) {
         setError(readableSaveInspectionError(exception));
@@ -376,7 +366,7 @@ export default function App() {
         setDecodeProgress(null);
       }
     }
-  }, [projectDecodedDataset, resetDerivedWorkspaceState]);
+  }, [commitDecodedSave]);
 
   const remove = useCallback((id: string) => {
     setImports(prev => prev.filter(file => file.id !== id));
@@ -388,12 +378,12 @@ export default function App() {
       return copy;
     });
     if (activeSaveId === id) {
-      setActiveSaveId(null);
-      setActiveClubFilterUid(null);
-      setPlayerDataset(current => (current?.saveId === id ? null : current));
+      onCancelDecode();
+      setSession(current => current.source?.kind === 'save' && current.source.database.source.saveId === id
+        ? { ...current, source: null } : current);
       resetDerivedWorkspaceState();
     }
-  }, [activeSaveId, resetDerivedWorkspaceState]);
+  }, [activeSaveId, onCancelDecode, resetDerivedWorkspaceState]);
 
   const selected = imports.find(f => f.id === selectedId) ?? imports[0] ?? null;
   const activeItem = NAV.find(n => n.key === view) ?? NAV[0];
@@ -479,7 +469,7 @@ export default function App() {
               activeDecodedSave={activeDecodedSave}
               saveMode={saveMode}
               onSetSaveMode={onSetSaveMode}
-              onActivateDecodedSave={db => void activateDecodedSave(db)}
+              onOpenDecodedSave={openDecodedSave}
               onSwitchDecodedSave={onSwitchDecodedSave}
               onOpenPlayerFromSave={onOpenPlayerFromSave}
               onLoadClubInSquad={onLoadClubInSquad}

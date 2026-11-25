@@ -80,7 +80,7 @@ function SaveInspector({
   activeDecodedSave,
   saveMode,
   onSetSaveMode,
-  onActivateDecodedSave,
+  onOpenDecodedSave,
   onSwitchDecodedSave,
   onOpenPlayerFromSave,
   onLoadClubInSquad
@@ -100,7 +100,7 @@ function SaveInspector({
   activeDecodedSave: DecodedSaveDatabase | null;
   saveMode: DecodedSaveMode;
   onSetSaveMode: (mode: DecodedSaveMode) => void;
-  onActivateDecodedSave: (db: DecodedSaveDatabase) => void;
+  onOpenDecodedSave: (saveId: string, read: (saveId: string) => Promise<DecodedSaveDatabase | null>) => Promise<void>;
   onSwitchDecodedSave: (saveId: string) => void;
   onOpenPlayerFromSave: (playerUid: number, clubUid: number | null) => void;
   onLoadClubInSquad: (clubUid: number | null) => void;
@@ -152,10 +152,7 @@ function SaveInspector({
       onSwitchDecodedSave(saveId);
       return;
     }
-    const restored = await decodedLibrary.open(saveId);
-    if (restored) {
-      onActivateDecodedSave(restored);
-    }
+    await onOpenDecodedSave(saveId, decodedLibrary.open);
   };
   const onRemovePersistedDatabase = (saveId: string, fileName: string) => {
     const message = t('Remove saved inspection metadata for "{{fileName}}" from this browser? The original .fm file will remain untouched. This cannot be undone. Continue?', { fileName });
