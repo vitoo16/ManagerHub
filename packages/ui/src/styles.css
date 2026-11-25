@@ -163,3 +163,7 @@ small { font-size: 12px; }
 .mh-attribute-row input { width: 100%; min-width: 0; height: 30px; padding-inline: 6px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface-up); color: var(--text); font-size: 12px; }
 .mh-attribute-row input[data-attribute-tier] { color: var(--attribute-color); }
 .mh-attribute-row input:disabled { color: var(--text-sub); }
+
+.mh-section-tabs { display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid var(--line); padding-block: 4px; min-width: 0; }
+.mh-section-tabs > button { min-height: 34px; padding: 6px 10px; border: 0; border-bottom: 2px solid transparent; border-radius: 4px 4px 0 0; background: transparent; color: var(--text-sub); font-size: 12px; text-align: start; }
+.mh-section-tabs > button[aria-selected='true'] { border-bottom-color: var(--accent-strong); color: var(--text); font-weight: 700; background: var(--surface-up); }

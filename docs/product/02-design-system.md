@@ -126,3 +126,6 @@ No save; unsupported file; partial parse; no eCA calibration; missing PA; mode-r
 - A dense dashboard stays calm and usable on standard laptop viewport; no decorative animation competing with tactical analysis.
 
 Related: [features](01-full-feature-catalog.md) · [skills workflow](../engineering/agent-skills-research.md) · [save and analysis caveats](../system/08-player-intelligence-engine.md).
+
+### Editor density follow-up
+Player information, contract, exact attribute groups, hidden traits, personality, positions and presets now have independent sections. Staff ability and attributes, and club finances, facilities and presets are separately selectable. Player Lab and Editor reuse the same attribute group selector, sort/pagination and numeric property primitive. Shared SectionTabs provides native keyboard controls and labels a single active panel. Mass Edit roster filtering/sorting is scoped to Mass Edit; no inactive mass scan for normal records. Source changes only, pending runtime verification.

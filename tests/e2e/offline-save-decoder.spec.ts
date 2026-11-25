@@ -405,6 +405,7 @@ test('P0 unified SaveSession (S01-S08): non-remounting continuity, decoupled clu
 
   await modal.getByLabel('Actual CA (1–200)').fill('191');
   await modal.getByLabel('Actual PA (1–200)').fill('198');
+  await modal.getByRole('tab', { name: 'Quick presets' }).click();
   await modal.getByRole('button', { name: 'Inspire morale' }).click();
   await modal.getByRole('button', { name: 'Done' }).click();
   await expect(modal).toHaveCount(0);
@@ -546,13 +547,16 @@ test('compact player attribute groups retain draft editing and undo/redo', async
   const openAttributes = async () => {
     await row.getByRole('button', { name: 'Edit' }).click();
     const dialog = page.getByRole('dialog');
-    await dialog.getByRole('tab', { name: 'Visible & Hidden Attributes' }).click();
+    await dialog.getByRole('tab', { name: 'Attributes' }).click();
     return dialog;
   };
   let dialog = await openAttributes();
   for (const name of ['Technical', 'Mental', 'Physical', 'Goalkeeping']) {
+    await dialog.getByLabel('Attribute group', { exact: true }).selectOption(name);
     await expect(dialog.getByRole('group', { name, exact: true })).toBeVisible();
+    await expect(dialog.locator('.mh-attribute-group')).toHaveCount(1);
   }
+  await dialog.getByLabel('Attribute group', { exact: true }).selectOption('Technical');
   const technical = dialog.getByRole('group', { name: 'Technical', exact: true });
   const finishing = technical.getByRole('spinbutton', { name: 'Finishing', exact: true });
   await expect(finishing).toBeEnabled();

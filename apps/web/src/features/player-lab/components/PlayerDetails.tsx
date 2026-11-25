@@ -1,4 +1,4 @@
-import { lazy, memo, Suspense, useMemo, useState } from 'react';
+import { lazy, memo, Suspense, useId, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   analyzeRoles, attributeStrengthIndex, getAttributeInsights,
@@ -10,7 +10,7 @@ import PlayerIdentityHeader from './PlayerIdentityHeader';
 import PlayerReportTabs, { type PlayerReportTab } from './PlayerReportTabs';
 
 const PlayerAttributeSummary = lazy(() => import('./PlayerAttributeSummary'));
-const PlayerAttributeTable = lazy(() => import('./PlayerAttributeTable'));
+const PlayerAttributeTable = lazy(() => import('../../PlayerAttributeTable'));
 const PlayerContractProfile = lazy(() => import('./PlayerContractProfile'));
 const PlayerHiddenProfile = lazy(() => import('./PlayerHiddenProfile'));
 const RoleResults = lazy(() => import('./RoleResults'));
@@ -26,6 +26,7 @@ type Props = {
 
 function PlayerDetailsView({ player, dataset, onOpenSquad, onEditPlayer }: Props) {
   const { t } = useTranslation();
+  const sectionId = useId();
   const [tab, setTab] = useState<PlayerReportTab>('overview');
 
   const insights = useMemo(() => getAttributeInsights(player), [player]);
@@ -46,9 +47,9 @@ function PlayerDetailsView({ player, dataset, onOpenSquad, onEditPlayer }: Props
       </div>
     )}
     <PlayerAbilitySummary strength={strength} topRole={topRole} player={player} dataset={dataset}/>
-    <PlayerReportTabs active={activeTab} onChange={setTab} isDecoded={isDecoded}/>
+    <PlayerReportTabs id={sectionId} active={activeTab} onChange={setTab} isDecoded={isDecoded}/>
 
-    <div className="scout-tab-content" role="tabpanel">
+    <div className="scout-tab-content" role="tabpanel" id={sectionId + '-panel'} aria-labelledby={sectionId + '-tab-' + activeTab}>
       <Suspense fallback={<div className="player-empty-chart" role="status" aria-live="polite">{t("Loading…")}</div>}>
         {activeTab === 'overview' && <>
           <div className="scout-grid">
@@ -86,7 +87,7 @@ function PlayerDetailsView({ player, dataset, onOpenSquad, onEditPlayer }: Props
           <div className="scout-panel__title">
             {t("Imported player attributes")} <span>{Object.keys(player.attributes).length} {t('values')} · {t('Source:')} {dataset.fileName}</span>
           </div>
-          <PlayerAttributeTable player={player}/>
+          <PlayerAttributeTable attributes={player.attributes}/>
         </Surface>}
         {activeTab === 'roles' && <Surface className="scout-panel">
           <div className="scout-panel__title">{t("Tactical roles by observed attributes")}</div>

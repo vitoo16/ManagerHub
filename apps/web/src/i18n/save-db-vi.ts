@@ -258,5 +258,12 @@ export default {
   "Close record {{name}} ({{kind}} #{{uid}})": "Đóng hồ sơ {{name}} ({{kind}} #{{uid}})",
   "Close a record before opening another.": "Đóng một hồ sơ trước khi mở thêm.",
   "Showing up to 24 records. Refine your search to narrow results.": "Hiển thị tối đa 24 hồ sơ. Thu hẹp từ khóa để tìm chính xác hơn.",
+  "Staff editor sections": "Các mục chỉnh sửa nhân sự",
+  "Club editor sections": "Các mục chỉnh sửa CLB",
+  "Finances": "Tài chính",
+  "No active contract data.": "Không có dữ liệu hợp đồng hiện tại.",
+  "No personality data.": "Không có dữ liệu tính cách.",
+  "No staff attribute data.": "Không có dữ liệu chỉ số nhân sự.",
+  "No club finance data.": "Không có dữ liệu tài chính CLB.",
   "Done": "Xong"
 } as const;

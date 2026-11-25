@@ -44,11 +44,8 @@
 .scout-metrics span,.scout-metrics small{display:block;font-size:10px;color:var(--text-faint)}
 .scout-metrics strong{display:block;margin:9px 0 6px;font-size:22px;font-weight:800;font-family:var(--font-ui);min-height:27px;font-variant-numeric:tabular-nums}
 .scout-metrics strong small{display:inline;font-size:10px}
-.scout-tabs{display:flex;gap:5px;overflow-x:auto;padding:4px 0 0;border-bottom:1px solid var(--line);margin-bottom:16px}
-.scout-tab{padding:10px 12px;border:0;border-bottom:2px solid transparent;background:transparent;color:var(--text-sub);font-size:11px;white-space:nowrap}
 .scout-tab:hover{color:var(--text)}
-.scout-tab--active{border-bottom-color:var(--accent-strong);color:var(--text);font-weight:700}
-.scout-tab-content{min-height:340px}
+.scout-tab-content{min-height:0;padding-top:12px}
 .scout-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:12px}
 .scout-panel{padding:20px;margin-bottom:13px;min-width:0}
 .scout-panel__title{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13px;font-weight:700;margin-bottom:18px}
@@ -230,11 +227,6 @@
 .decoded-hidden-wrap{display:grid;gap:12px}
 @media(max-width:560px){.decoded-pos-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.decoded-save-bar__select{width:100%}.decoded-save-bar__select select{flex:1;min-width:0;max-width:none}}
 
-.player-attribute-table { display: grid; gap: 12px; min-width: 0; }
-.player-attribute-controls { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; }
-.player-attribute-controls label { display: grid; gap: 5px; color: var(--text-sub); font-size: 12px; }
-.player-attribute-controls select { min-height: 34px; max-width: 100%; color: var(--text); background: var(--surface-up); border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; }
-.player-attribute-controls .player-attribute-sort { display: flex; align-items: center; min-height: 34px; }
 .player-attribute-summary { width: 100%; border-collapse: collapse; font-size: 12px; }
 .player-attribute-summary th, .player-attribute-summary td { padding: 8px 4px; border-bottom: 1px solid var(--line); text-align: start; overflow-wrap: anywhere; }
 .player-attribute-summary th { font-weight: 600; color: var(--text-sub); }

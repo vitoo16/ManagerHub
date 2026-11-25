@@ -1,8 +1,9 @@
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { SectionTabs } from '@managerhub/ui';
 
 export type PlayerReportTab = 'overview' | 'attributes' | 'profile' | 'hidden' | 'roles' | 'recruitment' | 'compare';
-type Props = { active: PlayerReportTab; onChange: (tab: PlayerReportTab) => void; isDecoded: boolean };
+type Props = { active: PlayerReportTab; onChange: (tab: PlayerReportTab) => void; isDecoded: boolean; id: string };
 
 const TABS: readonly PlayerReportTab[] = ['overview', 'attributes', 'profile', 'hidden', 'roles', 'compare', 'recruitment'];
 const TAB_LABELS: Record<PlayerReportTab, string> = {
@@ -15,13 +16,10 @@ const TAB_LABELS: Record<PlayerReportTab, string> = {
   recruitment: 'Recruitment'
 };
 
-function PlayerReportTabs({ active, onChange, isDecoded }: Props) {
+function PlayerReportTabs({ active, onChange, isDecoded, id }: Props) {
   const { t } = useTranslation();
-  return <div className="scout-tabs" role="tablist" aria-label={t("Player report")}>
-    {TABS.filter(tab => isDecoded || (tab !== 'profile' && tab !== 'hidden')).map(tab => <button key={tab} role="tab" aria-selected={active === tab}
-      onClick={() => onChange(tab)}
-      className={active === tab ? 'scout-tab scout-tab--active' : 'scout-tab'}>{t(TAB_LABELS[tab])}</button>)}
-  </div>;
+  return <SectionTabs id={id} label={t('Player report')} active={active} onChange={onChange}
+    items={TABS.filter(tab => isDecoded || (tab !== 'profile' && tab !== 'hidden')).map(tab => ({ id: tab, label: t(TAB_LABELS[tab]) }))}/>;
 }
 
 export default memo(PlayerReportTabs);

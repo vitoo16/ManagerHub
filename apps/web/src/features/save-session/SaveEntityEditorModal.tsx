@@ -1,6 +1,6 @@
-import { memo, useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
+import { memo, useEffect, useId, useMemo, useRef, useState, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ATTRIBUTE_GROUPS, ATTRIBUTE_LABELS, type AttributeKey } from '@managerhub/domain';
+import PlayerAttributeTable from '../PlayerAttributeTable';
 import {
   buildClubSquadPresetOverlay,
   buildEditedSaveFileName,
@@ -17,7 +17,7 @@ import {
   type StadiumDraftPatch,
   type StaffDraftPatch
 } from '@managerhub/domain/fm2013-offline';
-import { AttributePropertyGroup, Button, Icon, Status } from '@managerhub/ui';
+import { AttributePropertyGroup, Button, Icon, SectionTabs, Status } from '@managerhub/ui';
 import { HIDDEN_KEYS, PERSONALITY_KEYS, POSITION_KEYS } from '../player-attribute-fields';
 import { EditorRecordNavigator } from './EditorRecordNavigator';
 import { closeEditorRecord, createRecordState, isRecordTarget, openEditorRecord, recordKey, type EditorModalTarget, type EditorRecordTarget } from './editor-records';
@@ -66,7 +66,26 @@ const STAFF_ATTR_KEYS: readonly { readonly key: keyof DecodedStaffAttributes; re
   { key: 'physiotherapy', label: 'Physiotherapy' }
 ];
 
-type PlayerSubTab = 'general' | 'attributes' | 'positions';
+type EditorSection = 'general' | 'contract' | 'personality' | 'attributes' | 'hidden' | 'positions' | 'presets' | 'facilities';
+
+const PLAYER_SECTIONS = [
+  { id: 'general', label: 'Ability, Reputation & Bio' },
+  { id: 'contract', label: 'Active Contract' },
+  { id: 'attributes', label: 'Attributes' },
+  { id: 'hidden', label: 'Hidden Playing Traits (1–20)' },
+  { id: 'personality', label: 'Personality (1–20)' },
+  { id: 'positions', label: 'Positions & Feet' },
+  { id: 'presets', label: 'Quick presets' }
+] as const satisfies readonly { id: EditorSection; label: string }[];
+const STAFF_SECTIONS = [
+  { id: 'general', label: 'Staff Ability, Reputation & Contract' },
+  { id: 'attributes', label: 'Attributes' }
+] as const satisfies readonly { id: EditorSection; label: string }[];
+const CLUB_SECTIONS = [
+  { id: 'general', label: 'Finances' },
+  { id: 'facilities', label: 'Facilities' },
+  { id: 'presets', label: 'Club presets' }
+] as const satisfies readonly { id: EditorSection; label: string }[];
 
 function clampInt(val: string, fallback: number, min: number, max: number): number {
   const parsed = Number.parseInt(val, 10);
@@ -93,7 +112,8 @@ function SaveEntityEditorModal({
   const { t } = useTranslation();
   const exeInputRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
-  const [playerSubTab, setPlayerSubTab] = useState<PlayerSubTab>('general');
+  const sectionId = useId();
+  const [recordSection, setRecordSection] = useState<EditorSection>('general');
   const [notice, setNotice] = useState<string | null>(null);
   const [recordState, setRecordState] = useState(() => isRecordTarget(initialTarget) ? createRecordState(initialTarget) : null);
   const target = recordState?.active ?? initialTarget;
@@ -103,7 +123,7 @@ function SaveEntityEditorModal({
     if (next === recordState) return;
     setRecordState(next);
     if (recordKey(next.active) !== recordKey(recordState.active)) {
-      setPlayerSubTab('general');
+      setRecordSection('general');
       setNotice(null);
     }
   };
@@ -113,7 +133,7 @@ function SaveEntityEditorModal({
     if (next === recordState) return;
     setRecordState(next);
     if (recordKey(next.active) !== recordKey(recordState.active)) {
-      setPlayerSubTab('general');
+      setRecordSection('general');
       setNotice(null);
     }
   };
@@ -154,13 +174,14 @@ function SaveEntityEditorModal({
   );
 
   const clubsWithPlayers = useMemo(
-    () => workingDatabase.clubs
+    () => target.kind === 'mass_edit' ? workingDatabase.clubs
       .filter(c => c.playerCount > 0)
-      .sort((a, b) => b.playerCount - a.playerCount || a.fullName.localeCompare(b.fullName)),
-    [workingDatabase.clubs]
+      .sort((a, b) => b.playerCount - a.playerCount || a.fullName.localeCompare(b.fullName)) : [],
+    [workingDatabase.clubs, target.kind]
   );
 
   const massTargetPlayers = useMemo(() => {
+    if (target.kind !== 'mass_edit') return [];
     const clubUid = massClubUid === 'all' ? null : Number(massClubUid);
     const maxAge = clampInt(massMaxAge, 99, 14, 99);
     return workingDatabase.players.filter(p => {
@@ -168,7 +189,7 @@ function SaveEntityEditorModal({
       if (p.calendarAge !== null && p.calendarAge > maxAge) return false;
       return true;
     });
-  }, [workingDatabase.players, massClubUid, massMaxAge]);
+  }, [workingDatabase.players, massClubUid, massMaxAge, target.kind]);
 
   const applyPlayerField = (label: string, patch: PlayerDraftPatch) => {
     if (!player) return;
@@ -325,6 +346,12 @@ function SaveEntityEditorModal({
 
         {target.kind === 'player' && player && (
           <>
+            <SectionTabs<EditorSection> id={sectionId} label={t('Player editor sections')}
+              items={PLAYER_SECTIONS.map(item => ({ ...item, label: t(item.label) }))}
+              active={recordSection} onChange={setRecordSection}/>
+            <div className="editor-record-panel" role="tabpanel" id={sectionId + '-panel'}
+              aria-labelledby={sectionId + '-tab-' + recordSection}>
+            {recordSection === 'presets' && (
             <div className="editor-presets">
               <strong>{t('Quick presets')}:</strong>
               <Button type="button" onClick={() => applyPlayerPreset('inspire_morale', 'Inspire Player')}>
@@ -348,38 +375,9 @@ function SaveEntityEditorModal({
                 </Button>
               )}
             </div>
+            )}
 
-            <div className="editor-modal__tabs" role="tablist" aria-label={t('Player editor sections')}>
-              <button
-                type="button"
-                role="tab"
-                className="editor-modal__tab"
-                aria-selected={playerSubTab === 'general'}
-                onClick={() => setPlayerSubTab('general')}
-              >
-                {t('Ability, Contract & Personality')}
-              </button>
-              <button
-                type="button"
-                role="tab"
-                className="editor-modal__tab"
-                aria-selected={playerSubTab === 'attributes'}
-                onClick={() => setPlayerSubTab('attributes')}
-              >
-                {t('Visible & Hidden Attributes')}
-              </button>
-              <button
-                type="button"
-                role="tab"
-                className="editor-modal__tab"
-                aria-selected={playerSubTab === 'positions'}
-                onClick={() => setPlayerSubTab('positions')}
-              >
-                {t('Positions & Feet')}
-              </button>
-            </div>
-
-            {playerSubTab === 'general' && (
+            {recordSection === 'general' && (
               <>
                 <div className="editor-section">
                   <h3>{t('Ability, Reputation & Bio')}</h3>
@@ -468,7 +466,10 @@ function SaveEntityEditorModal({
                   </div>
                 </div>
 
-                {player.contract && (
+              </>
+            )}
+
+            {recordSection === 'contract' && (player.contract ? (
                   <div className="editor-section">
                     <h3>{t('Active Contract')}</h3>
                     <div className="editor-field-grid">
@@ -507,9 +508,9 @@ function SaveEntityEditorModal({
                       </label>
                     </div>
                   </div>
-                )}
+            ) : <p className="editor-notice">{t('No active contract data.')}</p>)}
 
-                {player.personality && (
+            {recordSection === 'personality' && (player.personality ? (
                   <AttributePropertyGroup
                     title={t('Personality (1–20)')}
                     fields={PERSONALITY_KEYS.map(item => ({
@@ -519,29 +520,16 @@ function SaveEntityEditorModal({
                       personality: { [key]: clampInt(raw, previous, 1, 20) }
                     })}
                   />
-                )}
-              </>
+            ) : <p className="editor-notice">{t('No personality data.')}</p>)}
+
+            {recordSection === 'attributes' && (
+              <PlayerAttributeTable attributes={player.attributes}
+                onChange={(key, raw, previous) => applyPlayerField(`Edit ${key}`, {
+                  attributes: { [key]: clampInt(raw, previous, 1, 20) }
+                })}/>
             )}
 
-            {playerSubTab === 'attributes' && (
-              <>
-                <div className="editor-section">
-                  <h3>{t('Visible Technical, Mental, Physical & GK Attributes (1–20)')}</h3>
-                  <div className="editor-attribute-groups">
-                    {Object.entries(ATTRIBUTE_GROUPS).map(([group, keys]) => (
-                      <AttributePropertyGroup<AttributeKey>
-                        key={group}
-                        title={t(group)}
-                        fields={keys.map(key => ({
-                          key, label: t(ATTRIBUTE_LABELS[key]), value: player.attributes[key]
-                        }))}
-                        onChange={(key, raw, previous) => applyPlayerField(`Edit ${key}`, {
-                          attributes: { [key]: clampInt(raw, previous, 1, 20) }
-                        })}
-                      />
-                    ))}
-                  </div>
-                </div>
+            {recordSection === 'hidden' && (
                 <AttributePropertyGroup
                   title={t('Hidden Playing Traits (1–20)')}
                   fields={HIDDEN_KEYS.map(item => ({
@@ -551,10 +539,9 @@ function SaveEntityEditorModal({
                     hiddenPlaying: { [key]: clampInt(raw, previous, 1, 20) }
                   })}
                 />
-              </>
             )}
 
-            {playerSubTab === 'positions' && (
+            {recordSection === 'positions' && (
               <>
                 <div className="editor-section">
                   <h3>{t('Preferred feet')} (1–20)</h3>
@@ -604,12 +591,18 @@ function SaveEntityEditorModal({
                 </div>
               </>
             )}
+            </div>
           </>
         )}
 
         {target.kind === 'staff' && staffMember && (
           <>
-            <div className="editor-section">
+            <SectionTabs<EditorSection> id={sectionId} label={t('Staff editor sections')}
+              items={STAFF_SECTIONS.map(item => ({ ...item, label: t(item.label) }))}
+              active={recordSection} onChange={setRecordSection}/>
+            <div className="editor-record-panel" role="tabpanel" id={sectionId + '-panel'}
+              aria-labelledby={sectionId + '-tab-' + recordSection}>
+            {recordSection === 'general' && <div className="editor-section">
               <h3>{t('Staff Ability, Reputation & Contract')}</h3>
               <div className="editor-field-grid">
                 <label className="editor-field">
@@ -656,8 +649,8 @@ function SaveEntityEditorModal({
                   </label>
                 )}
               </div>
-            </div>
-            {staffMember.attributes && (
+            </div>}
+            {recordSection === 'attributes' && (staffMember.attributes ? (
               <AttributePropertyGroup
                 title={t('Coaching, Scouting, Mental & Medical Attributes (1–20)')}
                 fields={STAFF_ATTR_KEYS.map(item => ({
@@ -667,13 +660,19 @@ function SaveEntityEditorModal({
                   attributes: { [key]: clampInt(raw, previous, 1, 20) }
                 })}
               />
-            )}
+            ) : <p className="editor-notice">{t('No staff attribute data.')}</p>)}
+            </div>
           </>
         )}
 
         {target.kind === 'club' && club && (
           <>
-            <div className="editor-presets">
+            <SectionTabs<EditorSection> id={sectionId} label={t('Club editor sections')}
+              items={CLUB_SECTIONS.map(item => ({ ...item, label: t(item.label) }))}
+              active={recordSection} onChange={setRecordSection}/>
+            <div className="editor-record-panel" role="tabpanel" id={sectionId + '-panel'}
+              aria-labelledby={sectionId + '-tab-' + recordSection}>
+            {recordSection === 'presets' && <div className="editor-presets">
               <strong>{t('Club presets')}:</strong>
               <Button type="button" onClick={() => applyClubPreset(club.uid, 'inspire_team', 'Inspire Squad')}>
                 {t('Inspire squad')}
@@ -687,9 +686,9 @@ function SaveEntityEditorModal({
               <Button type="button" onClick={() => applyClubPreset(club.uid, 'boost_finances_facilities', 'Boost Finances & Facilities')}>
                 {t('Max facilities & £250M balance')}
               </Button>
-            </div>
-            <div className="editor-section">
-              <h3>{t('Finances & Facilities')}</h3>
+            </div>}
+            {recordSection === 'general' && <div className="editor-section">
+              <h3>{t('Finances')}</h3>
               <div className="editor-field-grid">
                 {club.financeType !== 'none' && (
                   <label className="editor-field">
@@ -730,6 +729,12 @@ function SaveEntityEditorModal({
                     </label>
                   </>
                 )}
+              </div>
+              {club.financeType === 'none' && <p className="editor-notice">{t('No club finance data.')}</p>}
+            </div>}
+            {recordSection === 'facilities' && <div className="editor-section">
+              <h3>{t('Facilities')}</h3>
+              <div className="editor-field-grid">
                 <label className="editor-field">
                   <span>{t('Training facilities')} (1–20)</span>
                   <input
@@ -771,6 +776,7 @@ function SaveEntityEditorModal({
                   />
                 </label>
               </div>
+            </div>}
             </div>
           </>
         )}

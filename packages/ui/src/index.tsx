@@ -106,3 +106,35 @@ export function AttributePropertyGroup<Key extends string>({ title, fields, onCh
     </dl>}
   </fieldset>;
 }
+
+interface SectionTab<Key extends string> {
+  readonly id: Key;
+  readonly label: string;
+}
+
+interface SectionTabsProps<Key extends string> {
+  readonly id: string;
+  readonly label: string;
+  readonly items: readonly SectionTab<Key>[];
+  readonly active: Key;
+  readonly onChange: (key: Key) => void;
+}
+
+/** Shared manual-activation tablist with roving focus and a single active panel. */
+export function SectionTabs<Key extends string>({ id, label, items, active, onChange }: SectionTabsProps<Key>) {
+  return <div className="mh-section-tabs" role="tablist" aria-label={label}>
+    {items.map((item, index) => <button key={item.id} type="button" role="tab"
+      id={id + '-tab-' + item.id} aria-controls={active === item.id ? id + '-panel' : undefined}
+      aria-selected={active === item.id} tabIndex={active === item.id ? 0 : -1}
+      onClick={() => onChange(item.id)}
+      onKeyDown={event => {
+        const nextIndex = event.key === 'ArrowRight' ? (index + 1) % items.length
+          : event.key === 'ArrowLeft' ? (index + items.length - 1) % items.length
+          : event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : -1;
+        if (nextIndex < 0) return;
+        event.preventDefault();
+        const next = event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[nextIndex];
+        next?.focus();
+      }}>{item.label}</button>)}
+  </div>;
+}

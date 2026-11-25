@@ -150,31 +150,6 @@
   margin: 0;
 }
 
-.editor-modal__tabs {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  border-bottom: 1px solid var(--line);
-  padding-bottom: 8px;
-}
-
-.editor-modal__tab {
-  min-height: 32px;
-  padding: 0 12px;
-  border-radius: 9px;
-  border: 1px solid var(--line);
-  background: var(--surface-up);
-  color: var(--text-sub);
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.editor-modal__tab[aria-selected='true'] {
-  background: var(--accent);
-  color: var(--accent-ink);
-  border-color: var(--accent);
-}
-
 .editor-presets {
   display: flex;
   align-items: center;
@@ -288,14 +263,6 @@
 .editor-field input[data-attribute-tier] { color: var(--attribute-color); }
 .editor-field input[data-attribute-tier]:disabled { color: var(--text-sub); }
 
-/* Compact property rows; labels wrap rather than truncating localized names. */
-.editor-attribute-groups {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
-  align-items: start;
-  gap: 12px;
-}
-
 /* Record workbench: compact shell, no extra save/session state. */
 .editor-modal--records { width: min(1240px, 100%); }
 .editor-record-navigator { display: grid; gap: 8px; min-width: 0; }
@@ -316,3 +283,7 @@
 .editor-record-results .mh-button small { color: var(--text-sub); }
 .editor-record-hint { font-size: 12px; color: var(--text-sub); }
 @media (max-width: 520px) { .editor-record-search { grid-template-columns: minmax(0, 1fr); } }
+
+.editor-record-panel { display: grid; gap: 12px; min-width: 0; }
+.editor-record-panel .editor-field span { white-space: normal; overflow-wrap: anywhere; }
+.editor-record-panel .editor-field input, .editor-record-panel .editor-field select { min-width: 0; width: 100%; }
