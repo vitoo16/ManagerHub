@@ -9,8 +9,8 @@ import PlayerAbilitySummary from './PlayerAbilitySummary';
 import PlayerIdentityHeader from './PlayerIdentityHeader';
 import PlayerReportTabs, { type PlayerReportTab } from './PlayerReportTabs';
 
-const AttributeRadar = lazy(() => import('./AttributeRadar'));
-const RankedAttributes = lazy(() => import('./RankedAttributes'));
+const PlayerAttributeSummary = lazy(() => import('./PlayerAttributeSummary'));
+const PlayerAttributeTable = lazy(() => import('./PlayerAttributeTable'));
 const RoleResults = lazy(() => import('./RoleResults'));
 const PlayerCompare = lazy(() => import('./PlayerCompare'));
 const RecruitmentPreviewPanel = lazy(() => import('./RecruitmentPreviewPanel'));
@@ -58,7 +58,7 @@ function PlayerDetailsView({ player, dataset, onOpenSquad, onEditPlayer }: Props
           <div className="scout-grid">
             <Surface className="scout-panel">
               <div className="scout-panel__title">{t("Attribute profile")} <span>{t("Native 1–20 mean")}</span></div>
-              <AttributeRadar player={player}/>
+              <PlayerAttributeSummary player={player}/>
             </Surface>
             <Surface className="scout-panel">
               <div className="scout-panel__title">{t("Strengths & development areas")}</div>
@@ -177,7 +177,7 @@ function PlayerDetailsView({ player, dataset, onOpenSquad, onEditPlayer }: Props
           <div className="scout-panel__title">
             {t("Imported player attributes")} <span>{Object.keys(player.attributes).length} {t('values')} · {t('Source:')} {dataset.fileName}</span>
           </div>
-          <RankedAttributes player={player}/>
+          <PlayerAttributeTable player={player}/>
         </Surface>}
         {tab === 'roles' && <Surface className="scout-panel">
           <div className="scout-panel__title">{t("Tactical roles by observed attributes")}</div>

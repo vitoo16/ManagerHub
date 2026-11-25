@@ -73,3 +73,36 @@ export function AttributeInput({ value, allowZero = false, ...props }:
   Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'value'> & { value: number | null | undefined; allowZero?: boolean }) {
   return <input {...props} type="number" value={value ?? ''} data-attribute-tier={getAttributeTier(value, allowZero)}/>;
 }
+
+interface AttributeProperty<Key extends string> {
+  readonly key: Key;
+  readonly label: string;
+  readonly value: number | null | undefined;
+}
+
+interface AttributePropertyGroupProps<Key extends string> {
+  readonly title: string;
+  readonly fields: readonly AttributeProperty<Key>[];
+  readonly onChange?: (key: Key, raw: string, previous: number) => void;
+}
+
+/** Exact numeric properties shared by reports and draft editors. Authorization stays with the caller. */
+export function AttributePropertyGroup<Key extends string>({ title, fields, onChange }: AttributePropertyGroupProps<Key>) {
+  return <fieldset className="mh-attribute-group">
+    <legend>{title}</legend>
+    {onChange ? fields.map(field => (
+      <label className="mh-attribute-row" key={field.key}>
+        <span>{field.label}</span>
+        <AttributeInput min={1} max={20} value={field.value} disabled={field.value == null}
+          onChange={event => {
+            if (field.value == null) return;
+            onChange(field.key, event.currentTarget.value, field.value);
+          }}/>
+      </label>
+    )) : <dl className="mh-attribute-properties">
+      {fields.map(field => <div className="mh-attribute-row" key={field.key}>
+        <dt>{field.label}</dt><dd><AttributeValue value={field.value}/></dd>
+      </div>)}
+    </dl>}
+  </fieldset>;
+}

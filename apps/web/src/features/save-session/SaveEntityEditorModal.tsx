@@ -20,8 +20,7 @@ import {
   type StadiumDraftPatch,
   type StaffDraftPatch
 } from '@managerhub/domain/fm2013-offline';
-import { Button, Icon, Status } from '@managerhub/ui';
-import { EditorAttributeGroup } from './EditorAttributeGroup';
+import { AttributePropertyGroup, Button, Icon, Status } from '@managerhub/ui';
 import { EditorRecordNavigator } from './EditorRecordNavigator';
 import { closeEditorRecord, createRecordState, isRecordTarget, openEditorRecord, recordKey, type EditorModalTarget, type EditorRecordTarget } from './editor-records';
 import { registerSaveDbI18n } from '../../i18n/register-save-db-i18n';
@@ -536,7 +535,7 @@ function SaveEntityEditorModal({
                 )}
 
                 {player.personality && (
-                  <EditorAttributeGroup
+                  <AttributePropertyGroup
                     title={t('Personality (1–20)')}
                     fields={PERSONALITY_KEYS.map(item => ({
                       key: item.key, label: t(item.label), value: player.personality?.[item.key]
@@ -555,7 +554,7 @@ function SaveEntityEditorModal({
                   <h3>{t('Visible Technical, Mental, Physical & GK Attributes (1–20)')}</h3>
                   <div className="editor-attribute-groups">
                     {Object.entries(ATTRIBUTE_GROUPS).map(([group, keys]) => (
-                      <EditorAttributeGroup<AttributeKey>
+                      <AttributePropertyGroup<AttributeKey>
                         key={group}
                         title={t(group)}
                         fields={keys.map(key => ({
@@ -568,7 +567,7 @@ function SaveEntityEditorModal({
                     ))}
                   </div>
                 </div>
-                <EditorAttributeGroup
+                <AttributePropertyGroup
                   title={t('Hidden Playing Traits (1–20)')}
                   fields={HIDDEN_KEYS.map(item => ({
                     key: item.key, label: t(item.label), value: player.hiddenPlaying[item.key]
@@ -684,7 +683,7 @@ function SaveEntityEditorModal({
               </div>
             </div>
             {staffMember.attributes && (
-              <EditorAttributeGroup
+              <AttributePropertyGroup
                 title={t('Coaching, Scouting, Mental & Medical Attributes (1–20)')}
                 fields={STAFF_ATTR_KEYS.map(item => ({
                   key: item.key, label: t(item.label), value: staffMember.attributes?.[item.key]

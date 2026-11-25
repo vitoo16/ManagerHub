@@ -28,7 +28,7 @@ Tabs:
 | Visualization | Question answered | Minimum inputs | Caveat |
 |---|---|---|---|
 | Radar / pizza of ability dimensions | What kind of footballer? | Relevant attributes or stats | Label whether absolute 1–20 attributes or cohort percentiles |
-| Horizontal attribute bars | Which exact qualities drive role? | Complete attributes with valid edition scale | Show required vs optional values |
+| Compact attribute property table | Which exact qualities drive role? | Observed edition attributes | Grouped exact values, seven-tier text colors, missing values explicit; no bar per field |
 | Role fit bars/top-5 | Where can he play well? | Verified edition roles, attributes, position familiarity | Not actual match-engine role star |
 | Pitch suitability map | Natural position vs retraining opportunities | Positions/familiarity and verified attribute groups | Never imply training instantly completed |
 | Percentile radar | How he ranks among peers? | Statistics, minutes and named cohort | Show percentile cohort, sample threshold |
