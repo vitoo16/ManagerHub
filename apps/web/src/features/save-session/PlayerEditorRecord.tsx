@@ -1,11 +1,15 @@
+import { lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { DecodedSaveDatabase, PlayerDraftPatch, PlayerPresetKind } from '@managerhub/domain/fm2013-offline';
+import { projectSavePlayer, type DecodedSaveDatabase, type PlayerDraftPatch, type PlayerPresetKind } from '@managerhub/domain/fm2013-offline';
 import { EditorNumberField } from './EditorNumberField';
 import { AttributePropertyGroup, Button } from '@managerhub/ui';
 import { clampInt } from './editor-number';
 import { EditorRecordSections, type EditorSection } from './EditorRecordSections';
 import PlayerAttributeTable from '../PlayerAttributeTable';
 import { HIDDEN_KEYS, PERSONALITY_KEYS, POSITION_KEYS } from '../player-attribute-fields';
+
+import { AbilityBudgetFields } from '../AbilityBudgetFields';
+const PlayerDevelopmentPanel = lazy(() => import('../PlayerDevelopmentPanel'));
 
 const PLAYER_SECTIONS = [
   { id: 'general', label: 'Ability, Reputation & Bio' },
@@ -14,16 +18,18 @@ const PLAYER_SECTIONS = [
   { id: 'hidden', label: 'Hidden Playing Traits (1–20)' },
   { id: 'personality', label: 'Personality (1–20)' },
   { id: 'positions', label: 'Positions & Feet' },
-  { id: 'presets', label: 'Quick presets' }
+  { id: 'presets', label: 'Quick presets' },
+  { id: 'development', label: 'Development' }
 ] as const satisfies readonly { id: EditorSection; label: string }[];
 
 interface Props {
   readonly player: DecodedSaveDatabase['players'][number];
+  readonly source: DecodedSaveDatabase['source'];
   readonly applyPlayerField: (label: string, patch: PlayerDraftPatch) => void;
   readonly applyPlayerPreset: (preset: PlayerPresetKind, label: string) => void;
 }
 
-export function PlayerEditorRecord({ player, applyPlayerField, applyPlayerPreset }: Props) {
+export function PlayerEditorRecord({ player, source, applyPlayerField, applyPlayerPreset }: Props) {
   const { t } = useTranslation();
   return <EditorRecordSections label="Player editor sections" items={PLAYER_SECTIONS}>
     {section => <>
@@ -47,7 +53,12 @@ export function PlayerEditorRecord({ player, applyPlayerField, applyPlayerPreset
           <EditorNumberField label={t('International goals')} min={0} max={250}
             value={player.intGoals} onChange={value => applyPlayerField('Edit Int Goals', { intGoals: value })}/>
         </div>
+        <AbilityBudgetFields editor edition={source.edition} build={source.build} ca={player.actualCa} pa={player.potentialAbility}/>
       </div>}
+      {section === 'development' && <Suspense fallback={<p role="status">{t('Loading…')}</p>}>
+        <PlayerDevelopmentPanel player={projectSavePlayer(player, source.saveId, 'editor')} edition={source.edition}
+          build={source.build} sourceId={source.saveId}/>
+      </Suspense>}
       {section === 'contract' && (player.contract ? <div className="editor-section">
         <h3>{t('Active Contract')}</h3>
         <div className="editor-field-grid">

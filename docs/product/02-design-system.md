@@ -170,3 +170,6 @@ Quick CA/morale uses the same observed-value/no-op classification as advanced ma
 
 ### Edition-aware role explorer
 Player Lab retains stable baseline rankings and exposes an opt-in FM2013 reference explorer with compact position/role/duty selectors. Exact familiarity, role fit and input evidence are separate, with shared RoleEvidence and no charts. Automatic duty cannot be scored without choosing a concrete duty. Community evidence and product-authored importance are labeled; exact-build verification remains open.
+
+### Development what-if foundation and compact RCA
+Player Lab and the existing Player Editor record both lazy-load the same development workbench, with two independent manual scenarios, role/duty selector shared with the reference explorer, explicit observed-value growth assumptions, locks, priority gaps and numeric tables. No target-CA optimization or forecast without certified RCA. Source identity and relevant player values key the local workbench; scenarios reset when the source changes or the panel is unmounted. They are not persisted or passed to draft transactions. Compact editor RCA fields use the shared fail-closed capability contract and disabled Auto Match. The full MH-14 optimizer, persisted scenarios and RCA calibration remain open.

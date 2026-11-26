@@ -222,7 +222,7 @@ function SaveEntityEditorModal({
         {notice && <div className="editor-notice" role="status">{notice}</div>}
         {writeError && <div className="inline-alert" role="alert">{writeError}</div>}
 
-        {target.kind === 'player' && player && <PlayerEditorRecord key={player.uid} player={player} applyPlayerField={applyPlayerField} applyPlayerPreset={applyPlayerPreset}/>}
+        {target.kind === 'player' && player && <PlayerEditorRecord key={player.uid} player={player} source={workingDatabase.source} applyPlayerField={applyPlayerField} applyPlayerPreset={applyPlayerPreset}/>}
 
         {target.kind === 'staff' && staffMember && <StaffEditorRecord key={staffMember.uid} staffMember={staffMember} applyStaffField={applyStaffField}/>}
 

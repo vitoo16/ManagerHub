@@ -15,6 +15,7 @@ const PlayerContractProfile = lazy(() => import('./PlayerContractProfile'));
 const PlayerHiddenProfile = lazy(() => import('./PlayerHiddenProfile'));
 const RoleResults = lazy(() => import('./RoleResults'));
 const PlayerCompare = lazy(() => import('./PlayerCompare'));
+const PlayerDevelopmentPanel = lazy(() => import('../../PlayerDevelopmentPanel'));
 const RecruitmentPreviewPanel = lazy(() => import('./RecruitmentPreviewPanel'));
 
 type Props = {
@@ -94,6 +95,8 @@ function PlayerDetailsView({ player, dataset, onOpenSquad, onEditPlayer }: Props
           <RoleResults player={player} roles={roles}/>
         </Surface>}
         {activeTab === 'compare' && <PlayerCompare primary={player} dataset={dataset}/>}
+        {activeTab === 'development' && <PlayerDevelopmentPanel player={player} edition={dataset.saveEdition ?? null}
+          build={dataset.saveBuild ?? null} sourceId={dataset.saveId ?? dataset.importedAt + ':' + dataset.fileName}/>}
         {activeTab === 'recruitment' && <RecruitmentPreviewPanel player={player} dataset={dataset} onOpenSquad={onOpenSquad}/>}
       </Suspense>
     </div>

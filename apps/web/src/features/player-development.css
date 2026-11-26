@@ -1,0 +1,7 @@
+.development-panel, .ability-budget { display: grid; gap: 8px; min-width: 0; }
+.development-panel h3 { margin: 4px 0; font-size: 14px; }
+.ability-budget .insight-line { gap: 8px; flex-wrap: wrap; }
+.development-table { min-width: 420px; }
+.development-table th:first-child { width: 28%; }
+.development-table input[type="number"] { width: 56px; max-width: 100%; min-width: 0; color: var(--text); background: var(--surface-up); border: 1px solid var(--line); border-radius: 4px; padding: 4px; }
+.development-table input[type="checkbox"] { margin: 0; }

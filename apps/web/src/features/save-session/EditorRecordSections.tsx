@@ -2,7 +2,7 @@ import { useId, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SectionTabs } from '@managerhub/ui';
 
-export type EditorSection = 'general' | 'contract' | 'personality' | 'attributes' | 'hidden' | 'positions' | 'presets' | 'facilities';
+export type EditorSection = 'general' | 'contract' | 'personality' | 'attributes' | 'hidden' | 'positions' | 'presets' | 'facilities' | 'development';
 
 interface Props {
   readonly label: string;
