@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { inspectAbilityBudget } from '@managerhub/domain';
+import './player-development.css';
 
 export function AbilityBudgetFields({ edition, build, ca, pa, editor = false }: {
   readonly edition: string | null;

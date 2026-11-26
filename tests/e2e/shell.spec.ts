@@ -1747,3 +1747,39 @@ test('FM2013 role reference filters roles and duties by position without inferri
   await report.getByText('Role reference sources', { exact: true }).click();
   await expect(report.getByRole('link', { name: /FM13 roles and duties/ })).toBeVisible();
 });
+
+
+test('manual development A/B preserves observed attributes, locks, and independent scenario assumptions', async ({ page }) => {
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'development.csv', mimeType: 'text/csv',
+    buffer: Buffer.from('Name,Position,Finishing,Off The Ball,Anticipation,Acceleration,Composure,Pace,First Touch\nDevelopment Prospect,ST,15,16,14,15,16,16,14')
+  });
+  await expect(page.getByRole('heading', { name: 'Development Prospect' })).toBeVisible();
+  const tabs = page.getByRole('tablist', { name: 'Player report' });
+  await tabs.getByRole('tab', { name: 'Development' }).click();
+  const panel = page.locator('.development-panel');
+  await panel.getByLabel('Target position').selectOption('ST');
+  await panel.getByLabel('Target role').selectOption('poacher');
+  await panel.getByLabel('Reference attribute level').selectOption('18');
+  const finishing = panel.getByRole('spinbutton', { name: 'Proposed Finishing', exact: true });
+  await expect(finishing).toHaveValue('15');
+  await finishing.fill('18');
+  await expect(finishing).toHaveValue('18');
+  const comparison = panel.getByRole('table', { name: 'Development scenario comparison' });
+  await expect(comparison.getByRole('row').nth(1).locator('td').last()).toHaveText('1');
+  await panel.getByRole('button', { name: 'Scenario B', exact: true }).click();
+  await panel.getByLabel('Target position').selectOption('ST');
+  await panel.getByLabel('Target role').selectOption('poacher');
+  await expect(finishing).toHaveValue('15');
+  await panel.getByRole('button', { name: 'Scenario A', exact: true }).click();
+  await expect(finishing).toHaveValue('18');
+  await panel.getByRole('checkbox', { name: 'Lock Finishing' }).check();
+  await expect(finishing).toHaveValue('15');
+  await expect(finishing).toBeDisabled();
+  await expect(panel.getByText('Not verified', { exact: true })).toBeVisible();
+  await tabs.getByRole('tab', { name: 'Attributes' }).click();
+  await expect(page.locator('.mh-attribute-row').filter({ hasText: 'Finishing' }).locator('dd')).toHaveText('15');
+  await tabs.getByRole('tab', { name: 'Development' }).click();
+  await expect(panel.getByLabel('Target position')).toHaveValue('MC');
+});

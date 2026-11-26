@@ -3,10 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { ATTRIBUTE_LABELS, evaluateDevelopmentScenario, getEditionRoles, type AttributeKey,
   type DevelopmentScenario, type PlayerExport } from '@managerhub/domain';
 import { AttributeInput, AttributeValue, Button, Surface } from '@managerhub/ui';
-import { DEFAULT_ROLE_TARGET, RoleTargetSelector } from './RoleTargetSelector';
+import { DEFAULT_ROLE_TARGET, ROLE_DUTY_LABELS, RoleTargetSelector } from './RoleTargetSelector';
 import { AbilityBudgetFields } from './AbilityBudgetFields';
 import { ReportPagination, reportPage } from './ReportPagination';
-import './player-development.css';
 
 const emptyScenario = (): DevelopmentScenario => ({ target: DEFAULT_ROLE_TARGET, benchmark: 16, overrides: {}, locked: [] });
 type Props = { readonly player: PlayerExport; readonly edition: string | null; readonly build: string | null; readonly sourceId: string };
@@ -81,7 +80,7 @@ function DevelopmentWorkbench({ player, edition, build }: Props) {
       <table className="compare-table" aria-label={t('Development scenario comparison')}>
         <thead><tr><th scope="col">{t('Scenario')}</th><th scope="col">{t('Target role')}</th><th scope="col">{t('Role fit before / after')}</th><th scope="col">{t('Changed attributes')}</th></tr></thead>
         <tbody>{(['A','B'] as const).map(id => <tr key={id}>
-          <th scope="row">{id}</th><td>{t(getEditionRoles('FM2013').find(role => role.id === scenarios[id].target.roleId)?.nativeTitle ?? '')} · {scenarios[id].target.position} · {t(scenarios[id].target.duty + ' duty')}</td>
+          <th scope="row">{id}</th><td>{t(getEditionRoles('FM2013').find(role => role.id === scenarios[id].target.roleId)?.nativeTitle ?? '')} · {scenarios[id].target.position} · {t(ROLE_DUTY_LABELS[scenarios[id].target.duty])}</td>
           <td>{score(results[id]?.before.score)} → {score(results[id]?.after.score)}</td><td>{results[id]?.changes ?? '—'}</td>
         </tr>)}</tbody>
       </table>

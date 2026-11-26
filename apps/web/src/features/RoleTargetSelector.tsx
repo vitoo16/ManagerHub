@@ -3,7 +3,7 @@ import { FM2013_ROLE_POSITIONS, getEditionRoles, type DevelopmentRoleTarget, typ
 
 const catalog = getEditionRoles('FM2013');
 export const DEFAULT_ROLE_TARGET: DevelopmentRoleTarget = { position: 'MC', roleId: 'central-midfielder', duty: 'support' };
-const dutyLabels: Record<RoleDuty, string> = { defend: 'Defend duty', support: 'Support duty', attack: 'Attack duty',
+export const ROLE_DUTY_LABELS: Record<RoleDuty, string> = { defend: 'Defend duty', support: 'Support duty', attack: 'Attack duty',
   stopper: 'Stopper duty', cover: 'Cover duty', automatic: 'Automatic duty' };
 
 export function RoleTargetSelector({ target, onChange, allowAutomatic = true }: {
@@ -31,7 +31,7 @@ export function RoleTargetSelector({ target, onChange, allowAutomatic = true }: 
     </select></label>
     <label><span>{t('Target duty')}</span><select value={target.duty}
       onChange={event => onChange({ ...target, duty: event.currentTarget.value as RoleDuty })}>
-      {duties.map(item => <option key={item} value={item}>{t(dutyLabels[item])}</option>)}
+      {duties.map(item => <option key={item} value={item}>{t(ROLE_DUTY_LABELS[item])}</option>)}
     </select></label>
   </div>;
 }

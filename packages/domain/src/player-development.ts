@@ -47,8 +47,9 @@ export function evaluateDevelopmentScenario(player: Pick<PlayerExport, 'attribut
     const weight = profile.demands[key]!;
     const gap = target === null ? null : Math.max(0, scenario.benchmark - target);
     return { key, current: value, proposed: target, change: target === null || value === null ? null : target - value,
-      weight, gap, priority: gap === null ? null : gap * weight, locked: locks.has(key) };
-  }).sort((a, b) => (b.priority ?? -1) - (a.priority ?? -1) || a.key.localeCompare(b.key, 'en'));
+      weight, gap, priority: gap === null ? null : gap * weight,
+      initialPriority: value === null ? null : Math.max(0, scenario.benchmark - value) * weight, locked: locks.has(key) };
+  }).sort((a, b) => (b.initialPriority ?? -1) - (a.initialPriority ?? -1) || a.key.localeCompare(b.key, 'en'));
   const native = player.positions?.[scenario.target.position];
   return {
     model: 'manual-role-what-if-v1' as const, before, after, rows, rejected,

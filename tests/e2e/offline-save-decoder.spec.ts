@@ -741,3 +741,37 @@ test('advanced club mass edit previews exact targets and skips unchanged or unav
   await page.locator('.save-db-explorer tbody tr', { hasText: 'Northbridge Athletic' }).getByRole('button', { name: 'Edit' }).click();
   await expect(dialog.getByLabel('Balance (£)')).toHaveValue('120000000');
 });
+
+
+test('compact RCA remains unavailable and manual editor development cannot create a save transaction', async ({ page }) => {
+  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+  await page.goto('/#/saves');
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'development-isolation.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const toolbar = page.getByRole('region', { name: 'Active save session' });
+  await expect(toolbar).toBeVisible({ timeout: 20_000 });
+  await toolbar.getByRole('button', { name: 'Editor mode' }).click();
+  await page.locator('.save-db-explorer tbody tr', { hasText: 'Owen Shaw' }).getByRole('button', { name: 'Edit' }).click();
+  const dialog = page.getByRole('dialog');
+  const ca = await dialog.getByLabel('Actual CA (1–200)').inputValue();
+  const pa = await dialog.getByLabel('Actual PA (1–200)').inputValue();
+  await expect(dialog.getByRole('checkbox', { name: 'Auto match CA with RCA' })).toBeDisabled();
+  await expect(dialog.locator('.ability-budget').getByText('Not verified', { exact: true })).toBeVisible();
+  await expect(dialog.locator('.ability-budget .insight-line').filter({ hasText: 'Remaining potential' })).toContainText(String(Number(pa) - Number(ca)));
+  const tabs = dialog.getByRole('tablist', { name: 'Player editor sections' });
+  await tabs.getByRole('tab', { name: 'Development' }).click();
+  const panel = dialog.locator('.development-panel');
+  await panel.getByLabel('Target position').selectOption('ST');
+  await panel.getByLabel('Target role').selectOption('poacher');
+  const finishing = panel.getByRole('spinbutton', { name: 'Proposed Finishing', exact: true });
+  const before = await finishing.inputValue();
+  await finishing.fill(String(Math.min(20, Number(before) + 1)));
+  await expect(toolbar.getByRole('button', { name: 'Undo last edit' })).toBeDisabled();
+  await tabs.getByRole('tab', { name: 'Ability, Reputation & Bio' }).click();
+  await expect(dialog.getByLabel('Actual CA (1–200)')).toHaveValue(ca);
+  await expect(dialog.getByLabel('Actual PA (1–200)')).toHaveValue(pa);
+  await dialog.getByRole('button', { name: 'Done' }).click();
+  await toolbar.getByRole('button', { name: 'Realism mode' }).click();
+  await expect(page.locator('.development-panel')).toHaveCount(0);
+});

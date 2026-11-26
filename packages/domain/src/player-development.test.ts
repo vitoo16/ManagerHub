@@ -15,6 +15,8 @@ describe('development what-if and RCA safety', () => {
     expect(result.budget).toMatchObject({ remainingPotential: 12, recommendedCa: null, remainingRcaBudget: null, autoMatchAvailable: false });
     expect(result.feasibility).toBe('not-evaluated');
     expect(player.attributes.finishing).toBe(15);
+    const baseline = evaluateDevelopmentScenario(player, 'FM2013', '13.3.3', { ...scenario, overrides: {} })!;
+    expect(result.rows.map(row => row.key)).toEqual(baseline.rows.map(row => row.key));
     expect(evaluateDevelopmentScenario(player, 'FM2013', '13.3.3', scenario)).toEqual(result);
   });
   it('rejects locked, missing, out-of-range, non-role and decreasing attributes', () => {

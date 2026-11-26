@@ -15,7 +15,7 @@ export interface ScoredRole {
  * Returns a role attribute-fit estimate, not native positional familiarity.
  * Score is suppressed when fewer than 65% weighted requirements are observed.
  */
-export function scoreRole(player:Pick<PlayerExport,'attributes'>,role:RoleProfile):ScoredRole {
+export function scoreRole<T extends Pick<PlayerExport,'attributes'>>(player:T,role:RoleProfile):ScoredRole {
   const demands=Object.entries(role.demands) as [AttributeKey,number][];
   const total=demands.reduce((sum,[,w])=>sum+w,0);
   let seen=0,sum=0;
