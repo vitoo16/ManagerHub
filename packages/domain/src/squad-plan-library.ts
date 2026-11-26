@@ -1,3 +1,4 @@
+import { localContentSha256 } from './local-content-hash';
 import { FORMATIONS, declaredPositions } from './squad-optimizer';
 import type { PlayerDataset, PlayerExport } from './player-import';
 import type { SquadPlanConfig, SquadPlanKey, SquadPlans } from './squad-scenarios';
@@ -113,11 +114,11 @@ export async function squadDatasetSha256(dataset: PlayerDataset): Promise<string
     };
   }
 
-  const bytes = new TextEncoder().encode(JSON.stringify(canonicalPayload));
-  if (bytes.byteLength === 0 || bytes.byteLength > MAX_DATASET_BYTES ||
-      !globalThis.crypto?.subtle) throw new Error('dataset_hash_unavailable');
-  const hash = new Uint8Array(await globalThis.crypto.subtle.digest('SHA-256', bytes));
-  return Array.from(hash, byte => byte.toString(16).padStart(2, '0')).join('');
+  try {
+    return await localContentSha256(canonicalPayload, MAX_DATASET_BYTES);
+  } catch {
+    throw new Error('dataset_hash_unavailable');
+  }
 }
 
 export async function squadPlanStorageKey(dataset: PlayerDataset): Promise<string> {

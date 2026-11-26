@@ -7,6 +7,7 @@ export * from './player-import';
 export * from './player-analysis';
 export * from './ability-budget';
 export * from './player-development';
+export * from './development-scenario-library';
 export { getEditionRoles, getRoleDutyProfile, FM2013_ROLE_POSITIONS, FM2013_ROLE_REFERENCES, type EditionRole, type RoleDuty, type RolePosition } from './football-role-registry';
 export * from './player-library';
 export * from './squad-optimizer';
