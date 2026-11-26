@@ -81,6 +81,7 @@ test('MH-04 compares user-selected captures without implying verified identity o
   await page.getByRole('button', { name: 'Save snapshot locally' }).click();
   await expect(page.getByRole('list', { name: 'Saved historical snapshots' }).getByRole('listitem')).toHaveCount(2);
 
+  await page.getByRole('tablist', { name: 'Historical snapshot sections' }).getByRole('tab', { name: 'Compare historical observations' }).click();
   const compare = page.locator('.historical-comparison');
   await expect(compare.getByText('Player identity, career lineage, capture order and game-time progression are unverified.', { exact: false })).toBeVisible();
   await compare.getByLabel('Second saved snapshot').selectOption({ index: 1 });
@@ -90,6 +91,11 @@ test('MH-04 compares user-selected captures without implying verified identity o
   const passing = compare.locator('.historical-comparison-table').first().getByRole('row').filter({ hasText: 'Passing' });
   await expect(passing).toContainText('16');
   await expect(passing).toContainText('15');
+  await expect(passing).toContainText('-1');
+  await compare.getByLabel('Evidence group').selectOption('positions');
+  await expect(compare.getByRole('table')).toHaveCount(1);
+  await expect(passing).toHaveCount(0);
+  await compare.getByLabel('Evidence group').selectOption('technical');
   await expect(passing).toContainText('-1');
 
   await page.getByRole('button', { name: 'Realism', exact: true }).click();
@@ -135,7 +141,9 @@ test('imports, browses, saves, reloads and switches safely between Editor and Re
   const passing = page.locator('.historical-value-row').filter({ hasText: 'Passing' });
   await expect(passing.locator('strong')).toHaveText('15');
   await expect(page.getByText('Derived calendar age').first()).toBeVisible();
+  await page.getByLabel('Evidence group').selectOption('ability');
   await expect(page.getByText('Not verified').first()).toBeVisible();
+  await page.getByLabel('Evidence group').selectOption('technical');
 
   await page.getByRole('button', { name: 'Save snapshot locally' }).click();
   await expect(page.getByRole('button', { name: 'Saved on this browser' })).toBeDisabled();
@@ -734,4 +742,25 @@ test('keeps the workspace keyboard-accessible, reduced-motion friendly and usabl
   }));
   expect(motion.transition).toBe('0s');
   expect(motion.animation).toBe('0s');
+});
+
+
+test('historical evidence sections keep native observations bounded and preserve missingness', async ({ page }) => {
+  await page.goto('/#/history');
+  await importSynthetic(page, 'Editor');
+  const group = page.getByLabel('Evidence group');
+  await expect(page.locator('.historical-value-row')).toHaveCount(14);
+  await group.selectOption('positions');
+  await expect(page.locator('.historical-value-row')).toHaveCount(15);
+  await group.selectOption('physical');
+  await expect(page.locator('.historical-value-row')).toHaveCount(10);
+  await group.selectOption('technical');
+  await expect(page.locator('.historical-value-row').filter({ hasText: 'Passing' }).locator('strong')).toHaveText('15');
+  const tabs = page.getByRole('tablist', { name: 'Historical snapshot sections' });
+  await tabs.getByRole('tab', { name: 'Capture evidence' }).click();
+  await expect(page.getByRole('heading', { name: 'Scan coverage' })).toBeVisible();
+  await expect(page.locator('.historical-value-row')).toHaveCount(0);
+  await tabs.getByRole('tab', { name: 'Player records' }).click();
+  await page.getByRole('button', { name: 'Realism', exact: true }).click();
+  await expect(page.locator('.historical-value-row').filter({ hasText: 'Passing' }).locator('strong')).toHaveText('Hidden in Realism mode');
 });

@@ -1,22 +1,26 @@
-import { memo, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
+import { memo, useCallback, useDeferredValue, useEffect, useId, useMemo, useRef, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { i18n } from '../../i18n';
 import historicalVi from '../../i18n/historical-vi';
 import {
-  type EvidenceField, type HistoricalSnapshotMode, type HistoricalSnapshotRecord,
+  liveAttributeCategory, type EvidenceField, type HistoricalSnapshotMode, type HistoricalSnapshotRecord,
   type HistoricalSnapshotSummary, type LivePlayer, type MissingReason
 } from '@managerhub/domain';
-import { Button, Icon, SectionHeading, Status } from '@managerhub/ui';
+import { Button, Icon, SectionHeading, SectionTabs, Status } from '@managerhub/ui';
 import { getHistoricalSnapshot } from '@managerhub/storage/historical-live-snapshots';
 import { importHistoricalCapture, type HistoricalImportStage } from '../../import-historical-capture';
 import { useHistoricalSnapshotLibrary } from '../../useHistoricalSnapshotLibrary';
 import { HistoricalCaptureGuide } from './HistoricalCaptureGuide';
 import { HistoricalObservationComparison } from './HistoricalObservationComparison';
+import { HistoricalEvidenceSelector, type HistoricalEvidenceGroup } from './HistoricalEvidenceSelector';
+import { ReportPagination, reportPage } from '../ReportPagination';
 import './historical-workspace.css';
 
 i18n.addResourceBundle('vi', 'translation', historicalVi, true, true);
 
-const PAGE_SIZE = 80;
+const PAGE_SIZE = 40;
+const SNAPSHOT_SECTIONS = [{ id: 'players', label: 'Player records' }, { id: 'coverage', label: 'Capture evidence' }, { id: 'compare', label: 'Compare historical observations' }] as const;
+type SnapshotSection = typeof SNAPSHOT_SECTIONS[number]['id'];
 const MISSING_COPY: Record<MissingReason, string> = {
   not_present: 'Not present in this capture',
   not_decoded: 'Not decoded',
@@ -127,7 +131,8 @@ const CoveragePanel = memo(function CoveragePanel({ record }: { record: Historic
 
 const PlayerDetail = memo(function PlayerDetail({ player }: { player: LivePlayer }) {
   const { t } = useTranslation();
-  const attributes = Object.entries(player.attributes);
+  const [group, setGroup] = useState<HistoricalEvidenceGroup>('technical');
+  const attributes = Object.entries(player.attributes).filter(([key]) => liveAttributeCategory(key) === group);
   const positions = Object.entries(player.positions);
   const club = player.club.value;
   const nation = player.primaryNation.value;
@@ -152,7 +157,10 @@ const PlayerDetail = memo(function PlayerDetail({ player }: { player: LivePlayer
       <p className="historical-footnote">{t('A primary-nation link does not establish citizenship or eligibility. A club/team pointer does not establish current employment or loan status.')}</p>
     </section>
 
-    <section className="historical-panel">
+    <section className="historical-panel historical-evidence-panel">
+      <HistoricalEvidenceSelector value={group} onChange={setGroup} keys={Object.keys(player.attributes)} includeAbility/>
+    </section>
+    {group !== 'positions' && group !== 'ability' && <section className="historical-panel">
       <SectionHeading eyebrow={t('49 ordinary attributes')} title={t('Attribute evidence')}/>
       <div className="historical-value-grid">
         {attributes.map(([key, field]) => <div className="historical-value-row" key={key}>
@@ -161,9 +169,9 @@ const PlayerDetail = memo(function PlayerDetail({ player }: { player: LivePlayer
         </div>)}
       </div>
       <p className="historical-footnote">{t('Values are provisional source observations, not Actual CA, PA or a calibrated player rating model. Zero and unknown are kept distinct.')}</p>
-    </section>
+    </section>}
 
-    <section className="historical-panel">
+    {group === 'positions' && <section className="historical-panel">
       <SectionHeading eyebrow={t('15 position familiarity values')} title={t('Position evidence')}/>
       <div className="historical-value-grid historical-value-grid--positions">
         {positions.map(([key, field]) => <div className="historical-value-row" key={key}>
@@ -172,9 +180,9 @@ const PlayerDetail = memo(function PlayerDetail({ player }: { player: LivePlayer
         </div>)}
       </div>
       <p className="historical-footnote">{t('Position familiarity is not certified eligibility and is not converted into tactical roles.')}</p>
-    </section>
+    </section>}
 
-    <section className="historical-panel">
+    {group === 'ability' && <section className="historical-panel">
       <SectionHeading eyebrow={t('Unverified fields')} title={t('Ability and contract data')}/>
       <dl className="historical-facts historical-facts--compact">
         <div><dt>{t('Actual CA')}</dt><dd>{fieldText(player.actualCa, t)}</dd></div>
@@ -184,7 +192,7 @@ const PlayerDetail = memo(function PlayerDetail({ player }: { player: LivePlayer
         <div><dt>{t('Currency')}</dt><dd>{fieldText(player.contract.currency, t)}</dd></div>
         <div><dt>{t('Contract expiry')}</dt><dd>{fieldText(player.contract.expiresAt, t)}</dd></div>
       </dl>
-    </section>
+    </section>}
   </div>;
 });
 
@@ -205,7 +213,9 @@ export default function HistoricalWorkspace() {
   const [importError, setImportError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [search, setSearch] = useState('');
-  const [visibleLimit, setVisibleLimit] = useState(PAGE_SIZE);
+  const [playerPage, setPlayerPage] = useState(0);
+  const [section, setSection] = useState<SnapshotSection>('players');
+  const sectionId = useId();
   const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const [pendingClear, setPendingClear] = useState(false);
@@ -276,7 +286,7 @@ export default function HistoricalWorkspace() {
       setActiveSaved(false);
       setSelectedPlayerId(result.record.snapshot.players[0]?.id ?? null);
       setSearch('');
-      setVisibleLimit(PAGE_SIZE);
+      setPlayerPage(0);
       setNotice(t('Capture parsed. Review its source, coverage and unknown fields before saving.'));
     } catch (cause) {
       if (abortRef.current === controller) {
@@ -345,7 +355,7 @@ export default function HistoricalWorkspace() {
     setActiveSaved(true);
     setSelectedPlayerId(opened.snapshot.players[0]?.id ?? null);
     setSearch('');
-    setVisibleLimit(PAGE_SIZE);
+    setPlayerPage(0);
     setNotice(null);
     setImportError(null);
   }, [library.open, library.activity, library.loading, importing, switchingMode, mode]);
@@ -379,6 +389,7 @@ export default function HistoricalWorkspace() {
       pendingImport?.abort();
       setImporting(false);
       setSearch('');
+      setPlayerPage(0);
       setSelectedPlayerId(null);
       setNotice(null);
       setImportError(null);
@@ -432,7 +443,8 @@ export default function HistoricalWorkspace() {
       return name.includes(deferredSearch) || club.includes(deferredSearch) || String(player.nativeId).includes(deferredSearch);
     });
   }, [players, deferredSearch]);
-  const visiblePlayers = filteredPlayers.slice(0, visibleLimit);
+  const playerRange = reportPage(filteredPlayers.length, playerPage, PAGE_SIZE);
+  const visiblePlayers = filteredPlayers.slice(playerRange.start, playerRange.end);
   const selectedPlayer = useMemo(() =>
     filteredPlayers.find(player => player.id === selectedPlayerId) ?? filteredPlayers[0] ?? null,
   [filteredPlayers, selectedPlayerId]);
@@ -534,15 +546,19 @@ export default function HistoricalWorkspace() {
             <p className="historical-footnote">{t('The capture is historical. PID, file hash, declared career label and timestamp do not prove a currently running process, loaded save lineage or authenticated runtime image bytes.')}</p>
           </section>
 
-          <CoveragePanel record={record}/>
-
+          <SectionTabs<SnapshotSection> id={sectionId} label={t('Historical snapshot sections')}
+            items={SNAPSHOT_SECTIONS.map(item => ({ ...item, label: t(item.label) }))}
+            active={section} onChange={setSection}/>
+          <div className="historical-section-panel" role="tabpanel" id={sectionId + '-panel'}
+            aria-labelledby={sectionId + '-tab-' + section}>
+          {section === 'players' && <>
           <section className="historical-panel">
             <SectionHeading eyebrow={t('Player records')} title={t('Browse captured players')}>
               <span className="historical-count">{filteredPlayers.length.toLocaleString()} / {players.length.toLocaleString()}</span>
             </SectionHeading>
             <label className="historical-search">
               <Icon name="search" size={16}/>
-              <input type="search" value={search} onChange={event => { setSearch(event.currentTarget.value); setVisibleLimit(PAGE_SIZE); }}
+              <input type="search" value={search} onChange={event => { setSearch(event.currentTarget.value); setPlayerPage(0); }}
                 placeholder={t('Search name, observed club or native ID…')} aria-label={t('Search captured players')}/>
             </label>
             <div className="historical-player-browser">
@@ -561,15 +577,19 @@ export default function HistoricalWorkspace() {
                   </tbody>
                 </table>
               </div>
-              {visiblePlayers.length < filteredPlayers.length && <Button variant="quiet" onClick={() => setVisibleLimit(limit => limit + PAGE_SIZE)}>{t('Show more players')}</Button>}
+              <ReportPagination label={t('Captured players page')} range={playerRange} onChange={setPlayerPage}/>
               <p className="historical-footnote">{t('Player IDs are snapshot-local. Search is limited to this capture; no automatic cross-career identity merge is performed.')}</p>
             </div>
           </section>
 
-          {selectedPlayer && <PlayerDetail player={selectedPlayer}/>}
-          {selectedPlayer && <HistoricalObservationComparison key={`${record.id}:${record.mode}`} record={record} player={selectedPlayer}
+          {selectedPlayer && <PlayerDetail key={`${record.id}:${record.mode}:${selectedPlayer.id}`} player={selectedPlayer}/>}
+          </>}
+          {section === 'compare' && selectedPlayer && <HistoricalObservationComparison key={`${record.id}:${record.mode}`} record={record} player={selectedPlayer}
             items={library.items} busy={importing || switchingMode || library.loading || library.activity !== null || library.error !== null}
             revision={library.syncedExternalRevision}/>}
+          {section === 'compare' && !selectedPlayer && <p className="historical-muted">{t('No player selected for comparison.')}</p>}
+          {section === 'coverage' && <>
+          <CoveragePanel record={record}/>
           <section className="historical-panel">
             <SectionHeading eyebrow={t('Source diagnostics')} title={t('What this capture does not prove')}/>
             <ul className="historical-diagnostics">
@@ -579,6 +599,8 @@ export default function HistoricalWorkspace() {
               <li>{t('No native save writer, live process watcher or desktop IPC is active.')}</li>
             </ul>
           </section>
+          </>}
+          </div>
         </>}
       </section>
     </div>

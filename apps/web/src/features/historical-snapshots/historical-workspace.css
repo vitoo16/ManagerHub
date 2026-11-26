@@ -143,3 +143,8 @@
 @media(prefers-reduced-motion:reduce) {
  .historical-workspace * {scroll-behavior:auto!important;transition:none!important;animation:none!important}
 }
+
+.historical-section-panel { display: grid; gap: 14px; min-width: 0; }
+.historical-evidence-selector { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; color: var(--text-sub); font-size: 12px; }
+.historical-evidence-selector select { min-height: 36px; max-width: 100%; min-width: 0; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-up); color: var(--text); }
+.historical-evidence-panel { padding-block: 10px; }

@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useDeferredValue, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  compareHistoricalObservations, type HistoricalObservationDifference,
+  compareHistoricalObservations, liveAttributeCategory, type HistoricalObservationDifference,
   type HistoricalSnapshotRecord, type HistoricalSnapshotSummary, type LivePlayer
 } from '@managerhub/domain';
 import { getHistoricalSnapshot } from '@managerhub/storage/historical-live-snapshots';
 import { SectionHeading, Status } from '@managerhub/ui';
+import { HistoricalEvidenceSelector, type HistoricalEvidenceGroup } from './HistoricalEvidenceSelector';
 
 interface Props {
   readonly record: HistoricalSnapshotRecord;
@@ -46,6 +47,8 @@ export function HistoricalObservationComparison({ record, player, items, busy, r
   const [search, setSearch] = useState('');
   const [otherPlayerId, setOtherPlayerId] = useState('');
   const [confirmedPair, setConfirmedPair] = useState<string | null>(null);
+  const [group, setGroup] = useState<HistoricalEvidenceGroup>('technical');
+  const deferredSearch = useDeferredValue(search);
   const choices = items.filter(item => item.id !== record.id && item.mode === record.mode);
 
   useEffect(() => {
@@ -54,6 +57,7 @@ export function HistoricalObservationComparison({ record, player, items, busy, r
     setOtherPlayerId('');
     setConfirmedPair(null);
     setError(null);
+    setLoading(false);
     if (!comparisonId) return () => { cancelled = true; };
     if (!choices.some(item => item.id === comparisonId)) {
       setError('The comparison snapshot is no longer available in this mode.');
@@ -75,16 +79,21 @@ export function HistoricalObservationComparison({ record, player, items, busy, r
     otherRecord?.id === comparisonId && otherRecord.mode === record.mode ? otherRecord : null;
   const otherPlayers = currentOther?.snapshot.players ?? [];
   const filteredPlayers = useMemo(() => {
-    const query = search.trim().toLocaleLowerCase();
-    if (!query) return otherPlayers.slice(0, 30);
-    return otherPlayers.filter(candidate => candidate.name.value?.toLocaleLowerCase().includes(query) ||
-      String(candidate.nativeId).includes(query)).slice(0, 30);
-  }, [otherPlayers, search]);
+    const query = deferredSearch.trim().toLocaleLowerCase();
+    const matches: LivePlayer[] = [];
+    for (const candidate of otherPlayers) {
+      if (!query || candidate.name.value?.toLocaleLowerCase().includes(query) ||
+        String(candidate.nativeId).includes(query)) matches.push(candidate);
+      if (matches.length === 30) break;
+    }
+    return matches;
+  }, [otherPlayers, deferredSearch]);
   const otherPlayer = otherPlayers.find(candidate => candidate.id === otherPlayerId);
   const pairKey = JSON.stringify([record.id, player.id, currentOther?.id, otherPlayer?.id]);
   const accepted = confirmedPair === pairKey;
-  const comparison = accepted && currentOther && otherPlayer
-    ? compareHistoricalObservations(record, currentOther, player, otherPlayer) : null;
+  const comparison = useMemo(() => accepted && currentOther && otherPlayer
+    ? compareHistoricalObservations(record, currentOther, player, otherPlayer) : null,
+  [accepted, record, currentOther, player, otherPlayer]);
 
   return <section className="historical-panel historical-comparison" aria-labelledby="historical-comparison-title">
     <SectionHeading id="historical-comparison-title" eyebrow={t('MH-04 · Manual observation pairing')} title={t('Compare historical observations')}>
@@ -117,7 +126,7 @@ export function HistoricalObservationComparison({ record, player, items, busy, r
       </label>
       <div className="historical-comparison-candidates" aria-label={t('Second snapshot players')}>
         {filteredPlayers.map(candidate => <button type="button" key={candidate.id}
-          aria-pressed={otherPlayerId === candidate.id} onClick={() => { setOtherPlayerId(candidate.id); setConfirmedPair(null); }}>
+          disabled={search !== deferredSearch} aria-pressed={otherPlayerId === candidate.id} onClick={() => { setOtherPlayerId(candidate.id); setConfirmedPair(null); }}>
           {candidate.name.value ?? t('Unknown / hidden')} <small>#{candidate.nativeId}</small>
         </button>)}
         {filteredPlayers.length === 0 && <p>{t('No players match this search.')}</p>}
@@ -132,8 +141,11 @@ export function HistoricalObservationComparison({ record, player, items, busy, r
       </>}
       {comparison && <>
         <p className="historical-footnote" role="status">{t('Observed difference = second minus first. These provisional observations are not certified player development or edit events. Unknown and redacted fields have no difference.')}</p>
-        <ObservationTable title={t('Ordinary attributes')} rows={comparison.attributes}/>
-        <ObservationTable title={t('Position familiarity')} rows={comparison.positions}/>
+        <HistoricalEvidenceSelector value={group} onChange={setGroup} keys={comparison.attributes.map(row => row.key)}/>
+        {group === 'positions'
+          ? <ObservationTable title={t('Position familiarity')} rows={comparison.positions}/>
+          : <ObservationTable title={t('Ordinary attributes')} rows={comparison.attributes.filter(row => liveAttributeCategory(row.key) === group)}/>}
+
       </>}
       {accepted && !comparison && <p role="alert" className="historical-destructive-warning">{t('The selected snapshots or records are incompatible for comparison.')}</p>}
     </>}
