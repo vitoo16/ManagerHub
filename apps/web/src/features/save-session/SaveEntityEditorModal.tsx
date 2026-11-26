@@ -18,7 +18,7 @@ import {
   type StaffDraftPatch
 } from '@managerhub/domain/fm2013-offline';
 import { Button, Icon, Status } from '@managerhub/ui';
-import { MassEditPlayerPanel } from './MassEditPlayerPanel';
+import { AdvancedMassEdit } from './AdvancedMassEdit';
 import { ReportPagination, reportPage } from '../ReportPagination';
 import { useDialogFocus } from '../../useDialogFocus';
 import { PlayerEditorRecord } from './PlayerEditorRecord';
@@ -250,9 +250,7 @@ function SaveEntityEditorModal({
               </div>
             )}
 
-            <MassEditPlayerPanel database={workingDatabase} managedClubUid={managedClubUid}
-              onApply={(uids, patch) => onCommitOverlay(`Mass edit (${uids.length})`,
-                cur => buildMassEditPlayersOverlay(cur, uids, patch))}/>
+            <AdvancedMassEdit database={workingDatabase} managedClubUid={managedClubUid} onCommitOverlay={onCommitOverlay}/>
           </>
         )}
 

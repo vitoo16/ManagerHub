@@ -710,3 +710,34 @@ test('mass edit requires explicit fields and confirmation and leaves PA and mora
   await expect(dialog.getByLabel('Actual PA (1–200)')).toHaveValue(beforePa);
   await expect(dialog.getByLabel('Morale (1–20)')).toHaveValue(beforeMorale);
 });
+
+
+test('advanced club mass edit previews exact targets and skips unchanged or unavailable fields', async ({ page }) => {
+  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+  await page.goto('/#/saves');
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'mass-club.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const toolbar = page.getByRole('region', { name: 'Active save session' });
+  await expect(toolbar).toBeVisible({ timeout: 20_000 });
+  await toolbar.getByRole('button', { name: 'Editor mode' }).click();
+  await toolbar.getByRole('button', { name: 'Presets & Mass Edit' }).click();
+  const dialog = page.getByRole('dialog');
+  await dialog.getByRole('tab', { name: 'Club fields' }).click();
+  await dialog.getByLabel('Field to change').selectOption('balanceGbp');
+  await dialog.getByLabel('New integer value').fill('120000000');
+  const apply = dialog.getByRole('button', { name: 'Apply mass edit to draft' });
+  await expect(apply).toBeDisabled();
+  await dialog.getByLabel('Filter records by name, club, nation or UID').fill('Northbridge Athletic');
+  const preview = dialog.getByRole('table', { name: 'Mass edit change preview' });
+  await expect(preview.locator('tbody tr')).toHaveCount(1);
+  await expect(preview).toContainText('120000000');
+  page.once('dialog', prompt => prompt.accept());
+  await apply.click();
+  await expect(toolbar.getByRole('button', { name: 'Undo last edit' })).toBeEnabled();
+  await expect(apply).toBeDisabled();
+  await dialog.getByRole('button', { name: 'Done' }).click();
+  await page.locator('.save-db-explorer').getByRole('tab', { name: /Clubs/ }).click();
+  await page.locator('.save-db-explorer tbody tr', { hasText: 'Northbridge Athletic' }).getByRole('button', { name: 'Edit' }).click();
+  await expect(dialog.getByLabel('Balance (£)')).toHaveValue('120000000');
+});

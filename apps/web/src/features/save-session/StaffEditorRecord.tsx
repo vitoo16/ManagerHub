@@ -1,30 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import type { DecodedSaveDatabase, StaffDraftPatch, DecodedStaffAttributes } from '@managerhub/domain/fm2013-offline';
+import type { DecodedSaveDatabase, StaffDraftPatch } from '@managerhub/domain/fm2013-offline';
 import { EditorNumberField } from './EditorNumberField';
 import { AttributePropertyGroup } from '@managerhub/ui';
 import { clampInt } from './editor-number';
+import { STAFF_ATTR_KEYS } from './staff-attribute-fields';
 import { EditorRecordSections, type EditorSection } from './EditorRecordSections';
 
-const STAFF_ATTR_KEYS: readonly { readonly key: keyof DecodedStaffAttributes; readonly label: string }[] = [
-  { key: 'attacking', label: 'Coaching Attacking' },
-  { key: 'defending', label: 'Coaching Defending' },
-  { key: 'fitness', label: 'Coaching Fitness' },
-  { key: 'goalkeepers', label: 'Coaching Goalkeepers' },
-  { key: 'mental', label: 'Coaching Mental' },
-  { key: 'technical', label: 'Coaching Technical' },
-  { key: 'tactical', label: 'Coaching Tactical' },
-  { key: 'player', label: 'Coaching Outfield' },
-  { key: 'manManagement', label: 'Man Management' },
-  { key: 'workingWithYoungsters', label: 'Working With Youngsters' },
-  { key: 'judgingPlayerAbility', label: 'Judging Player Ability' },
-  { key: 'judgingPlayerPotential', label: 'Judging Player Potential' },
-  { key: 'tacticalKnowledge', label: 'Tactical Knowledge' },
-  { key: 'motivating', label: 'Motivating' },
-  { key: 'levelOfDiscipline', label: 'Level of Discipline' },
-  { key: 'determination', label: 'Determination' },
-  { key: 'adaptability', label: 'Adaptability' },
-  { key: 'physiotherapy', label: 'Physiotherapy' }
-];
+
 
 const STAFF_SECTIONS = [
   { id: 'general', label: 'Staff Ability, Reputation & Contract' },
