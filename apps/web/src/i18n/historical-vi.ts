@@ -2,6 +2,7 @@ export default {
   "Payload accepted · roster completeness unverified": "Đã tiếp nhận dữ liệu · chưa xác minh mức độ đầy đủ của danh sách cầu thủ",
   "Partial capture · some records or scan coverage are missing": "Bản ghi một phần · thiếu dữ liệu cầu thủ hoặc phạm vi quét",
   "No accepted player records in this capture": "Không có bản ghi cầu thủ hợp lệ trong capture này",
+  "Saved snapshots page": "Trang snapshot đã lưu",
   "Saved snapshots": "Snapshot đã lưu",
   "Loading saved snapshots…": "Đang tải snapshot đã lưu…",
   "No historical snapshots saved": "Chưa có snapshot lịch sử nào",
