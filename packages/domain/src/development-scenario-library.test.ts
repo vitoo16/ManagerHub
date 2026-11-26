@@ -39,7 +39,8 @@ describe('development scenario library', () => {
   it('binds to exact save/player and visible revision without depending on mode or CA/PA', async () => {
     const sha = 'a'.repeat(64);
     const a = await bindDevelopmentSource(player, sha, 'FM2013', '13.3.3');
-    const b = await bindDevelopmentSource({ ...player, actualCa: null, potentialAbility: null }, sha, 'FM2013', '13.3.3');
+    const redacted: PlayerExport = { ...player, actualCa: null, potentialAbility: null };
+    const b = await bindDevelopmentSource(redacted, sha, 'FM2013', '13.3.3');
     expect(a).toEqual(b);
     const changed = await bindDevelopmentSource({ ...player, attributes: { ...player.attributes, finishing: 16 } }, sha, 'FM2013', '13.3.3');
     expect(changed.scope).toBe(a.scope);

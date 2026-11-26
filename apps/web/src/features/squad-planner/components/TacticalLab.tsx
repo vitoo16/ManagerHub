@@ -1,3 +1,4 @@
+import { downloadContent } from '../../../download-content';
 import { memo, useCallback, useId, useMemo, useRef, useState, type Dispatch, type KeyboardEvent, type PointerEvent, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -132,23 +133,11 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
 
   const exportTacticalReport = () => {
     setNotice(null);
-    let url: string | null = null;
     try {
-      const csv = createTacticalScenarioCsv(active, scenario, solution);
-      url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
-      const anchor = document.createElement('a');
-      anchor.href = url;
-      anchor.download = tacticalReportFilename(dataset.fileName, active);
-      anchor.hidden = true;
-      document.body.append(anchor);
-      try { anchor.click(); } finally { anchor.remove(); }
+      downloadContent(createTacticalScenarioCsv(active, scenario, solution), 'text/csv;charset=utf-8',
+        tacticalReportFilename(dataset.fileName, active));
     } catch {
       setNotice('Could not export tactical report. The plan is unchanged.');
-    } finally {
-      if (url !== null) {
-        const cleanupUrl = url;
-        window.setTimeout(() => URL.revokeObjectURL(cleanupUrl), 30_000);
-      }
     }
   };
 

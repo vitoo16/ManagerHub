@@ -6,11 +6,12 @@ import { AttributeInput, AttributeValue, Button, Surface } from '@managerhub/ui'
 import { DEFAULT_ROLE_TARGET, ROLE_DUTY_LABELS, RoleTargetSelector } from './RoleTargetSelector';
 import { AbilityBudgetFields } from './AbilityBudgetFields';
 import { ReportPagination, reportPage } from './ReportPagination';
+import { DevelopmentScenarioLibrary } from './DevelopmentScenarioLibrary';
 
 const emptyScenario = (): DevelopmentScenario => ({ target: DEFAULT_ROLE_TARGET, benchmark: 16, overrides: {}, locked: [] });
 type Props = { readonly player: PlayerExport; readonly edition: string | null; readonly build: string | null; readonly sourceId: string };
 
-function DevelopmentWorkbench({ player, edition, build }: Props) {
+function DevelopmentWorkbench({ player, edition, build, sourceId }: Props) {
   const { t } = useTranslation();
   const [active, setActive] = useState<'A' | 'B'>('A');
   const [scenarios, setScenarios] = useState(() => ({ A: emptyScenario(), B: emptyScenario() }));
@@ -49,6 +50,10 @@ function DevelopmentWorkbench({ player, edition, build }: Props) {
           variant={active === id ? 'primary' : 'default'} onClick={() => { setActive(id); setPage(0); }}>{t('Scenario')} {id}</Button>)}
         <Button type="button" onClick={() => { update(emptyScenario()); setPage(0); }}>{t('Reset scenario')}</Button>
       </div>
+      <details className="development-library-details"><summary>{t('Saved development scenarios')}</summary>
+        <DevelopmentScenarioLibrary player={player} edition={edition} build={build} sourceId={sourceId} scenario={scenario} active={active}
+          onRestore={next => { update(next); setPage(0); }}/>
+      </details>
       <RoleTargetSelector target={scenario.target} allowAutomatic={false} onChange={target => {
         update({ ...scenario, target, overrides: {}, locked: [] }); setPage(0);
       }}/>
