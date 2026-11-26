@@ -904,7 +904,7 @@ export default function App() {
           </Surface> : saveMode !== 'editor' ? <Surface className="editor-workspace-empty">
             <p>{t('Classic Editor is unavailable in Realism mode. Enable Editor mode to edit native records.')}</p>
             <Button disabled={busy || writingSave} onClick={() => onSetSaveMode('editor')}>{t('Enable Editor mode')}</Button>
-          </Surface> : busy || writingSave ? <p role="status">{t('Loading workspace…')}</p> : !editorModalTarget && (
+          </Surface> : (busy || writingSave) ? <p role="status">{t('Loading workspace…')}</p> : !editorModalTarget && (
             <Suspense fallback={<WorkspaceLoading/>}>
               <SaveEntityEditorModal key={baseDecodedSave?.source.saveId} {...editorProps} target={{ kind: 'browse' }} embedded/>
             </Suspense>

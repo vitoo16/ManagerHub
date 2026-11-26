@@ -205,7 +205,8 @@
   color: var(--text-sub);
 }
 
-.editor-field span {
+.editor-field span,
+.editor-field label {
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;

@@ -36,8 +36,15 @@ const exact = (value: unknown, keys: readonly string[]): value is Record<string,
   (Object.getPrototypeOf(value) === Object.prototype || Object.getPrototypeOf(value) === null) &&
   Reflect.ownKeys(value).length === keys.length && keys.every(key => Object.hasOwn(value, key));
 const rating = (value: unknown): value is number => typeof value === 'number' && Number.isInteger(value) && value >= 1 && value <= 20;
+const hasAsciiControl = (s: string): boolean => {
+  for (let i = 0; i < s.length; i++) {
+    const code = s.charCodeAt(i);
+    if (code <= 0x1f || code === 0x7f) return true;
+  }
+  return false;
+};
 const nameValid = (value: unknown): value is string => typeof value === 'string' && value === value.trim() &&
-  value.length >= 1 && value.length <= 80 && !/[\u0000-\u001f\u007f]/u.test(value);
+  value.length >= 1 && value.length <= 80 && !hasAsciiControl(value);
 const isoDate = (value: unknown): value is string => typeof value === 'string' && value.length <= 30 &&
   Number.isFinite(Date.parse(value)) && new Date(value).toISOString() === value;
 

@@ -948,5 +948,12 @@ export default {
   "Open central defensive channel": "Khoảng trống trung tâm hàng phòng ngự",
   "The two centre-backs are at least ten grid steps apart in the defending phase, with no midfielder in the deeper central zone.": "Hai trung vệ cách nhau ít nhất mười ô khi phòng ngự mà không có tiền vệ bọc lót ở vùng trung tâm phía sau.",
   "Narrow the centre-back spacing or move a central midfielder into the covering zone.": "Thu hẹp khoảng cách giữa hai trung vệ hoặc đưa một tiền vệ về vùng bọc lót.",
-  "Spacing is a drawn geometry check. Opponent movement, marking and player ability are unknown.": "Khoảng cách chỉ là kiểm tra hình học trên sơ đồ. Chưa có dữ liệu về di chuyển đối thủ, kèm người hoặc năng lực cầu thủ."
+  "Spacing is a drawn geometry check. Opponent movement, marking and player ability are unknown.": "Khoảng cách chỉ là kiểm tra hình học trên sơ đồ. Chưa có dữ liệu về di chuyển đối thủ, kèm người hoặc năng lực cầu thủ.",
+  "Advisory RCA (research profile)": "RCA tham khảo (hồ sơ nghiên cứu)",
+  "CA − Advisory RCA": "Độ lệch CA − RCA tham khảo",
+  "Advisory RCA exceeds Potential Ability (PA). ManagerHub never raises PA automatically.": "RCA tham khảo vượt quá Tiềm năng (PA). ManagerHub không bao giờ tự động tăng PA.",
+  "Weaker foot RCA weight": "Trọng số RCA chân không thuận",
+  "Advisory RCA before / after": "RCA tham khảo trước / sau",
+  "RCA weight": "Trọng số RCA",
+  "Advisory RCA Δ": "Chênh lệch RCA"
 } as const;

@@ -1,4 +1,4 @@
-import { memo, useMemo, useState } from 'react';
+import { memo, useId, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ATTRIBUTE_LABELS, evaluateDevelopmentScenario, getEditionRoles, type AttributeKey,
   type DevelopmentScenario, type PlayerExport } from '@managerhub/domain';
@@ -13,6 +13,7 @@ type Props = { readonly player: PlayerExport; readonly edition: string | null; r
 
 function DevelopmentWorkbench({ player, edition, build, sourceId }: Props) {
   const { t } = useTranslation();
+  const benchmarkId = useId();
   const [active, setActive] = useState<'A' | 'B'>('A');
   const [scenarios, setScenarios] = useState(() => ({ A: emptyScenario(), B: emptyScenario() }));
   const [page, setPage] = useState(0);
@@ -45,7 +46,8 @@ function DevelopmentWorkbench({ player, edition, build, sourceId }: Props) {
     <h3>{t('Role-based development')}</h3>
     <p className="module-disclaimer">{t('Manual what-if profiles only. These are not predicted future attributes or profiles proven feasible at a target CA. They never modify your draft or save.')}</p>
     {edition !== null && edition !== 'FM2013' ? <p role="status">{t('This edition has no development role reference.')}</p> : <>
-      <AbilityBudgetFields edition={edition} build={build} ca={player.actualCa} pa={player.potentialAbility}/>
+      <AbilityBudgetFields edition={edition} build={build} ca={player.actualCa} pa={player.potentialAbility}
+        playerContext={player.actualCa != null || player.potentialAbility != null ? player : null}/>
       <div className="save-db-actions" role="group" aria-label={t('Development scenario')}>
         {(['A','B'] as const).map(id => <Button key={id} type="button" aria-pressed={active === id}
           variant={active === id ? 'primary' : 'default'} onClick={() => { setActive(id); setPage(0); }}>{t('Scenario')} {id}</Button>)}
@@ -59,24 +61,34 @@ function DevelopmentWorkbench({ player, edition, build, sourceId }: Props) {
       <RoleTargetSelector target={scenario.target} allowAutomatic={false} onChange={target => {
         update({ ...scenario, target, overrides: {}, locked: [] }); setPage(0);
       }}/>
-      <label className="player-attribute-sort"><span>{t('Reference attribute level')}</span>
-        <select value={scenario.benchmark} onChange={event => { update({ ...scenario, benchmark: Number(event.currentTarget.value) }); setPage(0); }}>
-          {Array.from({ length: 20 }, (_, index) => index + 1).map(value => <option key={value}>{value}</option>)}
-        </select>
-      </label>
+      <div className="player-attribute-controls">
+        <div className="player-attribute-field"><label htmlFor={benchmarkId}>{t('Reference attribute level')}</label>
+          <select id={benchmarkId} value={scenario.benchmark} onChange={event => { update({ ...scenario, benchmark: Number(event.currentTarget.value) }); setPage(0); }}>
+            {Array.from({ length: 20 }, (_, index) => index + 1).map(value => <option key={value}>{value}</option>)}
+          </select>
+        </div>
+      </div>
       <p className="module-disclaimer">{t('Priority is role importance × remaining gap to your reference level. Edit observed values explicitly or lock them; missing values remain unknown. Changing role resets that scenario’s attribute assumptions.')}</p>
       {result && <>
         <div className="insight-line"><span>{t('Position familiarity')}</span><strong>{result.familiarity == null ? '—' : result.familiarity + '/20'}</strong></div>
         <div className="insight-line"><span>{t('Role fit before / after')}</span><strong>{score(result.before.score)} → {score(result.after.score)}</strong></div>
+        {result.advisoryRcaBefore !== null && result.advisoryRcaAfter !== null && (
+          <div className="insight-line">
+            <span>{t('Advisory RCA before / after')}</span>
+            <strong>{result.advisoryRcaBefore} → {result.advisoryRcaAfter} ({result.advisoryRcaDelta && result.advisoryRcaDelta > 0 ? `+${result.advisoryRcaDelta}` : '0'})</strong>
+          </div>
+        )}
         <div className="insight-line"><span>{t('Attribute coverage')}</span><strong>{Math.round(result.before.coverage * 100)}%</strong></div>
         <div className="editor-diff-wrap"><table className="compare-table development-table" aria-label={t('Development attribute assumptions')}>
-          <thead><tr><th scope="col">{t('Attributes')}</th><th scope="col">{t('Current')}</th><th scope="col">{t('Proposed')}</th><th scope="col">{t('Change')}</th><th scope="col">{t('Priority')}</th><th scope="col">{t('Lock')}</th></tr></thead>
+          <thead><tr><th scope="col">{t('Attributes')}</th><th scope="col">{t('Current')}</th><th scope="col">{t('Proposed')}</th><th scope="col">{t('Change')}</th><th scope="col">{t('RCA weight')}</th><th scope="col">{t('Priority')}</th><th scope="col">{t('Lock')}</th></tr></thead>
           <tbody>{result.rows.slice(range.start, range.end).map(row => <tr key={row.key}>
             <th scope="row">{t(ATTRIBUTE_LABELS[row.key])}</th><td><AttributeValue value={row.current}/></td>
             <td><AttributeInput aria-label={t('Proposed') + ' ' + t(ATTRIBUTE_LABELS[row.key])} min={row.current ?? 1} max={20}
               value={row.proposed} disabled={row.current === null || row.locked}
               onChange={event => { if (row.current !== null) edit(row.key, event.currentTarget.value, row.current); }}/></td>
-            <td>{row.change == null ? '—' : row.change > 0 ? '+' + row.change : '0'}</td><td>{row.priority ?? '—'}</td>
+            <td>{row.change == null ? '—' : row.change > 0 ? '+' + row.change : '0'}</td>
+            <td>{row.rcaWeight}</td>
+            <td>{row.priority ?? '—'}</td>
             <td><input type="checkbox" aria-label={t('Lock') + ' ' + t(ATTRIBUTE_LABELS[row.key])} checked={row.locked}
               disabled={row.current === null} onChange={() => toggleLock(row.key)}/></td>
           </tr>)}</tbody>
@@ -85,11 +97,16 @@ function DevelopmentWorkbench({ player, edition, build, sourceId }: Props) {
       </>}
       <h3>{t('Compare development paths')}</h3>
       <table className="compare-table" aria-label={t('Development scenario comparison')}>
-        <thead><tr><th scope="col">{t('Scenario')}</th><th scope="col">{t('Target role')}</th><th scope="col">{t('Role fit before / after')}</th><th scope="col">{t('Changed attributes')}</th></tr></thead>
-        <tbody>{(['A','B'] as const).map(id => <tr key={id}>
-          <th scope="row">{id}</th><td>{t(getEditionRoles('FM2013').find(role => role.id === scenarios[id].target.roleId)?.nativeTitle ?? '')} · {scenarios[id].target.position} · {t(ROLE_DUTY_LABELS[scenarios[id].target.duty])}</td>
-          <td>{score(results[id]?.before.score)} → {score(results[id]?.after.score)}</td><td>{results[id]?.changes ?? '—'}</td>
-        </tr>)}</tbody>
+        <thead><tr><th scope="col">{t('Scenario')}</th><th scope="col">{t('Target role')}</th><th scope="col">{t('Role fit before / after')}</th><th scope="col">{t('Advisory RCA Δ')}</th><th scope="col">{t('Changed attributes')}</th></tr></thead>
+        <tbody>{(['A','B'] as const).map(id => {
+          const roleTitle = getEditionRoles('FM2013').find(role => role.id === scenarios[id].target.roleId)?.nativeTitle;
+          return <tr key={id}>
+          <th scope="row">{id}</th><td>{roleTitle ? t(roleTitle) : '—'} · {scenarios[id].target.position} · {t(ROLE_DUTY_LABELS[scenarios[id].target.duty])}</td>
+          <td>{score(results[id]?.before.score)} → {score(results[id]?.after.score)}</td>
+          <td>{results[id]?.advisoryRcaDelta == null ? '—' : results[id]!.advisoryRcaDelta! > 0 ? `+${results[id]!.advisoryRcaDelta}` : '0'}</td>
+          <td>{results[id]?.changes ?? '—'}</td>
+        </tr>;
+        })}</tbody>
       </table>
       <p className="module-disclaimer">{t('The scenarios may use different roles and attribute assumptions. Their scores do not prove equal CA cost. Scenarios reset when the source player changes or you leave this panel.')}</p>
     </>}

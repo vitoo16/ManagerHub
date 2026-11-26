@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ATTRIBUTE_GROUPS, ATTRIBUTE_LABELS, type AttributeKey, type PlayerExport } from '@managerhub/domain';
 import { AttributePropertyGroup, Button, getAttributeTier } from '@managerhub/ui';
@@ -14,6 +14,8 @@ interface Props {
 
 function PlayerAttributeTable({ attributes, onChange }: Props) {
   const { t } = useTranslation();
+  const groupId = useId();
+  const sortId = useId();
   const [group, setGroup] = useState<Group>('Technical');
   const [ranked, setRanked] = useState(false);
   const [page, setPage] = useState(0);
@@ -29,17 +31,17 @@ function PlayerAttributeTable({ attributes, onChange }: Props) {
   const observed = fields.filter(field => getAttributeTier(field.value) !== undefined).length;
   return <div className="player-attribute-table">
     <div className="player-attribute-controls">
-      <label>
-        <span>{t('Attribute group')}</span>
-        <select value={group} onChange={event => { setGroup(event.currentTarget.value as Group); setPage(0); }}>
+      <div className="player-attribute-field">
+        <label htmlFor={groupId}>{t('Attribute group')}</label>
+        <select id={groupId} value={group} onChange={event => { setGroup(event.currentTarget.value as Group); setPage(0); }}>
           <option value="all">{t('All attributes')}</option>
           {Object.keys(ATTRIBUTE_GROUPS).map(key => <option key={key} value={key}>{t(key)}</option>)}
         </select>
-      </label>
-      <label className="player-attribute-sort">
-        <input type="checkbox" checked={ranked} onChange={event => { setRanked(event.currentTarget.checked); setPage(0); }}/>
-        <span>{t('Sort highest first')}</span>
-      </label>
+      </div>
+      <div className="player-attribute-sort">
+        <input id={sortId} type="checkbox" checked={ranked} onChange={event => { setRanked(event.currentTarget.checked); setPage(0); }}/>
+        <label htmlFor={sortId}>{t('Sort highest first')}</label>
+      </div>
     </div>
     <p className="module-disclaimer">{t('{{observed}} of {{total}} attributes observed', { observed, total: fields.length })}</p>
     {observed === 0 && <p className="module-disclaimer">{t('No recognized, exact 1–20 attributes were included in the export.')}</p>}

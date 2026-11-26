@@ -5,6 +5,7 @@ export * from './features';
 export * from './archive';
 export * from './player-import';
 export * from './player-analysis';
+export * from './rca-engine';
 export * from './ability-budget';
 export * from './player-development';
 export * from './development-scenario-library';

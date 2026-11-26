@@ -51,7 +51,7 @@ function PlayerDetailsView({ player, dataset, onOpenSquad, onEditPlayer }: Props
     <PlayerReportTabs id={sectionId} active={activeTab} onChange={setTab} isDecoded={isDecoded}/>
 
     <div className="scout-tab-content" role="tabpanel" id={sectionId + '-panel'} aria-labelledby={sectionId + '-tab-' + activeTab}>
-      <Suspense fallback={<div className="player-empty-chart" role="status" aria-live="polite">{t("Loading…")}</div>}>
+      <Suspense key={activeTab} fallback={<div className="player-empty-chart" role="status" aria-live="polite">{t("Loading…")}</div>}>
         {activeTab === 'overview' && <>
           <div className="scout-grid">
             <Surface className="scout-panel">
@@ -95,7 +95,7 @@ function PlayerDetailsView({ player, dataset, onOpenSquad, onEditPlayer }: Props
           <RoleResults player={player} roles={roles}/>
         </Surface>}
         {activeTab === 'compare' && <PlayerCompare primary={player} dataset={dataset}/>}
-        {activeTab === 'development' && <PlayerDevelopmentPanel player={player} edition={dataset.saveEdition ?? null}
+        {activeTab === 'development' && <PlayerDevelopmentPanel key="report-development" player={player} edition={dataset.saveEdition ?? null}
           build={dataset.saveBuild ?? null} sourceId={dataset.saveId ?? dataset.importedAt + ':' + dataset.fileName}/>}
         {activeTab === 'recruitment' && <RecruitmentPreviewPanel player={player} dataset={dataset} onOpenSquad={onOpenSquad}/>}
       </Suspense>

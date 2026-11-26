@@ -121,7 +121,7 @@
 
 
 /* Source-bound scouting shortlist, always explicit and browser-local. */
-.scout-shortlist{padding:18px 20px;margin-bottom:17px;display:grid;gap:13px}
+.scout-shortlist{padding:18px 20px;margin-bottom:17px;display:grid;grid-template-columns:minmax(0,1fr);min-width:0;gap:13px}
 .scout-shortlist__heading{display:flex;align-items:start;justify-content:space-between;gap:12px}
 .scout-shortlist__heading h2{font-size:16px;line-height:1.4;margin:0 0 5px}
 .scout-shortlist__heading p,.scout-shortlist__privacy,.scout-shortlist__empty{margin:0;color:var(--text-sub);font-size:11px;line-height:1.65}
@@ -225,7 +225,8 @@
 
 .player-hidden-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 10px; margin-top: 12px; }
 
-.scout-shortlist__panel { min-width: 0; display: grid; gap: 10px; }
+.scout-shortlist__panel { min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.scout-shortlist__panel > div { min-width: 0; }
 .scout-shortlist__panel > [hidden] { display: none; }
 
 .compare-table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 12px; margin-bottom: 10px; }

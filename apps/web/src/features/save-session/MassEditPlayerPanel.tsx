@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { DecodedSaveDatabase, PlayerDraftPatch } from '@managerhub/domain/fm2013-offline';
 import { Button, Status } from '@managerhub/ui';
@@ -13,6 +13,7 @@ interface Props {
 
 export function MassEditPlayerPanel({ database, managedClubUid, onApply }: Props) {
   const { t } = useTranslation();
+  const baseId = useId();
   const [club, setClub] = useState(managedClubUid === null ? '' : String(managedClubUid));
   const [maximumAge, setMaximumAge] = useState('');
   const [morale, setMorale] = useState('');
@@ -38,23 +39,23 @@ export function MassEditPlayerPanel({ database, managedClubUid, onApply }: Props
     <h3>{t('Mass Edit Players')} ({plan.matches.length.toLocaleString()} {t('matched')})</h3>
     <p className="module-disclaimer">{t('Leave fields blank to keep existing values. An age filter excludes records with unknown ages. PA is never changed by this tool.')}</p>
     <div className="editor-field-grid">
-      <label className="editor-field"><span>{t('Filter by club')}</span>
-        <select value={club} onChange={event => { setClub(event.currentTarget.value); setPage(0); }}>
+      <div className="editor-field"><label htmlFor={baseId + '-club'}>{t('Filter by club')}</label>
+        <select id={baseId + '-club'} value={club} onChange={event => { setClub(event.currentTarget.value); setPage(0); }}>
           <option value="">{t('Choose club scope')}</option>
           <option value="all">{t('All clubs')}</option>
           {clubs.map(item => <option key={item.uid} value={String(item.uid)}>{item.shortName || item.fullName} ({item.playerCount})</option>)}
         </select>
-      </label>
-      <label className="editor-field"><span>{t('Maximum age')}</span>
-        <input type="number" min={14} max={99} placeholder="—" value={maximumAge}
+      </div>
+      <div className="editor-field"><label htmlFor={baseId + '-age'}>{t('Maximum age')}</label>
+        <input id={baseId + '-age'} type="number" min={14} max={99} placeholder="—" value={maximumAge}
           onChange={event => { setMaximumAge(event.currentTarget.value); setPage(0); }}/>
-      </label>
-      <label className="editor-field"><span>{t('Set morale')} (1–20)</span>
-        <input type="number" min={1} max={20} placeholder="—" value={morale} onChange={event => { setMorale(event.currentTarget.value); setPage(0); }}/>
-      </label>
-      <label className="editor-field"><span>{t('Optional Actual CA')} (1–200)</span>
-        <input type="number" min={1} max={200} placeholder="—" value={actualCa} onChange={event => { setActualCa(event.currentTarget.value); setPage(0); }}/>
-      </label>
+      </div>
+      <div className="editor-field"><label htmlFor={baseId + '-morale'}>{t('Set morale')} (1–20)</label>
+        <input id={baseId + '-morale'} type="number" min={1} max={20} placeholder="—" value={morale} onChange={event => { setMorale(event.currentTarget.value); setPage(0); }}/>
+      </div>
+      <div className="editor-field"><label htmlFor={baseId + '-ca'}>{t('Optional Actual CA')} (1–200)</label>
+        <input id={baseId + '-ca'} type="number" min={1} max={200} placeholder="—" value={actualCa} onChange={event => { setActualCa(event.currentTarget.value); setPage(0); }}/>
+      </div>
     </div>
     {!club ? <p className="module-disclaimer">{t('Choose club scope')}</p> :
       !plan.valid && <Status tone="warning">{t('Enter whole numbers within the displayed ranges.')}</Status>}

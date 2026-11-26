@@ -758,15 +758,18 @@ test('compact RCA remains unavailable and manual editor development cannot creat
   const pa = await dialog.getByLabel('Actual PA (1–200)').inputValue();
   await expect(dialog.getByRole('checkbox', { name: 'Auto match CA with RCA' })).toBeDisabled();
   await expect(dialog.locator('.ability-budget').getByText('Not verified', { exact: true })).toBeVisible();
+  await expect(dialog.locator('.ability-budget .insight-line').filter({ hasText: 'Advisory RCA (research profile)' })).toBeVisible();
   await expect(dialog.locator('.ability-budget .insight-line').filter({ hasText: 'Remaining potential' })).toContainText(String(Number(pa) - Number(ca)));
   const tabs = dialog.getByRole('tablist', { name: 'Player editor sections' });
   await tabs.getByRole('tab', { name: 'Development' }).click();
   const panel = dialog.locator('.development-panel');
   await panel.getByLabel('Target position').selectOption('ST');
   await panel.getByLabel('Target role').selectOption('poacher');
+  await expect(panel.getByRole('columnheader', { name: 'RCA weight' })).toBeVisible();
   const finishing = panel.getByRole('spinbutton', { name: 'Proposed Finishing', exact: true });
   const before = await finishing.inputValue();
   await finishing.fill(String(Math.min(20, Number(before) + 1)));
+  await expect(panel.locator('.insight-line').filter({ hasText: 'Advisory RCA before / after' })).toBeVisible();
   await expect(toolbar.getByRole('button', { name: 'Undo last edit' })).toBeDisabled();
   await tabs.getByRole('tab', { name: 'Ability, Reputation & Bio' }).click();
   await expect(dialog.getByLabel('Actual CA (1–200)')).toHaveValue(ca);

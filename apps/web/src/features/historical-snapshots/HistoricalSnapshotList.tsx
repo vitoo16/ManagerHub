@@ -1,6 +1,6 @@
 import { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { HistoricalSnapshotSummary } from '@managerhub/domain';
+import { MAX_HISTORICAL_SNAPSHOTS, type HistoricalSnapshotSummary } from '@managerhub/domain';
 import { Button, Icon, SectionHeading, Status } from '@managerhub/ui';
 import { formatDate } from './historical-format';
 import { ReportPagination, reportPage } from '../ReportPagination';
@@ -10,7 +10,7 @@ export const HistoricalSnapshotList = memo(function HistoricalSnapshotList({ ite
     onOpen: (id: string) => void; onDelete: (id: string) => void; onCancelDelete: () => void }) {
   const { t, i18n } = useTranslation();
   const [page, setPage] = useState(0);
-  const range = reportPage(items.length, page, 8);
+  const range = reportPage(items.length, page, MAX_HISTORICAL_SNAPSHOTS);
   return <section className="historical-panel historical-library" aria-labelledby="historical-library-title">
     <SectionHeading id="historical-library-title" eyebrow={t('Local historical library')} title={t('Saved snapshots')}/>
     {loading ? <p className="historical-muted" role="status">{t('Loading saved snapshots…')}</p> :
