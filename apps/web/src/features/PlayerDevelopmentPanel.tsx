@@ -16,6 +16,7 @@ function DevelopmentWorkbench({ player, edition, build, sourceId }: Props) {
   const [active, setActive] = useState<'A' | 'B'>('A');
   const [scenarios, setScenarios] = useState(() => ({ A: emptyScenario(), B: emptyScenario() }));
   const [page, setPage] = useState(0);
+  const [libraryOpen, setLibraryOpen] = useState(false);
   const scenario = scenarios[active];
   const results = useMemo(() => ({
     A: evaluateDevelopmentScenario(player, edition, build, scenarios.A),
@@ -50,9 +51,10 @@ function DevelopmentWorkbench({ player, edition, build, sourceId }: Props) {
           variant={active === id ? 'primary' : 'default'} onClick={() => { setActive(id); setPage(0); }}>{t('Scenario')} {id}</Button>)}
         <Button type="button" onClick={() => { update(emptyScenario()); setPage(0); }}>{t('Reset scenario')}</Button>
       </div>
-      <details className="development-library-details"><summary>{t('Saved development scenarios')}</summary>
-        <DevelopmentScenarioLibrary player={player} edition={edition} build={build} sourceId={sourceId} scenario={scenario} active={active}
-          onRestore={next => { update(next); setPage(0); }}/>
+      <details className="development-library-details" onToggle={event => setLibraryOpen(event.currentTarget.open)}>
+        <summary>{t('Saved development scenarios')}</summary>
+        {libraryOpen && <DevelopmentScenarioLibrary player={player} edition={edition} build={build} sourceId={sourceId} scenario={scenario} active={active}
+          onRestore={next => { update(next); setPage(0); }}/>}
       </details>
       <RoleTargetSelector target={scenario.target} allowAutomatic={false} onChange={target => {
         update({ ...scenario, target, overrides: {}, locked: [] }); setPage(0);

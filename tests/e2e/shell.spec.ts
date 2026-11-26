@@ -1783,3 +1783,56 @@ test('manual development A/B preserves observed attributes, locks, and independe
   await tabs.getByRole('tab', { name: 'Development' }).click();
   await expect(panel.getByLabel('Target position')).toHaveValue('MC');
 });
+
+
+test('saved development assumptions survive panel navigation and support explicit management', async ({ page }) => {
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'saved-development.csv', mimeType: 'text/csv',
+    buffer: Buffer.from('Name,Position,Finishing,Off The Ball,Anticipation,Acceleration,Composure,Pace,First Touch\nSaved Prospect,ST,15,16,14,15,16,16,14')
+  });
+  await expect(page.getByRole('heading', { name: 'Saved Prospect' })).toBeVisible();
+  const tabs = page.getByRole('tablist', { name: 'Player report' });
+  await tabs.getByRole('tab', { name: 'Development' }).click();
+  const panel = page.locator('.development-panel');
+  await panel.getByLabel('Target position').selectOption('ST');
+  await panel.getByLabel('Target role').selectOption('poacher');
+  await panel.getByRole('spinbutton', { name: 'Proposed Finishing', exact: true }).fill('18');
+  await panel.locator('summary').filter({ hasText: 'Saved development scenarios' }).click();
+  const library = panel.getByRole('region', { name: 'Saved development scenarios' });
+  await library.getByLabel('Scenario name').fill('Poacher plan');
+  await expect(library.getByRole('button', { name: 'Save scenario A' })).toBeEnabled();
+  await library.getByRole('button', { name: 'Save scenario A' }).click();
+  await expect(library.getByRole('button', { name: 'Poacher plan', exact: true })).toBeVisible();
+  await tabs.getByRole('tab', { name: 'Attributes' }).click();
+  await tabs.getByRole('tab', { name: 'Development' }).click();
+  await expect(panel.getByLabel('Target position')).toHaveValue('MC');
+  await panel.locator('summary').filter({ hasText: 'Saved development scenarios' }).click();
+  await library.getByRole('button', { name: 'Poacher plan', exact: true }).click();
+  page.once('dialog', prompt => prompt.accept());
+  await library.getByRole('button', { name: 'Restore into scenario A' }).click();
+  await expect(panel.getByRole('spinbutton', { name: 'Proposed Finishing', exact: true })).toHaveValue('18');
+  await library.getByLabel('Scenario name').fill('Alternative');
+  await library.getByRole('button', { name: 'Duplicate saved scenario' }).click();
+  await expect(library.getByRole('button', { name: 'Alternative', exact: true })).toBeVisible();
+  await library.getByLabel('Scenario name').fill('Renamed alternative');
+  await library.getByRole('button', { name: 'Rename saved scenario' }).click();
+  await expect(library.getByRole('button', { name: 'Renamed alternative', exact: true })).toBeVisible();
+  const downloadPromise = page.waitForEvent('download');
+  await library.getByRole('button', { name: 'Export scenario JSON' }).click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe('managerhub-development-scenario.json');
+  const stored = await page.evaluate(() => {
+    const key = Object.keys(localStorage).find(item => item.startsWith('mh.development.v1:'));
+    return key ? localStorage.getItem(key) : null;
+  });
+  expect(stored).toContain('managerhub.development-library.v1');
+  expect(stored).not.toContain('actualCa');
+  expect(stored).not.toContain('potentialAbility');
+  expect(stored).not.toContain('Saved Prospect');
+  page.once('dialog', prompt => prompt.accept());
+  await library.getByRole('button', { name: 'Delete saved scenario' }).click();
+  await expect(library.getByRole('button', { name: 'Renamed alternative', exact: true })).toHaveCount(0);
+  await expect(library.getByRole('button', { name: 'Poacher plan', exact: true })).toBeVisible();
+  await expect(panel.getByRole('spinbutton', { name: 'Proposed Finishing', exact: true })).toHaveValue('18');
+});

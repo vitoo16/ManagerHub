@@ -57,7 +57,7 @@ export function DevelopmentScenarioLibrary({ player, edition, build, sourceId, s
   const record = records.find(item => item.id === selected);
   const stale = record && record.revision !== ready?.binding.revision;
   const range = reportPage(records.length, page, 5);
-  const validName = name.trim().length > 0 && name.trim().length <= 80;
+  const validName = name.trim().length > 0 && name.trim().length <= 80 && !/[\u0000-\u001f\u007f]/u.test(name);
   const atLimit = records.length >= MAX_DEVELOPMENT_SCENARIOS;
 
   const fresh = (): Ready => {

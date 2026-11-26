@@ -775,3 +775,39 @@ test('compact RCA remains unavailable and manual editor development cannot creat
   await toolbar.getByRole('button', { name: 'Realism mode' }).click();
   await expect(page.locator('.development-panel')).toHaveCount(0);
 });
+
+
+test('saved development assumptions reject stale visible inputs without editing the draft', async ({ page }) => {
+  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+  await page.goto('/#/saves');
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'stale-development.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const toolbar = page.getByRole('region', { name: 'Active save session' });
+  await expect(toolbar).toBeVisible({ timeout: 20_000 });
+  await toolbar.getByRole('button', { name: 'Editor mode' }).click();
+  await page.locator('.save-db-explorer tbody tr', { hasText: 'Owen Shaw' }).getByRole('button', { name: 'Edit' }).click();
+  const dialog = page.getByRole('dialog');
+  const tabs = dialog.getByRole('tablist', { name: 'Player editor sections' });
+  await tabs.getByRole('tab', { name: 'Development' }).click();
+  const panel = dialog.locator('.development-panel');
+  await panel.getByLabel('Target position').selectOption('ST');
+  await panel.getByLabel('Target role').selectOption('poacher');
+  await panel.locator('summary').filter({ hasText: 'Saved development scenarios' }).click();
+  const library = panel.getByRole('region', { name: 'Saved development scenarios' });
+  await library.getByLabel('Scenario name').fill('Before edit');
+  await expect(library.getByRole('button', { name: 'Save scenario A' })).toBeEnabled();
+  await library.getByRole('button', { name: 'Save scenario A' }).click();
+  await expect(toolbar.getByRole('button', { name: 'Undo last edit' })).toBeDisabled();
+  await tabs.getByRole('tab', { name: 'Attributes' }).click();
+  const finishing = dialog.getByRole('spinbutton', { name: 'Finishing', exact: true });
+  const old = Number(await finishing.inputValue());
+  await finishing.fill(String(old === 20 ? 19 : old + 1));
+  await tabs.getByRole('tab', { name: 'Development' }).click();
+  await panel.locator('summary').filter({ hasText: 'Saved development scenarios' }).click();
+  await library.getByRole('button', { name: 'Before edit', exact: true }).click();
+  await expect(library.getByText('Source changed', { exact: true })).toBeVisible();
+  await expect(library.getByRole('button', { name: 'Restore into scenario A' })).toBeDisabled();
+  await expect(library.getByRole('button', { name: 'Export scenario JSON' })).toBeEnabled();
+  await expect(toolbar.getByRole('button', { name: 'Undo last edit' })).toBeEnabled();
+});
