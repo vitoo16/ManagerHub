@@ -16,3 +16,5 @@ Track match congestion, workload/minutes, injury/condition flags, return-to-play
 
 ## Acceptance
 High PA alone cannot trump urgent short-term positional need; selling multi-role player recalculates coverage; unknown transfer fee blocks unconditional BUY; snapshots from unrelated careers cannot merge; role/finance changes reveal tradeoffs. See [Player Intelligence](08-player-intelligence-engine.md).
+## Development scenario foundation (candidate)
+The manual role what-if evaluator reuses the FM2013 duty registry and scoreRole. Explicit user-selected benchmark and growth-only attribute overrides are scenario data, never native draft patches. Locked, unknown, incompatible, decreased and invalid observations are rejected; remaining gaps are ranked by role importance × gap (not CA cost). The same player can be assessed against different role objectives without implying equivalent CA budget. RCA, target-CA optimization, feasibility and training-time forecast remain blocked without exact-build model certification. This does not complete MH-14 or the full master prompt optimization/scenario-persistence contract.

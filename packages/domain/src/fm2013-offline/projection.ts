@@ -128,6 +128,53 @@ export function projectStaffAbility(
  * consumable by Player Lab, Squad Planner, Tactical Lab, and Scouting Shortlist
  * without any CSV or HTML export step.
  */
+/** Canonical visibility-aware projection for a single record or a whole roster. */
+export function projectSavePlayer(player: DecodedSaveDatabase['players'][number], saveId: string, mode: DecodedSaveMode): PlayerExport {
+  return {
+    id: `${saveId.slice(0, 12)}:${player.uid}`,
+    nativeId: player.uid,
+    name: player.displayName,
+    position: player.positionSummary,
+    age: player.calendarAge,
+    club: player.clubShortName ?? player.clubName,
+    nationality: player.primaryNationName,
+    attributes: player.attributes,
+    source: 'decoded_save',
+    verification: 'verified',
+    birthDate: player.birthDate,
+    heightCm: player.heightCm,
+    weightKg: player.weightKg,
+    marketValueGbp: player.marketValueGbp,
+    weeklyWageGbp: player.contract?.weeklyWageGbp ?? null,
+    contractExpiresAt: player.contract?.expiresAt ?? null,
+    squadNumber: player.squadNumber,
+    isLoanedIn: player.isLoanedIn,
+    parentClubName: player.parentClubName,
+    leftFoot: player.leftFoot,
+    rightFoot: player.rightFoot,
+    positions: { ...player.positions },
+    ...(mode === 'editor'
+      ? {
+          actualCa: player.actualCa,
+          potentialAbility: player.potentialAbility,
+          homeReputation: player.homeReputation,
+          currentReputation: player.currentReputation,
+          worldReputation: player.worldReputation,
+          hiddenPlaying: player.hiddenPlaying,
+          personality: player.personality
+        }
+      : {
+          actualCa: null,
+          potentialAbility: null,
+          homeReputation: null,
+          currentReputation: null,
+          worldReputation: null,
+          hiddenPlaying: null,
+          personality: null
+        })
+  };
+}
+
 export function saveDatabaseToPlayerDataset(
   db: DecodedSaveDatabase,
   mode: DecodedSaveMode,
@@ -141,52 +188,7 @@ export function saveDatabaseToPlayerDataset(
     ? db.clubs.find(c => c.uid === clubUid) ?? null
     : null;
 
-  const players: PlayerExport[] = filtered.map(player => {
-    const base: PlayerExport = {
-      id: `${db.source.saveId.slice(0, 12)}:${player.uid}`,
-      nativeId: player.uid,
-      name: player.displayName,
-      position: player.positionSummary,
-      age: player.calendarAge,
-      club: player.clubShortName ?? player.clubName,
-      nationality: player.primaryNationName,
-      attributes: player.attributes,
-      source: 'decoded_save',
-      verification: 'verified',
-      birthDate: player.birthDate,
-      heightCm: player.heightCm,
-      weightKg: player.weightKg,
-      marketValueGbp: player.marketValueGbp,
-      weeklyWageGbp: player.contract?.weeklyWageGbp ?? null,
-      contractExpiresAt: player.contract?.expiresAt ?? null,
-      squadNumber: player.squadNumber,
-      isLoanedIn: player.isLoanedIn,
-      parentClubName: player.parentClubName,
-      leftFoot: player.leftFoot,
-      rightFoot: player.rightFoot,
-      positions: { ...player.positions },
-      ...(mode === 'editor'
-        ? {
-            actualCa: player.actualCa,
-            potentialAbility: player.potentialAbility,
-            homeReputation: player.homeReputation,
-            currentReputation: player.currentReputation,
-            worldReputation: player.worldReputation,
-            hiddenPlaying: player.hiddenPlaying,
-            personality: player.personality
-          }
-        : {
-            actualCa: null,
-            potentialAbility: null,
-            homeReputation: null,
-            currentReputation: null,
-            worldReputation: null,
-            hiddenPlaying: null,
-            personality: null
-          })
-    };
-    return base;
-  });
+  const players = filtered.map(player => projectSavePlayer(player, db.source.saveId, mode));
 
   const warnings: string[] = [];
   if (mode === 'realism') {

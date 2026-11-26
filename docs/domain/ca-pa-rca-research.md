@@ -53,3 +53,6 @@ Better EN: "Choose a player to see where their attributes are strongest and whic
 Better VI: "Chọn một cầu thủ để xem điểm mạnh và vai trò phù hợp với bộ chỉ số hiện tại."
 
 **Non-negotiable:** FM26 weights and engine behavior need new version-specific evidence; the articles describe research from 2015 and 2021, **not a verified exact 2026 formula**.
+
+## Candidate compact capability contract
+`inspectAbilityBudget` reports signed PA minus Actual CA only for valid observed values. Recommended CA and remaining RCA budget are null, Auto Match is false, regardless of read compatibility. There is currently no certified RCA adapter. No fabricated conversion or automatic native CA/PA edit is allowed. The development what-if evaluator consumes the same capability state but cannot allocate CA.
