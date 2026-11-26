@@ -2,9 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { planMassEdit } from './mass-edit-plan';
 
 const players = [
-  { uid: 1, clubUid: 9, calendarAge: 20 },
-  { uid: 2, clubUid: 9, calendarAge: null },
-  { uid: 3, clubUid: 10, calendarAge: 25 }
+  { uid: 1, clubUid: 9, calendarAge: 20, actualCa: 140, morale: 12 },
+  { uid: 2, clubUid: 9, calendarAge: null, actualCa: 150, morale: null },
+  { uid: 3, clubUid: 10, calendarAge: 25, actualCa: 180, morale: 17 }
 ];
 const empty = { club: 'all', maximumAge: '', morale: '', actualCa: '' };
 describe('mass edit selection and explicit patch', () => {
@@ -25,4 +25,13 @@ describe('mass edit selection and explicit patch', () => {
       expect(plan.matches).toEqual([]);
     }
   });
+});
+
+
+it('excludes unavailable and unchanged quick-edit targets without partially applying a multi-field patch', () => {
+  const plan = planMassEdit(players, { ...empty, actualCa: '180', morale: '17' });
+  expect(plan.changes.map(player => player.uid)).toEqual([1]);
+  expect(plan.unavailable).toBe(1);
+  expect(plan.unchanged).toBe(1);
+  expect(planMassEdit(players, { ...empty, actualCa: '180' }).changes.map(player => player.uid)).toEqual([1, 2]);
 });

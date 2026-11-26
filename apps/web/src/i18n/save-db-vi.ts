@@ -259,6 +259,8 @@ export default {
   "Wage budget (£)": "Ngân sách lương (£)",
   "Home reputation": "Danh tiếng trong nước",
   "Ability": "Năng lực",
+  "Choose club scope": "Chọn phạm vi CLB",
+  "Apply {{fields}} to {{count}} eligible players in the draft? Unavailable and unchanged records are excluded. This does not modify PA or the original save.": "Áp dụng {{fields}} cho {{count}} cầu thủ đủ điều kiện trong bản nháp? Bỏ qua hồ sơ thiếu dữ liệu hoặc không đổi. Không sửa PA hay save gốc.",
   "Mass Edit Players": "Chỉnh sửa cầu thủ hàng loạt",
   "matched": "phù hợp",
   "Maximum age": "Độ tuổi tối đa",

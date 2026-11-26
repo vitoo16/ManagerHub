@@ -1,7 +1,9 @@
 import type { DecodedSaveDatabase, PlayerDraftPatch } from '@managerhub/domain/fm2013-offline';
 
+import { classifyNumericChanges } from './numeric-mass-edit';
+
 type Player = DecodedSaveDatabase['players'][number];
-type ScopePlayer = Pick<Player, 'uid' | 'clubUid' | 'calendarAge'>;
+type ScopePlayer = Pick<Player, 'uid' | 'clubUid' | 'calendarAge' | 'actualCa' | 'morale'>;
 interface MassEditInputs {
   readonly club: string;
   readonly maximumAge: string;
@@ -31,5 +33,17 @@ export function planMassEdit<T extends ScopePlayer>(players: readonly T[], input
     (clubUid === undefined || player.clubUid === clubUid) &&
     (maximumAge === undefined || (player.calendarAge !== null && player.calendarAge <= maximumAge))
   ) : [];
-  return { valid, patch, matches };
+  const changes: T[] = [];
+  let unavailable = 0;
+  let unchanged = 0;
+  if (patch) for (const player of matches) {
+    const status = classifyNumericChanges([
+      ...(patch.actualCa === undefined ? [] : [{ before: player.actualCa, after: patch.actualCa }]),
+      ...(patch.morale === undefined ? [] : [{ before: player.morale, after: patch.morale }])
+    ]);
+    if (status === 'unavailable') unavailable++;
+    else if (status === 'unchanged') unchanged++;
+    else changes.push(player);
+  }
+  return { valid, patch, matches, changes, unavailable, unchanged };
 }

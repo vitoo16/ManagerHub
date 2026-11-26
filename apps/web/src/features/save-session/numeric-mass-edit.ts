@@ -11,6 +11,15 @@ export interface NumericMassRecord {
   readonly uid: number;
 }
 
+/** Shared availability/no-op classification for both quick and single-field bulk edits. */
+export function classifyNumericChanges(fields: readonly {
+  readonly before: number | null | undefined;
+  readonly after: number;
+}[]): 'unavailable' | 'unchanged' | 'changed' {
+  if (fields.some(field => field.before == null || !Number.isFinite(field.before))) return 'unavailable';
+  return fields.some(field => field.before !== field.after) ? 'changed' : 'unchanged';
+}
+
 export function planNumericMassEdit<RecordType extends NumericMassRecord, Patch>(
   records: readonly RecordType[],
   field: NumericMassField<RecordType, Patch> | undefined,
@@ -45,9 +54,10 @@ export function planNumericMassEdit<RecordType extends NumericMassRecord, Patch>
       if (!input.all && !searchText(record).toLocaleLowerCase().includes(query)) continue;
       matched++;
       const before = field.read(record);
-      if (before == null || !Number.isFinite(before)) unavailable++;
-      else if (before === value) unchanged++;
-      else changes.push({ record, before });
+      const status = classifyNumericChanges([{ before, after: value }]);
+      if (status === 'unavailable') unavailable++;
+      else if (status === 'unchanged') unchanged++;
+      else if (before != null) changes.push({ record, before });
     }
   }
   return { scoped, invalid, patch, value, matched, unavailable, unchanged, changes };
