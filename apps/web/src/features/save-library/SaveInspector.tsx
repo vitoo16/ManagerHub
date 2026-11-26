@@ -186,14 +186,14 @@ function SaveInspector({
       <Surface className="save-decode-progress" role="status" aria-live="polite">
         <div className="save-decode-progress__head">
           <strong>{t('Decoding .fm save offline…')}</strong>
-          <span>{Math.round(decodeProgress?.percent ?? 10)}%</span>
+          <span>{decodeProgress && Number.isFinite(decodeProgress.percent)
+            ? Math.round(Math.max(0, Math.min(100, decodeProgress.percent))) + '%'
+            : t('Preparing…')}</span>
         </div>
-        <div className="save-decode-progress__track">
-          <div
-            className="save-decode-progress__bar"
-            style={{ width: `${Math.max(5, Math.min(100, decodeProgress?.percent ?? 10))}%` }}
-          />
-        </div>
+        <progress className="save-decode-progress__track" max={100}
+          aria-label={t('Save decoding progress')}
+          value={decodeProgress && Number.isFinite(decodeProgress.percent)
+            ? Math.max(0, Math.min(100, decodeProgress.percent)) : undefined}/>
         <div className="save-decode-progress__foot">
           <span>{decodeProgress ? t(decodeStageLabel(decodeProgress.stage)) : t('Reading save archive container…')}</span>
           <Button type="button" variant="quiet" onClick={onCancelDecode}>

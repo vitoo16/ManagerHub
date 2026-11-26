@@ -32,7 +32,7 @@ function makePass(nativeKind: 'player' | 'playerStaff', records: ReturnType<type
   };
 }
 
-function syntheticWire(passingByte = 75) {
+function syntheticWire(passingByte = 75, rosterSize = 1) {
   return JSON.stringify({
     schema: profile.schema,
     profileVersion: profile.profileVersion,
@@ -45,7 +45,7 @@ function syntheticWire(passingByte = 75) {
     },
     gameDateBytes: [59, 0, 209, 7],
     passes: [
-      makePass('player', [makePlayer(42, passingByte)]),
+      makePass('player', Array.from({ length: rosterSize }, (_, index) => makePlayer(42 + index * 2, passingByte))),
       makePass('playerStaff', [makePlayer(43)])
     ]
   });
@@ -56,7 +56,8 @@ async function importSynthetic(
   mode: 'Editor' | 'Realism' = 'Editor',
   careerLabel = 'Synthetic FM2013 career',
   captureTime = '2026-10-31T09:00',
-  passingByte = 75
+  passingByte = 75,
+  rosterSize = 1
 ) {
   await page.getByLabel('Career label (user-declared)').fill(careerLabel);
   await page.getByLabel('Capture time (declared by source workflow)').fill(captureTime);
@@ -65,7 +66,7 @@ async function importSynthetic(
   await page.locator('input[type=file]').setInputFiles({
     name: 'synthetic-fm2013-capture.json',
     mimeType: 'application/json',
-    buffer: Buffer.from(syntheticWire(passingByte), 'utf8')
+    buffer: Buffer.from(syntheticWire(passingByte, rosterSize), 'utf8')
   });
   await page.getByRole('button', { name: 'Validate and import' }).click();
   await expect(page.getByText('Capture parsed. Review its source, coverage and unknown fields before saving.')).toBeVisible();
@@ -763,4 +764,21 @@ test('historical evidence sections keep native observations bounded and preserve
   await tabs.getByRole('tab', { name: 'Player records' }).click();
   await page.getByRole('button', { name: 'Realism', exact: true }).click();
   await expect(page.locator('.historical-value-row').filter({ hasText: 'Passing' }).locator('strong')).toHaveText('Hidden in Realism mode');
+});
+
+
+test('historical roster uses fixed pages instead of accumulating rendered rows', async ({ page }) => {
+  await page.goto('/#/history');
+  await importSynthetic(page, 'Editor', 'Paged capture', '2026-10-31T09:00', 75, 85);
+  const table = page.getByRole('table', { name: 'Historical player records' });
+  const pager = page.getByRole('group', { name: 'Captured players page' });
+  await expect(table.locator('tbody tr')).toHaveCount(40);
+  await pager.getByRole('button', { name: 'Next page' }).click();
+  await expect(table.locator('tbody tr')).toHaveCount(40);
+  await pager.getByRole('button', { name: 'Next page' }).click();
+  await expect(table.locator('tbody tr')).toHaveCount(6);
+  await expect(pager.getByRole('button', { name: 'Next page' })).toBeDisabled();
+  await page.getByRole('searchbox', { name: 'Search captured players' }).fill('Synthetic Player 42');
+  await expect(table.locator('tbody tr')).toHaveCount(1);
+  await expect(pager).toHaveCount(0);
 });

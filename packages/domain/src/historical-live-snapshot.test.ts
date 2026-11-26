@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import profile from './fm2013-live-profile.json' with { type: 'json' };
-import { parseFm2013LiveCapture, type LiveSnapshotContext } from './live-snapshot';
+import { LIVE_ATTRIBUTE_CATEGORIES, liveAttributeCategory, parseFm2013LiveCapture, type LiveSnapshotContext } from './live-snapshot';
 import { compareHistoricalObservations } from './historical-observation-comparison';
 import {
   alignEditorToSavedRealism, createHistoricalSnapshotRecord, isHistoricalSnapshotRecord, isHistoricalSnapshotSummary,
@@ -283,5 +283,16 @@ describe('MH-04 manually selected historical observations', () => {
     expect(compareHistoricalObservations(first, secondCapture('realism'), firstPlayer, secondPlayer)).toBeNull();
     expect(compareHistoricalObservations(first, second, secondPlayer, firstPlayer)).toBeNull();
     expect(compareHistoricalObservations(first, { ...second, snapshot: { ...second.snapshot, readerVersion: 'different' } }, firstPlayer, secondPlayer)).toBeNull();
+  });
+});
+
+
+describe('historical evidence category registry', () => {
+  it('preserves every native profile field and does not substitute export aliases', () => {
+    for (const attribute of profile.attributes) expect(liveAttributeCategory(attribute.key)).toBe(attribute.category);
+    expect(LIVE_ATTRIBUTE_CATEGORIES.map(group => profile.attributes.filter(attribute => liveAttributeCategory(attribute.key) === group).length)).toEqual([14, 14, 10, 11]);
+    expect(liveAttributeCategory('creativity')).toBe('mental');
+    expect(liveAttributeCategory('leftFoot')).toBe('physical');
+    expect(liveAttributeCategory('vision')).toBe('other');
   });
 });

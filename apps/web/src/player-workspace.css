@@ -65,8 +65,6 @@
 .role-result__slot{width:55px;flex:none;font-size:10px;color:var(--accent-strong);font-weight:800}
 .role-result__title{display:grid;gap:4px;min-width:0;flex:1;font-size:11px;font-weight:700}
 .role-result__title small{font-size:9px;color:var(--text-faint);font-weight:400}
-.role-result__bar{height:6px;width:78px;border-radius:10px;background:var(--line);overflow:hidden}
-.role-result__bar>div{height:100%;border-radius:10px;background:var(--accent-strong)}
 .role-result__button strong{font-variant-numeric:tabular-nums;font-size:12px;min-width:29px;text-align:right}
 .role-result__evidence{padding:13px;border-top:1px solid var(--line);font-size:11px;line-height:1.9}
 .role-result__evidence p{color:var(--text-sub);margin-top:5px}
@@ -78,7 +76,7 @@
 .evidence-strip svg{flex:none;color:var(--accent-strong)}
 @media(max-width:1230px){.scout-grid{grid-template-columns:1fr}.player-lab-layout{grid-template-columns:minmax(180px,220px) minmax(0,1fr)}.scout-metrics{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){.player-lab-layout{grid-template-columns:1fr}.player-list-panel{position:static;max-height:300px}.player-list-scroll{max-height:190px}.scout-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:570px){.scout-grid,.insight-columns{grid-template-columns:1fr}.scout-identity>.mh-status{display:none}.player-intro{padding:31px 21px}.role-result__bar{width:38px}.role-result__slot{width:40px}.scout-metrics{grid-template-columns:repeat(2,1fr)}.dataset-banner{align-items:flex-start;flex-direction:column}}
+@media(max-width:570px){.scout-grid,.insight-columns{grid-template-columns:1fr}.scout-identity>.mh-status{display:none}.player-intro{padding:31px 21px}.role-result__slot{width:40px}.scout-metrics{grid-template-columns:repeat(2,1fr)}.dataset-banner{align-items:flex-start;flex-direction:column}}
 
 .compare-selector{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin:17px 0 22px}
 .compare-selector label{font-size:10px;font-weight:700;color:var(--text-sub)}
@@ -234,3 +232,9 @@
 .compare-table th, .compare-table td { padding: 7px 5px; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; text-align: center; }
 .compare-table th:first-child { width: 40%; text-align: start; color: var(--text-sub); }
 .compare-table td { font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.role-result__button strong { min-width: 54px; }
+.role-evidence-table { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
+.role-evidence-table th, .role-evidence-table td { padding: 6px 4px; text-align: end; overflow-wrap: anywhere; border-bottom: 1px solid var(--line); }
+.role-evidence-table th:first-child { width: 50%; text-align: start; color: var(--text-sub); }
+.role-evidence-table td { font-variant-numeric: tabular-nums; }

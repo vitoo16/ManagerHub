@@ -10,6 +10,8 @@ export default {
   "No saved decoded databases yet.": "Chưa có cơ sở dữ liệu save nào được lưu.",
   "Open save": "Mở bản save",
   "Active": "Đang mở",
+  "Preparing…": "Đang chuẩn bị…",
+  "Save decoding progress": "Tiến độ giải mã save",
   "Decoding .fm save offline…": "Đang giải mã tệp .fm ngoại tuyến…",
   "Cancel decode": "Hủy giải mã",
   "Calculating SHA-256 fingerprint…": "Đang tính mã kiểm tra SHA-256…",

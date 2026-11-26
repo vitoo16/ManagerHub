@@ -281,6 +281,7 @@ export default {
   "Player attributes ordered strongest to weakest": "Chỉ số từ cao xuống thấp",
   "Type a player or club name…": "Nhập tên cầu thủ hoặc CLB…",
   "Observed player attribute comparisons": "So sánh chỉ số cầu thủ",
+  "Role ranking page": "Trang xếp hạng vai trò",
   "Role fit comparisons": "So sánh độ hợp vai trò",
   "Player report": "Báo cáo cầu thủ",
   "Dismiss local library error": "Đóng thông báo lỗi",
