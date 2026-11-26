@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FM2013_ROLE_POSITIONS, getEditionRoles, getRoleDutyProfile, scoreRole,
+import { FM2013_ROLE_POSITIONS, FM2013_ROLE_REFERENCES, getEditionRoles, getRoleDutyProfile, scoreRole,
   type PlayerExport, type RolePosition, type RoleDuty } from '@managerhub/domain';
 import { RoleEvidence } from './RoleEvidence';
 
@@ -41,5 +41,8 @@ export function FM2013RoleExplorer({ player }: { readonly player: PlayerExport }
     {result && <p className="module-disclaimer">{Math.round(result.coverage * 100)}% {t('attribute coverage')}</p>}
     {duty === 'automatic' ? <p className="module-disclaimer">{t('Automatic duty depends on the tactical strategy. Choose a concrete duty to evaluate attributes.')}</p> :
       result && <div className="role-result__evidence"><RoleEvidence role={result}/></div>}
+    {role && <details><summary>{t('Role reference sources')}</summary><ul>
+      {role.references.map(key => <li key={key}><a href={FM2013_ROLE_REFERENCES[key].url} target="_blank" rel="noreferrer">{FM2013_ROLE_REFERENCES[key].title}</a></li>)}
+    </ul><p className="module-disclaimer">{t('Historical references describe role behavior; they do not certify numerical importance or exact build availability.')}</p></details>}
   </div>;
 }

@@ -1720,3 +1720,30 @@ test('shortlist task panels load on demand and retain role selection while switc
   await shortlist.getByRole('tab', { name: 'Club-group recruitment scenario' }).click();
   await expect(shortlist.getByRole('region', { name: 'Club-group recruitment scenario' })).toBeVisible();
 });
+
+
+test('FM2013 role reference filters roles and duties by position without inferring familiarity', async ({ page }) => {
+  await page.goto('/#/players');
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'role-reference.csv', mimeType: 'text/csv',
+    buffer: Buffer.from('Name,Position,Finishing,Off The Ball,Anticipation,Acceleration,Composure,Pace,First Touch\nReference Striker,ST,18,17,16,15,17,16,15')
+  });
+  await expect(page.getByRole('heading', { name: 'Reference Striker' })).toBeVisible();
+  await page.getByRole('tablist', { name: 'Player report' }).getByRole('tab', { name: 'Role fit' }).click();
+  const report = page.locator('.role-results');
+  await report.getByRole('checkbox', { name: 'Explore FM2013 role and duty reference' }).check();
+  await report.getByLabel('Target position').selectOption('ST');
+  await report.getByLabel('Target role').selectOption('poacher');
+  await expect(report.getByLabel('Target duty').locator('option')).toHaveCount(1);
+  await expect(report.getByLabel('Target duty')).toHaveValue('attack');
+  await expect(report.locator('.insight-line').filter({ hasText: 'Position familiarity' })).toContainText('Unknown');
+  await expect(report.locator('.insight-line').filter({ hasText: 'Role fit' })).toContainText('/100');
+  await report.getByLabel('Target position').selectOption('DL');
+  await report.getByLabel('Target role').selectOption('full-back');
+  await report.getByLabel('Target duty').selectOption('automatic');
+  await expect(report.getByText('Automatic duty depends on the tactical strategy.', { exact: false })).toBeVisible();
+  await expect(report.locator('.insight-line').filter({ hasText: 'Role fit' })).toContainText('N/A');
+  await expect(report.locator('.role-evidence-table')).toHaveCount(0);
+  await report.getByText('Role reference sources', { exact: true }).click();
+  await expect(report.getByRole('link', { name: /FM13 roles and duties/ })).toBeVisible();
+});

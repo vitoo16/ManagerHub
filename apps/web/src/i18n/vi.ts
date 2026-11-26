@@ -416,6 +416,8 @@ export default {
   "Throwing": "Ném bóng",
   "Punching": "Đấm bóng",
   "Tendency To Punch": "Xu hướng đấm bóng",
+  "Role reference sources": "Nguồn tham chiếu vai trò",
+  "Historical references describe role behavior; they do not certify numerical importance or exact build availability.": "Tài liệu lịch sử mô tả hành vi vai trò, không chứng nhận trọng số số học hoặc tính khả dụng trên từng build.",
   "Explore FM2013 role and duty reference": "Khám phá vai trò và nhiệm vụ FM2013",
   "FM2013 community reference. Exact build menu parity is not certified. Role importance is a ManagerHub estimate, not native ability cost.": "Tham chiếu cộng đồng FM2013. Chưa chứng nhận đầy đủ menu theo bản build. Trọng số vai trò là ước tính của ManagerHub, không phải chi phí năng lực trong game.",
   "Target position": "Vị trí mục tiêu",

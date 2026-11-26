@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ATTRIBUTE_LABELS, parsePlayerExport } from './player-import';
 import { ROLE_PROFILES, scoreRole } from './player-analysis';
-import { FM2013_ROLE_POSITIONS, getEditionRoles, getRoleDutyProfile } from './football-role-registry';
+import { FM2013_ROLE_POSITIONS, FM2013_ROLE_REFERENCES, getEditionRoles, getRoleDutyProfile } from './football-role-registry';
 
 describe('edition-aware role catalog', () => {
   const roles = getEditionRoles('FM2013');
@@ -14,7 +14,17 @@ describe('edition-aware role catalog', () => {
       expect(roles.some(role => role.id === id)).toBe(false);
     }
     for (const position of FM2013_ROLE_POSITIONS) expect(roles.some(role => role.positions.includes(position))).toBe(true);
-    for (const role of roles) for (const key of Object.keys(role.demands)) expect(Object.hasOwn(ATTRIBUTE_LABELS, key)).toBe(true);
+    for (const role of roles) {
+      expect(role.references.length).toBeGreaterThan(0);
+      for (const reference of role.references) expect(FM2013_ROLE_REFERENCES[reference].url).toMatch(/^https:/);
+      for (const key of Object.keys(role.demands)) expect(Object.hasOwn(ATTRIBUTE_LABELS, key)).toBe(true);
+      for (const weights of [role.demands, ...Object.values(role.dutyImportance)]) {
+        for (const [key, value] of Object.entries(weights)) {
+          expect(Object.hasOwn(ATTRIBUTE_LABELS, key)).toBe(true);
+          expect([1, 2, 3]).toContain(value);
+        }
+      }
+    }
   });
   it('rejects incompatible positions and duties; automatic requires a concrete duty', () => {
     expect(getRoleDutyProfile('FM2013','poacher','ST','support')).toBeNull();

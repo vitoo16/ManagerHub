@@ -11,6 +11,14 @@ export const FM2013_ROLE_POSITIONS = ['GK', 'SW', 'DL', 'DC', 'DR', 'WBL', 'WBR'
 export type RolePosition = typeof FM2013_ROLE_POSITIONS[number];
 export type RoleDuty = 'defend' | 'support' | 'attack' | 'stopper' | 'cover' | 'automatic';
 
+export const FM2013_ROLE_REFERENCES = {
+  fm13Duties: { title: 'From the Marshes — FM13 roles and duties (2013)', url: 'https://fromthemarshesfm.wordpress.com/2013/03/19/how-to-understand-and-use-player-roles-and-duties/' },
+  fm13Attributes: { title: 'FM 2013 — A Simple Guide (2013)', url: 'https://community.sports-interactive.com/forums/topic/274736-fm-2013-a-simple-guide/' },
+  fm13Specialists: { title: 'How to Play FM13 — specialist roles (2012)', url: 'https://community.sports-interactive.com/forums/topic/268248-how-to-play-fm13-a-twelve-step-guide/page/3/' },
+  predecessor: { title: 'FM Base — Player Roles/Duties (2011)', url: 'https://fm-base.co.uk/threads/player-roles-duties-explained.76169/' }
+} as const;
+export type RoleReference = keyof typeof FM2013_ROLE_REFERENCES;
+
 export interface EditionRole extends RoleProfile {
   readonly edition: 'FM2013';
   readonly nativeTitle: string;
@@ -19,13 +27,17 @@ export interface EditionRole extends RoleProfile {
   readonly dutyImportance: Readonly<Partial<Record<RoleDuty, RoleProfile['demands']>>>;
   readonly baseline: boolean;
   readonly provenance: 'community-reference';
+  readonly references: readonly RoleReference[];
   readonly importanceModel: 'managerhub-role-importance-v1';
 }
 
 function entry(profile: RoleProfile, nativeTitle: string, positions: readonly RolePosition[], duties: readonly RoleDuty[],
   dutyImportance: EditionRole['dutyImportance'], baseline = false): EditionRole {
+  const references: readonly RoleReference[] = profile.id === 'sweeper' || profile.id === 'libero'
+    ? ['fm13Specialists', 'predecessor']
+    : ['fm13Duties', 'predecessor'];
   return { ...profile, edition: 'FM2013', nativeTitle, positions, duties, dutyImportance, baseline,
-    provenance: 'community-reference', importanceModel: 'managerhub-role-importance-v1' };
+    references, provenance: 'community-reference', importanceModel: 'managerhub-role-importance-v1' };
 }
 
 /** Community-documented FM13 candidates. Native per-build menu parity remains unverified.
@@ -63,7 +75,8 @@ const FM2013_ROLES: readonly EditionRole[] = [
   entry({"id":"defensive-forward","title":"Defensive Forward","slot":"ST","demands":{"workRate":3,"stamina":3,"teamwork":3,"tackling":2,"strength":2,"passing":2,"anticipation":2}}, "Defensive Forward", ["ST"], ["support","attack"], {"attack":{"finishing":2,"offTheBall":2,"composure":2}}),
 ];
 
-export const ROLE_PROFILES: readonly RoleProfile[] = FM2013_ROLES.filter(role => role.baseline);
+export const ROLE_PROFILES: readonly RoleProfile[] = FM2013_ROLES.filter(role => role.baseline)
+  .map(({ id, title, slot, demands }) => ({ id, title, slot, demands }));
 
 export function getEditionRoles(edition: string): readonly EditionRole[] {
   return edition === 'FM2013' ? FM2013_ROLES : [];

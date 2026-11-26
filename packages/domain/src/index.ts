@@ -5,7 +5,7 @@ export * from './features';
 export * from './archive';
 export * from './player-import';
 export * from './player-analysis';
-export { getEditionRoles, getRoleDutyProfile, FM2013_ROLE_POSITIONS, type EditionRole, type RoleDuty, type RolePosition } from './football-role-registry';
+export { getEditionRoles, getRoleDutyProfile, FM2013_ROLE_POSITIONS, FM2013_ROLE_REFERENCES, type EditionRole, type RoleDuty, type RolePosition } from './football-role-registry';
 export * from './player-library';
 export * from './squad-optimizer';
 export * from './scout-club-scenario';
