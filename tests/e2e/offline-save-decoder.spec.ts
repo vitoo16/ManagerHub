@@ -814,3 +814,31 @@ test('saved development assumptions reject stale visible inputs without editing 
   await expect(library.getByRole('button', { name: 'Export scenario JSON' })).toBeEnabled();
   await expect(toolbar.getByRole('button', { name: 'Undo last edit' })).toBeEnabled();
 });
+
+test('Player Lab Development hides RCA and budget diagnostics in Realism and on Editor to Realism transition', async ({ page }) => {
+  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+  await page.goto('/#/saves');
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'development-realism.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const toolbar = page.getByRole('region', { name: 'Active save session' });
+  await expect(toolbar).toBeVisible({ timeout: 20_000 });
+  await page.locator('.save-db-explorer tbody tr', { hasText: 'Owen Shaw' }).getByRole('button', { name: 'Open in Player Lab' }).click();
+  await page.getByRole('tablist', { name: 'Player report' }).getByRole('tab', { name: 'Development' }).click();
+  const panel = page.locator('.development-panel');
+  const expectRestricted = async () => {
+    await expect(panel).toBeVisible();
+    await expect(panel.getByRole('table', { name: 'Development attribute assumptions' })).toBeVisible();
+    await expect(panel.locator('.ability-budget, .rca-provenance')).toHaveCount(0);
+    await expect(panel.getByRole('columnheader', { name: /RCA/ })).toHaveCount(0);
+    await expect(panel).not.toContainText(/Advisory RCA|Remaining potential|Recommended CA|Actual CA|Actual PA|Weaker foot RCA/);
+  };
+  await expectRestricted();
+  await toolbar.getByRole('button', { name: 'Editor mode' }).click();
+  await expect(panel.locator('.ability-budget')).toBeVisible();
+  await expect(panel.getByRole('columnheader', { name: 'RCA weight' })).toBeVisible();
+  await expect(panel.getByRole('columnheader', { name: 'Advisory RCA Δ' })).toBeVisible();
+  await expect(panel.getByText('Advisory RCA (research profile)')).toBeVisible();
+  await toolbar.getByRole('button', { name: 'Realism mode' }).click();
+  await expectRestricted();
+});

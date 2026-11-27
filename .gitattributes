@@ -6,3 +6,4 @@ packages/*/package.json text eol=lf
 .prettierrc.json text eol=lf
 scripts/local-ci.mjs text eol=lf
 scripts/local-stage-release.mjs text eol=lf
+docs/research/fmrte/fixtures/rca-*.json text eol=lf

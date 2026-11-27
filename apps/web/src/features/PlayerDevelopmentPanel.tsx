@@ -1,17 +1,17 @@
 import { memo, useId, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ATTRIBUTE_LABELS, evaluateDevelopmentScenario, getEditionRoles, type AttributeKey,
-  type DevelopmentScenario, type PlayerExport } from '@managerhub/domain';
+  type AbilityVisibility, type DevelopmentScenario, type PlayerExport } from '@managerhub/domain';
 import { AttributeInput, AttributeValue, Button, Surface } from '@managerhub/ui';
 import { DEFAULT_ROLE_TARGET, ROLE_DUTY_LABELS, RoleTargetSelector } from './RoleTargetSelector';
-import { AbilityBudgetFields } from './AbilityBudgetFields';
+import { AbilityBudgetFields, RcaModelDisclosure } from './AbilityBudgetFields';
 import { ReportPagination, reportPage } from './ReportPagination';
 import { DevelopmentScenarioLibrary } from './DevelopmentScenarioLibrary';
 
 const emptyScenario = (): DevelopmentScenario => ({ target: DEFAULT_ROLE_TARGET, benchmark: 16, overrides: {}, locked: [] });
-type Props = { readonly player: PlayerExport; readonly edition: string | null; readonly build: string | null; readonly sourceId: string };
+type Props = { readonly player: PlayerExport; readonly edition: string | null; readonly build: string | null; readonly sourceId: string; readonly visibility: AbilityVisibility };
 
-function DevelopmentWorkbench({ player, edition, build, sourceId }: Props) {
+function DevelopmentWorkbench({ player, edition, build, sourceId, visibility }: Props) {
   const { t } = useTranslation();
   const benchmarkId = useId();
   const [active, setActive] = useState<'A' | 'B'>('A');
@@ -20,9 +20,9 @@ function DevelopmentWorkbench({ player, edition, build, sourceId }: Props) {
   const [libraryOpen, setLibraryOpen] = useState(false);
   const scenario = scenarios[active];
   const results = useMemo(() => ({
-    A: evaluateDevelopmentScenario(player, edition, build, scenarios.A),
-    B: evaluateDevelopmentScenario(player, edition, build, scenarios.B)
-  }), [player, edition, build, scenarios]);
+    A: evaluateDevelopmentScenario(player, edition, build, scenarios.A, visibility),
+    B: evaluateDevelopmentScenario(player, edition, build, scenarios.B, visibility)
+  }), [player, edition, build, scenarios, visibility]);
   const result = results[active];
   const range = reportPage(result?.rows.length ?? 0, page, 8);
   const update = (next: DevelopmentScenario) => setScenarios(current => ({ ...current, [active]: next }));
@@ -44,10 +44,10 @@ function DevelopmentWorkbench({ player, edition, build, sourceId }: Props) {
   const score = (value: number | null | undefined) => value == null ? '—' : value + '/100';
   return <Surface className="scout-panel development-panel">
     <h3>{t('Role-based development')}</h3>
-    <p className="module-disclaimer">{t('Manual what-if profiles only. These are not predicted future attributes or profiles proven feasible at a target CA. They never modify your draft or save.')}</p>
+    <p className="module-disclaimer">{t(visibility === 'editor' ? 'Manual what-if profiles only. These are not predicted future attributes or profiles proven feasible at a target CA. They never modify your draft or save.' : 'Manual what-if profiles only. These are not predicted future attributes. They never modify your draft or save.')}</p>
     {edition !== null && edition !== 'FM2013' ? <p role="status">{t('This edition has no development role reference.')}</p> : <>
-      <AbilityBudgetFields edition={edition} build={build} ca={player.actualCa} pa={player.potentialAbility}
-        playerContext={player.actualCa != null || player.potentialAbility != null ? player : null}/>
+      <AbilityBudgetFields visibility={visibility} edition={edition} build={build} ca={player.actualCa} pa={player.potentialAbility}
+        playerContext={player}/>
       <div className="save-db-actions" role="group" aria-label={t('Development scenario')}>
         {(['A','B'] as const).map(id => <Button key={id} type="button" aria-pressed={active === id}
           variant={active === id ? 'primary' : 'default'} onClick={() => { setActive(id); setPage(0); }}>{t('Scenario')} {id}</Button>)}
@@ -72,22 +72,23 @@ function DevelopmentWorkbench({ player, edition, build, sourceId }: Props) {
       {result && <>
         <div className="insight-line"><span>{t('Position familiarity')}</span><strong>{result.familiarity == null ? '—' : result.familiarity + '/20'}</strong></div>
         <div className="insight-line"><span>{t('Role fit before / after')}</span><strong>{score(result.before.score)} → {score(result.after.score)}</strong></div>
-        {result.advisoryRcaBefore !== null && result.advisoryRcaAfter !== null && (
+        {visibility === 'editor' && result.rcaBefore && <RcaModelDisclosure report={result.rcaBefore} target/>}
+        {visibility === 'editor' && result.advisoryRcaBefore !== null && result.advisoryRcaAfter !== null && (
           <div className="insight-line">
             <span>{t('Advisory RCA before / after')}</span>
-            <strong>{result.advisoryRcaBefore} → {result.advisoryRcaAfter} ({result.advisoryRcaDelta && result.advisoryRcaDelta > 0 ? `+${result.advisoryRcaDelta}` : '0'})</strong>
+            <strong>{result.advisoryRcaBefore} → {result.advisoryRcaAfter} ({result.advisoryRcaDelta !== null && result.advisoryRcaDelta > 0 ? `+${result.advisoryRcaDelta}` : String(result.advisoryRcaDelta ?? '—')})</strong>
           </div>
         )}
         <div className="insight-line"><span>{t('Attribute coverage')}</span><strong>{Math.round(result.before.coverage * 100)}%</strong></div>
         <div className="editor-diff-wrap"><table className="compare-table development-table" aria-label={t('Development attribute assumptions')}>
-          <thead><tr><th scope="col">{t('Attributes')}</th><th scope="col">{t('Current')}</th><th scope="col">{t('Proposed')}</th><th scope="col">{t('Change')}</th><th scope="col">{t('RCA weight')}</th><th scope="col">{t('Priority')}</th><th scope="col">{t('Lock')}</th></tr></thead>
+          <thead><tr><th scope="col">{t('Attributes')}</th><th scope="col">{t('Current')}</th><th scope="col">{t('Proposed')}</th><th scope="col">{t('Change')}</th>{visibility === 'editor' && <th scope="col">{t('RCA weight')}</th>}<th scope="col">{t('Priority')}</th><th scope="col">{t('Lock')}</th></tr></thead>
           <tbody>{result.rows.slice(range.start, range.end).map(row => <tr key={row.key}>
             <th scope="row">{t(ATTRIBUTE_LABELS[row.key])}</th><td><AttributeValue value={row.current}/></td>
             <td><AttributeInput aria-label={t('Proposed') + ' ' + t(ATTRIBUTE_LABELS[row.key])} min={row.current ?? 1} max={20}
               value={row.proposed} disabled={row.current === null || row.locked}
               onChange={event => { if (row.current !== null) edit(row.key, event.currentTarget.value, row.current); }}/></td>
             <td>{row.change == null ? '—' : row.change > 0 ? '+' + row.change : '0'}</td>
-            <td>{row.rcaWeight}</td>
+            {visibility === 'editor' && <td>{row.rcaWeight ?? '—'}</td>}
             <td>{row.priority ?? '—'}</td>
             <td><input type="checkbox" aria-label={t('Lock') + ' ' + t(ATTRIBUTE_LABELS[row.key])} checked={row.locked}
               disabled={row.current === null} onChange={() => toggleLock(row.key)}/></td>
@@ -97,26 +98,26 @@ function DevelopmentWorkbench({ player, edition, build, sourceId }: Props) {
       </>}
       <h3>{t('Compare development paths')}</h3>
       <table className="compare-table" aria-label={t('Development scenario comparison')}>
-        <thead><tr><th scope="col">{t('Scenario')}</th><th scope="col">{t('Target role')}</th><th scope="col">{t('Role fit before / after')}</th><th scope="col">{t('Advisory RCA Δ')}</th><th scope="col">{t('Changed attributes')}</th></tr></thead>
+        <thead><tr><th scope="col">{t('Scenario')}</th><th scope="col">{t('Target role')}</th><th scope="col">{t('Role fit before / after')}</th>{visibility === 'editor' && <th scope="col">{t('Advisory RCA Δ')}</th>}<th scope="col">{t('Changed attributes')}</th></tr></thead>
         <tbody>{(['A','B'] as const).map(id => {
           const roleTitle = getEditionRoles('FM2013').find(role => role.id === scenarios[id].target.roleId)?.nativeTitle;
           return <tr key={id}>
           <th scope="row">{id}</th><td>{roleTitle ? t(roleTitle) : '—'} · {scenarios[id].target.position} · {t(ROLE_DUTY_LABELS[scenarios[id].target.duty])}</td>
           <td>{score(results[id]?.before.score)} → {score(results[id]?.after.score)}</td>
-          <td>{results[id]?.advisoryRcaDelta == null ? '—' : results[id]!.advisoryRcaDelta! > 0 ? `+${results[id]!.advisoryRcaDelta}` : '0'}</td>
+          {visibility === 'editor' && <td>{results[id]?.advisoryRcaDelta == null ? '—' : results[id]!.advisoryRcaDelta! > 0 ? `+${results[id]!.advisoryRcaDelta}` : String(results[id]!.advisoryRcaDelta)}</td>}
           <td>{results[id]?.changes ?? '—'}</td>
         </tr>;
         })}</tbody>
       </table>
-      <p className="module-disclaimer">{t('The scenarios may use different roles and attribute assumptions. Their scores do not prove equal CA cost. Scenarios reset when the source player changes or you leave this panel.')}</p>
+      <p className="module-disclaimer">{t(visibility === 'editor' ? 'The scenarios may use different roles and attribute assumptions. Their scores do not prove equal CA cost. Scenarios reset when the source player changes or you leave this panel.' : 'The scenarios may use different roles and attribute assumptions. Scenarios reset when the source player changes or you leave this panel.')}</p>
     </>}
   </Surface>;
 }
 
 function PlayerDevelopmentPanel(props: Props) {
-  const { player, edition, build, sourceId } = props;
+  const { player, edition, build, sourceId, visibility } = props;
   // Exact relevant source values bound to the local scenario; never retain stale assumptions.
-  const revision = JSON.stringify([sourceId, player.id, edition, build, player.actualCa, player.potentialAbility,
+  const revision = JSON.stringify([visibility, sourceId, player.id, edition, build, player.actualCa, player.potentialAbility,
     player.age, player.attributes, player.positions, player.leftFoot, player.rightFoot]);
   return <DevelopmentWorkbench key={revision} {...props}/>;
 }

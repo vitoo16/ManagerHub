@@ -95,7 +95,7 @@ function PlayerDetailsView({ player, dataset, onOpenSquad, onEditPlayer }: Props
           <RoleResults player={player} roles={roles}/>
         </Surface>}
         {activeTab === 'compare' && <PlayerCompare primary={player} dataset={dataset}/>}
-        {activeTab === 'development' && <PlayerDevelopmentPanel key="report-development" player={player} edition={dataset.saveEdition ?? null}
+        {activeTab === 'development' && <PlayerDevelopmentPanel visibility={isEditorMode ? 'editor' : isDecoded ? 'realism' : 'export'} key="report-development" player={player} edition={dataset.saveEdition ?? null}
           build={dataset.saveBuild ?? null} sourceId={dataset.saveId ?? dataset.importedAt + ':' + dataset.fileName}/>}
         {activeTab === 'recruitment' && <RecruitmentPreviewPanel player={player} dataset={dataset} onOpenSquad={onOpenSquad}/>}
       </Suspense>

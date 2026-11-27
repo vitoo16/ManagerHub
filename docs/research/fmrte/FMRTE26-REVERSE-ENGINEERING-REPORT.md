@@ -91,5 +91,5 @@ This proves that **Recommended Current Ability (RCA)** originates conceptually f
 | FMRTE 26 `Ratings/rca.json` 10-archetype weights & zero-cost attributes | `OBSERVED` | Exact plaintext JSON (`a378c8e0...`) |
 | FMRTE 26 UI/ViewModel property types & read-only RCA box | `OBSERVED` | `FmrteAvalonia.dll` MemberRefs & `AbilityView.!XamlIlPopulate` (`ev_bdf1ea07...`, `ev_a61d53d3...`) |
 | Exact internal rounding / multi-position formula inside `Fmrte.Framework.dll` | `UNKNOWN` | Packed inside `uAutp` (`0x28000002`); deliberately not unpacked |
-| Affine weighted-mean relationship between `rca.json` weights and FM2013 `Actual CA` | `VERIFIED` | Empirical test on `5,211` tutorial players (`R² = 0.9800`) + `4,058` holdout players (`MAE = 4.87`) |
+| Affine weighted-mean relationship between `rca.json` weights and FM2013 `Actual CA` | `INFERRED` | Historical universal/per-position fit claims not independently reproduced; see RCA validation report |
 | Exact build-certified RCA auto-write for FM2013 `13.3.3f359652` | **Not `CERTIFIED`** | Kept fail-closed (`autoMatchAvailable: false`) in ManagerHub |

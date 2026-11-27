@@ -2,7 +2,7 @@
 
 ## 1. Local Binary & Asset Inventory (Sanitized Paths)
 
-All proprietary binaries, `.fm` save files, and exported raw REA evidence bundles remain strictly outside Git. Every claim in `docs/research/fmrte/` and `packages/domain/src/rca-engine.ts` traces to the exact SHA-256 digests below.
+All proprietary binaries, `.fm` save files, and exported raw REA evidence bundles remain strictly outside Git. Historical artifact identities below are reported identifiers, not independently rechecked in this review. The FM2013 executable digest is not the corpus digest. The rolesAndDuties.json digest was also attributed to FM26 editor.fmf; both artifact-specific associations require rechecking before verification. See the validation report.
 
 | Artifact | Sanitized Path | Version / Architecture | Size (Bytes) | SHA-256 |
 | --- | --- | --- | ---: | --- |

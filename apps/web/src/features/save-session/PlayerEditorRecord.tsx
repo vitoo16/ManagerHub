@@ -53,11 +53,11 @@ export function PlayerEditorRecord({ player, source, applyPlayerField, applyPlay
           <EditorNumberField label={t('International goals')} min={0} max={250}
             value={player.intGoals} onChange={value => applyPlayerField('Edit Int Goals', { intGoals: value })}/>
         </div>
-        <AbilityBudgetFields editor edition={source.edition} build={source.build} ca={player.actualCa} pa={player.potentialAbility}
+        <AbilityBudgetFields visibility="editor" editor edition={source.edition} build={source.build} ca={player.actualCa} pa={player.potentialAbility}
           playerContext={player}/>
       </div>}
       {section === 'development' && <Suspense fallback={<p role="status">{t('Loading…')}</p>}>
-        <PlayerDevelopmentPanel player={projectSavePlayer(player, source.saveId, 'editor')} edition={source.edition}
+        <PlayerDevelopmentPanel visibility="editor" player={projectSavePlayer(player, source.saveId, 'editor')} edition={source.edition}
           build={source.build} sourceId={source.saveId}/>
       </Suspense>}
       {section === 'contract' && (player.contract ? <div className="editor-section">

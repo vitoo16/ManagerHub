@@ -5,19 +5,19 @@
 ManagerHub integrates multi-edition RCA analysis directly into the existing `@managerhub/domain` and `@managerhub/web` workspaces **without creating duplicate packages, parallel stores, or fake certification states**:
 
 1. **Single `.fm` Load → Unified `SaveSession`:** Loading one `.fm` file populates `baseDecodedSave` (immutable) + `editorState` (transactional draft overlay) → `workingDecodedSave`, which feeds Classic Editor, Player Lab, Development Simulator, Recruitment Preview, Squad Planner, and Tactical Lab simultaneously.
-2. **Clean-Room Modular Domain Layer (`packages/domain/src/rca-engine.ts`):**
-   - `RCA_EVIDENCE_REGISTRY` — Cryptographic SHA-256 & REA Evidence ID ledger.
-   - `FMRTE26_RCA_ARCHETYPES` — Exact 10-archetype weights from `Ratings/rca.json` (`v24.4.0.35`) + empirically verified affine scaling coefficients.
-   - `FM2013_RCA_EDITION_PROFILE` & `FM2026_RCA_EDITION_PROFILE` — Edition-isolated profiles with explicit position support (`15` vs `14` positions, `SW → DefenderCentral` fallback) and `certifiedForAutoMatch: false`.
+2. **Clean-Room Modular Domain Layer (`packages/domain/src/rca-*.ts`):**
+   - `RCA_EVIDENCE_REGISTRY` — Evidence registry in rca-evidence.ts; historical claims retained without invented artifact digest.
+   - `FMRTE26_RCA_ARCHETYPES` — Reference 10-archetype weights in rca-weights.ts; no affine coefficients.
+   - `FM2013_RCA_EDITION_PROFILE` & `FM2026_RCA_EDITION_PROFILE` — Profiles in rca-editions.ts; separate historical FM2013-only affine coefficients. FM26 reference-only; SW accepted only for FM2013 as DC fallback. Unknown build/edition fails closed.
    - `evaluateFootAbility(...)` — Pure weaker-foot (`min(leftFoot, rightFoot)`), preferred-foot, and positional `WeakerFoot` cost evaluator.
    - `evaluatePlayerRca(player, options)` — Pure, deterministic, side-effect-free diagnostic engine.
-   - `getAttributeRcaWeight(position, attribute, edition)` — Direct CA-cost weight lookup (`0..10`) for side-by-side display next to tactical Role Demand weights (`1..3`).
+   - `getAttributeRcaWeight(position, attribute, edition, build)` — Reference weight lookup (0–10 or null = unknown) for side-by-side display next to tactical Role Demand weights (`1..3`).
 3. **Strict Domain Separation:**
    - **Native `Actual CA` / `PA` (`1..200`):** Decoded from `game_db.dat`, redacted in **Realism** mode, editable in **Editor** mode.
    - **Certified `Recommended CA` (`recommendedCa: null`):** Reserved strictly for future build-certified native parity; keeps `Auto match CA with RCA` fail-closed (`disabled`).
-   - **Research `Advisory RCA` (`advisoryRca: 1..200`):** Shown transparently in **Editor** mode (`AbilityBudgetFields.tsx`) and **Development Simulator** (`PlayerDevelopmentPanel.tsx`) with live recalculation on attribute/foot/position edits and `RCA > PA` warnings.
+   - **Research `Advisory RCA` (`advisoryRca: 1..200`):** Shown transparently in **Editor** mode (`AbilityBudgetFields.tsx`) and **Development Simulator** (`PlayerDevelopmentPanel.tsx`) only with explicit Editor visibility context, with live recalculation on attribute/foot/position edits and `RCA > PA` warnings. Realism/export evaluators return no ability diagnostics.
    - **Tactical `Role Fit` (`0..100`):** Computed by `scoreRole` in `player-analysis.ts` from `FM2013_ROLES` demands; never conflated with CA/RCA.
-   - **Development `Priority` (`gap × roleDemandWeight`):**Displayed alongside `RCA weight` (`0..10`) in `PlayerDevelopmentPanel.tsx` so users can spot high-impact, zero-CA-cost training/editing targets (such as `Flair` or `Aggression`).
+   - **Development `Priority` (`gap × roleDemandWeight`):**Displayed alongside `RCA weight` (`0..10`) in `PlayerDevelopmentPanel.tsx` only in Editor mode; zero reference weights do not establish free native training.
 
 ---
 
@@ -46,7 +46,7 @@ flowchart TD
 
 To register a new Football Manager edition (e.g., `FM2024` or a certified `FM2013` native formula):
 
-1. **Collect Primary Evidence:** Record exact binary/asset SHA-256 digests and REA Evidence IDs in `RCA_EVIDENCE_REGISTRY` (`packages/domain/src/rca-engine.ts`) and `docs/research/fmrte/RESEARCH-EVIDENCE-INDEX.md`.
+1. **Collect Primary Evidence:** Record exact binary/asset SHA-256 digests and REA Evidence IDs in `RCA_EVIDENCE_REGISTRY` (`packages/domain/src/rca-evidence.ts`) and the evidence index.
 2. **Define `RcaEditionProfile`:** Specify `profileId`, `edition`, `supportedBuilds`, `positionsSupported`, `positionArchetypeMap`, and `positionFallbackNotes`.
-3. **Keep `certifiedForAutoMatch: false` Until Proven:** Only flip `certifiedForAutoMatch` to `true` after independent holdout verification proves exact integer parity for that exact `edition` + `build`, and add golden regression tests in `packages/domain/src/rca-engine.test.ts`.
+3. **Keep `certifiedForAutoMatch: false` Until Proven:** Do not flip until independent exact-build numeric RCA observations, parity across positions/missingness/rounding, field-specific writer readback and game reload, consent gates and independent acceptance are all satisfied. Synthetic tests are insufficient.
 4. **Preserve `PA` Immutability:** Even when `certifiedForAutoMatch` is enabled for a profile, `autoMatchDecision.preservesPa` **must remain `true`** — `Auto Match CA` updates draft `actualCa` only and never alters `potentialAbility`.

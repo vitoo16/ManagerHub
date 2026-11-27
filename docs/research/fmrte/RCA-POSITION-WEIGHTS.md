@@ -44,16 +44,16 @@ FMRTE 26 ships two separate positional files in `<FMRTE26_INSTALL_ROOT>/Ratings/
 ## 3. Single-Position vs Multi-Position Evaluation
 
 ### 3.1 Single Natural Position (`familiarity = 20`)
-When a player has exactly one natural position ($f_p = 20$) and no accomplished secondary positions ($f_q < 15$ for all $q \neq p$), only archetype $A(p)$ is active. Across `5,211` single-natural players in the FM2013 tutorial corpus, `rca.json` weights achieve $R^2 = 0.9800$ against `Actual CA`.
+When a player has exactly one natural position ($f_p = 20$) and no accomplished secondary positions ($f_q < 15$ for all $q \neq p$), only archetype $A(p)$ is active. Historical universal regression was reported on 5,211 players; the count, fit and independence are not reproduced. See the validation report.
 
 ### 3.2 Multiple Natural Positions ($|\{p : f_p = 20\}| \ge 2$)
 1. **Symmetric Same-Archetype Pairs (e.g., `DL = 20` and `DR = 20`):** Both map to `FullBack`, producing identical $\text{RCA}_{\text{FullBack}}$.
 2. **Cross-Archetype Multi-Position Players (e.g., `DC = 20` and `ST = 20`, or `MC = 20` and `AMC = 20`):**
    - ManagerHub evaluates $\text{RCA}_{A(p)}$ for every natural position $p$ and selects $\max_{p : f_p = 20} \text{RCA}_{A(p)}$ (`INFERRED`).
-   - **Empirical Multi-Position Surcharge (`VERIFIED` on `basics.fm`, $n = 4,704$):**
+   - **Historical multi-position residual claim (unreproduced; not a causal surcharge, `basics.fm`, reported n = 4,704):**
      - `1` natural position ($n = 4,469$): mean $(\text{Actual CA} - \text{MaxSinglePosPred}) = +1.19$ CA
-     - `2` natural positions ($n = 224$): mean $(\text{Actual CA} - \text{MaxSinglePosPred}) = +3.76$ CA (**`+2.57` CA versatility surcharge**)
-     - `3` natural positions ($n = 11$): mean $(\text{Actual CA} - \text{MaxSinglePosPred}) = +4.30$ CA (**`+3.11` CA versatility surcharge**)
+     - `2` natural positions ($n = 224$): mean $(\text{Actual CA} - \text{MaxSinglePosPred}) = +3.76$ CA (reported +2.57 CA residual difference)
+     - `3` natural positions ($n = 11$): mean $(\text{Actual CA} - \text{MaxSinglePosPred}) = +4.30$ CA (reported +3.11 CA residual difference)
    - Because FMRTE 26's exact internal multi-position formula inside packed `Fmrte.Framework.dll` (`uAutp`) is `UNKNOWN`, ManagerHub records `candidateScores` for all candidate positions and emits `multiPositionPenaltyNote` without fabricating an unverified multi-position multiplier.
 
 ### 3.3 No Natural `20` Position Fallback

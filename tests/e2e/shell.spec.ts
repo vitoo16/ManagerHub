@@ -1777,7 +1777,11 @@ test('manual development A/B preserves observed attributes, locks, and independe
   await panel.getByRole('checkbox', { name: 'Lock Finishing' }).check();
   await expect(finishing).toHaveValue('15');
   await expect(finishing).toBeDisabled();
-  await expect(panel.getByText('Not verified', { exact: true })).toBeVisible();
+  // Export-only development has no editor visibility; absence rather than a placeholder
+  // is now the contract for native ability and RCA diagnostics.
+  await expect(panel.locator('.ability-budget, .rca-provenance')).toHaveCount(0);
+  await expect(panel.getByRole('columnheader', { name: /RCA/ })).toHaveCount(0);
+  await expect(panel).not.toContainText(/Advisory RCA|Recommended CA|Remaining potential/);
   await tabs.getByRole('tab', { name: 'Attributes' }).click();
   await expect(page.locator('.mh-attribute-row').filter({ hasText: 'Finishing' }).locator('dd')).toHaveText('15');
   await tabs.getByRole('tab', { name: 'Development' }).click();

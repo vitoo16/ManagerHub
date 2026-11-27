@@ -117,7 +117,7 @@ export function decodeDevelopmentLibrary(raw: string | null, binding: Developmen
 export function makeDevelopmentRecord(binding: DevelopmentBinding, player: Source, scenario: DevelopmentScenario,
   name: string, id: string, savedAt: string): SavedDevelopmentScenario {
   const canonical = canonicalScenario(scenario);
-  const evaluated = evaluateDevelopmentScenario(player, 'FM2013', null, canonical);
+  const evaluated = evaluateDevelopmentScenario(player, 'FM2013', null, canonical, 'realism');
   if (!evaluated || evaluated.rejected.length || !nameValid(name) || !ID.test(id) || !isoDate(savedAt) ||
       canonical.locked.some(key => !rating(player.attributes[key]))) throw new Error('invalid_development_scenario');
   return { id, name, savedAt, revision: binding.revision, scenario: canonical };

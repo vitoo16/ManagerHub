@@ -77,7 +77,7 @@ describe('FMRTE 26 RCA weight registry & provenance invariants', () => {
   });
 });
 
-describe('Controlled 10-archetype golden vectors & single-variable perturbations', () => {
+describe('Synthetic perturbation and regression tests (not FMRTE parity)', () => {
   const tenArchetypeVectors: readonly {
     id: string;
     label: string;
@@ -254,19 +254,19 @@ describe('Controlled 10-archetype golden vectors & single-variable perturbations
     const attrs = buildUniformAttributes(13);
     const oneFootedSt = evaluatePlayerRca(
       { attributes: attrs, positions: { ST: 20 }, leftFoot: 1, rightFoot: 20 },
-      { edition: 'FM2026', build: '26.3.2' }
+      { edition: 'FM2013', build: '13.3.3f359652' }
     );
     const twoFootedSt = evaluatePlayerRca(
       { attributes: attrs, positions: { ST: 20 }, leftFoot: 20, rightFoot: 20 },
-      { edition: 'FM2026', build: '26.3.2' }
+      { edition: 'FM2013', build: '13.3.3f359652' }
     );
     const oneFootedGk = evaluatePlayerRca(
       { attributes: attrs, positions: { GK: 20 }, leftFoot: 1, rightFoot: 20 },
-      { edition: 'FM2026', build: '26.3.2' }
+      { edition: 'FM2013', build: '13.3.3f359652' }
     );
     const twoFootedGk = evaluatePlayerRca(
       { attributes: attrs, positions: { GK: 20 }, leftFoot: 20, rightFoot: 20 },
-      { edition: 'FM2026', build: '26.3.2' }
+      { edition: 'FM2013', build: '13.3.3f359652' }
     );
 
     const stGain = twoFootedSt.advisoryRca! - oneFootedSt.advisoryRca!;
@@ -331,8 +331,8 @@ describe('Controlled 10-archetype golden vectors & single-variable perturbations
 
   it('keeps RCA weight strictly separate from Role Fit and Development Priority in inspectAbilityBudget & evaluateDevelopmentScenario', () => {
     // Flair has high Role Demand (3) for Trequartista, but ZERO RCA CA-cost weight (0)!
-    expect(getAttributeRcaWeight('AMC', 'flair', 'FM2013')).toBe(0);
-    expect(getAttributeRcaWeight('AMC', 'acceleration', 'FM2013')).toBe(9);
+    expect(getAttributeRcaWeight('AMC', 'flair', 'FM2013', '13.3.3f359652')).toBe(0);
+    expect(getAttributeRcaWeight('AMC', 'acceleration', 'FM2013', '13.3.3f359652')).toBe(9);
 
     const attrs = buildUniformAttributes(14, { flair: 12, acceleration: 14 });
     const player: Pick<PlayerExport, 'attributes' | 'positions' | 'leftFoot' | 'rightFoot' | 'actualCa' | 'potentialAbility'> = {
@@ -344,7 +344,7 @@ describe('Controlled 10-archetype golden vectors & single-variable perturbations
       potentialAbility: 165
     };
 
-    const budget = inspectAbilityBudget('FM2013', '13.3.3f359652', 145, 165, player);
+    const budget = inspectAbilityBudget('FM2013', '13.3.3f359652', 145, 165, 'editor', player);
     expect(budget.recommendedCa).toBeNull();
     expect(budget.autoMatchAvailable).toBe(false);
     expect(budget.advisoryRca).not.toBeNull();
@@ -355,9 +355,93 @@ describe('Controlled 10-archetype golden vectors & single-variable perturbations
       benchmark: 18,
       overrides: { flair: 18 },
       locked: []
-    })!;
+    }, 'editor')!;
     expect(flairScenario.after.score!).toBeGreaterThan(flairScenario.before.score!);
     expect(flairScenario.advisoryRcaDelta).toBe(0);
     expect(flairScenario.rows.find(r => r.key === 'flair')?.rcaWeight).toBe(0);
+  });
+});
+
+describe('Independent arithmetic vectors and compatibility guard', () => {
+  // Decimal arithmetic, independent of the engine: ST positive weights=116, WF=7.5.
+  // Missing acceleration (10) and pace (7) leaves 99 observed attribute weight.
+  // With WF=8: sum=99*12+7.5*8=1248; mean=1248/106.5; round(-90.64+17.7*mean)=117.
+  // Without WF: sum=1188; mean=12; round(-90.64+17.7*12)=122.
+  it.each([
+    { rightFoot: 20, leftFoot: 8, expected: 117, sum: 1248, mean: 11.7183, coverage: 106.5 / 123.5 },
+    { rightFoot: 20, leftFoot: null, expected: 122, sum: 1188, mean: 12, coverage: 99 / 123.5 }
+  ])('normalizes partial observations including weaker-foot missingness ($leftFoot)', vector => {
+    const attrs: Partial<Record<AttributeKey, number>> = buildUniformAttributes(12);
+    delete attrs.acceleration;
+    delete attrs.pace;
+    const report = evaluatePlayerRca({
+      attributes: attrs, positions: { ST: 20 }, leftFoot: vector.leftFoot, rightFoot: vector.rightFoot
+    }, { edition: 'FM2013', build: '13.3.3f359652' });
+    expect(report.advisoryRca).toBe(vector.expected);
+    expect(report.rawWeightedSum).toBe(vector.sum);
+    expect(report.weightedMeanRating).toBe(vector.mean);
+    expect(report.observedWeightCoverage).toBeCloseTo(vector.coverage, 12);
+    expect(report.attributeRows.find(row => row.key === 'acceleration')?.marginalAdvisoryCaPerStep).toBeNull();
+    expect(report.groupWeightedTotals?.WeakerFoot).toBe(vector.leftFoot === null ? 0 : 60);
+    expect(report.autoMatchDecision).toMatchObject({ allowed: false, nextCa: null, preservesPa: true });
+  });
+
+  // Independent affine calculation at mean=12 (all attributes and both feet 12).
+  // Expected values are rounded/clamped decimal arithmetic using the historical coefficient table,
+  // not captured game RCA nor generated by evaluatePlayerRca.
+  it.each([
+    ['GK', 127], ['DC', 123], ['DL', 120], ['WBL', 123], ['DM', 121],
+    ['MC', 118], ['ML', 123], ['AMC', 121], ['AML', 124], ['ST', 122]
+  ] as const)('matches independent uniform arithmetic for %s', (position, expected) => {
+    const report = evaluatePlayerRca({
+      attributes: buildUniformAttributes(12), positions: { [position]: 20 }, leftFoot: 12, rightFoot: 12
+    }, { edition: 'FM2013', build: '13.3.3f359652' });
+    expect(report.advisoryRca).toBe(expected);
+    expect(report.weightedMeanRating).toBe(12);
+    expect(report.observedWeightCoverage).toBe(1);
+  });
+
+  it('selects highest rounded natural candidate, without an invented versatility surcharge', () => {
+    const report = evaluatePlayerRca({
+      attributes: buildUniformAttributes(12), positions: { DC: 20, ST: 20, AML: 20, MC: 16 },
+      leftFoot: 12, rightFoot: 12
+    }, { edition: 'FM2013', build: '13.3.3f359652' });
+    expect(report.candidateScores.map(candidate => [candidate.position, candidate.advisoryRca])).toEqual([
+      ['AML', 124], ['DC', 123], ['ST', 122]
+    ]);
+    expect(report.advisoryRca).toBe(124);
+    expect(report.accomplishedPositions).toEqual(['MC']);
+  });
+
+  it('does not silently substitute edition/build/position or treat missing weight as zero', () => {
+    const player = { attributes: buildUniformAttributes(12), positions: { ST: 20 } };
+    expect(evaluatePlayerRca(player).status).toBe('unknown-edition');
+    expect(evaluatePlayerRca(player, { edition: 'FM2013' }).status).toBe('unknown-build');
+    expect(evaluatePlayerRca(player, { edition: 'FM2013', build: '13.9.9' }).status).toBe('unsupported-build');
+    expect(evaluatePlayerRca(player, { edition: 'FM2026', build: '26.3.2' })).toMatchObject({
+      status: 'reference-only', advisoryRca: null, autoMatchDecision: { allowed: false }
+    });
+    const fm26 = { edition: 'FM2026', build: '26.3.2' } as const;
+    expect(evaluatePlayerRca({ ...player, positions: { SW: 20 } }, fm26).status).toBe('unsupported-position');
+    expect(evaluatePlayerRca(player, { ...fm26, targetPositionOverride: 'SW' }).status).toBe('unsupported-position');
+    expect(getAttributeRcaWeight('SW', 'passing', 'FM2026', '26.3.2')).toBeNull();
+    expect(getAttributeRcaWeight('ST', 'flair', null, null)).toBeNull();
+    expect(getAttributeRcaWeight('ST', 'flair', 'FM2013', 'unknown')).toBeNull();
+    expect(getAttributeRcaWeight('ST', 'unmapped' as AttributeKey, 'FM2013', '13.3.3')).toBeNull();
+    expect(getAttributeRcaWeight('GK', 'finishing', 'FM2013', '13.3.3')).toBe(0);
+  });
+
+  it.each(['realism', 'export'] as const)('does not evaluate or disclose ability diagnostics in %s even given unredacted input', visibility => {
+    const player = { attributes: buildUniformAttributes(15), positions: { ST: 20 }, leftFoot: 15, rightFoot: 20,
+      actualCa: 155, potentialAbility: 170 };
+    const scenario = { target: { position: 'ST', roleId: 'poacher', duty: 'attack' }, benchmark: 18,
+      overrides: { finishing: 18 }, locked: [] } as const;
+    const result = evaluateDevelopmentScenario(player, 'FM2013', '13.3.3f359652', scenario, visibility)!;
+    expect(result.budget).toMatchObject({ reason: 'restricted', remainingPotential: null, advisoryRca: null,
+      caMinusAdvisoryRca: null, paMinusAdvisoryRca: null, rcaDiagnostics: null, autoMatchAvailable: false });
+    expect(result).toMatchObject({ rcaBefore: null, rcaAfter: null, advisoryRcaBefore: null,
+      advisoryRcaAfter: null, advisoryRcaDelta: null, advisoryExceedsPa: false });
+    expect(result.rows.every(row => row.rcaWeight === null)).toBe(true);
+    expect(result.after.score).toBeGreaterThan(result.before.score!);
   });
 });

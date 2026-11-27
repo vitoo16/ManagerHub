@@ -5,12 +5,14 @@ import { evaluatePlayerRca, type RcaDiagnosticReport, type RcaPlayerInput } from
  * from advisory research RCA diagnostics (`advisoryRca`, `caMinusAdvisoryRca`, `paMinusAdvisoryRca`).
  * Read compatibility never certifies automatic native CA mutation.
  */
+export type AbilityVisibility = 'editor' | 'realism' | 'export';
+
 export interface AbilityBudget {
   readonly remainingPotential: number | null;
   readonly recommendedCa: null;
   readonly remainingRcaBudget: null;
   readonly autoMatchAvailable: false;
-  readonly reason: 'edition-build-unknown' | 'rca-model-unverified';
+  readonly reason: 'edition-build-unknown' | 'rca-model-unverified' | 'restricted';
   /** Advisory research RCA (1–200) when player attributes/positions are supplied; null otherwise. */
   readonly advisoryRca: number | null;
   /** Signed Actual CA minus Advisory RCA when both exist. */
@@ -31,9 +33,10 @@ export function inspectAbilityBudget(
   build: string | null | undefined,
   actualCa: unknown,
   pa: unknown,
+  visibility: AbilityVisibility,
   playerContext?: Omit<RcaPlayerInput, 'actualCa' | 'potentialAbility'> | null
 ): AbilityBudget {
-  const diagnostics = playerContext
+  const diagnostics = visibility === 'editor' && playerContext
     ? evaluatePlayerRca(
         {
           ...playerContext,
@@ -45,11 +48,11 @@ export function inspectAbilityBudget(
     : null;
 
   return {
-    remainingPotential: remainingPotential(actualCa, pa),
+    remainingPotential: visibility === 'editor' ? remainingPotential(actualCa, pa) : null,
     recommendedCa: null,
     remainingRcaBudget: null,
     autoMatchAvailable: false,
-    reason: edition && build ? 'rca-model-unverified' : 'edition-build-unknown',
+    reason: visibility !== 'editor' ? 'restricted' : edition && build ? 'rca-model-unverified' : 'edition-build-unknown',
     advisoryRca: diagnostics?.advisoryRca ?? null,
     caMinusAdvisoryRca: diagnostics?.caMinusAdvisoryRca ?? null,
     paMinusAdvisoryRca: diagnostics?.paMinusAdvisoryRca ?? null,

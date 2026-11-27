@@ -56,3 +56,5 @@ Better VI: "Chọn một cầu thủ để xem điểm mạnh và vai trò phù 
 
 ## Candidate compact capability contract
 `inspectAbilityBudget` reports signed PA minus Actual CA only for valid observed values. Recommended CA and remaining RCA budget are null, Auto Match is false, regardless of read compatibility. There is currently no certified RCA adapter. No fabricated conversion or automatic native CA/PA edit is allowed. The development what-if evaluator consumes the same capability state but cannot allocate CA.
+
+**PR #120 advisory update:** explicit Editor context is required for all budget and RCA diagnostics. FM2013-research-v2 retains historical, not independently reproduced per-archetype affine coefficients with reference weights; FM2026 is reference-only. No certified Recommended CA, automatic adjustment or constrained development optimizer. See [validation protocol](../research/fmrte/RCA-VALIDATION-REPORT.md).

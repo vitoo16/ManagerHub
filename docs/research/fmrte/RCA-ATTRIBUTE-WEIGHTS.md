@@ -22,7 +22,7 @@ A foundational property of Football Manager's ability budget — confirmed direc
 | **Personality (8)** | `Adaptability`, `Ambition`, `Controversy`, `Loyalty`, `Pressure`, `Professional`, `Sportsmanship`, `Temperament` | `adaptability`, `ambition`, `controversy`, `loyalty`, `pressure`, `professionalism`, `sportsmanship`, `temperament` |
 
 > [!TIP]
-> **Why Role Fit ≠ RCA Cost:** `Flair` and `Determination` have **zero** RCA cost (`0.0`), yet `Flair` has maximum tactical demand (`3`) for a `Trequartista` and `Aggression`/`Bravery` shape `Ball-Winning Midfielder` / `Stopper` duties. Improving or filtering for zero-cost attributes raises role effectiveness without consuming CA budget.
+> **Why Role Fit ≠ RCA Cost:** `Flair` and `Determination` have **zero** RCA cost (`0.0`), yet `Flair` has maximum tactical demand (`3`) for a `Trequartista` and `Aggression`/`Bravery` shape `Ball-Winning Midfielder` / `Stopper` duties. Zero in the transcribed reference table means unchanged advisory model cost, not proven free native FM2013 development. Unmapped keys and unknown edition/build return unknown, not zero.
 
 ---
 

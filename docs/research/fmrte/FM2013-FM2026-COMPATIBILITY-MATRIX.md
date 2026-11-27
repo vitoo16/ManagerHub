@@ -6,7 +6,7 @@ Every subsystem compared between **Football Manager 2013 (`13.3.3f359652`) / FMR
 
 - `Shared and verified` — Identical semantic domain and verified on both editions.
 - `Version-specific` — Exists in only one edition or uses an edition-exclusive runtime/container.
-- `Compatible but unverified` — Structurally mappable across editions (`R² = 0.9800` empirical fit), but not certified as exact-build native parity.
+- `Compatible but unverified` — Structurally mappable; no reproduced fit or exact-build native parity.
 - `Changed between versions` — Renamed, split, retired, or structurally redesigned between FM2013 and FM2026.
 - `Unknown` — Blocked by packed/encrypted binary sections (`uAutp`) or uncollected runtime evidence.
 
@@ -20,7 +20,7 @@ Every subsystem compared between **Football Manager 2013 (`13.3.3f359652`) / FMR
 | **Game Engine Runtime** | Native Win32 x86 C++ (`fm.exe`, `40.8 MB`) | Unity IL2CPP x64 (`GameAssembly.dll` + `global-metadata.dat` v31) | `Changed between versions` | Version-isolated binary/save adapters |
 | **Gender / DB Scope** | Men's football database only | Men's + Women's football (`Config.SearchMensFootball`, `SearchWomensFootball` `0x0a001147`..`1148`) | `Changed between versions` | Keep gender filter optional per edition |
 | **`CA` / `PA` Scale** | `1..200` (`Int16` in `T25 PERSON` `+6`/`+8`) | `1..200` (`Int16` `PersonalInformationViewModel.CA`/`PA`, `pers,PCAB`/`PPAB`) | `Shared and verified` | Unified `1..200` integer validation |
-| **`RCA` & `MatchCaWithRCA`** | Absent in FMRTE 13 (`Match CA to PA` only) | Present in FMRTE 26 (`RCA` `Int32`, `MatchCaWithRCA` `bool`, `Ratings/rca.json`) & SI `editor.fmf` (`pers,ERCL`) | `Compatible but unverified` | Expose as **Advisory RCA (`FM2013-research-v1`)**; keep `Auto Match CA` fail-closed (`false`) |
+| **`RCA` & `MatchCaWithRCA`** | Absent in FMRTE 13 (`Match CA to PA` only) | Present in FMRTE 26 (`RCA` `Int32`, `MatchCaWithRCA` `bool`, `Ratings/rca.json`) & SI `editor.fmf` (`pers,ERCL`) | `Compatible but unverified` | Expose as **Advisory RCA (`FM2013-research-v2`)**; FM2026 reference-only; keep `Auto Match CA` fail-closed (`false`) |
 | **Technical Attributes (14)** | 14 attributes (`1..100` raw → `1..20` UI) | Same 14 attributes (`Corners`..`Technique`) | `Shared and verified` | Direct 1:1 `AttributeKey` mapping |
 | **Mental Attributes (14)** | `Creativity`, `Influence`, + 12 others | Renamed `Creativity → Vision`, `Influence → Leadership` (+ same 12 others) | `Changed between versions` | Normalized onto canonical `vision` and `leadership` with FM2013 UI/import aliases |
 | **Physical Attributes (8)** | `Jumping` + 7 others (`LeftFoot`/`RightFoot` `1..100` → `1..20`) | Renamed `Jumping → JumpingReach` (`Jumping` key still used inside `rca.json`!) | `Changed between versions` | Normalized onto `jumpingReach` with `Jumping` alias |
