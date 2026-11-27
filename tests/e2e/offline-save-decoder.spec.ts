@@ -812,6 +812,14 @@ test('saved development assumptions reject stale visible inputs without editing 
   await expect(library.getByText('Source changed', { exact: true })).toBeVisible();
   await expect(library.getByRole('button', { name: 'Restore into scenario A' })).toBeDisabled();
   await expect(library.getByRole('button', { name: 'Export scenario JSON' })).toBeEnabled();
+  await library.getByRole('button', { name: 'Review scenario rebase' }).click();
+  await expect(library.getByRole('region', { name: 'Scenario rebase preview' })).toBeVisible();
+  await library.getByLabel('Scenario name').fill('After edit');
+  await library.getByRole('button', { name: 'Save rebased copy' }).click();
+  await expect(library.getByRole('button', { name: 'After edit', exact: true })).toBeVisible();
+  await expect(library.getByRole('button', { name: 'Before edit', exact: true })).toBeVisible();
+  await expect(library.getByText('Source changed', { exact: true })).toBeVisible();
+  await expect(library.getByRole('button', { name: 'Restore into scenario A' })).toBeEnabled();
   await expect(toolbar.getByRole('button', { name: 'Undo last edit' })).toBeEnabled();
 });
 
