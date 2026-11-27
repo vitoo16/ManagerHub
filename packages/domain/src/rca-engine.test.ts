@@ -3,12 +3,9 @@ import type { AttributeKey, PlayerExport } from './player-import';
 import {
   evaluateFootAbility,
   evaluatePlayerRca,
-  FM2013_RCA_EDITION_PROFILE,
-  FM2026_RCA_EDITION_PROFILE,
   FMRTE26_RCA_ARCHETYPES,
   getAttributeRcaWeight,
   getRcaEditionProfile,
-  RCA_EVIDENCE_REGISTRY,
   ZERO_COST_HIDDEN_TRAITS,
   ZERO_COST_PERSONALITY_TRAITS,
   ZERO_COST_VISIBLE_ATTRIBUTES,
@@ -32,7 +29,7 @@ function buildUniformAttributes(value: number, overrides: Partial<Record<Attribu
   return { ...out, ...overrides };
 }
 
-describe('FMRTE 26 RCA weight registry & provenance invariants', () => {
+describe('FMRTE 26 RCA reference weights', () => {
   it('matches exact non-zero weight sums and WeakerFoot weights from Ratings/rca.json (v24.4.0.35)', () => {
     const expected: Record<RcaArchetypeId, { sumAttr: number; wf: number; total: number }> = {
       Goalkeeper: { sumAttr: 114, wf: 3.0, total: 117.0 },
@@ -53,14 +50,6 @@ describe('FMRTE 26 RCA weight registry & provenance invariants', () => {
       expect(spec.weakerFootWeight).toBe(exp.wf);
       expect(spec.sumTotalWeights).toBe(exp.total);
     }
-
-    expect(FM2013_RCA_EDITION_PROFILE.weightSourceSha256).toBe(
-      'a378c8e0be5e268dc7ed2a2b932ed9d478f135976c0bf45788f77294b63d4ffa'
-    );
-    expect(FM2026_RCA_EDITION_PROFILE.weightSourceSha256).toBe(
-      'a378c8e0be5e268dc7ed2a2b932ed9d478f135976c0bf45788f77294b63d4ffa'
-    );
-    expect(RCA_EVIDENCE_REGISTRY.length).toBeGreaterThanOrEqual(7);
   });
 
   it('guarantees zero CA weight across all 10 archetypes for zero-cost visible, hidden, and personality traits', () => {

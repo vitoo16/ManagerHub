@@ -47,16 +47,6 @@ export type RcaZeroCostPersonalityTrait =
   | 'sportsmanship'
   | 'temperament';
 
-export interface RcaEvidenceRecord {
-  readonly id: string;
-  readonly artifact: string;
-  readonly version: string;
-  readonly sha256: string | null;
-  readonly method: string;
-  readonly status: RcaEpistemicStatus;
-  readonly summary: string;
-}
-
 export interface RcaArchetypeWeightSpec {
   readonly archetype: RcaArchetypeId;
   readonly weakerFootWeight: number;
@@ -70,7 +60,6 @@ export interface RcaEditionProfile {
   readonly edition: 'FM2013' | 'FM2026';
   readonly supportedBuilds: readonly string[];
   readonly settingsVersion: '24.4.0.35';
-  readonly weightSourceSha256: 'a378c8e0be5e268dc7ed2a2b932ed9d478f135976c0bf45788f77294b63d4ffa';
   readonly weightStatus: RcaEpistemicStatus;
   readonly formulaStatus: RcaEpistemicStatus;
   readonly compatibilityStatus: RcaCompatibilityStatus;

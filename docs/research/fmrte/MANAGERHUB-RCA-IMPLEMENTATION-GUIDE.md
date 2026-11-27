@@ -6,7 +6,6 @@ ManagerHub integrates multi-edition RCA analysis directly into the existing `@ma
 
 1. **Single `.fm` Load → Unified `SaveSession`:** Loading one `.fm` file populates `baseDecodedSave` (immutable) + `editorState` (transactional draft overlay) → `workingDecodedSave`, which feeds Classic Editor, Player Lab, Development Simulator, Recruitment Preview, Squad Planner, and Tactical Lab simultaneously.
 2. **Clean-Room Modular Domain Layer (`packages/domain/src/rca-*.ts`):**
-   - `RCA_EVIDENCE_REGISTRY` — Evidence registry in rca-evidence.ts; historical claims retained without invented artifact digest.
    - `FMRTE26_RCA_ARCHETYPES` — Reference 10-archetype weights in rca-weights.ts; no affine coefficients.
    - `FM2013_RCA_EDITION_PROFILE` & `FM2026_RCA_EDITION_PROFILE` — Profiles in rca-editions.ts; separate historical FM2013-only affine coefficients. FM26 reference-only; SW accepted only for FM2013 as DC fallback. Unknown build/edition fails closed.
    - `evaluateFootAbility(...)` — Pure weaker-foot (`min(leftFoot, rightFoot)`), preferred-foot, and positional `WeakerFoot` cost evaluator.
@@ -46,7 +45,7 @@ flowchart TD
 
 To register a new Football Manager edition (e.g., `FM2024` or a certified `FM2013` native formula):
 
-1. **Collect Primary Evidence:** Record exact binary/asset SHA-256 digests and REA Evidence IDs in `RCA_EVIDENCE_REGISTRY` (`packages/domain/src/rca-evidence.ts`) and the evidence index.
+1. **Collect primary evidence.** Record exact binary or asset digests and REA evidence IDs in the [research evidence index](RESEARCH-EVIDENCE-INDEX.md). Keep original artifacts in local evidence storage.
 2. **Define `RcaEditionProfile`:** Specify `profileId`, `edition`, `supportedBuilds`, `positionsSupported`, `positionArchetypeMap`, and `positionFallbackNotes`.
 3. **Keep `certifiedForAutoMatch: false` Until Proven:** Do not flip until independent exact-build numeric RCA observations, parity across positions/missingness/rounding, field-specific writer readback and game reload, consent gates and independent acceptance are all satisfied. Synthetic tests are insufficient.
 4. **Preserve `PA` Immutability:** Even when `certifiedForAutoMatch` is enabled for a profile, `autoMatchDecision.preservesPa` **must remain `true`** — `Auto Match CA` updates draft `actualCa` only and never alters `potentialAbility`.

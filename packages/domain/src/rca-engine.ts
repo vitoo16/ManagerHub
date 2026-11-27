@@ -9,7 +9,6 @@ import { FMRTE26_RCA_ARCHETYPES, ATTRIBUTE_GROUP_BY_KEY, referenceAttributeWeigh
   ZERO_COST_VISIBLE_ATTRIBUTES, ZERO_COST_HIDDEN_TRAITS, ZERO_COST_PERSONALITY_TRAITS } from './rca-weights';
 export { getRcaEditionProfile, FM2013_RCA_EDITION_PROFILE, FM2026_RCA_EDITION_PROFILE, FM2013_ADVISORY_COEFFICIENTS, FM2013_HISTORICAL_UNIVERSAL } from './rca-editions';
 export { FMRTE26_RCA_ARCHETYPES, ZERO_COST_VISIBLE_ATTRIBUTES, ZERO_COST_HIDDEN_TRAITS, ZERO_COST_PERSONALITY_TRAITS } from './rca-weights';
-export { RCA_EVIDENCE_REGISTRY } from './rca-evidence';
 
 const isValidAbility200 = (v: unknown): v is number =>
   typeof v === 'number' && Number.isInteger(v) && v >= 1 && v <= 200;
