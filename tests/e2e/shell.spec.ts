@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises';
 import { test, expect } from '@playwright/test';
 
 function makeSquadExport(additional: readonly (readonly [string,string])[] = []): string {
@@ -1826,6 +1827,12 @@ test('saved development assumptions survive panel navigation and support explici
   await library.getByRole('button', { name: 'Export scenario JSON' }).click();
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toBe('managerhub-development-scenario.json');
+  const exported = await readFile((await download.path())!);
+  const input = library.getByLabel('Import scenario JSON');
+  await input.setInputFiles({ name: 'scenario.json', mimeType: 'application/json', buffer: exported });
+  await expect(library.getByRole('status')).toContainText('Import rejected.');
+  await expect(library.getByRole('button', { name: 'Confirm scenario import' })).toHaveCount(0);
+
   const stored = await page.evaluate(() => {
     const key = Object.keys(localStorage).find(item => item.startsWith('mh.development.v1:'));
     return key ? localStorage.getItem(key) : null;
@@ -1838,5 +1845,11 @@ test('saved development assumptions survive panel navigation and support explici
   await library.getByRole('button', { name: 'Delete saved scenario' }).click();
   await expect(library.getByRole('button', { name: 'Renamed alternative', exact: true })).toHaveCount(0);
   await expect(library.getByRole('button', { name: 'Poacher plan', exact: true })).toBeVisible();
+  await expect(panel.getByRole('spinbutton', { name: 'Proposed Finishing', exact: true })).toHaveValue('18');
+  await input.setInputFiles({ name: 'scenario.json', mimeType: 'application/json', buffer: exported });
+  await expect(library.getByRole('button', { name: 'Confirm scenario import' })).toBeVisible();
+  await expect(library.getByRole('button', { name: 'Renamed alternative', exact: true })).toHaveCount(0);
+  await library.getByRole('button', { name: 'Confirm scenario import' }).click();
+  await expect(library.getByRole('button', { name: 'Renamed alternative', exact: true })).toBeVisible();
   await expect(panel.getByRole('spinbutton', { name: 'Proposed Finishing', exact: true })).toHaveValue('18');
 });

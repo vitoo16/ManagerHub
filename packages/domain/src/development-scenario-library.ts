@@ -6,7 +6,7 @@ import { localContentSha256 } from './local-content-hash';
 export const DEVELOPMENT_LIBRARY_SCHEMA = 'managerhub.development-library.v1' as const;
 export const DEVELOPMENT_STORAGE_PREFIX = 'mh.development.v1:';
 export const MAX_DEVELOPMENT_SCENARIOS = 20;
-const MAX_JSON = 64_000;
+export const MAX_DEVELOPMENT_JSON = 64_000;
 const MODEL = 'manual-role-what-if-v1' as const;
 const IMPORTANCE = 'managerhub-role-importance-v1' as const;
 const DIGEST = /^[a-f0-9]{64}$/u;
@@ -96,7 +96,7 @@ export function emptyDevelopmentLibrary(binding: DevelopmentBinding): Developmen
 
 export function decodeDevelopmentLibrary(raw: string | null, binding: DevelopmentBinding): DevelopmentLibrary {
   if (raw === null) return emptyDevelopmentLibrary(binding);
-  if (!raw.length || raw.length > MAX_JSON) throw new Error('invalid_development_library');
+  if (!raw.length || raw.length > MAX_DEVELOPMENT_JSON) throw new Error('invalid_development_library');
   const value: unknown = JSON.parse(raw);
   if (!exact(value, ['schema','model','importanceModel','scope','records']) ||
       value.schema !== DEVELOPMENT_LIBRARY_SCHEMA || value.model !== MODEL || value.importanceModel !== IMPORTANCE ||
@@ -131,4 +131,63 @@ export function restoreDevelopmentRecord(record: SavedDevelopmentScenario, bindi
 export function encodeDevelopmentLibrary(library: DevelopmentLibrary, binding: DevelopmentBinding): string {
   const raw = JSON.stringify(library);
   return JSON.stringify(decodeDevelopmentLibrary(raw, binding));
+}
+
+/** Merge only same-scope assumptions. Never restore, replace, or write any source data. */
+export function importDevelopmentLibrary(raw: string, current: DevelopmentLibrary, binding: DevelopmentBinding, player: Source): DevelopmentLibrary {
+  if (current.scope !== binding.scope) throw new Error('invalid_development_library');
+  const incoming = decodeDevelopmentLibrary(raw, binding);
+  const ids = new Set(current.records.map(record => record.id));
+  if (!incoming.records.length || current.records.length + incoming.records.length > MAX_DEVELOPMENT_SCENARIOS ||
+      incoming.records.some(record => ids.has(record.id))) throw new Error('invalid_development_library');
+  for (const record of incoming.records) {
+    // Older assumptions may be kept for explicit review, never restored without revalidation.
+    if (record.revision === binding.revision) restoreDevelopmentRecord(record, binding, player);
+  }
+  return { ...current, records: [...incoming.records, ...current.records] };
+}
+
+export interface DevelopmentRebaseRow {
+  readonly key: AttributeKey;
+  readonly current: number | null;
+  readonly previousTarget: number | null;
+  readonly proposed: number | null;
+  readonly status: 'retained' | 'satisfied' | 'locked' | 'missing';
+}
+
+/**
+ * Review absolute targets against the current visible source. The previous
+ * baseline is not stored; do not infer past values or apply relative changes.
+ */
+export function previewDevelopmentRebase(library: DevelopmentLibrary, recordId: string, binding: DevelopmentBinding, player: Source) {
+  const record = library.records.find(item => item.id === recordId);
+  if (library.scope !== binding.scope || !record) throw new Error('invalid_development_library');
+  if (record.revision === binding.revision) throw new Error('development_source_unchanged');
+  const scenario = canonicalScenario(record.scenario);
+  const overrides: Partial<Record<AttributeKey, number>> = {};
+  const rows: DevelopmentRebaseRow[] = [];
+  for (const [key, target] of Object.entries(scenario.overrides) as [AttributeKey, number][]) {
+    const current = player.attributes[key];
+    if (!rating(current)) {
+      rows.push({ key, current: null, previousTarget: target, proposed: null, status: 'missing' });
+    } else if (current >= target) {
+      rows.push({ key, current, previousTarget: target, proposed: current, status: 'satisfied' });
+    } else {
+      overrides[key] = target;
+      rows.push({ key, current, previousTarget: target, proposed: target, status: 'retained' });
+    }
+  }
+  for (const key of scenario.locked) {
+    const current = player.attributes[key];
+    rows.push({ key, current: rating(current) ? current : null, previousTarget: null,
+      proposed: rating(current) ? current : null, status: rating(current) ? 'locked' : 'missing' });
+  }
+  return { rows, scenario: rows.some(row => row.status === 'missing') ? null : { ...scenario, overrides } };
+}
+
+export function rebaseDevelopmentRecord(library: DevelopmentLibrary, recordId: string, binding: DevelopmentBinding, player: Source,
+  name: string, id: string, savedAt: string): SavedDevelopmentScenario {
+  const preview = previewDevelopmentRebase(library, recordId, binding, player);
+  if (!preview.scenario || library.records.some(item => item.id === id)) throw new Error('invalid_development_rebase');
+  return makeDevelopmentRecord(binding, player, preview.scenario, name, id, savedAt);
 }
