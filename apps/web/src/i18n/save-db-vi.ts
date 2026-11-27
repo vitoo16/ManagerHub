@@ -299,5 +299,14 @@ export default {
   "No personality data.": "Không có dữ liệu tính cách.",
   "No staff attribute data.": "Không có dữ liệu chỉ số nhân sự.",
   "No club finance data.": "Không có dữ liệu tài chính CLB.",
-  "Done": "Xong"
+  "Done": "Xong",
+  "FM2013 Coaching Star Ratings": "Xếp hạng sao huấn luyện FM2013",
+  "Aerobic": "Thể lực chạy",
+  "GK Shot Stopping": "Cản phá thủ môn",
+  "GK Handling": "Bắt bóng thủ môn",
+  "Tactics": "Chiến thuật",
+  "Ball Control": "Kiểm soát bóng",
+  "Defending": "Phòng ngự",
+  "Attacking": "Tấn công",
+  "Shooting": "Dứt điểm"
 } as const;

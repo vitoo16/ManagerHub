@@ -353,4 +353,72 @@ describe('FM2013 P0 integrity, mode-independent persistence, transactions, and l
     expect(derived.byteLength).toBe(32);
     expect(new DataView(derived.buffer).getUint16(8, true)).toBe(0x20);
   });
+
+  it('preserves PA, marketValueGbp (Price), and all unrelated raw member bytes across controlled CA increase & decrease cases (P0)', async () => {
+    const saveBytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+    const baseDb = await decodeFm2013Save(saveBytes, {
+      fileName: 'ca-controlled.fm',
+      signingKey: SYNTHETIC_TEST_HMAC_KEY
+    });
+
+    const beforeContainer = await parseFm2013Container(saveBytes);
+    const beforeMembers = new Map<string, Uint8Array>();
+    for (const member of beforeContainer.members) {
+      const raw = await extractFm2013Member(saveBytes, beforeContainer, member.filename);
+      if (raw) beforeMembers.set(member.filename, raw);
+    }
+
+    // Controlled CA increase (+12 on UID 10011) and decrease (-15 on UID 20001), leaving UID 20002 untouched
+    const p1 = baseDb.players.find(p => p.uid === 10011)!;
+    const p2 = baseDb.players.find(p => p.uid === 20001)!;
+    const p3 = baseDb.players.find(p => p.uid === 20002)!;
+    const nextCa1 = Math.min(200, p1.actualCa + 12);
+    const nextCa2 = Math.max(1, p2.actualCa - 15);
+
+    const written = await writePatchedFm2013Save(
+      saveBytes,
+      {
+        ...EMPTY_SAVE_DRAFT_OVERLAY,
+        players: {
+          [p1.uid]: { actualCa: nextCa1 },
+          [p2.uid]: { actualCa: nextCa2 }
+        }
+      },
+      { signingKey: SYNTHETIC_TEST_HMAC_KEY, outputFileName: 'ca-controlled-edited.fm' }
+    );
+
+    const afterContainer = await parseFm2013Container(written.bytes);
+    let totalPayloadDiffBytes = 0;
+    for (const [name, beforeRaw] of beforeMembers.entries()) {
+      const afterRaw = (await extractFm2013Member(written.bytes, afterContainer, name))!;
+      expect(afterRaw.length).toBe(beforeRaw.length);
+      // game_db.dat ends with a 64-byte HMAC-SHA512 trailer that updates whenever any database byte changes
+      const payloadEnd = name === 'game_db.dat' && beforeRaw.length > 64 ? beforeRaw.length - 64 : beforeRaw.length;
+      for (let i = 0; i < payloadEnd; i++) {
+        if (beforeRaw[i] !== afterRaw[i]) totalPayloadDiffBytes += 1;
+      }
+    }
+    // Across ALL decompressed archive member payloads (excluding the 64-byte HMAC trailer), ONLY the 2 uint16 CA fields (at most 4 bytes) may differ
+    expect(totalPayloadDiffBytes).toBeGreaterThan(0);
+    expect(totalPayloadDiffBytes).toBeLessThanOrEqual(4);
+
+    // Re-decode and verify PA invariance, marketValueGbp (Price) invariance, and untouched player identity
+    const afterDb = await decodeFm2013Save(written.bytes, {
+      fileName: 'ca-controlled-edited.fm',
+      signingKey: SYNTHETIC_TEST_HMAC_KEY
+    });
+    const afterP1 = afterDb.players.find(p => p.uid === p1.uid)!;
+    const afterP2 = afterDb.players.find(p => p.uid === p2.uid)!;
+    const afterP3 = afterDb.players.find(p => p.uid === p3.uid)!;
+
+    expect(afterP1.actualCa).toBe(nextCa1);
+    expect(afterP1.potentialAbility).toBe(p1.potentialAbility);
+    expect(afterP1.marketValueGbp).toBe(p1.marketValueGbp);
+
+    expect(afterP2.actualCa).toBe(nextCa2);
+    expect(afterP2.potentialAbility).toBe(p2.potentialAbility);
+    expect(afterP2.marketValueGbp).toBe(p2.marketValueGbp);
+
+    expect(afterP3).toEqual(p3);
+  });
 });

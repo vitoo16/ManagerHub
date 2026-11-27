@@ -1,4 +1,6 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { evaluateFm2013StaffCoaching } from '@managerhub/domain';
 import type { DecodedSaveDatabase, StaffDraftPatch } from '@managerhub/domain/fm2013-offline';
 import { EditorNumberField } from './EditorNumberField';
 import { AttributePropertyGroup } from '@managerhub/ui';
@@ -20,6 +22,7 @@ interface Props {
 
 export function StaffEditorRecord({ staffMember, applyStaffField }: Props) {
   const { t } = useTranslation();
+  const coaching = useMemo(() => evaluateFm2013StaffCoaching(staffMember.attributes), [staffMember.attributes]);
   return <EditorRecordSections label="Staff editor sections" items={STAFF_SECTIONS}>
       {recordSection => <>
         {recordSection === 'general' && <div className="editor-section">
@@ -36,6 +39,19 @@ export function StaffEditorRecord({ staffMember, applyStaffField }: Props) {
         value={staffMember.weeklyWageGbp} onChange={value => applyStaffField('Edit Staff Wage', { weeklyWageGbp: value })}/>
         )}
         </div>
+        {coaching && (
+          <div className="editor-section">
+            <h3>{t('FM2013 Coaching Star Ratings')} (DDM: {coaching.ddm}/60)</h3>
+            <div className="editor-field-grid editor-field-grid--compact">
+              {coaching.categories.map(cat => (
+                <div key={cat.id} className="insight-line">
+                  <span>{t(cat.label)}</span>
+                  <strong>{cat.stars.toFixed(1)}★</strong>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         </div>}
         {recordSection === 'attributes' && (staffMember.attributes ? (
         <AttributePropertyGroup
