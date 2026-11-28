@@ -1,5 +1,6 @@
 import { ATTRIBUTE_GROUPS, type AttributeKey, type PlayerDataset, type PlayerExport } from '../player-import';
 import type { EvidenceField } from '../types';
+import type { SaveDraftOverlay } from './editor-transactions';
 import {
   DECODED_SAVE_DB_SCHEMA_VERSION,
   type DecodedHiddenPlayingAttributes,
@@ -180,7 +181,7 @@ export function projectSavePlayer(player: DecodedSavePlayer, source: DecodedSave
 export function saveDatabaseToPlayerDataset(
   db: DecodedSaveDatabase,
   mode: DecodedSaveMode,
-  options: { readonly clubUid?: number | null } = {}
+  options: { readonly clubUid?: number | null; readonly draft?: SaveDraftOverlay | null } = {}
 ): PlayerDataset {
   const clubUid = options.clubUid ?? null;
   const filtered = clubUid !== null
@@ -190,7 +191,16 @@ export function saveDatabaseToPlayerDataset(
     ? db.clubs.find(c => c.uid === clubUid) ?? null
     : null;
 
-  const players = filtered.map(player => projectSavePlayer(player, db.source, mode));
+  const players = filtered.map(player => {
+    const projected = projectSavePlayer(player, db.source, mode);
+    const draft = mode === 'editor' ? options.draft?.players[player.uid] : undefined;
+    if (!draft) return projected;
+    return {
+      ...projected,
+      ...(draft.actualCa !== undefined && { draftCa: true as const }),
+      ...(draft.potentialAbility !== undefined && { draftPa: true as const })
+    };
+  });
 
   const warnings: string[] = [];
   if (mode === 'realism') {

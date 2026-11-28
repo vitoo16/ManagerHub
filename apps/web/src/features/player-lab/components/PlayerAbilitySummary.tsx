@@ -24,9 +24,9 @@ function PlayerAbilitySummary({
   return <>
     <div className="scout-metrics">
       <div>
-        <span>{t("Actual CA")}</span>
+        <span>{t(player?.draftCa ? 'Draft CA' : 'Actual CA')}</span>
         <strong>{showCaPa ? player.actualCa : '—'}</strong>
-        <small>{t(showCaPa ? player.verification === 'verified' ? 'Decoded from save · Verified' : 'Research-only decode · Not independently verified' : isRedactedRealism ? 'Hidden in Realism mode' : 'Not verified')}</small>
+        <small>{t(showCaPa ? player.draftCa ? 'Unsaved draft value' : player.verification === 'verified' ? 'Decoded from save · Verified' : 'Research-only decode · Not independently verified' : isRedactedRealism ? 'Hidden in Realism mode' : 'Not verified')}</small>
       </div>
       <div>
         <span>{t("Attribute summary")}</span>
@@ -39,9 +39,9 @@ function PlayerAbilitySummary({
         <small>{topRole?.title ? t(topRole.title) : t('Insufficient data')}</small>
       </div>
       <div>
-        <span>PA</span>
+        <span>{player?.draftPa ? t('Draft PA') : 'PA'}</span>
         <strong>{showCaPa ? player.potentialAbility : '—'}</strong>
-        <small>{t(showCaPa ? player.verification === 'verified' ? 'Decoded from save · Verified' : 'Research-only decode · Not independently verified' : isRedactedRealism ? 'Hidden in Realism mode' : 'Not verified')}</small>
+        <small>{t(showCaPa ? player.draftPa ? 'Unsaved draft value' : player.verification === 'verified' ? 'Decoded from save · Verified' : 'Research-only decode · Not independently verified' : isRedactedRealism ? 'Hidden in Realism mode' : 'Not verified')}</small>
       </div>
     </div>
     <details className="ca-guide">

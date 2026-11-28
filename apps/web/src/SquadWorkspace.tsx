@@ -1,5 +1,6 @@
 import { lazy, memo, Suspense, useId, useMemo, useState, type Dispatch, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { OpenPlayerDataset } from './usePlayerLibrary';
 import { FORMATIONS, type PlayerDataset, type SquadPlanKey, type SquadPlans, type TacticalScenarios } from '@managerhub/domain';
 import type { DecodedSaveDatabase } from '@managerhub/domain/fm2013-offline';
 import { Icon, SectionHeading, SectionTabs, Status, Surface } from '@managerhub/ui';
@@ -51,7 +52,7 @@ function SquadWorkspaceView({
   dataset: PlayerDataset | null;
   onImport: () => void;
   onOpenSaves?: () => void;
-  onDataset: (dataset: PlayerDataset) => void;
+  onDataset: OpenPlayerDataset;
   plans: SquadPlans;
   setPlans: Dispatch<SetStateAction<SquadPlans>>;
   active: SquadPlanKey;

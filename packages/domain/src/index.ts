@@ -5,7 +5,7 @@ export * from './features';
 export * from './archive';
 export * from './player-import';
 export * from './player-analysis';
-export * from './rca-engine';
+export type * from './rca-types';
 export * from './staff-training';
 export * from './ability-budget';
 export * from './player-development';

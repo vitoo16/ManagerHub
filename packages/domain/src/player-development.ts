@@ -86,11 +86,7 @@ export function evaluateDevelopmentScenario(
   const advisoryRcaAfter = rcaAfter?.advisoryRca ?? null;
   const advisoryRcaDelta =
     advisoryRcaBefore !== null && advisoryRcaAfter !== null ? advisoryRcaAfter - advisoryRcaBefore : null;
-  const advisoryExceedsPa =
-    typeof player.potentialAbility === 'number' &&
-    Number.isInteger(player.potentialAbility) &&
-    advisoryRcaAfter !== null &&
-    advisoryRcaAfter > player.potentialAbility;
+  const advisoryExceedsPa = rcaAfter?.exceedsPotentialAbility ?? false;
 
   return {
     model: 'manual-role-what-if-v1' as const,

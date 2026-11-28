@@ -1,5 +1,17 @@
 # PR #120 — Phase A remediation and development verification
 
+## Windows follow-up
+
+The Windows review started from `b837d725f72b1892c21e3af4512a77b6320916d8`, 38 commits ahead of `23cecd4907ab6ad648bb947186bc8cd68872b258` and zero behind. The full PR had 141 changed files. The previous Windows Release receipt for `4acade4` passed all ten stages and all ten log digests matched. That receipt applies to its own commit.
+
+The standards and specification reviewers identified malformed decoded manager and hidden-trait records, stale export activation, missing batch-preset confirmation, incorrect labels for draft CA/PA, and an overly broad experimental writer gate. The follow-up validates nested records and reattachment dates, orders asynchronous export loads relative to save selection, previews bulk presets before applying them, and labels CA/PA draft values in Editor. Advisory RCA remains scoped to Editor-facing entry points and scenario warnings use the evaluator's PA validity rules. Coaching stars are labeled as estimates.
+
+The production browser exposes Save As preview. Experimental copy generation is restricted to local development on saves whose metadata identifies the exact `13.3.3f359652` build, with source authentication and an explicit download action. The validated read profiles and source files remain usable for read and draft workflows. This restriction establishes no field-specific writer certification.
+
+Windows real-save browser checks exercised a verified-read `13.3.3` career save and a distinct authentic FM2013 tutorial save with a provisional game-db version. Desktop and mobile checks covered one decode on first open, workspace navigation, record browsing, a CA draft and its Player Lab projection, Undo/Redo, Realism transitions, Save As preview, cancellation during a second decode, switching saves and draft isolation. Both original SHA-256 digests remained stable. Source files and screenshots are stored privately. Real-game writer readback and field certification remain separate gates.
+
+The sections below record the earlier Linux pass.
+
 Date: 2026-11-28. Status: **implementation candidate; awaiting independent review and Windows acceptance**. This is an engineering review record, not certification, an independent reviewer approval, or a feature-acceptance ledger promotion.
 
 ## 1. Candidate provenance

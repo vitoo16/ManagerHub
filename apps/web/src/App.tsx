@@ -1,6 +1,6 @@
 import { setAppLocale } from './i18n';
 import { useTranslation } from 'react-i18next';
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createDefaultSquadPlans, type SquadPlanKey, type SquadPlans } from '@managerhub/domain/squad-scenarios';
 import { defaultTacticalScenarios, tacticalScenarioForFormation } from '@managerhub/domain/tactical-state';
 import type { TacticalScenarios } from '@managerhub/domain/tactical-scenarios';
@@ -22,6 +22,7 @@ import { readableSaveInspectionError } from './i18n/save-inspection-copy';
 import { registerSaveDbI18n } from './i18n/register-save-db-i18n';
 import { SaveDecodeProgress } from './features/save-session/SaveDecodeProgress';
 import { useDialogFocus } from './useDialogFocus';
+import type { OpenPlayerDataset } from './usePlayerLibrary';
 import './app.css';
 
 registerSaveDbI18n();
@@ -181,6 +182,7 @@ export default function App() {
   const [decodeNotice, setDecodeNotice] = useState<string | null>(null);
   const inspectionAbortRef = useRef<AbortController | null>(null);
   const inspectionRevisionRef = useRef(0);
+  const exportRequestRef = useRef(0);
   const openPendingRef = useRef(false);
   const writePendingRef = useRef(false);
   const langRequestRef = useRef(0);
@@ -223,14 +225,14 @@ export default function App() {
   );
 
   const squadDataset = useMemo(() => activeDecodedSave && offlineTools
-    ? offlineTools.saveDatabaseToPlayerDataset(activeDecodedSave, saveMode, { clubUid: managedClubUid })
+    ? offlineTools.saveDatabaseToPlayerDataset(activeDecodedSave, saveMode, { clubUid: managedClubUid, draft: draftOverlay })
     : exportedDataset,
-  [activeDecodedSave, offlineTools, saveMode, managedClubUid, exportedDataset]);
+  [activeDecodedSave, offlineTools, saveMode, managedClubUid, draftOverlay, exportedDataset]);
 
   const playerLabDataset = useMemo(() => activeDecodedSave && offlineTools
-    ? offlineTools.saveDatabaseToPlayerDataset(activeDecodedSave, saveMode, { clubUid: playerLabClubFilterUid })
+    ? offlineTools.saveDatabaseToPlayerDataset(activeDecodedSave, saveMode, { clubUid: playerLabClubFilterUid, draft: draftOverlay })
     : exportedDataset,
-  [activeDecodedSave, offlineTools, saveMode, playerLabClubFilterUid, exportedDataset]);
+  [activeDecodedSave, offlineTools, saveMode, playerLabClubFilterUid, draftOverlay, exportedDataset]);
 
   const activeRawSaveFile = activeSaveId ? (rawSaveFiles[activeSaveId] ?? null) : null;
   const effectiveSigningKey = runtimeSigningKey;
@@ -270,6 +272,8 @@ export default function App() {
       t('You have unsaved draft edits on the active save. Discard pending changes and continue?')
     );
   }, [dirtyEntityCount, t]);
+  const confirmDiscardRef = useRef(confirmDiscardIfDirty);
+  useLayoutEffect(() => { confirmDiscardRef.current = confirmDiscardIfDirty; }, [confirmDiscardIfDirty]);
 
   const onCancelDecode = useCallback(() => {
     inspectionRevisionRef.current += 1;
@@ -280,9 +284,14 @@ export default function App() {
     setDecodeProgress(null);
   }, []);
 
-  const onPlayerDatasetChange = useCallback((next: PlayerDataset | null) => {
-    if (writePendingRef.current || next?.source === 'decoded_save') return;
-    if (!confirmDiscardIfDirty()) return;
+  const onPlayerDatasetChange = useCallback<OpenPlayerDataset>(async load => {
+    if (writePendingRef.current || openPendingRef.current) return false;
+    const revision = inspectionRevisionRef.current;
+    const request = ++exportRequestRef.current;
+    const next = load ? await load() : null;
+    if (request !== exportRequestRef.current || revision !== inspectionRevisionRef.current ||
+        writePendingRef.current || (load && !next) || next?.source === 'decoded_save' ||
+        !confirmDiscardRef.current()) return false;
     onCancelDecode();
     setLangDbLookup(null);
     setRuntimeSigningKey(null);
@@ -291,7 +300,8 @@ export default function App() {
     setSession(current => ({ ...current, source: next ? { kind: 'export', dataset: next } : null }));
     resetSquadSessionState();
     resetPlayerLabSessionState();
-  }, [confirmDiscardIfDirty, onCancelDecode, resetSquadSessionState, resetPlayerLabSessionState]);
+    return true;
+  }, [onCancelDecode, resetSquadSessionState, resetPlayerLabSessionState]);
 
   const loadOfflineTools = useCallback(
     (): Promise<OfflineDomainModule> => import('@managerhub/domain/fm2013-offline'), []
@@ -490,7 +500,8 @@ export default function App() {
   }, [saveSource, loadOfflineTools]);
 
   const onAuthorizeFmExe = useCallback(async (file: File) => {
-    if (!saveSource || !activeRawSaveFile || saveMode !== 'editor' ||
+    if (!import.meta.env.DEV || !saveSource || !activeRawSaveFile || saveMode !== 'editor' ||
+        saveSource.baseDatabase.source.build !== saveSource.tools.FM2013_EXPERIMENTAL_WRITE_BUILD ||
         saveSource.baseDatabase.source.compatibilityStatus !== 'verified' || openPendingRef.current || writePendingRef.current) return;
     const revision = inspectionRevisionRef.current;
     const request = ++authorizationRequestRef.current;
@@ -516,7 +527,7 @@ export default function App() {
   }, [saveSource, activeRawSaveFile, saveMode, loadOfflineTools]);
 
   const onSaveAsFm = useCallback(async (outputFileName: string) => {
-    if (saveMode !== 'editor' || openPendingRef.current || writePendingRef.current ||
+    if (!import.meta.env.DEV || saveMode !== 'editor' || openPendingRef.current || writePendingRef.current ||
         !saveSource || !baseDecodedSave || !activeRawSaveFile || !effectiveSigningKey) return;
     writePendingRef.current = true;
     const revision = inspectionRevisionRef.current;

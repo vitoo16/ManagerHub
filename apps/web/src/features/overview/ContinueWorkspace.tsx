@@ -2,11 +2,11 @@ import { memo, useCallback, useEffect, useRef, useState, type ReactNode } from '
 import { useTranslation } from 'react-i18next';
 import type { PlayerDataset, WorkspaceKey } from '@managerhub/domain';
 import { Button, Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
-import { usePlayerLibrary } from '../../usePlayerLibrary';
+import { usePlayerLibrary, type OpenPlayerDataset } from '../../usePlayerLibrary';
 
 type Props = {
   readonly current: PlayerDataset | null;
-  readonly onDataset: (dataset: PlayerDataset) => void;
+  readonly onDataset: OpenPlayerDataset;
   readonly go: (key: WorkspaceKey) => void;
 };
 
@@ -28,10 +28,12 @@ function ContinueWorkspace({ current, onDataset, go }: Props) {
     setOpeningId(id);
     setOpenError(false);
     try {
-      const dataset = await library.open(id);
+      const opened = await onDataset(async () => {
+        const dataset = await library.open(id);
+        return mountedRef.current ? dataset : null;
+      });
       if (!mountedRef.current) return;
-      if (dataset) {
-        onDataset(dataset);
+      if (opened) {
         go('squad');
       } else {
         setOpenError(true);

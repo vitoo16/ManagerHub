@@ -41,6 +41,7 @@ test('complete offline FM2013 save workflow: decode, explore, Realism/Editor iso
   const saveBytes = await buildSyntheticFm2013Save({
     compressed: true,
     family: 'afe',
+    gameVersion: '13.3.3f359652',
     managerName: 'Alex Mercer'
   });
 
@@ -308,6 +309,7 @@ test('P0 unified SaveSession (S01-S08): non-remounting continuity, decoupled clu
   const saveBytes = await buildSyntheticFm2013Save({
     compressed: true,
     family: 'afe',
+    gameVersion: '13.3.3f359652',
     managerName: 'Alex Mercer'
   });
   const langDbBytes = await buildSyntheticFm2013LangDb();
@@ -805,6 +807,16 @@ test('advanced club mass edit previews exact targets and skips unchanged or unav
   await toolbar.getByRole('button', { name: 'Editor mode' }).click();
   await toolbar.getByRole('button', { name: 'Presets & Mass Edit' }).click();
   const dialog = page.getByRole('dialog');
+  const undo = toolbar.getByRole('button', { name: 'Undo last edit' });
+  await dialog.getByRole('button', { name: 'Inspire squad' }).click();
+  await expect(dialog.getByRole('heading', { name: /Preset change preview/ })).toBeVisible();
+  await expect(undo).toBeDisabled();
+  await dialog.getByRole('button', { name: 'Cancel', exact: true }).click();
+  await expect(undo).toBeDisabled();
+  await dialog.getByRole('button', { name: 'Inspire squad' }).click();
+  await dialog.getByRole('button', { name: 'Apply preset to draft' }).click();
+  await expect(undo).toBeEnabled();
+  await undo.click();
   await dialog.getByRole('tab', { name: 'Club fields' }).click();
   await dialog.getByLabel('Field to change').selectOption('balanceGbp');
   await dialog.getByLabel('New integer value').fill('120000000');

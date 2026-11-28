@@ -5,7 +5,7 @@ import { parsePlayerFile } from '../../../parse-player-file';
 
 const MAX_EXPORT_BYTES = 12 * 1024 * 1024;
 
-export function usePlayerImport(onImport: (dataset: PlayerDataset) => void) {
+export function usePlayerImport(onImport: (load: () => Promise<PlayerDataset>) => Promise<void>) {
   const [error, setError] = useState<string | null>(null);
   const [importing, setImporting] = useState(false);
 
@@ -23,8 +23,7 @@ export function usePlayerImport(onImport: (dataset: PlayerDataset) => void) {
       if (!file.size || file.size > MAX_EXPORT_BYTES) {
         throw new Error('Player export must be between 1 byte and 12 MB.');
       }
-      const parsed = await parsePlayerFile(file);
-      onImport(parsed);
+      await onImport(() => parsePlayerFile(file));
     } catch (cause) {
       setError(readableImportError(cause));
     } finally {

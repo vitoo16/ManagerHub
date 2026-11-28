@@ -79,6 +79,9 @@ function DevelopmentWorkbench({ player, edition, build, sourceId, visibility }: 
             <strong>{result.advisoryRcaBefore} → {result.advisoryRcaAfter} ({result.advisoryRcaDelta !== null && result.advisoryRcaDelta > 0 ? `+${result.advisoryRcaDelta}` : String(result.advisoryRcaDelta ?? '—')})</strong>
           </div>
         )}
+        {visibility === 'editor' && result.advisoryExceedsPa && (
+          <p className="module-disclaimer" role="status">{t('Scenario Advisory RCA exceeds Potential Ability (PA).')}</p>
+        )}
         <div className="insight-line"><span>{t('Attribute coverage')}</span><strong>{Math.round(result.before.coverage * 100)}%</strong></div>
         <div className="editor-diff-wrap"><table className="compare-table development-table" aria-label={t('Development attribute assumptions')}>
           <thead><tr><th scope="col">{t('Attributes')}</th><th scope="col">{t('Current')}</th><th scope="col">{t('Proposed')}</th><th scope="col">{t('Change')}</th>{visibility === 'editor' && <th scope="col">{t('RCA weight')}</th>}<th scope="col">{t('Priority')}</th><th scope="col">{t('Lock')}</th></tr></thead>

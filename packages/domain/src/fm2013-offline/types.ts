@@ -3,6 +3,7 @@ import type { EvidenceField } from '../types';
 
 export const DECODED_SAVE_DB_SCHEMA_VERSION = 1 as const;
 export const FM2013_OFFLINE_ADAPTER_VERSION = 'fm2013-offline-1.0.0' as const;
+export const FM2013_EXPERIMENTAL_WRITE_BUILD = '13.3.3f359652' as const;
 export const FM2013_MIN_GAME_DB_VERSION = 0x757;
 export const FM2013_MAX_GAME_DB_VERSION = 0x774;
 export const OBSERVED_FM2013_GAME_DB_VERSIONS = [

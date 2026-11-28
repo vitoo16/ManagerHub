@@ -41,7 +41,8 @@ export function StaffEditorRecord({ staffMember, applyStaffField }: Props) {
         </div>
         {coaching && (
           <div className="editor-section">
-            <h3>{t('FM2013 Coaching Star Ratings')} (DDM: {coaching.ddm}/60)</h3>
+            <h3>{t('Coaching star estimates')} (DDM: {coaching.ddm}/60)</h3>
+            <p className="module-disclaimer">{t('Community formula for FM2013. Numeric parity has not been independently verified.')}</p>
             <div className="editor-field-grid editor-field-grid--compact">
               {coaching.categories.map(cat => (
                 <div key={cat.id} className="insight-line">

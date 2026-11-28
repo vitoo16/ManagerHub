@@ -18,6 +18,8 @@ export type AttributeKey =
   | 'throwing' | 'punching' | 'tendencyToPunch';
 
 export interface PlayerExport {
+  readonly draftCa?: true;
+  readonly draftPa?: true;
   readonly id: string;                   // import-local or save-scoped identity
   readonly name: string;
   readonly position: string | null;

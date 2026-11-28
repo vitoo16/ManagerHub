@@ -8,7 +8,10 @@ export function AbilityBudgetFields({ edition, build, ca, pa, playerContext = nu
   readonly build: string | null;
   readonly ca: number | null | undefined;
   readonly pa: number | null | undefined;
-  readonly playerContext?: Omit<RcaPlayerInput, 'actualCa' | 'potentialAbility'> | null;
+  readonly playerContext?: (Omit<RcaPlayerInput, 'actualCa' | 'potentialAbility'> & {
+    readonly draftCa?: true;
+    readonly draftPa?: true;
+  }) | null;
   readonly editor?: boolean;
 }) {
   const { t } = useTranslation();
@@ -19,8 +22,8 @@ export function AbilityBudgetFields({ edition, build, ca, pa, playerContext = nu
   if (visibility !== 'editor') return null;
   return <div className="ability-budget">
     {!editor && <>
-      <div className="insight-line"><span>{t('Actual CA')}</span><strong>{ca ?? '—'}</strong></div>
-      <div className="insight-line"><span>{t('Actual PA')}</span><strong>{pa ?? '—'}</strong></div>
+      <div className="insight-line"><span>{t(playerContext?.draftCa ? 'Draft CA' : 'Actual CA')}</span><strong>{ca ?? '—'}</strong></div>
+      <div className="insight-line"><span>{t(playerContext?.draftPa ? 'Draft PA' : 'Actual PA')}</span><strong>{pa ?? '—'}</strong></div>
     </>}
     <div className="insight-line"><span>{t('Recommended CA')}</span><strong>{t('Not verified')}</strong></div>
     {rca && <RcaModelDisclosure report={rca}/>}

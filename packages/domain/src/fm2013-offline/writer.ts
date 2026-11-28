@@ -30,6 +30,7 @@ import { parseFm2013GameDb, type GameDbEditableOffsetMap } from './game-db-parse
 import { computeSha256Hex, decodeFm2013Save } from './index';
 import {
   FM2013DecodeError,
+  FM2013_EXPERIMENTAL_WRITE_BUILD,
   type DecodedHiddenPlayingAttributes,
   type DecodedPersonalityAttributes,
   type DecodedPositionRatings,
@@ -432,10 +433,10 @@ export async function writePatchedFm2013Save(
     edition: summary?.gameVersion ? 'FM2013' : null,
     build: summary?.gameVersion ?? null
   });
-  if (compat.status !== 'verified') {
+  if (compat.status !== 'verified' || summary?.gameVersion !== FM2013_EXPERIMENTAL_WRITE_BUILD) {
     throw new FM2013DecodeError(
       'UNSUPPORTED_WRITE_TARGET',
-      `Refusing to write unverified FM2013 save build "${summary?.gameVersion ?? 'unknown'}" (${compat.status}).`
+      `Experimental Save As requires FM2013 ${FM2013_EXPERIMENTAL_WRITE_BUILD}; source reports ${summary?.gameVersion ?? 'unknown'}.`
     );
   }
 

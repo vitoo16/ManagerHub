@@ -7,6 +7,7 @@ import {
   buildMassEditStaffOverlay,
   buildMassEditClubsOverlay,
   buildPlayerPresetPatch,
+  FM2013_EXPERIMENTAL_WRITE_BUILD,
   summarizeDraftChanges,
   type ClubDraftPatch,
   type ClubSquadPresetKind,
@@ -86,8 +87,17 @@ function SaveEntityEditorModal({
   useDialogFocus(dialogRef, !embedded, '.editor-record-tab__select[aria-pressed="true"]');
   const browsing = initialTarget.kind === 'browse' || isRecordTarget(initialTarget);
   const target = browsing ? recordState?.active ?? initialTarget : initialTarget;
+  const writerBuildSupported = import.meta.env.DEV && baseDatabase.source.compatibilityStatus === 'verified' &&
+    baseDatabase.source.build === FM2013_EXPERIMENTAL_WRITE_BUILD;
   const [diffPage, setDiffPage] = useState(0);
   const [outputName, setOutputName] = useState(() => buildEditedSaveFileName(baseDatabase.source.fileName));
+  const [presetPreview, setPresetPreview] = useState<{
+    readonly target: EditorViewTarget;
+    readonly base: SaveDraftOverlay;
+    readonly next: SaveDraftOverlay;
+    readonly label: string;
+    readonly changes: ReturnType<typeof summarizeDraftChanges>;
+  } | null>(null);
 
   useEffect(() => {
     if (embedded) return;
@@ -111,10 +121,12 @@ function SaveEntityEditorModal({
     ? workingDatabase.stadiums.find(st => st.uid === target.uid) ?? null
     : null;
 
-  const diffEntries = useMemo(
+  const saveAsEntries = useMemo(
     () => target.kind === 'save_as' ? summarizeDraftChanges(baseDatabase, overlay) : [],
     [baseDatabase, overlay, target.kind]
   );
+  const preview = presetPreview?.base === overlay && presetPreview.target === target ? presetPreview : null;
+  const diffEntries = preview?.changes ?? saveAsEntries;
 
   const diffRange = reportPage(diffEntries.length, diffPage, 50);
 
@@ -140,7 +152,10 @@ function SaveEntityEditorModal({
   };
 
   const applyClubPreset = (targetClubUid: number, preset: ClubSquadPresetKind, label: string) => {
-    onCommitOverlay(label, cur => buildClubSquadPresetOverlay(baseDatabase, cur, targetClubUid, preset));
+    const next = buildClubSquadPresetOverlay(baseDatabase, overlay, targetClubUid, preset);
+    const changes = summarizeDraftChanges(workingDatabase, next).filter(change => change.before !== change.after);
+    setDiffPage(0);
+    setPresetPreview({ target, base: overlay, next, label, changes });
   };
 
   const applyStadiumField = (label: string, patch: StadiumDraftPatch) => {
@@ -250,39 +265,46 @@ function SaveEntityEditorModal({
 
         {target.kind === 'save_as' && (
           <div className="editor-section">
-            {baseDatabase.source.compatibilityStatus !== 'verified' && <p role="alert" className="inline-alert">{t('Save As is unavailable for this unverified read profile.')}</p>}
+            {!writerBuildSupported && <p role="status" className="inline-alert">{import.meta.env.DEV
+              ? t('Experimental Save As requires the exact FM2013 build {{build}}.', { build: FM2013_EXPERIMENTAL_WRITE_BUILD })
+              : t('Save As preview is available. Export requires a certified native writer.')}</p>}
             <div className="editor-presets">
-              <Status tone={writerKeyReady ? 'positive' : 'warning'}>
+              {writerBuildSupported && <Status tone={writerKeyReady ? 'positive' : 'warning'}>
                 {t(writerKeyReady ? 'HMAC-SHA512 signing key ready' : 'Local fm.exe authorization required')}
-              </Status>
+              </Status>}
               <span>
                 {t('Original SHA-256')}: <code className="mono">{baseDatabase.source.sha256.slice(0, 16)}…</code> ({t('never modified')})
               </span>
-              {!writerKeyReady && hasRawSaveBytes && baseDatabase.source.compatibilityStatus === 'verified' && (
+              {!writerKeyReady && hasRawSaveBytes && writerBuildSupported && (
                 <Button type="button" variant="primary" onClick={() => exeInputRef.current?.click()}>
                   {t('Select FM2013 fm.exe (13.3.3f359652)')}
                 </Button>
               )}
             </div>
 
-            {!hasRawSaveBytes && (
+            {writerBuildSupported && !hasRawSaveBytes && (
               <div className="inline-alert" role="alert">
                 {t('This save was restored without its original .fm bytes. Close this dialog and select the original .fm in the active save toolbar. Matching content preserves all draft edits.')}
               </div>
             )}
 
-            <label className="editor-field">
+            {writerBuildSupported && <label className="editor-field">
               <span>{t('New Save As .fm filename')}</span>
               <input
                 type="text"
                 value={outputName}
                 onChange={e => setOutputName(e.target.value)}
               />
-            </label>
+            </label>}
 
-            <h3>{t('Pending field changes')} ({diffEntries.length})</h3>
+          </div>
+        )}
+
+        {(target.kind === 'save_as' || preview) && (
+          <div className="editor-section">
+            <h3>{t(preview ? 'Preset change preview' : 'Pending field changes')} ({diffEntries.length})</h3>
             {diffEntries.length === 0 ? (
-              <p className="save-db-mode-note">{t('No draft changes yet — export creates a byte-identical copy after source validation.')}</p>
+              <p className="save-db-mode-note">{t(preview ? 'No values would change.' : 'No draft changes yet.')}</p>
             ) : (
               <div className="editor-diff-wrap">
                 <table className="save-db-table">
@@ -310,6 +332,13 @@ function SaveEntityEditorModal({
               </div>
             )}
             <ReportPagination label={t('Pending field changes')} range={diffRange} onChange={setDiffPage}/>
+            {preview && <div className="save-db-actions">
+              <Button type="button" variant="quiet" onClick={() => setPresetPreview(null)}>{t('Cancel')}</Button>
+              <Button type="button" variant="primary" disabled={diffEntries.length === 0} onClick={() => {
+                onCommitOverlay(preview.label, current => current === preview.base ? preview.next : current);
+                setPresetPreview(null);
+              }}>{t('Apply preset to draft')}</Button>
+            </div>}
           </div>
         )}
 
@@ -334,7 +363,7 @@ function SaveEntityEditorModal({
               <Button
                 type="button"
                 variant="primary"
-                disabled={baseDatabase.source.compatibilityStatus !== 'verified' || !hasRawSaveBytes || !writerKeyReady || writingSave}
+                disabled={!writerBuildSupported || !hasRawSaveBytes || !writerKeyReady || writingSave}
                 onClick={() => onSaveAsFm(outputName)}
               >
                 <Icon name="download" size={15} />

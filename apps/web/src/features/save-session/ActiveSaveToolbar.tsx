@@ -1,6 +1,6 @@
 import { memo, useId, useMemo, useRef, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { DecodedSaveDatabase, DecodedSaveMode } from '@managerhub/domain/fm2013-offline';
+import { FM2013_EXPERIMENTAL_WRITE_BUILD, type DecodedSaveDatabase, type DecodedSaveMode } from '@managerhub/domain/fm2013-offline';
 import { Button, Icon, Status, Surface } from '@managerhub/ui';
 import { registerSaveDbI18n } from '../../i18n/register-save-db-i18n';
 import './save-session.css';
@@ -247,7 +247,7 @@ function ActiveSaveToolbar({
           >
             {t(database.source.langDbAttached ? 'Update lang_db.dat' : 'Attach lang_db.dat')}
           </Button>
-          {saveMode === 'editor' && database.source.compatibilityStatus === 'verified' && hasRawSaveBytes && !writerKeyReady && (
+          {import.meta.env.DEV && saveMode === 'editor' && database.source.compatibilityStatus === 'verified' && database.source.build === FM2013_EXPERIMENTAL_WRITE_BUILD && hasRawSaveBytes && !writerKeyReady && (
             <Button
               type="button"
               variant="quiet"

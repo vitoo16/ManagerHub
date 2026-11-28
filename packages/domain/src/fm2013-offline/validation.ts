@@ -19,6 +19,16 @@ function isSafeIntInRange(value: unknown, min: number, max: number): value is nu
 const SHA256_RE = /^[a-f0-9]{64}$/u;
 const MAX_VALIDATED_ENTITIES = 500_000;
 
+const nullableString = (value: unknown): boolean => value === null || typeof value === 'string';
+const nullableInteger = (value: unknown): boolean => value === null || Number.isSafeInteger(value);
+const isRatingGroup = (value: unknown, keys: readonly string[]): boolean =>
+  isPlainObject(value) && keys.every(key => isSafeIntInRange(value[key], 1, 20));
+
+function validHuman(value: unknown): boolean {
+  return isPlainObject(value) && typeof value.managerName === 'string' && typeof value.clubName === 'string' &&
+    nullableInteger(value.personUid) && nullableInteger(value.personRowId) && nullableInteger(value.clubUid);
+}
+
 /**
  * Deep, bounded runtime schema validator shared by Web Worker IPC boundary (`decode-save-in-worker.ts`)
  * and IndexedDB persistence (`save-databases.ts`) (`AUD-11`).
@@ -59,6 +69,8 @@ export function validateDecodedSaveDatabase(
     src.fileName.length === 0 ||
     src.fileName.length > 260 ||
     !isSafeIntInRange(src.fileSize, 1, MAX_FM_SAVE_BYTES) ||
+    !Number.isSafeInteger(src.lastModified) || typeof src.signature !== 'string' ||
+    !nullableString(src.gameDate) || !nullableString(src.dbString) ||
     (src.family !== 'afe' && src.family !== 'fmf') ||
     typeof src.compressed !== 'boolean' ||
     src.edition !== 'FM2013' ||
@@ -76,6 +88,7 @@ export function validateDecodedSaveDatabase(
 
   const counts = value.counts;
   if (
+    value.humans.length > MAX_VALIDATED_ENTITIES ||
     value.players.length > MAX_VALIDATED_ENTITIES ||
     value.staff.length > MAX_VALIDATED_ENTITIES ||
     value.clubs.length > MAX_VALIDATED_ENTITIES ||
@@ -141,6 +154,7 @@ export function validateDecodedSaveDatabase(
   checkUniqueUids(value.stadiums, 'stadiums');
   checkUniqueUids(value.nations, 'nations');
   checkUniqueUids(value.competitions, 'competitions');
+  if (!value.humans.every(validHuman)) throw new Error('Decoded manager record failed field validation.');
 
   for (const p of value.players as Record<string, unknown>[]) {
     if (
@@ -149,7 +163,12 @@ export function validateDecodedSaveDatabase(
       !isSafeIntInRange(p.actualCa, 0, 200) ||
       !isSafeIntInRange(p.potentialAbility, -10, 200) ||
       !isPlainObject(p.positions) ||
-      !isPlainObject(p.attributes)
+      !isPlainObject(p.attributes) ||
+      !isRatingGroup(p.hiddenPlaying, ['dirtiness', 'consistency', 'importantMatches', 'injuryProneness', 'versatility']) ||
+      (p.personality !== null && !isRatingGroup(p.personality, ['adaptability', 'ambition', 'loyalty', 'pressure',
+        'professionalism', 'sportsmanship', 'temperament', 'controversy'])) ||
+      (p.contract !== null && (!isPlainObject(p.contract) || !nullableInteger(p.contract.weeklyWageGbp) ||
+        !nullableString(p.contract.expiresAt) || !nullableString(p.contract.joinedAt)))
     ) {
       throw new Error('Decoded player record failed field validation.');
     }
@@ -170,7 +189,11 @@ export function validateDecodedSaveDatabase(
       typeof s.displayName !== 'string' ||
       typeof s.isHuman !== 'boolean' ||
       !isSafeIntInRange(s.staffCa, 0, 200) ||
-      !isSafeIntInRange(s.staffPa, -10, 200)
+      !isSafeIntInRange(s.staffPa, -10, 200) ||
+      (s.attributes != null && !isRatingGroup(s.attributes, ['attacking', 'defending', 'fitness', 'goalkeepers',
+        'mental', 'player', 'tactical', 'technical', 'manManagement', 'workingWithYoungsters', 'adaptability',
+        'determination', 'judgingPlayerAbility', 'judgingPlayerPotential', 'levelOfDiscipline', 'motivating',
+        'physiotherapy', 'tacticalKnowledge']))
     ) {
       throw new Error('Decoded staff record failed field validation.');
     }
@@ -189,6 +212,11 @@ export function validateDecodedSaveDatabase(
       !isSafeIntInRange(st.expansionCapacity, 0, 500_000)
     ) {
       throw new Error('Decoded stadium record failed field validation.');
+    }
+  }
+  for (const competition of value.competitions as Record<string, unknown>[]) {
+    if (!Array.isArray(competition.sampleClubs) || !competition.sampleClubs.every(name => typeof name === 'string')) {
+      throw new Error('Decoded competition record failed field validation.');
     }
   }
 
@@ -222,7 +250,9 @@ export function isValidDecodedSaveSummary(value: unknown): value is DecodedSaveD
     src.adapterVersion === FM2013_OFFLINE_ADAPTER_VERSION &&
     src.writeCapability === false &&
     isSafeIntInRange(value.counts.players, 0, MAX_VALIDATED_ENTITIES) &&
-    isSafeIntInRange(value.counts.clubs, 0, MAX_VALIDATED_ENTITIES)
+    isSafeIntInRange(value.counts.clubs, 0, MAX_VALIDATED_ENTITIES) &&
+    value.humans.length <= MAX_VALIDATED_ENTITIES &&
+    value.humans.every(validHuman)
   );
 }
 
@@ -239,7 +269,7 @@ export function matchesDecodedWriteSource(cached: DecodedSaveDatabase, decoded: 
       leftSource.build !== rightSource.build || leftSource.compatibilityStatus !== rightSource.compatibilityStatus ||
       leftSource.signature !== rightSource.signature || leftSource.fileSize !== rightSource.fileSize ||
       leftSource.compressed !== rightSource.compressed || leftSource.gameDbVersion !== rightSource.gameDbVersion ||
-      leftSource.gameDbBytes !== rightSource.gameDbBytes) return false;
+      leftSource.gameDbBytes !== rightSource.gameDbBytes || leftSource.gameDate !== rightSource.gameDate) return false;
   const sameRecords = (left: readonly unknown[], right: readonly unknown[]) =>
     left.length === right.length && left.every((record, index) => JSON.stringify(record) === JSON.stringify(right[index]));
   return sameRecords(cached.players, decoded.players) &&
