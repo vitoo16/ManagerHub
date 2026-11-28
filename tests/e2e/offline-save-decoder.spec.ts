@@ -242,6 +242,7 @@ test('multi-save isolation across compressed AFE and uncompressed FMF, VI/EN tog
   });
   await expect(explorer).toContainText('beta-uncompressed.fm');
   await expect(explorer).toContainText('FMF (raw)');
+  await expect(explorer).toContainText('Research-only decode · Not independently verified');
   await expect(explorer).toContainText('Elena Vance · Valeria');
   await expect(explorer.locator('tbody')).toContainText('Marco Reyes');
   await expect(explorer.locator('tbody')).not.toContainText('Owen Shaw');
@@ -302,7 +303,7 @@ test('multi-save isolation across compressed AFE and uncompressed FMF, VI/EN tog
   }
 });
 
-test('P0 unified SaveSession (S01-S08): non-remounting continuity, decoupled club filter, mode-independent shortlist, lang_db, Undo/Redo, and certified Save As .fm roundtrip', async ({ page }) => {
+test('P0 unified SaveSession (S01-S08): non-remounting continuity, decoupled club filter, mode-independent shortlist, lang_db, Undo/Redo, and experimental Save As .fm roundtrip', async ({ page }) => {
   test.setTimeout(120_000);
   const saveBytes = await buildSyntheticFm2013Save({
     compressed: true,
@@ -386,7 +387,7 @@ test('P0 unified SaveSession (S01-S08): non-remounting continuity, decoupled clu
   await expect(searchInput).toHaveValue('Owen');
   await searchInput.fill('');
 
-  // 5. S06 & S08: Switch to Editor mode -> Edit Owen Shaw + Club Finances -> Test Undo/Redo -> Certified Save As .fm roundtrip
+  // 5. S06 & S08: Switch to Editor mode -> Edit Owen Shaw + Club Finances -> Test Undo/Redo -> experimental Save As .fm roundtrip
   await toolbar.getByRole('group', { name: 'Global display mode' }).getByRole('button', { name: 'Editor mode' }).click();
   await toolbar.locator('input[accept=".exe"]').setInputFiles({
     name: 'synthetic-test-only.exe',
@@ -445,7 +446,7 @@ test('P0 unified SaveSession (S01-S08): non-remounting continuity, decoupled clu
   await modal.getByRole('button', { name: 'Done' }).click();
   await expect(northbridgeRow).toContainText('£120.00M');
 
-  // Open Save As .fm modal -> verify diff preview -> download certified .fm -> re-import & verify roundtrip!
+  // Open Save As .fm modal -> verify diff preview -> download experimental .fm -> re-import & verify roundtrip!
   await toolbar.getByRole('button', { name: 'Save As .fm' }).click();
   await expect(modal).toContainText('Save As .fm (Experimental Offline Copy)');
   await expect(modal).toContainText('HMAC-SHA512 signing key ready');
@@ -503,6 +504,87 @@ test('browser cache stores immutable source rather than dirty editor projection 
   await toolbar.getByRole('group', { name: 'Global display mode' }).getByRole('button', { name: 'Editor mode' }).click();
   await expect(row).toHaveText(originalText, { useInnerText: true });
   await expect(toolbar).not.toContainText('unsaved edits');
+});
+
+test('restored save reattaches exact original bytes without discarding draft or history', async ({ page }) => {
+  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+  await page.goto('/#/saves');
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'reattach.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const toolbar = page.getByRole('region', { name: 'Active save session' });
+  const explorer = page.locator('.save-db-explorer');
+  await expect(toolbar).toBeVisible({ timeout: 20_000 });
+  await explorer.getByRole('button', { name: 'Save database on this browser' }).click();
+  await expect(explorer.getByRole('button', { name: 'Remove saved database' })).toBeVisible();
+  await page.reload();
+  await page.getByRole('button', { name: 'Open save', exact: true }).click();
+  await expect(toolbar).toBeVisible();
+  await toolbar.getByRole('group', { name: 'Global display mode' }).getByRole('button', { name: 'Editor mode' }).click();
+  const row = explorer.locator('tbody tr', { hasText: 'Owen Shaw' });
+  await row.getByRole('button', { name: 'Edit' }).click();
+  const dialog = page.getByRole('dialog');
+  await dialog.getByLabel('Actual CA (1–200)').fill('199');
+  await dialog.getByRole('button', { name: 'Done' }).click();
+  await expect(toolbar).toContainText('1 unsaved edits');
+  await toolbar.getByRole('button', { name: 'Save As .fm' }).click();
+  await expect(dialog).toContainText('restored without its original .fm bytes');
+  await expect(dialog.getByRole('button', { name: 'Download experimental Save As .fm' })).toBeDisabled();
+  await dialog.getByRole('button', { name: 'Done' }).click();
+
+  let confirmations = 0;
+  page.on('dialog', async prompt => { confirmations += 1; await prompt.dismiss(); });
+  await toolbar.locator('input[accept=".fm"]').setInputFiles({
+    name: 'same-content-renamed.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  await expect(toolbar.getByRole('button', { name: 'Switch .fm' })).toBeEnabled({ timeout: 20_000 });
+  expect(confirmations).toBe(0);
+  await expect(row).toContainText('199');
+  await toolbar.getByRole('button', { name: 'Undo last edit' }).click();
+  await expect(row).toContainText('168');
+  await toolbar.getByRole('button', { name: 'Redo edit' }).click();
+  await expect(row).toContainText('199');
+
+  const different = await buildSyntheticFm2013Save({ managerName: 'Different career' });
+  await toolbar.locator('input[accept=".fm"]').setInputFiles({
+    name: 'different-career.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(different)
+  });
+  await expect.poll(() => confirmations).toBe(1);
+  await expect(toolbar.getByRole('button', { name: 'Switch .fm' })).toBeEnabled();
+  await expect(toolbar).toContainText('reattach.fm');
+  await expect(row).toContainText('199');
+});
+
+test('cancel from Player Lab preserves the active source and ignores a pending worker', async ({ page }) => {
+  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+  await page.goto('/#/saves');
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'active-career.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const toolbar = page.getByRole('region', { name: 'Active save session' });
+  await expect(toolbar).toBeVisible({ timeout: 20_000 });
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' }).getByRole('button', { name: /Player Lab/ }).click();
+  await expect(page.getByRole('heading', { name: 'Player Lab' })).toBeVisible();
+
+  await page.evaluate(() => {
+    const post = Worker.prototype.postMessage;
+    Worker.prototype.postMessage = function (message: unknown, ...args: unknown[]) {
+      if (typeof message === 'object' && message !== null && 'file' in message &&
+          message.file instanceof File && message.file.name === 'cancel-next.fm') return;
+      Reflect.apply(post, this, [message, ...args]);
+    };
+  });
+  await toolbar.locator('input[accept=".fm"]').setInputFiles({
+    name: 'cancel-next.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const cancel = page.getByRole('button', { name: 'Cancel decode' });
+  await expect(cancel).toBeVisible();
+  await cancel.click();
+  await expect(cancel).toHaveCount(0);
+  await expect(toolbar).toContainText('active-career.fm');
+  await expect(toolbar.getByRole('button', { name: 'Switch .fm' })).toBeEnabled();
+  await expect(page.getByRole('heading', { name: 'Player Lab' })).toBeVisible();
 });
 
 test('legacy decoded browser cache without source provenance is rejected (R01)', async ({ page }) => {

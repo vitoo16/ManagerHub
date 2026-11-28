@@ -71,6 +71,30 @@ describe('offline save decode worker admission and lifecycle', () => {
     expect(worker?.terminated).toBe(true);
   });
 
+  it('rejects decoded replies with inconsistent source identity or missing database', async () => {
+    const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+    const file = new File([new Uint8Array(bytes)], 'source.fm');
+    const database = await decodeFm2013Save(file);
+    const inspected = await inspectSave(file);
+    const inspection = { ...inspected, edition: database.source.edition, build: database.source.build, support: 'decoded' as const };
+    for (const [metadata, payload] of [
+      [inspection, null],
+      [inspected, database],
+      [{ ...inspection, sha256: null, id: 'inspection:' + 'a'.repeat(32) }, database],
+      [{ ...inspection, sha256: 'a'.repeat(64), id: 'a'.repeat(64) }, database],
+      [{ ...inspection, build: '13.3.2' }, database],
+      [inspection, { ...database, source: { ...database.source, lastModified: file.lastModified + 1 } }]
+    ]) {
+      const pending = decodeSaveInWorker(file);
+      const worker = FakeWorker.latest;
+      worker?.onmessage?.({
+        data: { kind: 'done', ok: true, inspection: metadata, database: payload, decodeNotice: null }
+      } as MessageEvent);
+      await expect(pending).rejects.toThrow('invalid result');
+      expect(worker?.terminated).toBe(true);
+    }
+  });
+
   it('admits a header-only fallback inspection with database: null', async () => {
     const inspection = await inspectSave(headerOnlyFile);
     const pending = decodeSaveInWorker(headerOnlyFile);
@@ -93,9 +117,20 @@ describe('offline save decode worker admission and lifecycle', () => {
       'not-an-object',
       [],
       { kind: 'unknown' },
-      { kind: 'done', ok: 'true', inspection, database: null },
-      { kind: 'done', ok: true, inspection: { ...inspection, name: 'other.fm' }, database: null },
-      { kind: 'done', ok: true, inspection, database: { source: { fileName: 'other.fm' } } },
+      { kind: 'done', ok: 'true', inspection, database: null, decodeNotice: null },
+      { kind: 'done', ok: true, inspection, database: null },
+      { kind: 'done', ok: true, inspection, database: null, decodeNotice: null, extra: true },
+      { kind: 'done', ok: true, inspection: { name: headerOnlyFile.name, size: headerOnlyFile.size, lastModified: headerOnlyFile.lastModified }, database: null, decodeNotice: null },
+      { kind: 'done', ok: true, inspection: { ...inspection, fileBytes: new Uint8Array([1]) }, database: null, decodeNotice: null },
+      { kind: 'done', ok: true, inspection: { ...inspection, warnings: null }, database: null, decodeNotice: null },
+      { kind: 'done', ok: true, inspection, database: null, decodeNotice: {} },
+      { kind: 'done', ok: false, error: 'failure', raw: true },
+      { kind: 'progress', progress: { stage: 'unknown', percent: 10 } },
+      { kind: 'progress', progress: { stage: 'hashing', percent: Infinity } },
+      { kind: 'progress', progress: { stage: 'hashing', percent: -1 } },
+      { kind: 'progress', progress: { stage: 'hashing', percent: 101 } },
+      { kind: 'done', ok: true, inspection: { ...inspection, name: 'other.fm' }, database: null, decodeNotice: null },
+      { kind: 'done', ok: true, inspection, database: { source: { fileName: 'other.fm' } }, decodeNotice: null },
       { kind: 'done', ok: false, error: '' }
     ]) {
       const pending = decodeSaveInWorker(headerOnlyFile);

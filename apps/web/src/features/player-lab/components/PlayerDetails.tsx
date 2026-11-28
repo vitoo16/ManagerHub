@@ -104,7 +104,9 @@ function PlayerDetailsView({ player, dataset, onOpenSquad, onEditPlayer }: Props
     <div className="evidence-strip">
       <Icon name="shield" size={15}/>
       {t(isDecoded
-        ? 'This report uses verified attributes decoded offline from your .fm save. Original save bytes remain untouched.'
+        ? dataset?.saveVerification === 'verified'
+          ? 'This report uses verified attributes decoded offline from your .fm save. Original save bytes remain untouched.'
+          : 'This report uses provisional attributes decoded offline. This build or container is not independently verified.'
         : 'This report uses your exported attributes. CA and PA remain unknown until verified.')}
     </div>
   </section>;

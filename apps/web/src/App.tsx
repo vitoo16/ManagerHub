@@ -20,6 +20,7 @@ import { Button, Icon, Status, Surface } from '@managerhub/ui';
 import { useReducedMotion } from '@managerhub/motion/reduced';
 import { readableSaveInspectionError } from './i18n/save-inspection-copy';
 import { registerSaveDbI18n } from './i18n/register-save-db-i18n';
+import { SaveDecodeProgress } from './features/save-session/SaveDecodeProgress';
 import { useDialogFocus } from './useDialogFocus';
 import './app.css';
 
@@ -283,6 +284,8 @@ export default function App() {
     if (writePendingRef.current || next?.source === 'decoded_save') return;
     if (!confirmDiscardIfDirty()) return;
     onCancelDecode();
+    setLangDbLookup(null);
+    setRuntimeSigningKey(null);
     setEditorModalTarget(null);
     setEditorRecords(null);
     setSession(current => ({ ...current, source: next ? { kind: 'export', dataset: next } : null }));
@@ -367,6 +370,7 @@ export default function App() {
     if (writePendingRef.current) return;
     if (nextMode === 'realism') {
       authorizationRequestRef.current += 1;
+      setRuntimeSigningKey(null);
       setEditorModalTarget(null);
       setEditorRecords(null);
     }
@@ -487,7 +491,7 @@ export default function App() {
 
   const onAuthorizeFmExe = useCallback(async (file: File) => {
     if (!saveSource || !activeRawSaveFile || saveMode !== 'editor' ||
-        openPendingRef.current || writePendingRef.current) return;
+        saveSource.baseDatabase.source.compatibilityStatus !== 'verified' || openPendingRef.current || writePendingRef.current) return;
     const revision = inspectionRevisionRef.current;
     const request = ++authorizationRequestRef.current;
     setRuntimeSigningKey(null);
@@ -648,7 +652,7 @@ export default function App() {
   }, []);
 
   const onInspect = useCallback(async (file: File) => {
-    if (writePendingRef.current || !confirmDiscardIfDirty()) return;
+    if (writePendingRef.current) return;
     openPendingRef.current = true;
     setEditorModalTarget(null);
     const revision = ++inspectionRevisionRef.current;
@@ -658,7 +662,7 @@ export default function App() {
     setBusy(true);
     setError(null);
     setDecodeNotice(null);
-    setDecodeProgress({ stage: 'reading_container', percent: 5 });
+    setDecodeProgress(null);
     try {
       const { decodeSaveInWorker } = await import('./decode-save-in-worker');
       const result = await decodeSaveInWorker(file, {
@@ -673,12 +677,24 @@ export default function App() {
       if (result.database) {
         const tools = await loadOfflineTools();
         if (controller.signal.aborted || revision !== inspectionRevisionRef.current) return;
-        commitDecodedSave(result.database, tools, result.inspection, file);
+        if (result.database.source.saveId === activeSaveId && nativeDatabase) {
+          if (!activeRawSaveFile && !tools.matchesDecodedWriteSource(nativeDatabase, result.database)) {
+            setError('The cached records differ from the original save. Close the cached session in Save Library and reopen the original .fm.');
+            return;
+          }
+          setRawSaveFiles(previous => ({ ...previous, [activeSaveId]: file }));
+          setSelectedId(activeSaveId);
+        } else {
+          if (!confirmDiscardIfDirty()) return;
+          commitDecodedSave(result.database, tools, result.inspection, file);
+        }
       } else {
-        setImports(previous => [result.inspection, ...previous.filter(item => item.id !== result.inspection.id)]);
+        setImports(previous => previous.some(item => item.id === result.inspection.id && item.support === 'decoded')
+          ? previous
+          : [result.inspection, ...previous.filter(item => item.id !== result.inspection.id)]);
         setSelectedId(result.inspection.id);
       }
-      setDecodeNotice(result.decodeNotice);
+      setDecodeNotice(result.database ? null : result.decodeNotice ?? 'No supported FM2013 database was activated. The previous active session is unchanged.');
     } catch (exception) {
       if (!controller.signal.aborted && revision === inspectionRevisionRef.current) {
         setError(readableSaveInspectionError(exception));
@@ -691,7 +707,7 @@ export default function App() {
         setDecodeProgress(null);
       }
     }
-  }, [confirmDiscardIfDirty, loadOfflineTools, commitDecodedSave]);
+  }, [activeSaveId, nativeDatabase, activeRawSaveFile, confirmDiscardIfDirty, loadOfflineTools, commitDecodedSave]);
 
   const remove = useCallback((id: string) => {
     if (writePendingRef.current) return;
@@ -712,6 +728,8 @@ export default function App() {
     });
     if (activeSaveId === id) {
       onCancelDecode();
+      setLangDbLookup(null);
+      setRuntimeSigningKey(null);
       setEditorModalTarget(null);
       setEditorRecords(null);
       setSession(current =>
@@ -748,7 +766,11 @@ export default function App() {
   const activeItem = NAV.find(n => n.key === view) ?? NAV[0];
 
   return <div className="app-frame">
-    <a className="skip-link" href="#main-content">{t('Skip to main content')}</a>
+    <a className="skip-link" href="#main-content" onClick={event => {
+      event.preventDefault();
+      viewScope.current?.focus();
+      viewScope.current?.scrollIntoView({ block: 'start' });
+    }}>{t('Skip to main content')}</a>
     {menuOpen && <button className="mobile-backdrop" aria-label={t("Close navigation menu")} onClick={() => setMenuOpen(false)}/>}
     <aside className={'sidebar mh-surface mh-surface--glass ' + (menuOpen ? 'sidebar--open' : '')} aria-label={t("Primary sidebar")}><Rail current={view} onNavigate={navigate} onClose={() => setMenuOpen(false)}/></aside>
     <div className="app-column">
@@ -757,7 +779,7 @@ export default function App() {
           <div className="topbar-breadcrumb"><span>{t("ManagerHub")}</span><Icon name="chevron" size={14}/><strong>{t(activeItem?.title ?? 'Overview')}</strong></div>
         </div>
         <div className="topbar-right">
-          <button className="command-trigger" onClick={() => setCommandOpen(true)}>
+          <button className="command-trigger" disabled={editorModalTarget !== null} onClick={() => setCommandOpen(true)}>
             <Icon name="search" size={15}/><span>{t("Quick navigate")}</span>
           </button>
           <div className="language-switch" role="group" aria-label={t('Change language')}>
@@ -802,6 +824,10 @@ export default function App() {
       )}
 
       <main ref={viewScope} className="main-area" id="main-content" tabIndex={-1}>
+        {view !== 'saves' && busy && <SaveDecodeProgress progress={decodeProgress} onCancel={onCancelDecode}/>}
+        {view !== 'saves' && (error || decodeNotice) && (
+          <div role="alert" className="inline-alert"><Icon name="warning" size={18}/><span>{error ? t(error) : decodeNotice ? t(decodeNotice) : null}</span></div>
+        )}
         <Suspense fallback={null}><WorkspaceAnimator scope={viewScope} view={view} reduced={reduced}/></Suspense>
         {visitedViews.has('overview') && (
           <div hidden={view !== 'overview'} data-animate={view === 'overview' ? 'workspace' : undefined}>

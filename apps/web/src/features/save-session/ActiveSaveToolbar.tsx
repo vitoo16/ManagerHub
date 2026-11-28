@@ -69,7 +69,7 @@ function ActiveSaveToolbar({
     return database.clubs
       .filter(c => c.playerCount > 0)
       .sort((a, b) => b.playerCount - a.playerCount || a.fullName.localeCompare(b.fullName));
-  }, [database]);
+  }, [database?.clubs]);
 
   const handleSaveInput = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.currentTarget.files?.[0];
@@ -232,7 +232,7 @@ function ActiveSaveToolbar({
               <Button
                 type="button"
                 variant="primary"
-                disabled={busy || !hasRawSaveBytes}
+                disabled={busy}
                 onClick={onOpenSaveAsModal}
               >
                 <Icon name="download" size={14} /> {t('Save As .fm')}
@@ -247,7 +247,7 @@ function ActiveSaveToolbar({
           >
             {t(database.source.langDbAttached ? 'Update lang_db.dat' : 'Attach lang_db.dat')}
           </Button>
-          {saveMode === 'editor' && !writerKeyReady && (
+          {saveMode === 'editor' && database.source.compatibilityStatus === 'verified' && hasRawSaveBytes && !writerKeyReady && (
             <Button
               type="button"
               variant="quiet"
@@ -263,7 +263,7 @@ function ActiveSaveToolbar({
             disabled={busy}
             onClick={() => saveFileInputRef.current?.click()}
           >
-            {t('Switch .fm')}
+            {t(hasRawSaveBytes ? 'Switch .fm' : 'Select original or another .fm')}
           </Button>
         </div>
       </div>

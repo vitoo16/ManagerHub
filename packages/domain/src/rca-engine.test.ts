@@ -273,6 +273,15 @@ describe('Synthetic perturbation and regression tests (not FMRTE parity)', () =>
     expect(pref18.weightedPoints).toBe(pref20.weightedPoints);
   });
 
+  it('does not infer foot preference or two-footed status when either foot is unknown', () => {
+    for (const [left, right] of [[null, 20], [5, null], [0, 20], [null, null]]) {
+      expect(evaluateFootAbility(left, right, 7.5, 17.7, 123.5)).toMatchObject({
+        preferredFoot: 'unknown', preferredFootRating: null, weakerFootRating: null,
+        isTwoFooted: null, weightedPoints: null, marginalAdvisoryCaPerStep: null
+      });
+    }
+  });
+
   it('handles cross-version FM2013 Sweeper fallback, boundary clamping (1..200), RCA > PA flag, and fail-closed Auto-Match', () => {
     // All 1s -> clamped to 1
     const minPlayer = evaluatePlayerRca(

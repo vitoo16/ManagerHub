@@ -23,10 +23,10 @@ export function evaluateFootAbility(
     return {
       leftFoot: left,
       rightFoot: right,
-      preferredFoot: left !== null && right === null ? 'left' : right !== null && left === null ? 'right' : 'unknown',
-      preferredFootRating: left ?? right,
+      preferredFoot: 'unknown',
+      preferredFootRating: null,
       weakerFootRating: null,
-      isTwoFooted: false,
+      isTwoFooted: null,
       weakerFootWeight,
       weightedPoints: null,
       marginalAdvisoryCaPerStep: null

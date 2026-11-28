@@ -23,7 +23,7 @@ function PlayerHiddenProfile({ player, isEditorMode }: { player: PlayerExport; i
           fields={PERSONALITY_KEYS.map(({ key, label }) => ({ key, label: t(label), value: player.personality?.[key] }))}/>
       </div>
     </> : <p className="module-disclaimer">
-      {t('Switch to Editor mode to view verified Actual CA, Actual PA, reputations, and hidden traits decoded from this save.')}
+      {t('Switch to Editor mode to view decoded Actual CA, Actual PA, reputations, and hidden traits from this save.')}
     </p>}
   </Surface>;
 }

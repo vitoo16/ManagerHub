@@ -26,7 +26,7 @@ import { StaffEditorRecord } from './StaffEditorRecord';
 import { ClubEditorRecord } from './ClubEditorRecord';
 import { StadiumEditorRecord } from './StadiumEditorRecord';
 import { EditorRecordNavigator } from './EditorRecordNavigator';
-import { isRecordTarget, recordKey, type EditorViewTarget, type EditorRecordState, type EditorRecordTarget } from './editor-records';
+import { isRecordTarget, type EditorViewTarget, type EditorRecordState, type EditorRecordTarget } from './editor-records';
 import { registerSaveDbI18n } from '../../i18n/register-save-db-i18n';
 import './save-session.css';
 
@@ -84,11 +84,8 @@ function SaveEntityEditorModal({
   const exeInputRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   useDialogFocus(dialogRef, !embedded, '.editor-record-tab__select[aria-pressed="true"]');
-  const [notice, setNotice] = useState<string | null>(null);
   const browsing = initialTarget.kind === 'browse' || isRecordTarget(initialTarget);
   const target = browsing ? recordState?.active ?? initialTarget : initialTarget;
-  const activeRecordKey = browsing && recordState ? recordKey(recordState.active) : null;
-  useEffect(() => { setNotice(null); }, [activeRecordKey]);
   const [diffPage, setDiffPage] = useState(0);
   const [outputName, setOutputName] = useState(() => buildEditedSaveFileName(baseDatabase.source.fileName));
 
@@ -130,7 +127,6 @@ function SaveEntityEditorModal({
     if (!player) return;
     const patch = buildPlayerPresetPatch(player, preset, workingDatabase.source.gameDate);
     applyPlayerField(label, patch);
-    setNotice(t('Applied preset to active draft. Original .fm file remains untouched until Save As .fm.'));
   };
 
   const applyStaffField = (label: string, patch: StaffDraftPatch) => {
@@ -145,7 +141,6 @@ function SaveEntityEditorModal({
 
   const applyClubPreset = (targetClubUid: number, preset: ClubSquadPresetKind, label: string) => {
     onCommitOverlay(label, cur => buildClubSquadPresetOverlay(baseDatabase, cur, targetClubUid, preset));
-    setNotice(t('Applied club preset to active draft.'));
   };
 
   const applyStadiumField = (label: string, patch: StadiumDraftPatch) => {
@@ -219,7 +214,6 @@ function SaveEntityEditorModal({
 
         {browsing && <EditorRecordNavigator database={workingDatabase} state={recordState} onOpen={onOpenRecord} onClose={onCloseRecord}/>}
         {target.kind === 'browse' && <p className="module-disclaimer">{t('Search players, staff, clubs or stadiums by name or UID. Open records stay available while you browse this save.')}</p>}
-        {notice && <div className="editor-notice" role="status">{notice}</div>}
         {writeError && <div className="inline-alert" role="alert">{writeError}</div>}
 
         {target.kind === 'player' && player && <PlayerEditorRecord key={player.uid} player={player} source={workingDatabase.source} applyPlayerField={applyPlayerField} applyPlayerPreset={applyPlayerPreset}/>}
@@ -256,6 +250,7 @@ function SaveEntityEditorModal({
 
         {target.kind === 'save_as' && (
           <div className="editor-section">
+            {baseDatabase.source.compatibilityStatus !== 'verified' && <p role="alert" className="inline-alert">{t('Save As is unavailable for this unverified read profile.')}</p>}
             <div className="editor-presets">
               <Status tone={writerKeyReady ? 'positive' : 'warning'}>
                 {t(writerKeyReady ? 'HMAC-SHA512 signing key ready' : 'Local fm.exe authorization required')}
@@ -263,7 +258,7 @@ function SaveEntityEditorModal({
               <span>
                 {t('Original SHA-256')}: <code className="mono">{baseDatabase.source.sha256.slice(0, 16)}…</code> ({t('never modified')})
               </span>
-              {!writerKeyReady && (
+              {!writerKeyReady && hasRawSaveBytes && baseDatabase.source.compatibilityStatus === 'verified' && (
                 <Button type="button" variant="primary" onClick={() => exeInputRef.current?.click()}>
                   {t('Select FM2013 fm.exe (13.3.3f359652)')}
                 </Button>
@@ -272,7 +267,7 @@ function SaveEntityEditorModal({
 
             {!hasRawSaveBytes && (
               <div className="inline-alert" role="alert">
-                {t('This save was restored from IndexedDB metadata without the original .fm binary. Re-select the .fm file once to export a patched Save As .fm copy.')}
+                {t('This save was restored without its original .fm bytes. Close this dialog and select the original .fm in the active save toolbar. Matching content preserves all draft edits.')}
               </div>
             )}
 
@@ -287,7 +282,7 @@ function SaveEntityEditorModal({
 
             <h3>{t('Pending field changes')} ({diffEntries.length})</h3>
             {diffEntries.length === 0 ? (
-              <p className="save-db-mode-note">{t('No draft changes yet — exporting now creates a verified lossless copy of the current save.')}</p>
+              <p className="save-db-mode-note">{t('No draft changes yet — export creates a byte-identical copy after source validation.')}</p>
             ) : (
               <div className="editor-diff-wrap">
                 <table className="save-db-table">
@@ -327,7 +322,6 @@ function SaveEntityEditorModal({
                 onClick={() => {
                   if (window.confirm(t('Discard all unsaved draft edits on this save?'))) {
                     onDiscardAll();
-                    setNotice(t('All draft edits discarded.'));
                   }
                 }}
               >
@@ -340,7 +334,7 @@ function SaveEntityEditorModal({
               <Button
                 type="button"
                 variant="primary"
-                disabled={!hasRawSaveBytes || !writerKeyReady || writingSave}
+                disabled={baseDatabase.source.compatibilityStatus !== 'verified' || !hasRawSaveBytes || !writerKeyReady || writingSave}
                 onClick={() => onSaveAsFm(outputName)}
               >
                 <Icon name="download" size={15} />

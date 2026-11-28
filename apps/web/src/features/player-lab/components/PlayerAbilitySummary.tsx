@@ -18,15 +18,15 @@ function PlayerAbilitySummary({
 }) {
   const { t } = useTranslation();
   const isDecoded = dataset?.source === 'decoded_save';
-  const showVerifiedCaPa = isDecoded && dataset.saveMode === 'editor' && player?.actualCa != null && player?.potentialAbility != null;
+  const showCaPa = isDecoded && dataset.saveMode === 'editor' && player?.actualCa != null && player?.potentialAbility != null;
   const isRedactedRealism = isDecoded && dataset.saveMode === 'realism';
 
   return <>
     <div className="scout-metrics">
       <div>
         <span>{t("Actual CA")}</span>
-        <strong>{showVerifiedCaPa ? player.actualCa : '—'}</strong>
-        <small>{t(showVerifiedCaPa ? 'Decoded from save · Verified' : isRedactedRealism ? 'Hidden in Realism mode' : 'Not verified')}</small>
+        <strong>{showCaPa ? player.actualCa : '—'}</strong>
+        <small>{t(showCaPa ? player.verification === 'verified' ? 'Decoded from save · Verified' : 'Research-only decode · Not independently verified' : isRedactedRealism ? 'Hidden in Realism mode' : 'Not verified')}</small>
       </div>
       <div>
         <span>{t("Attribute summary")}</span>
@@ -40,8 +40,8 @@ function PlayerAbilitySummary({
       </div>
       <div>
         <span>PA</span>
-        <strong>{showVerifiedCaPa ? player.potentialAbility : '—'}</strong>
-        <small>{t(showVerifiedCaPa ? 'Decoded from save · Verified' : isRedactedRealism ? 'Hidden in Realism mode' : 'Not verified')}</small>
+        <strong>{showCaPa ? player.potentialAbility : '—'}</strong>
+        <small>{t(showCaPa ? player.verification === 'verified' ? 'Decoded from save · Verified' : 'Research-only decode · Not independently verified' : isRedactedRealism ? 'Hidden in Realism mode' : 'Not verified')}</small>
       </div>
     </div>
     <details className="ca-guide">

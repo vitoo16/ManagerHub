@@ -7,10 +7,10 @@ import {
 import type {
   DecodedSaveDatabase,
   DecodedSaveMode,
-  FM2013DecodeProgress,
-  FM2013DecodeStage
+  FM2013DecodeProgress
 } from '@managerhub/domain/fm2013-offline';
 import { Button, Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
+import { SaveDecodeProgress } from '../save-session/SaveDecodeProgress';
 import { useSaveInspectionLibrary } from '../../useSaveInspectionLibrary';
 import { useDecodedSaveLibrary } from '../../useDecodedSaveLibrary';
 import type { SaveInspectionResult } from '@managerhub/domain/save-library';
@@ -54,15 +54,6 @@ function coverageStateLabel(state: SaveCoverageState): string {
   }
 }
 
-function decodeStageLabel(stage: FM2013DecodeStage): string {
-  switch (stage) {
-    case 'hashing': return 'Calculating SHA-256 fingerprint…';
-    case 'reading_container': return 'Reading save archive container…';
-    case 'decrypting_database': return 'Decrypting and inflating game database…';
-    case 'parsing_tables': return 'Parsing persisted football tables…';
-    case 'indexing_database': return 'Indexing clubs, players, contracts and staff…';
-  }
-}
 
 function SaveInspector({
   imports,
@@ -169,7 +160,7 @@ function SaveInspector({
     <div className="page-title">
       <div className="mh-eyebrow">{t("GAME DATA / LOCAL FILES")}</div>
       <h1>{t("Save Library")}</h1>
-      <p>{t("Load a Football Manager .fm save to decode the full football database offline, or inspect header metadata for unrecognized builds.")}</p>
+      <p>{t("Load a Football Manager .fm save to decode supported football data offline, or inspect header metadata for unrecognized builds.")}</p>
     </div>
 
     <Surface className={'file-drop ' + (drag ? 'file-drop--drag' : '')} onDragOver={e => {e.preventDefault(); setDrag(true);}} onDragLeave={() => setDrag(false)} onDrop={handleDrop}>
@@ -182,26 +173,7 @@ function SaveInspector({
       <span className="file-drop__limit">{t("Browser inspection limit · 256 MB · No cloud upload")}</span>
     </Surface>
 
-    {busy && (
-      <Surface className="save-decode-progress" role="status" aria-live="polite">
-        <div className="save-decode-progress__head">
-          <strong>{t('Decoding .fm save offline…')}</strong>
-          <span>{decodeProgress && Number.isFinite(decodeProgress.percent)
-            ? Math.round(Math.max(0, Math.min(100, decodeProgress.percent))) + '%'
-            : t('Preparing…')}</span>
-        </div>
-        <progress className="save-decode-progress__track" max={100}
-          aria-label={t('Save decoding progress')}
-          value={decodeProgress && Number.isFinite(decodeProgress.percent)
-            ? Math.max(0, Math.min(100, decodeProgress.percent)) : undefined}/>
-        <div className="save-decode-progress__foot">
-          <span>{decodeProgress ? t(decodeStageLabel(decodeProgress.stage)) : t('Reading save archive container…')}</span>
-          <Button type="button" variant="quiet" onClick={onCancelDecode}>
-            <Icon name="close" size={14} /> {t('Cancel decode')}
-          </Button>
-        </div>
-      </Surface>
-    )}
+    {busy && <SaveDecodeProgress progress={decodeProgress} onCancel={onCancelDecode}/>}
 
     {error && <div role="alert" className="inline-alert"><Icon name="warning" size={18}/><span>{t(error)}</span><button aria-label={t("Choose another file")} onClick={openPicker}>{t("Choose another file")}</button></div>}
     {saveLibrary.error && <div role="alert" className="inline-alert"><Icon name="warning" size={18}/><span>{t(saveLibrary.error)}</span>
@@ -325,7 +297,7 @@ function SaveInspector({
             <dt>{t("Header bytes")}</dt><dd className="mono">{selected.signature}</dd>
             <dt>{t("SHA-256")}</dt><dd className="mono digest">{selected.sha256 || t('Not calculated')}</dd>
             {!selected.sha256 && <><dt>{t('Identification')}</dt><dd>{t('Unique inspection record; file duplicates cannot be detected')}</dd></>}
-            <dt>{t("Player / CA / PA")}</dt><dd>{isSelectedDecoded ? t(saveMode === 'editor' ? 'Decoded from save · Verified' : 'Hidden in Realism mode') : t("Not decoded")}</dd>
+            <dt>{t("Player / CA / PA")}</dt><dd>{isSelectedDecoded ? t(saveMode === 'editor' ? compatibility?.resolution.status === 'verified' ? 'Decoded from save · Verified' : 'Research-only decode · Not independently verified' : 'Hidden in Realism mode') : t("Not decoded")}</dd>
           </dl>
           <details className="inspection-technical save-coverage">
             <summary>{t('Data coverage')}</summary>

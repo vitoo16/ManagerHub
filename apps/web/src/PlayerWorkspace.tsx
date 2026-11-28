@@ -253,7 +253,9 @@ function PlayerWorkspaceView({
     <div className="coverage-note">
       <Icon name="shield" size={16}/>
       <p><strong>{t("Data integrity:")}</strong> {t(isDecodedSource
-        ? 'This report uses verified attributes decoded offline from your .fm save. Original save bytes remain untouched.'
+        ? dataset?.saveVerification === 'verified'
+          ? 'This report uses verified attributes decoded offline from your .fm save. Original save bytes remain untouched.'
+          : 'This report uses provisional attributes decoded offline. This build or container is not independently verified.'
         : 'CA, PA and hidden personality are not recovered from a CSV unless independently verified. Role profiles are authored ManagerHub heuristics, not Sports Interactive ratings. Player identities in different imports are not assumed to match.')}</p>
     </div>
   </div>;

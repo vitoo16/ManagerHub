@@ -14,6 +14,7 @@ import {
   deriveFm2013SigningKeyFromExecutable,
   EMPTY_SAVE_DRAFT_OVERLAY,
   extractFm2013Member,
+  matchesDecodedWriteSource,
   parseFm2013Container,
   parseFm2013LangDb,
   redoEditorTransaction,
@@ -71,6 +72,20 @@ describe('FM2013 P0 integrity, mode-independent persistence, transactions, and l
     const fmfDb = await decodeFm2013Save(fmfBytes, { fileName: 'research-fmf.fm' });
     expect(fmfDb.source.compatibilityStatus).toBe('research_only');
     expect(fmfDb.coverage.verifiedDomains).toEqual([]);
+  });
+
+  it('only reattaches original bytes when cached writable records match a fresh decode', async () => {
+    const bytes = await buildSyntheticFm2013Save();
+    const cached = await decodeFm2013Save(bytes, { fileName: 'cached.fm' });
+    const fresh = await decodeFm2013Save(bytes, { fileName: 'renamed.fm' });
+    expect(matchesDecodedWriteSource(cached, fresh)).toBe(true);
+    expect(matchesDecodedWriteSource(cached, {
+      ...fresh, players: fresh.players.map((player, i) => i === 0 ? { ...player, actualCa: 1 } : player)
+    })).toBe(false);
+    expect(matchesDecodedWriteSource(cached, { ...fresh, source: { ...fresh.source, family: 'fmf' } })).toBe(false);
+    expect(matchesDecodedWriteSource(cached, { ...fresh, staff: [] })).toBe(false);
+    expect(matchesDecodedWriteSource(cached, { ...fresh, clubs: [] })).toBe(false);
+    expect(matchesDecodedWriteSource(cached, { ...fresh, stadiums: [] })).toBe(false);
   });
 
   it('resolves base stadium, competition, and city names from lang_db.dat with exact EOF (Gate B)', async () => {

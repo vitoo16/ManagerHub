@@ -225,3 +225,25 @@ export function isValidDecodedSaveSummary(value: unknown): value is DecodedSaveD
     isSafeIntInRange(value.counts.clubs, 0, MAX_VALIDATED_ENTITIES)
   );
 }
+
+/** A restored snapshot may supply draft values, but only matching native records
+ * from a fresh read of the exact file may unlock write access. Compare per row
+ * to avoid serializing the entire database into one large temporary string.
+ */
+export function matchesDecodedWriteSource(cached: DecodedSaveDatabase, decoded: DecodedSaveDatabase): boolean {
+  const leftSource = cached.source;
+  const rightSource = decoded.source;
+  if (leftSource.saveId !== rightSource.saveId ||
+      leftSource.adapterVersion !== rightSource.adapterVersion ||
+      leftSource.family !== rightSource.family || leftSource.edition !== rightSource.edition ||
+      leftSource.build !== rightSource.build || leftSource.compatibilityStatus !== rightSource.compatibilityStatus ||
+      leftSource.signature !== rightSource.signature || leftSource.fileSize !== rightSource.fileSize ||
+      leftSource.compressed !== rightSource.compressed || leftSource.gameDbVersion !== rightSource.gameDbVersion ||
+      leftSource.gameDbBytes !== rightSource.gameDbBytes) return false;
+  const sameRecords = (left: readonly unknown[], right: readonly unknown[]) =>
+    left.length === right.length && left.every((record, index) => JSON.stringify(record) === JSON.stringify(right[index]));
+  return sameRecords(cached.players, decoded.players) &&
+    sameRecords(cached.staff, decoded.staff) &&
+    sameRecords(cached.clubs, decoded.clubs) &&
+    sameRecords(cached.stadiums, decoded.stadiums);
+}

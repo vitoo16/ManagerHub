@@ -277,6 +277,7 @@ function SaveDatabaseExplorerView({
             </p>
           </div>
           <div className="save-db-header__badges">
+            {database.source.compatibilityStatus !== 'verified' && <Status tone="warning">{t('Research-only decode · Not independently verified')}</Status>}
             {database.coverage.gameDbExactEof && <Status tone="positive">{t('Exact EOF verified')}</Status>}
             <Status tone="info">{t('Read-only · Original .fm unchanged')}</Status>
           </div>
@@ -322,7 +323,9 @@ function SaveDatabaseExplorerView({
             <p className="save-db-mode-note">
               {t(saveMode === 'realism'
                 ? 'Realism mode hides Actual CA, Actual PA, reputations, and hidden personality/playing traits.'
-                : 'Editor mode displays verified Actual CA, Actual PA, reputations, and hidden traits decoded from the .fm save.')}
+                : database.source.compatibilityStatus === 'verified'
+                  ? 'Editor mode displays verified Actual CA, Actual PA, reputations, and hidden traits decoded from the .fm save.'
+                  : 'Editor mode displays provisional values from an unverified read profile.')}
             </p>
           </div>
 
@@ -494,8 +497,7 @@ function SaveDatabaseExplorerView({
                   const hidden = projectPlayerHiddenFields(
                     player,
                     saveMode,
-                    database.source.edition,
-                    database.source.build
+                    database.source
                   );
                   return (
                     <tr key={player.uid}>
@@ -616,8 +618,7 @@ function SaveDatabaseExplorerView({
                   const projected = projectStaffAbility(
                     member,
                     saveMode,
-                    database.source.edition,
-                    database.source.build
+                    database.source
                   );
                   const staffAttrs = projected.attributes.value;
                   return (

@@ -67,8 +67,8 @@ function defineArchetype(
 }
 
 /**
- * Exact non-zero attribute weights extracted from FMRTE 26 `Ratings/rca.json` (`SettingsVersion: "24.4.0.35"`,
- * SHA-256 `a378c8e0be5e268dc7ed2a2b932ed9d478f135976c0bf45788f77294b63d4ffa`), mapped cleanly onto
+ * Exact non-zero attribute weights extracted from FMRTE 26 `Ratings/rca.json` (`SettingsVersion: "24.4.0.35"`),
+ * mapped onto
  * ManagerHub's canonical `AttributeKey` identifiers (`Vision -> vision`, `Leadership -> leadership`,
  * `Jumping -> jumpingReach`, `AerialAbility -> aerialReach`).
  *

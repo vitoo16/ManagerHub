@@ -377,7 +377,7 @@ export interface WrittenFm2013SaveResult {
 }
 
 /**
- * Certified offline `Save As .fm` surgical writer (`Gate C`).
+ * Experimental offline `Save As .fm` surgical writer (`Gate C`).
  *
  * Guarantees:
  * 1. Original `source` (`File` or `Uint8Array`) is NEVER mutated.
@@ -394,7 +394,7 @@ export async function writePatchedFm2013Save(
   if (!(options.signingKey instanceof Uint8Array) || options.signingKey.byteLength !== 32) {
     throw new FM2013DecodeError(
       'UNSUPPORTED_WRITE_TARGET',
-      'Certified Save As .fm requires an authorized 32-byte FM2013 signing key.'
+      'Experimental Save As .fm requires an authorized 32-byte FM2013 signing key.'
     );
   }
 
@@ -410,7 +410,7 @@ export async function writePatchedFm2013Save(
   if (container.family !== 'afe' || container.formatVersion !== 4) {
     throw new FM2013DecodeError(
       'UNSUPPORTED_WRITE_TARGET',
-      'Certified offline Save As .fm is supported only for verified FM2013 AFE v4 saves.'
+      'Experimental Save As .fm requires a verified FM2013 AFE v4 read profile.'
     );
   }
 
@@ -422,7 +422,7 @@ export async function writePatchedFm2013Save(
   if (!summaryBytes || !gameDbBytes) {
     throw new FM2013DecodeError(
       'UNSUPPORTED_WRITE_TARGET',
-      'Save is missing save_game_summary.dat or game_db.dat required for exact-build writer certification.'
+      'Save is missing save_game_summary.dat or game_db.dat required for exact-build write validation.'
     );
   }
 

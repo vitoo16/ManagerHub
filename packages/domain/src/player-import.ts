@@ -76,6 +76,7 @@ export interface PlayerDataset {
   readonly saveMode?: 'realism' | 'editor';
   readonly saveEdition?: string;
   readonly saveBuild?: string;
+  readonly saveVerification?: 'verified' | 'provisional';
   readonly saveGameDate?: string | null;
   readonly clubFilterUid?: number | null;
   readonly clubFilterName?: string | null;

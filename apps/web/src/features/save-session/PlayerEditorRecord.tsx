@@ -57,7 +57,7 @@ export function PlayerEditorRecord({ player, source, applyPlayerField, applyPlay
           playerContext={player}/>
       </div>}
       {section === 'development' && <Suspense fallback={<p role="status">{t('Loading…')}</p>}>
-        <PlayerDevelopmentPanel visibility="editor" player={projectSavePlayer(player, source.saveId, 'editor')} edition={source.edition}
+        <PlayerDevelopmentPanel visibility="editor" player={projectSavePlayer(player, source, 'editor')} edition={source.edition}
           build={source.build} sourceId={source.saveId}/>
       </Suspense>}
       {section === 'contract' && (player.contract ? <div className="editor-section">

@@ -1,0 +1,41 @@
+.save-decode-progress {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0;
+  padding: 16px 18px;
+}
+
+.save-decode-progress__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.save-decode-progress__head strong {
+  font-size: 13px;
+}
+
+.save-decode-progress__head span {
+  font-size: 11px;
+  color: var(--text-sub);
+  font-variant-numeric: tabular-nums;
+}
+
+.save-decode-progress__track {
+  width: 100%;
+  height: 10px;
+  accent-color: var(--accent-strong);
+  color: var(--accent-strong);
+}
+
+.save-decode-progress__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: var(--text-sub);
+}

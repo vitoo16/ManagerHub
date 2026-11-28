@@ -64,9 +64,7 @@ export interface RcaEditionProfile {
   readonly formulaStatus: RcaEpistemicStatus;
   readonly compatibilityStatus: RcaCompatibilityStatus;
   /**
-   * Fail-closed native write gate: true ONLY when exact edition + build formula is CERTIFIED.
-   * Currently false for both FM2013 and FM2026 because FMRTE 26's Fmrte.Framework.dll is packed
-   * (`uAutp`) and FM2013 predates FMRTE's RCA feature (`13.3.3.62` had no RCA).
+   * Fail-closed RCA compatibility gate; writer certification is separate.
    */
   readonly certifiedForAutoMatch: boolean;
   readonly positionsSupported: readonly RolePosition[];
@@ -80,7 +78,7 @@ export interface RcaFootDiagnostics {
   readonly preferredFoot: 'left' | 'right' | 'both' | 'unknown';
   readonly preferredFootRating: number | null;
   readonly weakerFootRating: number | null;
-  readonly isTwoFooted: boolean;
+  readonly isTwoFooted: boolean | null;
   readonly weakerFootWeight: number;
   readonly weightedPoints: number | null;
   readonly marginalAdvisoryCaPerStep: number | null;
