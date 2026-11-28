@@ -23,6 +23,7 @@ import {
   validateDecodedSaveDatabase
 } from './index';
 import { deriveFm2013SigningKeyFromExecutable, writeFm2013CaCertificationCopy, writePatchedFm2013Save } from './writer';
+import * as browserWriter from './writer-dev';
 import { buildSyntheticFm2013LangDb } from './lang-db';
 import { buildSyntheticFm2013Save, SYNTHETIC_TEST_HMAC_KEY } from './synthetic';
 import { makeSavedSquadPlans, restoreSavedSquadPlans, squadPlanStorageKey } from '../squad-plan-library';
@@ -349,6 +350,7 @@ describe('FM2013 P0 integrity, mode-independent persistence, transactions, and l
     };
     const fakeExecutable = new Uint8Array(16);
 
+    expect(browserWriter).not.toHaveProperty('writeFm2013CaCertificationCopy');
     await expect(writeFm2013CaCertificationCopy(bytes, fakeExecutable, {
       ...options, reviewedSourceSha256: 'unknown'
     })).rejects.toThrow('exact source digest');

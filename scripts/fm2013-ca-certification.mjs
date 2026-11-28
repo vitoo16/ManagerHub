@@ -37,8 +37,12 @@ async function publishVerifiedCopy(path, bytes, verify) {
     await verify(staged);
     await link(staged, path);
   } finally {
-    await rm(staged, { force: true });
-    await rmdir(scratch);
+    try {
+      await rm(staged, { force: true });
+      await rmdir(scratch);
+    } catch (err) {
+      console.warn('Could not clean the private staging directory:', err.message);
+    }
   }
 }
 
@@ -53,13 +57,24 @@ if (!/^\d+$/u.test(values.player) || !Number.isSafeInteger(uid) || uid < 1 ||
 }
 
 const receiptPath = resolve(values.receipt);
-const [{ bytes: receiptBytes, text: receiptText }, source, executable] = await Promise.all([
+if (process.platform !== 'win32' || !process.env.LOCALAPPDATA) {
+  throw new Error('CA certification requires the local Windows evidence store.');
+}
+const approvalPath = join(process.env.LOCALAPPDATA, 'ManagerHub', 'WriterCertification', 'reviewed-source.json');
+const [{ bytes: receiptBytes, text: receiptText }, source, executable, approvedFile] = await Promise.all([
   readBoundedUtf8File(receiptPath, 64 * 1024),
   readBoundedRegularFile(sourcePath, 256 * 1024 * 1024),
-  readBoundedRegularFile(values.executable, 128 * 1024 * 1024)
+  readBoundedRegularFile(values.executable, 128 * 1024 * 1024),
+  readBoundedUtf8File(approvalPath, 8 * 1024)
 ]);
 const receipt = JSON.parse(receiptText);
 const sourceSha256 = sha256(source);
+const receiptSha256 = sha256(receiptBytes);
+const approval = JSON.parse(approvedFile.text);
+if (approval?.schema !== 1 || approval.sourceSha256 !== sourceSha256 ||
+    approval.receiptSha256 !== receiptSha256 || approval.traceSha256 !== receipt?.traceSha256) {
+  throw new Error('The source and receipt are outside the independently reviewed local enrollment.');
+}
 if (receipt?.provider !== 'Windows Kernel/FileIO' ||
     receipt.writerDirectRecorded !== true || receipt.allRequestOffsetsCoverSave !== true ||
     receipt.eventLoss !== 0 || !Number.isSafeInteger(receipt.matchedSuccessfulCompletions) ||
@@ -71,7 +86,7 @@ if (receipt?.provider !== 'Windows Kernel/FileIO' ||
   throw new Error('Source, executable or ETW trace does not match the reviewed provenance receipt.');
 }
 
-const server = await createServer({ configFile: false, server: { middlewareMode: true, watch: null }, appType: 'custom' });
+const server = await createServer({ configFile: false, server: { middlewareMode: true, watch: null, ws: false }, appType: 'custom' });
 try {
   const { decodeFm2013Save } = await server.ssrLoadModule('/packages/domain/src/fm2013-offline/index.ts');
   const { deriveFm2013SigningKeyFromExecutable, writeFm2013CaCertificationCopy } =
@@ -86,7 +101,7 @@ try {
       throw new Error('The decoded baseline or requested CA is outside the reviewed test scope.');
     }
     const plan = {
-      sourceSha256, receiptSha256: sha256(receiptBytes), outputPath,
+      sourceSha256, receiptSha256, outputPath,
       target: { uid, before: player.actualCa, after },
       expectedUnchanged: { pa: player.potentialAbility, marketValueGbp: player.marketValueGbp }
     };
@@ -97,6 +112,13 @@ try {
       if (values.confirm !== confirmation) throw new Error('Confirm the exact preview digest before publishing a copy.');
       const backupPath = join(dirname(receiptPath), `source-${sourceSha256}.fm`);
       async function verifyBackup(path) {
+        const [original, backup] = await Promise.all([
+          lstat(sourcePath, { bigint: true }),
+          lstat(path, { bigint: true })
+        ]);
+        if (original.dev === backup.dev && original.ino === backup.ino) {
+          throw new Error('Private backup must be a separate file from the source.');
+        }
         if (await hashRegularFile(path) !== sourceSha256) throw new Error('Private backup SHA-256 differs from source.');
       }
       try { await publishVerifiedCopy(backupPath, source, verifyBackup); }
