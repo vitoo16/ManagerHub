@@ -44,11 +44,11 @@ The current synthetic suite rejects out-of-range values, conflicting aliases, st
 
 ## Independent readback and game reload
 
-The historical one-player CA experiment recorded on the local research branch at `5349343` observed CA through FMRTE and game load, advance, Save As, exit and reopen. It ran on older code and a save with `13.3.3` metadata. CA persisted and PA stayed stable. The stored market value and unrelated decoded bytes stayed stable while the meaning of the changed FMRTE XML General/Price remained unresolved. No field has a qualifying independent write/readback and game-reload receipt on the current writer.
+The historical one-player CA experiment recorded on the local research branch at `5349343` observed CA through FMRTE and game load, advance, Save As, exit and reopen. It ran on older code and a save with `13.3.3` metadata. CA persisted and PA stayed stable. The stored market value and unrelated decoded bytes stayed stable while the meaning of the changed FMRTE XML General/Price remained unresolved.
 
 Read-only inspection on Windows checked six local inputs, five unique by SHA-256. They were all AFE v4. Three unique inputs reported `13.3.3`, one reported `13.3`, and one had no summary version. None declared `13.3.3f359652`. The current writer rejected the authentic career save at its build gate before signing, and both the in-memory bytes and original file digest matched afterwards.
 
-Certification is blocked on an authentic source admitted by the current exact-build gate, or an independently reviewed way to prove the exact producing build from immutable evidence when the save summary uses a shorter version. The next admitted run requires disposable copies, independent field observations and the actual game load, advance, save, exit and reopen sequence. Field certification also requires resolution of the Price semantics and evidence for interrupted writes, existing destinations and recovery.
+The general experimental copy writer requires the exact build in the save metadata. The local workflow below admits one individually reviewed source through independent evidence of the producing executable. The current evidence covers a single CA increase. Decreases, other players, multi-player coverage, interrupted publication, in-game recovery testing and the XML Price discrepancy remain open.
 
 ## Local CA certification workflow
 
@@ -57,3 +57,19 @@ A Windows Kernel/FileIO trace now attributes creation, writes and closure of a d
 Use the [local CA certification command](../../../scripts/fm2013-ca-certification.mjs) on a reviewed source and its local trace. Provide `--source`, `--executable`, `--receipt`, `--trace`, `--player`, `--ca` and a fresh `--output` path. Review the displayed UID, CA change, PA, market value, output path, private backup path and preview digest. Add `--confirm` with that digest to publish the copy after user approval. The command verifies the receipt against the original source and raw trace digests. Before preview, enroll the independently reviewed source, receipt and trace SHA-256 values in the private Windows evidence store at `%LOCALAPPDATA%/ManagerHub/WriterCertification/reviewed-source.json`. The record has `schema: 1` and keys `sourceSha256`, `receiptSha256` and `traceSha256`. Enrollment is a trusted local operator action. The command cannot enroll a caller-supplied receipt. Neither artifact is included in production assets.
 
 The certification entry point binds the exact executable and selected source, checks layout and HMAC, and allows one CA edit. The underlying writer checks non-CA database bytes and the re-decoded record set. The command verifies a backup in the private Windows evidence store, reopens and checks the staged output, then publishes it via an exclusive hard link. An existing destination causes failure. Keep the backup for recovery and discard the output if independent readback or game reload fails. Browser Save As remains preview-only in production. A successful local run is evidence for one field and one source, with game reload and independent readback recorded separately.
+
+## 2026-11-29 authentic CA roundtrip on Windows
+
+On writer commit `85e712002d2560486ab321160d5837a3661c707d`, the local CLI published a new copy of the enrolled save with one approved player CA change. FM2013 `13.3.3f359652` loaded the copy at 10:00 on 17 July 2012. The test accepted the default season expectations for the three managers, continued to 12:00, and saved a separate file. The FM2013 process exited fully. A new process reopened that file at 12:00.
+
+| Observation | Source | Writer output before simulation | Game-resaved file after restart |
+| --- | ---: | ---: | ---: |
+| FMRTE 13.3.3.62 CA | 179 | 180 | 180 |
+| FMRTE PA | 182 | 182 | 182 |
+| FMRTE grid Value (EUR) | 30,341,549 | 30,341,549 | 30,341,549 |
+| Stored market value read from the save (GBP) | 26,384,000 | 26,384,000 | 26,384,000 |
+| FMRTE Potential Rating | 81.82 | 81.50 | 81.50 |
+
+All three saves verified their HMAC-SHA512. Before game simulation, 773 of 774 archive members were byte-identical. The decompressed `game_db.dat` diff contained one changed CA byte and 64 integrity bytes. Its other bytes were identical. A separate decoded comparison verified CA, PA and stored market value for all 4,057 unedited players before simulation. The hashes of all three preexisting Phase D source files remained unchanged. Copying the private backup to a new local test file reproduced the enrolled source hash. A replay to the existing writer output failed and left that output byte-identical.
+
+The independent observations cover the FMRTE grid. XML `General/Price` was not sampled in this run. The Potential Rating shift is an FMRTE display observation whose calculation was not verified. The roundtrip evidence is specific to this CA increase on this save and build. The production write capability remains pending the broader Phase D evidence.
