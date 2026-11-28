@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { createReadStream } from 'node:fs';
-import { link, lstat, mkdtemp, rm, rmdir, writeFile } from 'node:fs/promises';
+import { link, lstat, mkdtemp, realpath, rm, rmdir, writeFile } from 'node:fs/promises';
 import { basename, dirname, join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { createServer } from 'vite';
@@ -47,12 +47,12 @@ async function publishVerifiedCopy(path, bytes, verify) {
 }
 
 const sourcePath = resolve(values.source);
-const outputPath = resolve(values.output);
+const requestedOutput = resolve(values.output);
 const uid = Number(values.player);
 const after = Number(values.ca);
 if (!/^\d+$/u.test(values.player) || !Number.isSafeInteger(uid) || uid < 1 ||
     !/^\d+$/u.test(values.ca) || !Number.isInteger(after) || after < 1 || after > 200 ||
-    !outputPath.toLowerCase().endsWith('.fm')) {
+    !requestedOutput.toLowerCase().endsWith('.fm') || basename(requestedOutput).includes(':')) {
   throw new Error('Provide a numeric player UID, CA within 1–200 and a new .fm destination.');
 }
 
@@ -60,7 +60,9 @@ const receiptPath = resolve(values.receipt);
 if (process.platform !== 'win32' || !process.env.LOCALAPPDATA) {
   throw new Error('CA certification requires the local Windows evidence store.');
 }
-const approvalPath = join(process.env.LOCALAPPDATA, 'ManagerHub', 'WriterCertification', 'reviewed-source.json');
+const evidenceDirectory = await realpath(join(process.env.LOCALAPPDATA, 'ManagerHub', 'WriterCertification'));
+const approvalPath = join(evidenceDirectory, 'reviewed-source.json');
+const outputPath = join(await realpath(dirname(requestedOutput)), basename(requestedOutput));
 const [{ bytes: receiptBytes, text: receiptText }, source, executable, approvedFile] = await Promise.all([
   readBoundedUtf8File(receiptPath, 64 * 1024),
   readBoundedRegularFile(sourcePath, 256 * 1024 * 1024),
@@ -70,6 +72,7 @@ const [{ bytes: receiptBytes, text: receiptText }, source, executable, approvedF
 const receipt = JSON.parse(receiptText);
 const sourceSha256 = sha256(source);
 const receiptSha256 = sha256(receiptBytes);
+const backupPath = join(evidenceDirectory, `source-${sourceSha256}.fm`);
 const approval = JSON.parse(approvedFile.text);
 if (approval?.schema !== 1 || approval.sourceSha256 !== sourceSha256 ||
     approval.receiptSha256 !== receiptSha256 || approval.traceSha256 !== receipt?.traceSha256) {
@@ -84,6 +87,16 @@ if (receipt?.provider !== 'Windows Kernel/FileIO' ||
     receipt.sourceSha256 !== sourceSha256 || receipt.exeSha256 !== sha256(executable) ||
     receipt.traceSha256 !== await hashRegularFile(values.trace)) {
   throw new Error('Source, executable or ETW trace does not match the reviewed provenance receipt.');
+}
+
+if (outputPath.toLowerCase() === backupPath.toLowerCase()) {
+  throw new Error('Output must differ from the private backup path.');
+}
+try {
+  await lstat(outputPath);
+  throw new Error('The output path already exists. Select a new .fm destination.');
+} catch (err) {
+  if (err?.code !== 'ENOENT') throw err;
 }
 
 const server = await createServer({ configFile: false, server: { middlewareMode: true, watch: null, ws: false }, appType: 'custom' });
@@ -101,7 +114,7 @@ try {
       throw new Error('The decoded baseline or requested CA is outside the reviewed test scope.');
     }
     const plan = {
-      sourceSha256, receiptSha256, outputPath,
+      sourceSha256, receiptSha256, outputPath, backupPath,
       target: { uid, before: player.actualCa, after },
       expectedUnchanged: { pa: player.potentialAbility, marketValueGbp: player.marketValueGbp }
     };
@@ -110,7 +123,6 @@ try {
       console.log(JSON.stringify({ preview: true, ...plan, name: player.displayName, confirmation }, null, 2));
     } else {
       if (values.confirm !== confirmation) throw new Error('Confirm the exact preview digest before publishing a copy.');
-      const backupPath = join(dirname(receiptPath), `source-${sourceSha256}.fm`);
       async function verifyBackup(path) {
         const [original, backup] = await Promise.all([
           lstat(sourcePath, { bigint: true }),
@@ -141,7 +153,7 @@ try {
         }
       });
 
-      console.log(JSON.stringify({ ...plan, backupPath, outputSha256: result.sha256, certified: false }, null, 2));
+      console.log(JSON.stringify({ ...plan, outputSha256: result.sha256, certified: false }, null, 2));
     }
   } finally {
     key.fill(0);
