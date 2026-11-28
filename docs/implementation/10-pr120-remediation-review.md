@@ -10,6 +10,8 @@ The production browser exposes Save As preview. The experimental writer now has 
 
 Windows real-save browser checks exercised a verified-read `13.3.3` career save and a distinct authentic FM2013 tutorial save with a provisional game-db version. Desktop and mobile checks covered one decode on first open, workspace navigation, record browsing, a CA draft and its Player Lab projection, Undo/Redo, Realism transitions, Save As preview, cancellation during a second decode, switching saves and draft isolation. Both original SHA-256 digests remained stable. Source files and screenshots are stored privately. Real-game writer readback and field certification remain separate gates.
 
+A separate browser comparison matched four fields on a baseline player against a prior FMRTE receipt tied to the same source digest. A second read-profile sample matched its prior FMRTE player count. At Chromium tab zoom 200%, the real-save audit reproduced two Save Library accessibility failures. The archive lists now take keyboard focus and the disclosure summaries have a larger target. The same focused audit found no axe A/AA violations after the fixes and verified keyboard scrolling.
+
 The sections below record the earlier Linux pass.
 
 Date: 2026-11-28. Status: **implementation candidate; awaiting independent review and Windows acceptance**. This is an engineering review record, not certification, an independent reviewer approval, or a feature-acceptance ledger promotion.

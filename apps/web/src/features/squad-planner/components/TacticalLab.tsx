@@ -267,7 +267,10 @@ function TacticalLab({ dataset, plans, active, solution, scenarios, setScenarios
             </select></label>
           </>}
         </div>
-        <p className="tactical-lab__source">{t('Source: imported player export. Position labels and roles come from the current lineup. Tactical coordinates and instructions are user assumptions. Changing formations resets this plan’s tactical coordinates.')}</p>
+        <p className="tactical-lab__source">
+          {t(dataset.source === 'decoded_save' ? 'Source: decoded player records.' : 'Source: imported player export.')}{' '}
+          {t('Position labels and roles come from the current lineup. Tactical coordinates and instructions are user assumptions. Changing formations resets this plan’s tactical coordinates.')}
+        </p>
       </Surface>
     </div>
     <div className="tactical-lab__analysis">

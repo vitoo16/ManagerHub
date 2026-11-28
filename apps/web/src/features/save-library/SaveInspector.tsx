@@ -317,7 +317,7 @@ function SaveInspector({
               {t('Additional indexed groups')}: {selected.archiveIndex.nestedGroups.map(group =>
                 group.name + ' (' + group.memberCount + ')').join(', ')}
             </p>}
-            <div className="archive-preview__list" role="list" aria-label={t("Internal save archive members")}>
+            <div className="archive-preview__list" role="list" tabIndex={0} aria-label={t("Internal save archive members")}>
               {selected.archiveIndex.members.slice(visibleMemberPage * memberPageSize, (visibleMemberPage + 1) * memberPageSize).map((entry, i) => <div className="archive-preview__row" role="listitem" key={entry.filename + i}>
                 <span className="archive-preview__filename" title={entry.filename}>{entry.filename}</span><span>{formatBytes(entry.storedBytes)}</span>
               </div>)}
@@ -332,7 +332,7 @@ function SaveInspector({
             {selected.archiveIndex.gapObservations && selected.archiveIndex.gapObservations.length > 0 && <details className="inspection-technical">
               <summary>{t('Unindexed data gaps')} ({selected.archiveIndex.gapObservations.length})</summary>
               <p>{t('Experimental counts of repeated byte patterns only. Gaps are not decoded player records.')}</p>
-              <div className="archive-preview__list" role="list" aria-label={t('Unindexed data gaps')}>
+              <div className="archive-preview__list" role="list" tabIndex={0} aria-label={t('Unindexed data gaps')}>
                 {selected.archiveIndex.gapObservations.map((gap, i) => <div className="archive-preview__row" role="listitem" key={gap.afterMember + gap.beforeMember + i}>
                   <span className="archive-preview__filename">{gap.afterMember} → {gap.beforeMember}</span>
                   <span>{formatBytes(gap.sizeBytes)}</span>
@@ -344,7 +344,7 @@ function SaveInspector({
             {selected.archiveIndex.probes && selected.archiveIndex.probes.length > 0 && <details className="inspection-technical member-probe">
               <summary>{t('Member header diagnostics')} ({selected.archiveIndex.probes.length})</summary>
               <p>{t('Only the first 16 bytes of each bounded member are sampled. Signatures are checked both at the start and after the first 8 bytes as an experimental offset; matches are candidates, not confirmed codecs. No member contents are decoded.')}</p>
-              <div className="archive-preview__list" role="list" aria-label={t('Member header diagnostics')}>
+              <div className="archive-preview__list" role="list" tabIndex={0} aria-label={t('Member header diagnostics')}>
                 {selected.archiveIndex.probes.slice(0, 32).map(probe => <div className="archive-preview__row" role="listitem" key={probe.filename}>
                   <span className="archive-preview__filename" title={probe.filename}>{probe.filename}</span>
                   <span className="mono">{probe.prefixKind}</span>

@@ -505,3 +505,8 @@
 
 @media (prefers-reduced-motion: reduce) {
 }
+.inspection-technical > summary {
+  min-block-size: 24px;
+  padding-block: 4px;
+  cursor: pointer;
+}

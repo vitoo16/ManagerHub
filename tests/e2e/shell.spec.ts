@@ -434,7 +434,9 @@ test('discovers a bounded synthetic trailing archive catalogue without extractin
   await page.goto('/#/saves');
   await page.locator('input[type="file"]').setInputFiles({ name: 'synthetic.fm', mimeType: 'application/octet-stream', buffer: file });
   await expect(page.getByText('Internal archive index')).toBeVisible();
-  await expect(page.getByRole('list', { name: 'Internal save archive members' }).getByText('game_info.dat')).toBeVisible();
+  const members = page.getByRole('list', { name: 'Internal save archive members' });
+  await expect(members.getByText('game_info.dat')).toBeVisible();
+  await expect(members).toHaveAttribute('tabindex', '0');
   await page.getByText('Technical details').click();
   await expect(page.getByText(/member contents and game records are NOT decoded/i)).toBeVisible();
   // Only vetted catalogue metadata persists; sampled header bytes remain ephemeral.
