@@ -22,7 +22,8 @@ import {
   undoEditorTransaction,
   validateDecodedSaveDatabase
 } from './index';
-import { deriveFm2013SigningKeyFromExecutable, writePatchedFm2013Save } from './writer';
+import { deriveFm2013SigningKeyFromExecutable, writeFm2013CaCertificationCopy, writePatchedFm2013Save } from './writer';
+import * as browserWriter from './writer-dev';
 import { buildSyntheticFm2013LangDb } from './lang-db';
 import { buildSyntheticFm2013Save, SYNTHETIC_TEST_HMAC_KEY } from './synthetic';
 import { makeSavedSquadPlans, restoreSavedSquadPlans, squadPlanStorageKey } from '../squad-plan-library';
@@ -316,6 +317,48 @@ describe('FM2013 P0 integrity, mode-independent persistence, transactions, and l
     await expect(writePatchedFm2013Save(bytes, {
       ...EMPTY_SAVE_DRAFT_OVERLAY, stadiums: { 8000: { capacity: 100, seatingCapacity: 200 } }
     }, options)).rejects.toThrow('seating capacity');
+    expect(bytes).toEqual(original);
+  });
+
+  it('rejects stale sources, unauthenticated input, and unknown fields before returning a copy', async () => {
+    const bytes = await buildSyntheticFm2013Save({ gameVersion: '13.3.3f359652' });
+    const original = bytes.slice();
+    const options = { signingKey: SYNTHETIC_TEST_HMAC_KEY };
+    const patch = {
+      ...EMPTY_SAVE_DRAFT_OVERLAY,
+      players: { 10011: { actualCa: 190 } }
+    };
+
+    await expect(writePatchedFm2013Save(bytes, patch, { ...options, expectedOriginalSha256: '0'.repeat(64) }))
+      .rejects.toMatchObject({ code: 'UNSUPPORTED_WRITE_TARGET', message: expect.stringContaining('SHA-256') });
+    await expect(writePatchedFm2013Save(bytes, patch, { signingKey: new Uint8Array(32) }))
+      .rejects.toMatchObject({ code: 'TAMPERED_CHECKSUM' });
+
+    const unknownField = { ...patch.players[10011], unsupportedFlag: 1 };
+    await expect(writePatchedFm2013Save(bytes, { ...patch, players: { 10011: unknownField } }, options))
+      .rejects.toThrow('Unknown player field "unsupportedFlag"');
+    expect(bytes).toEqual(original);
+  });
+
+  it('requires a reviewed digest, a changed CA and the exact executable for certification', async () => {
+    const bytes = await buildSyntheticFm2013Save({ gameVersion: '13.3.3' });
+    const original = bytes.slice();
+    const options = {
+      reviewedSourceSha256: 'a'.repeat(64),
+      outputFileName: 'certification-copy.fm',
+      target: { uid: 10011, before: 168, after: 169 }
+    };
+    const fakeExecutable = new Uint8Array(16);
+
+    expect(browserWriter).not.toHaveProperty('writeFm2013CaCertificationCopy');
+    await expect(writeFm2013CaCertificationCopy(bytes, fakeExecutable, {
+      ...options, reviewedSourceSha256: 'unknown'
+    })).rejects.toThrow('exact source digest');
+    await expect(writeFm2013CaCertificationCopy(bytes, fakeExecutable, {
+      ...options, target: { ...options.target, after: 168 }
+    })).rejects.toThrow('one valid CA change');
+    await expect(writeFm2013CaCertificationCopy(bytes, fakeExecutable, options))
+      .rejects.toThrow('verified FM2013 executable');
     expect(bytes).toEqual(original);
   });
 

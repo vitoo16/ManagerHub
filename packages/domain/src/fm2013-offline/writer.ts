@@ -1,4 +1,5 @@
 import type { AttributeKey } from '../player-import';
+import fm2013Profile from '../fm2013-live-profile.json' with { type: 'json' };
 import { resolveSaveCompatibility } from '../save-compatibility';
 import {
   computeGameDbHmacSha512,
@@ -19,6 +20,7 @@ import { isoToSiDate } from './binary-reader';
 import {
   applyDraftOverlayToDatabase,
   countDirtyFields,
+  EMPTY_SAVE_DRAFT_OVERLAY,
   normalizeOverlayAgainstDatabase,
   type ClubDraftPatch,
   type PlayerDraftPatch,
@@ -387,10 +389,59 @@ export interface WrittenFm2013SaveResult {
  * 4. Preserves all 770+ non-`game_db.dat` members (including `rgman/` subdirectories and inter-member slack gaps) byte-for-byte.
  * 5. Independently re-decodes and schema-validates the output `.fm` bytes before returning, failing closed on any discrepancy.
  */
-export async function writePatchedFm2013Save(
+export function writePatchedFm2013Save(
   source: BinarySliceSource,
   overlay: SaveDraftOverlay,
   options: WritePatchedFm2013SaveOptions
+): Promise<WrittenFm2013SaveResult> {
+  return writeOfflineCopy(source, overlay, options);
+}
+
+interface CaCertificationTarget {
+  readonly uid: number;
+  readonly before: number;
+  readonly after: number;
+}
+
+interface CaCertificationCopyOptions {
+  readonly reviewedSourceSha256: string;
+  readonly outputFileName: string;
+  readonly target: CaCertificationTarget;
+}
+
+/** Research caller supplies a digest already bound to independently observed Save As evidence. */
+export async function writeFm2013CaCertificationCopy(
+  source: Uint8Array,
+  executable: Uint8Array,
+  { reviewedSourceSha256, outputFileName, target }: CaCertificationCopyOptions
+): Promise<WrittenFm2013SaveResult> {
+  if (!/^[a-f0-9]{64}$/u.test(reviewedSourceSha256) ||
+      !Number.isSafeInteger(target.uid) || target.uid < 1 ||
+      !Number.isInteger(target.before) || target.before < 1 || target.before > 200 ||
+      !Number.isInteger(target.after) || target.after < 1 || target.after > 200 ||
+      target.before === target.after) {
+    throw new FM2013DecodeError('UNSUPPORTED_WRITE_TARGET', 'An exact source digest and one valid CA change are required.');
+  }
+  if (await computeSha256Hex(executable) !== fm2013Profile.binarySha256 ||
+      fm2013Profile.build !== FM2013_EXPERIMENTAL_WRITE_BUILD) {
+    throw new FM2013DecodeError('UNSUPPORTED_WRITE_TARGET', 'Certification requires the verified FM2013 executable.');
+  }
+  const signingKey = await deriveFm2013SigningKeyFromExecutable(executable);
+  try {
+    return await writeOfflineCopy(source, {
+      ...EMPTY_SAVE_DRAFT_OVERLAY,
+      players: { [target.uid]: { actualCa: target.after } }
+    }, { signingKey, outputFileName, expectedOriginalSha256: reviewedSourceSha256 }, target);
+  } finally {
+    signingKey.fill(0);
+  }
+}
+
+async function writeOfflineCopy(
+  source: BinarySliceSource,
+  overlay: SaveDraftOverlay,
+  options: WritePatchedFm2013SaveOptions,
+  certification?: CaCertificationTarget
 ): Promise<WrittenFm2013SaveResult> {
   if (!(options.signingKey instanceof Uint8Array) || options.signingKey.byteLength !== 32) {
     throw new FM2013DecodeError(
@@ -433,7 +484,9 @@ export async function writePatchedFm2013Save(
     edition: summary?.gameVersion ? 'FM2013' : null,
     build: summary?.gameVersion ?? null
   });
-  if (compat.status !== 'verified' || summary?.gameVersion !== FM2013_EXPERIMENTAL_WRITE_BUILD) {
+  const acceptsTracedSummary = certification !== undefined && summary?.gameVersion === '13.3.3';
+  if (compat.status !== 'verified' ||
+      (summary?.gameVersion !== FM2013_EXPERIMENTAL_WRITE_BUILD && !acceptsTracedSummary)) {
     throw new FM2013DecodeError(
       'UNSUPPORTED_WRITE_TARGET',
       `Experimental Save As requires FM2013 ${FM2013_EXPERIMENTAL_WRITE_BUILD}; source reports ${summary?.gameVersion ?? 'unknown'}.`
@@ -453,6 +506,10 @@ export async function writePatchedFm2013Save(
   const baseDb = await decodeFm2013Save(input, { signingKey: options.signingKey });
   if (baseDb.source.sha256 !== originalSha256) {
     throw new FM2013DecodeError('UNSUPPORTED_WRITE_TARGET', 'Source changed during write preparation.');
+  }
+  if (certification && (baseDb.source.gameDbVersion !== 0x774 ||
+      baseDb.players.find(player => player.uid === certification.uid)?.actualCa !== certification.before)) {
+    throw new FM2013DecodeError('UNSUPPORTED_WRITE_TARGET', 'Certification layout or reviewed baseline CA does not match.');
   }
   const normalized = normalizeOverlayAgainstDatabase(baseDb, overlay);
   const expectedDb = applyDraftOverlayToDatabase(baseDb, normalized);
@@ -485,6 +542,16 @@ export async function writePatchedFm2013Save(
   }
   for (const [uidStr, patch] of Object.entries(normalized.stadiums)) {
     applyStadiumBinaryPatch(dv, parsed.editableOffsets, Number(uidStr), patch);
+  }
+
+  if (certification) {
+    const caOffset = parsed.editableOffsets.playersByUid.get(certification.uid)?.actualCaOffset;
+    const outsideCaUnchanged = caOffset !== undefined &&
+      gameDbBytes.subarray(0, caOffset).every((value, index) => value === patchedGameDb[index]) &&
+      gameDbBytes.subarray(caOffset + 2).every((value, index) => value === patchedGameDb[caOffset + 2 + index]);
+    if (!outsideCaUnchanged) {
+      throw new FM2013DecodeError('CORRUPT_DATABASE', 'Certification patch changed bytes outside the selected CA field.');
+    }
   }
 
   const newHmac = await computeGameDbHmacSha512(patchedGameDb, options.signingKey);
