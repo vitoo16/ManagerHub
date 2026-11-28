@@ -58,3 +58,15 @@
 **PR status (21/11/2026):** #76 closed, fully superseded by #75; #85 (Local CI) and #75 (Save Library) merged in order, followed by #82 (PID boundary tests), #77 (handoff) and #79 (FM27 research). Do **not** repeat the stale #76→#75 merge sequence. Current Phase 2 research continues under [Issue #81](https://github.com/vitoo16/ManagerHub/issues/81) and [PR #86](https://github.com/vitoo16/ManagerHub/pull/86), which is a fake-host-tested native-side read-only guard, **not** a product live reader. Mainline Local CI evidence must be generated on its own exact SHA.
 
 **Acceptance decision:** B1 has a useful synthetic regression base but is not complete. B2 has no verified production adapter/profile. B5 remains open until the missing real-build evidence and full verification gates are met.
+
+## Offline-first corpus follow-up (#114)
+
+The user requires a complete disk-only save-to-database workflow, not a CSV or native memory prerequisite. Historical Genie Scout 13 author testimony ([2013 thread](https://community.sports-interactive.com/forums/topic/281021-fm-genie-scout-13-final-version/)) reports encrypted saves and a switch to memory reading; this is a research lead, not verified codec evidence. Confirm the exact FM2013 save family locally before applying AFE research. FM26/27 parsers are not interchangeable.
+
+The existing cross-save comparator skipped stored members above 8 MiB even in full catalogue mode. Explicit research opt-in for large members:
+
+```powershell
+node scripts/afe-cross-save.mjs "same-state-A.fm" "same-state-B.fm" --all-members --include-large-members
+```
+
+This compares complete stored bytes via chunked SHA-256 for same-name, same-size indexed members within the existing 256 MiB per-file cap; rechecks both input fingerprints after the comparison. It reports only equality and coverage, never actual digests or payload bytes. It does not guarantee atomic reads against concurrent adversarial mutation; close the game and keep fixtures immutable during analysis. Unequal-size and unindexed extents remain separate research work. The default 8 MiB cap and default sampling mode are unchanged. Synthetic large-member regression added; exact candidate CI and authentic-save evidence must be recorded separately. No codec or semantic decoder has been certified by this change.

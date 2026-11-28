@@ -266,3 +266,49 @@ test('opt-in full catalogue mode detects changes beyond default 32 pairs without
     await rm(dir, { recursive: true, force: true });
   }
 });
+
+// Synthetic regression for the previous blind spot: a game_db-sized member
+// above 8 MiB is skipped by default and compared only on explicit opt-in.
+test('full catalogue large-member opt-in compares the entire stored database', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'afe-large-member-'));
+  const first = join(dir, 'one.fm'), second = join(dir, 'two.fm');
+  const make = value => {
+    const member = Buffer.alloc(9 * 1024 * 1024, 0x42);
+    Buffer.from([16, 0, 0, 0, 16, 0, 0, 0]).copy(member);
+    member[member.length - 1] = value;
+    const parts = [];
+    const u32 = number => { const bytes = Buffer.alloc(4); bytes.writeUInt32LE(number); parts.push(bytes); };
+    const name = text => { u32(text.length); parts.push(Buffer.from(text, 'utf16le'), Buffer.alloc(2)); };
+    u32(0); u32(1); name('game_db'); name('.dat');
+    u32(0); u32(member.length); u32(member.length * 4);
+    return Buffer.concat([
+      Buffer.from([2, 1, 97, 102, 101, 46]), Buffer.alloc(12), member,
+      Buffer.from([2, 1, 102, 109, 102, 46, 4, 0, 0]),
+      deflateSync(Buffer.concat(parts))
+    ]);
+  };
+  try {
+    await writeFile(first, make(0x51));
+    await writeFile(second, make(0x72));
+    const bounded = await compareLocalAfeSaves(first, second, { allMembers: true });
+    assert.equal(bounded.unverifiedOversizedMembers, 1);
+    assert.equal(bounded.comparisons[0].completeMemberHashMatch, null);
+    const complete = await compareLocalAfeSaves(first, second, {
+      allMembers: true, includeLargeMembers: true
+    });
+    assert.equal(complete.hashedMembers, 1);
+    assert.equal(complete.changedMembers, 1);
+    assert.equal(complete.unverifiedOversizedMembers, 0);
+    assert.equal(complete.sourceRechecked, true);
+    assert.equal(complete.comparisons[0].filename, 'game_db.dat');
+    assert.equal(complete.comparisons[0].completeMemberHashMatch, false);
+    assert.equal(complete.comparisons[0].evidence, 'full_payload_sha256');
+    assert.equal(JSON.stringify(complete).includes('digest'), false);
+    await assert.rejects(compareLocalAfeSaves(first, second, { includeLargeMembers: true }), TypeError);
+    await assert.rejects(compareLocalAfeSaves(first, second, {
+      allMembers: true, includeLargeMembers: 'yes'
+    }), TypeError);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
