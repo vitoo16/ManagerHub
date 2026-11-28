@@ -37,7 +37,9 @@ function PlayerImportToolbar({ dataset, importing, savedCurrent, activity, onFil
       </Button>}
     </div>
     <Status tone={importing ? 'warning' : isDecoded ? 'positive' : 'info'}>
-      {t(importing ? 'Analyzing export in the background…' : isDecoded ? 'Decoded from save · Verified' : dataset ? 'Export loaded in this session' : 'No data uploaded')}
+      {t(importing ? 'Analyzing export in the background…' : isDecoded
+        ? dataset.saveVerification === 'verified' ? 'Decoded from save · Verified' : 'Research-only decode · Not independently verified'
+        : dataset ? 'Export loaded in this session' : 'No data uploaded')}
     </Status>
   </div>;
 }

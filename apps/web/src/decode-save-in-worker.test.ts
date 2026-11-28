@@ -86,6 +86,8 @@ describe('offline save decode worker admission and lifecycle', () => {
       [inspection, { ...database, source: { ...database.source, lastModified: file.lastModified + 1 } }],
       [inspection, { ...database, humans: [null] }],
       [inspection, { ...database, humans: Array(1) }],
+      [inspection, { ...database, source: { ...database.source, gameDbVersionHex: {} } }],
+      [inspection, { ...database, players: database.players.map(player => ({ ...player, calendarAge: {} })) }],
       [inspection, { ...database, players: database.players.map(player => ({ ...player, clubName: 1 })) }],
       [inspection, { ...database, players: database.players.map(player => ({ ...player, hiddenPlaying: null })) }]
     ]) {

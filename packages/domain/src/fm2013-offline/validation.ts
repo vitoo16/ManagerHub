@@ -21,8 +21,30 @@ const MAX_VALIDATED_ENTITIES = 500_000;
 
 const nullableString = (value: unknown): boolean => value === null || typeof value === 'string';
 const nullableInteger = (value: unknown): boolean => value === null || Number.isSafeInteger(value);
+const nullableNumber = (value: unknown): boolean => value === null || Number.isFinite(value);
+const stringField = (value: unknown): boolean => typeof value === 'string';
+const booleanField = (value: unknown): boolean => typeof value === 'boolean';
+
+function fields(
+  row: Record<string, unknown>,
+  valid: (value: unknown) => boolean,
+  keys: readonly string[]
+): boolean {
+  return keys.every(key => valid(row[key]));
+}
+
 const isRatingGroup = (value: unknown, keys: readonly string[]): boolean =>
-  isPlainObject(value) && keys.every(key => isSafeIntInRange(value[key], 1, 20));
+  isPlainObject(value) && fields(value, rating => isSafeIntInRange(rating, 1, 20), keys);
+
+function validContract(value: unknown): boolean {
+  return value === null || (isPlainObject(value) &&
+    fields(value, nullableInteger, ['clubUid', 'weeklyWageGbp', 'squadNumber']) &&
+    fields(value, nullableString, ['clubName', 'expiresAt', 'joinedAt']) &&
+    booleanField(value.isLoan) && Number.isSafeInteger(value.jobType));
+}
+
+const nameProvenance = (value: unknown): boolean =>
+  value === 'decoded_save' || value === 'lang_db' || value === 'not_stored_in_save';
 
 function validHuman(value: unknown): boolean {
   return isPlainObject(value) && typeof value.managerName === 'string' && typeof value.clubName === 'string' &&
@@ -77,6 +99,10 @@ export function validateDecodedSaveDatabase(
     !isSafeIntInRange(src.fileSize, 1, MAX_FM_SAVE_BYTES) ||
     !Number.isSafeInteger(src.lastModified) || typeof src.signature !== 'string' ||
     !nullableString(src.gameDate) || !nullableString(src.dbString) ||
+    typeof src.gameDbVersionHex !== 'string' ||
+    !isSafeIntInRange(src.memberCount, 1, MAX_VALIDATED_ENTITIES) ||
+    (src.totalArchiveMemberCount !== undefined && !isSafeIntInRange(src.totalArchiveMemberCount, 1, MAX_VALIDATED_ENTITIES)) ||
+    (src.langDbAttached !== undefined && !booleanField(src.langDbAttached)) ||
     (src.family !== 'afe' && src.family !== 'fmf') ||
     typeof src.compressed !== 'boolean' ||
     src.edition !== 'FM2013' ||
@@ -94,6 +120,8 @@ export function validateDecodedSaveDatabase(
 
   const counts = value.counts;
   if (
+    !fields(counts, count => isSafeIntInRange(count, 0, 2_000_000),
+      ['humans', 'cities', 'awards', 'injuries', 'derbies', 'currencies', 'languages', 'totalPersons']) ||
     value.players.length > MAX_VALIDATED_ENTITIES ||
     value.staff.length > MAX_VALIDATED_ENTITIES ||
     value.clubs.length > MAX_VALIDATED_ENTITIES ||
@@ -142,7 +170,7 @@ export function validateDecodedSaveDatabase(
   const checkUniqueUids = (items: readonly unknown[], label: string): void => {
     const seen = new Set<number>();
     for (const item of items) {
-      if (!isPlainObject(item) || !isSafeIntInRange(item.uid, 0, 2_147_483_647)) {
+      if (!isPlainObject(item) || !isSafeIntInRange(item.uid, 0, 2_147_483_647) || !Number.isSafeInteger(item.rowId)) {
         throw new Error(`Invalid UID in ${label} table.`);
       }
       if (seen.has(item.uid)) {
@@ -163,10 +191,14 @@ export function validateDecodedSaveDatabase(
 
   for (const p of value.players as Record<string, unknown>[]) {
     if (
-      typeof p.displayName !== 'string' ||
-      typeof p.fullName !== 'string' ||
-      !nullableString(p.clubName) || !nullableString(p.clubShortName) || !nullableString(p.primaryNationName) ||
-      typeof p.positionSummary !== 'string' ||
+      !fields(p, stringField, ['displayName', 'fullName', 'firstName', 'lastName', 'positionSummary']) ||
+      !fields(p, nullableString, ['commonName', 'birthDate', 'primaryNationName', 'clubName', 'clubShortName', 'parentClubName']) ||
+      !fields(p, nullableInteger, ['calendarAge', 'primaryNationUid', 'birthCityUid', 'clubUid', 'parentClubUid',
+        'teamUid', 'teamType', 'heightCm', 'weightKg', 'morale', 'marketValueGbp', 'squadNumber']) ||
+      !fields(p, Number.isSafeInteger, ['leftFoot', 'rightFoot', 'intCaps', 'intGoals', 'homeReputation',
+        'currentReputation', 'worldReputation']) ||
+      (p.birthCityName !== undefined && !nullableString(p.birthCityName)) ||
+      (p.personTag !== 2 && p.personTag !== 3) || !booleanField(p.isLoanedIn) ||
       !isSafeIntInRange(p.actualCa, 0, 200) ||
       !isSafeIntInRange(p.potentialAbility, -10, 200) ||
       !isPlainObject(p.positions) ||
@@ -174,8 +206,7 @@ export function validateDecodedSaveDatabase(
       !isRatingGroup(p.hiddenPlaying, ['dirtiness', 'consistency', 'importantMatches', 'injuryProneness', 'versatility']) ||
       (p.personality !== null && !isRatingGroup(p.personality, ['adaptability', 'ambition', 'loyalty', 'pressure',
         'professionalism', 'sportsmanship', 'temperament', 'controversy'])) ||
-      (p.contract !== null && (!isPlainObject(p.contract) || !nullableInteger(p.contract.weeklyWageGbp) ||
-        !nullableString(p.contract.expiresAt) || !nullableString(p.contract.joinedAt)))
+      !validContract(p.contract)
     ) {
       throw new Error('Decoded player record failed field validation.');
     }
@@ -193,9 +224,11 @@ export function validateDecodedSaveDatabase(
 
   for (const s of value.staff as Record<string, unknown>[]) {
     if (
-      typeof s.displayName !== 'string' ||
-      !nullableString(s.clubName) || !nullableString(s.primaryNationName) ||
-      typeof s.isHuman !== 'boolean' ||
+      !fields(s, stringField, ['displayName', 'firstName', 'lastName']) ||
+      !fields(s, nullableString, ['commonName', 'birthDate', 'clubName', 'primaryNationName', 'contractExpiresAt']) ||
+      !fields(s, nullableInteger, ['calendarAge', 'primaryNationUid', 'clubUid', 'jobType', 'weeklyWageGbp']) ||
+      !fields(s, Number.isSafeInteger, ['homeReputation', 'currentReputation', 'worldReputation']) ||
+      (s.personTag !== 1 && s.personTag !== 3 && s.personTag !== 9) || !booleanField(s.isHuman) ||
       !isSafeIntInRange(s.staffCa, 0, 200) ||
       !isSafeIntInRange(s.staffPa, -10, 200) ||
       (s.attributes != null && !isRatingGroup(s.attributes, ['attacking', 'defending', 'fitness', 'goalkeepers',
@@ -208,7 +241,14 @@ export function validateDecodedSaveDatabase(
   }
 
   for (const c of value.clubs as Record<string, unknown>[]) {
-    if (typeof c.fullName !== 'string' || typeof c.shortName !== 'string' || !nullableString(c.nationName)) {
+    if (!fields(c, stringField, ['fullName', 'shortName', 'sixLetterName', 'nickname']) ||
+        !nullableString(c.nationName) || (c.cityName !== undefined && !nullableString(c.cityName)) ||
+        !fields(c, nullableInteger, ['nationUid', 'cityUid', 'yearFounded', 'trainingFacilities', 'youthFacilities',
+          'youthCoaching', 'youthRecruitment', 'professionalStatus', 'balanceGbp', 'transferBudgetGbp',
+          'transferBudgetSeasonGbp', 'weeklyWageBillGbp', 'weeklyWageBudgetGbp', 'primaryStadiumUid',
+          'primaryCompUid', 'firstTeamReputation']) ||
+        !fields(c, Number.isSafeInteger, ['playerCount', 'staffCount']) ||
+        (c.financeType !== 'basic' && c.financeType !== 'full' && c.financeType !== 'none')) {
       throw new Error('Decoded club record failed field validation.');
     }
   }
@@ -217,6 +257,10 @@ export function validateDecodedSaveDatabase(
     if (
       !isSafeIntInRange(st.capacity, 0, 500_000) ||
       !nullableString(st.customName) || !nullableString(st.ownerClubName) ||
+      (st.cityName !== undefined && !nullableString(st.cityName)) ||
+      !nameProvenance(st.nameProvenance) ||
+      !fields(st, nullableInteger, ['ownerClubUid', 'cityUid']) ||
+      !fields(st, nullableNumber, ['latitude', 'longitude']) ||
       !isSafeIntInRange(st.seatingCapacity, 0, 500_000) ||
       !isSafeIntInRange(st.expansionCapacity, 0, 500_000)
     ) {
@@ -224,7 +268,9 @@ export function validateDecodedSaveDatabase(
     }
   }
   for (const team of value.teams as Record<string, unknown>[]) {
-    if (!nullableString(team.ownerClubName) || !Number.isSafeInteger(team.reputation)) {
+    if (!nullableString(team.ownerClubName) || !booleanField(team.isNationalTeam) ||
+        !fields(team, Number.isSafeInteger, ['teamType', 'reputation']) ||
+        !fields(team, nullableInteger, ['ownerClubUid', 'compUid', 'stadiumUid', 'managerPersonUid'])) {
       throw new Error('Decoded team record failed field validation.');
     }
   }
@@ -237,6 +283,8 @@ export function validateDecodedSaveDatabase(
   }
   for (const competition of value.competitions as Record<string, unknown>[]) {
     if (!nullableString(competition.customName) || !Number.isSafeInteger(competition.teamCount) ||
+        !nameProvenance(competition.nameProvenance) ||
+        (competition.shortName !== undefined && !nullableString(competition.shortName)) ||
         !Array.isArray(competition.sampleClubs)) {
       throw new Error('Decoded competition record failed field validation.');
     }
@@ -271,6 +319,7 @@ export function isValidDecodedSaveSummary(value: unknown): value is DecodedSaveD
     src.saveId === value.saveId &&
     src.sha256 === value.saveId &&
     typeof src.fileName === 'string' &&
+    typeof src.build === 'string' && nullableString(src.gameDate) &&
     src.edition === 'FM2013' &&
     src.adapterVersion === FM2013_OFFLINE_ADAPTER_VERSION &&
     src.writeCapability === false &&
