@@ -319,6 +319,26 @@ describe('FM2013 P0 integrity, mode-independent persistence, transactions, and l
     expect(bytes).toEqual(original);
   });
 
+  it('rejects stale sources, unauthenticated input, and unknown fields before returning a copy', async () => {
+    const bytes = await buildSyntheticFm2013Save({ gameVersion: '13.3.3f359652' });
+    const original = bytes.slice();
+    const options = { signingKey: SYNTHETIC_TEST_HMAC_KEY };
+    const patch = {
+      ...EMPTY_SAVE_DRAFT_OVERLAY,
+      players: { 10011: { actualCa: 190 } }
+    };
+
+    await expect(writePatchedFm2013Save(bytes, patch, { ...options, expectedOriginalSha256: '0'.repeat(64) }))
+      .rejects.toMatchObject({ code: 'UNSUPPORTED_WRITE_TARGET', message: expect.stringContaining('SHA-256') });
+    await expect(writePatchedFm2013Save(bytes, patch, { signingKey: new Uint8Array(32) }))
+      .rejects.toMatchObject({ code: 'TAMPERED_CHECKSUM' });
+
+    const unknownField = { ...patch.players[10011], unsupportedFlag: 1 };
+    await expect(writePatchedFm2013Save(bytes, { ...patch, players: { 10011: unknownField } }, options))
+      .rejects.toThrow('Unknown player field "unsupportedFlag"');
+    expect(bytes).toEqual(original);
+  });
+
   it('keeps coarse versions read-only even with a matching signing key', async () => {
     const bytes = await buildSyntheticFm2013Save({ gameVersion: '13.3.3' });
     await expect(writePatchedFm2013Save(bytes, EMPTY_SAVE_DRAFT_OVERLAY, { signingKey: SYNTHETIC_TEST_HMAC_KEY }))
