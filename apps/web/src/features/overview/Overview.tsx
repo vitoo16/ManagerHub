@@ -4,6 +4,7 @@ import { type PlayerDataset, type SaveIdentity, type WorkspaceKey } from '@manag
 import type { DecodedSaveDatabase } from '@managerhub/domain/fm2013-offline';
 import { Button, Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
 import ContinueWorkspace from './ContinueWorkspace';
+import type { OpenPlayerDataset } from '../../usePlayerLibrary';
 import { registerSaveDbI18n } from '../../i18n/register-save-db-i18n';
 
 registerSaveDbI18n();
@@ -18,7 +19,7 @@ function Overview({ imports, current, activeDecodedSave = null, onDataset, go }:
   imports: readonly SaveIdentity[];
   current: PlayerDataset | null;
   activeDecodedSave?: DecodedSaveDatabase | null;
-  onDataset: (dataset: PlayerDataset) => void;
+  onDataset: OpenPlayerDataset;
   go: (key: WorkspaceKey) => void;
 }) {
   const { t } = useTranslation();

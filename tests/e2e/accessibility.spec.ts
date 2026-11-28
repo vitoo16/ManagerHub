@@ -4,6 +4,7 @@ import { expect, test } from '@playwright/test';
 const WORKSPACES = [
   'overview',
   'saves',
+  'editor',
   'players',
   'history',
   'squad',
@@ -52,6 +53,15 @@ test('skip link is the first keyboard stop and moves focus to main content', asy
 
   await page.keyboard.press('Enter');
   await expect(page.locator('#main-content')).toBeFocused();
+});
+
+test('skip link does not replace the active workspace route', async ({ page }) => {
+  await page.goto('/#/players');
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Enter');
+  await expect(page.locator('#main-content')).toBeFocused();
+  await expect(page).toHaveURL(/#\/players$/);
+  await expect(page.getByRole('heading', { name: 'Player Lab' })).toBeVisible();
 });
 
 test('quick navigation keeps focus inside the dialog and restores the opener', async ({ page }) => {

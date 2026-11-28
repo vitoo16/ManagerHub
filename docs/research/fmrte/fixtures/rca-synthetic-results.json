@@ -1,0 +1,853 @@
+{
+  "manifestSha256": "0999498d57a874cc3eb4f127ddbffc6adfcd71c3e02ebf162019c3b832f14dae",
+  "schema": 1,
+  "kind": "synthetic",
+  "model": "FM2013-research-v2",
+  "modelSourceSha256": "b5c29dbdd56056ec077a971b56f2f050616ac7bb8053d267ed50c91776f22f42",
+  "overlaps": {
+    "playerIdentity": 0,
+    "careerGroup": 0,
+    "sourceGroup": 0
+  },
+  "status": "synthetic-only",
+  "partitions": {
+    "calibration": {
+      "sources": 1,
+      "input": 5,
+      "included": 2,
+      "excluded": {
+        "not-strict-single": 1,
+        "invalid-or-below-calibration-ca": 1,
+        "incomplete-calibration-weight": 1
+      },
+      "byArchetype": {
+        "Goalkeeper": 0,
+        "DefenderCentral": 0,
+        "FullBack": 0,
+        "WingBack": 0,
+        "DefensiveMidfielder": 0,
+        "MidfielderCentral": 0,
+        "WideMidfielder": 0,
+        "AttackingMidfielderCentral": 0,
+        "Winger": 0,
+        "Striker": 2
+      },
+      "strictSingleIncluded": 2
+    },
+    "holdout": {
+      "sources": 1,
+      "input": 6,
+      "included": 5,
+      "excluded": {
+        "insufficient-attributes": 1
+      },
+      "byArchetype": {
+        "Goalkeeper": 1,
+        "DefenderCentral": 0,
+        "FullBack": 0,
+        "WingBack": 0,
+        "DefensiveMidfielder": 0,
+        "MidfielderCentral": 0,
+        "WideMidfielder": 0,
+        "AttackingMidfielderCentral": 0,
+        "Winger": 1,
+        "Striker": 3
+      },
+      "strictSingleIncluded": 4
+    }
+  },
+  "calibration": {
+    "fittedUniversal": {
+      "n": 2,
+      "intercept": -33.33333333333334,
+      "slope": 13.333333333333334,
+      "r2": 1
+    },
+    "fittedPerArchetype": {
+      "Goalkeeper": {
+        "n": 0,
+        "intercept": null,
+        "slope": null,
+        "r2": null
+      },
+      "DefenderCentral": {
+        "n": 0,
+        "intercept": null,
+        "slope": null,
+        "r2": null
+      },
+      "FullBack": {
+        "n": 0,
+        "intercept": null,
+        "slope": null,
+        "r2": null
+      },
+      "WingBack": {
+        "n": 0,
+        "intercept": null,
+        "slope": null,
+        "r2": null
+      },
+      "DefensiveMidfielder": {
+        "n": 0,
+        "intercept": null,
+        "slope": null,
+        "r2": null
+      },
+      "MidfielderCentral": {
+        "n": 0,
+        "intercept": null,
+        "slope": null,
+        "r2": null
+      },
+      "WideMidfielder": {
+        "n": 0,
+        "intercept": null,
+        "slope": null,
+        "r2": null
+      },
+      "AttackingMidfielderCentral": {
+        "n": 0,
+        "intercept": null,
+        "slope": null,
+        "r2": null
+      },
+      "Winger": {
+        "n": 0,
+        "intercept": null,
+        "slope": null,
+        "r2": null
+      },
+      "Striker": {
+        "n": 2,
+        "intercept": -33.33333333333334,
+        "slope": 13.333333333333334,
+        "r2": 1
+      }
+    },
+    "committedUniversal": {
+      "intercept": -101.239,
+      "slope": 18.6731
+    },
+    "committedPerArchetype": {
+      "Goalkeeper": {
+        "intercept": -108.18,
+        "slope": 19.576
+      },
+      "DefenderCentral": {
+        "intercept": -106.61,
+        "slope": 19.147
+      },
+      "FullBack": {
+        "intercept": -102.71,
+        "slope": 18.587
+      },
+      "WingBack": {
+        "intercept": -101.24,
+        "slope": 18.673
+      },
+      "DefensiveMidfielder": {
+        "intercept": -103.27,
+        "slope": 18.685
+      },
+      "MidfielderCentral": {
+        "intercept": -97.73,
+        "slope": 17.997
+      },
+      "WideMidfielder": {
+        "intercept": -101.24,
+        "slope": 18.673
+      },
+      "AttackingMidfielderCentral": {
+        "intercept": -110.25,
+        "slope": 19.27
+      },
+      "Winger": {
+        "intercept": -90.52,
+        "slope": 17.895
+      },
+      "Striker": {
+        "intercept": -90.64,
+        "slope": 17.7
+      }
+    }
+  },
+  "holdout": {
+    "all": {
+      "runtime": {
+        "n": 5,
+        "mae": 2.6,
+        "rmse": 3.255764119219941,
+        "bias": -1,
+        "p50": 2,
+        "p90": 6,
+        "p95": 6,
+        "p99": 6,
+        "maxAbs": 6,
+        "within3": 4,
+        "within5": 4
+      },
+      "universalHistorical": {
+        "n": 5,
+        "mae": 4.2,
+        "rmse": 4.8373546489791295,
+        "bias": -1.4,
+        "p50": 3,
+        "p90": 7,
+        "p95": 7,
+        "p99": 7,
+        "maxAbs": 7,
+        "within3": 3,
+        "within5": 3
+      }
+    },
+    "perArchetype": {
+      "Goalkeeper": {
+        "runtime": {
+          "n": 1,
+          "mae": 3,
+          "rmse": 3,
+          "bias": -3,
+          "p50": 3,
+          "p90": 3,
+          "p95": 3,
+          "p99": 3,
+          "maxAbs": 3,
+          "within3": 1,
+          "within5": 1
+        },
+        "universalHistorical": {
+          "n": 1,
+          "mae": 7,
+          "rmse": 7,
+          "bias": -7,
+          "p50": 7,
+          "p90": 7,
+          "p95": 7,
+          "p99": 7,
+          "maxAbs": 7,
+          "within3": 0,
+          "within5": 0
+        }
+      },
+      "DefenderCentral": {
+        "runtime": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        },
+        "universalHistorical": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        }
+      },
+      "FullBack": {
+        "runtime": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        },
+        "universalHistorical": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        }
+      },
+      "WingBack": {
+        "runtime": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        },
+        "universalHistorical": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        }
+      },
+      "DefensiveMidfielder": {
+        "runtime": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        },
+        "universalHistorical": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        }
+      },
+      "MidfielderCentral": {
+        "runtime": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        },
+        "universalHistorical": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        }
+      },
+      "WideMidfielder": {
+        "runtime": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        },
+        "universalHistorical": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        }
+      },
+      "AttackingMidfielderCentral": {
+        "runtime": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        },
+        "universalHistorical": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        }
+      },
+      "Winger": {
+        "runtime": {
+          "n": 1,
+          "mae": 6,
+          "rmse": 6,
+          "bias": -6,
+          "p50": 6,
+          "p90": 6,
+          "p95": 6,
+          "p99": 6,
+          "maxAbs": 6,
+          "within3": 0,
+          "within5": 0
+        },
+        "universalHistorical": {
+          "n": 1,
+          "mae": 7,
+          "rmse": 7,
+          "bias": -7,
+          "p50": 7,
+          "p90": 7,
+          "p95": 7,
+          "p99": 7,
+          "maxAbs": 7,
+          "within3": 0,
+          "within5": 0
+        }
+      },
+      "Striker": {
+        "runtime": {
+          "n": 3,
+          "mae": 1.3333333333333333,
+          "rmse": 1.632993161855452,
+          "bias": 1.3333333333333333,
+          "p50": 2,
+          "p90": 2,
+          "p95": 2,
+          "p99": 2,
+          "maxAbs": 2,
+          "within3": 3,
+          "within5": 3
+        },
+        "universalHistorical": {
+          "n": 3,
+          "mae": 2.3333333333333335,
+          "rmse": 2.516611478423583,
+          "bias": 2.3333333333333335,
+          "p50": 3,
+          "p90": 3,
+          "p95": 3,
+          "p99": 3,
+          "maxAbs": 3,
+          "within3": 3,
+          "within5": 3
+        }
+      }
+    },
+    "strictSingle": {
+      "runtime": {
+        "n": 4,
+        "mae": 1.75,
+        "rmse": 2.0615528128088303,
+        "bias": 0.25,
+        "p50": 2,
+        "p90": 3,
+        "p95": 3,
+        "p99": 3,
+        "maxAbs": 3,
+        "within3": 4,
+        "within5": 4
+      },
+      "universalHistorical": {
+        "n": 4,
+        "mae": 3.5,
+        "rmse": 4.123105625617661,
+        "bias": 0,
+        "p50": 3,
+        "p90": 7,
+        "p95": 7,
+        "p99": 7,
+        "maxAbs": 7,
+        "within3": 3,
+        "within5": 3
+      }
+    },
+    "strictSinglePerArchetype": {
+      "Goalkeeper": {
+        "runtime": {
+          "n": 1,
+          "mae": 3,
+          "rmse": 3,
+          "bias": -3,
+          "p50": 3,
+          "p90": 3,
+          "p95": 3,
+          "p99": 3,
+          "maxAbs": 3,
+          "within3": 1,
+          "within5": 1
+        },
+        "universalHistorical": {
+          "n": 1,
+          "mae": 7,
+          "rmse": 7,
+          "bias": -7,
+          "p50": 7,
+          "p90": 7,
+          "p95": 7,
+          "p99": 7,
+          "maxAbs": 7,
+          "within3": 0,
+          "within5": 0
+        }
+      },
+      "DefenderCentral": {
+        "runtime": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        },
+        "universalHistorical": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        }
+      },
+      "FullBack": {
+        "runtime": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        },
+        "universalHistorical": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        }
+      },
+      "WingBack": {
+        "runtime": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        },
+        "universalHistorical": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        }
+      },
+      "DefensiveMidfielder": {
+        "runtime": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        },
+        "universalHistorical": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        }
+      },
+      "MidfielderCentral": {
+        "runtime": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        },
+        "universalHistorical": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        }
+      },
+      "WideMidfielder": {
+        "runtime": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        },
+        "universalHistorical": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        }
+      },
+      "AttackingMidfielderCentral": {
+        "runtime": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        },
+        "universalHistorical": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        }
+      },
+      "Winger": {
+        "runtime": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        },
+        "universalHistorical": {
+          "n": 0,
+          "mae": null,
+          "rmse": null,
+          "bias": null,
+          "p50": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "maxAbs": null,
+          "within3": 0,
+          "within5": 0
+        }
+      },
+      "Striker": {
+        "runtime": {
+          "n": 3,
+          "mae": 1.3333333333333333,
+          "rmse": 1.632993161855452,
+          "bias": 1.3333333333333333,
+          "p50": 2,
+          "p90": 2,
+          "p95": 2,
+          "p99": 2,
+          "maxAbs": 2,
+          "within3": 3,
+          "within5": 3
+        },
+        "universalHistorical": {
+          "n": 3,
+          "mae": 2.3333333333333335,
+          "rmse": 2.516611478423583,
+          "bias": 2.3333333333333335,
+          "p50": 3,
+          "p90": 3,
+          "p95": 3,
+          "p99": 3,
+          "maxAbs": 3,
+          "within3": 3,
+          "within5": 3
+        }
+      }
+    },
+    "other": {
+      "runtime": {
+        "n": 1,
+        "mae": 6,
+        "rmse": 6,
+        "bias": -6,
+        "p50": 6,
+        "p90": 6,
+        "p95": 6,
+        "p99": 6,
+        "maxAbs": 6,
+        "within3": 0,
+        "within5": 0
+      },
+      "universalHistorical": {
+        "n": 1,
+        "mae": 7,
+        "rmse": 7,
+        "bias": -7,
+        "p50": 7,
+        "p90": 7,
+        "p95": 7,
+        "p99": 7,
+        "maxAbs": 7,
+        "within3": 0,
+        "within5": 0
+      }
+    },
+    "partial": {
+      "runtime": {
+        "n": 2,
+        "mae": 1,
+        "rmse": 1.4142135623730951,
+        "bias": 1,
+        "p50": 0,
+        "p90": 2,
+        "p95": 2,
+        "p99": 2,
+        "maxAbs": 2,
+        "within3": 2,
+        "within5": 2
+      },
+      "universalHistorical": {
+        "n": 2,
+        "mae": 2,
+        "rmse": 2.23606797749979,
+        "bias": 2,
+        "p50": 1,
+        "p90": 3,
+        "p95": 3,
+        "p99": 3,
+        "maxAbs": 3,
+        "within3": 2,
+        "within5": 2
+      }
+    }
+  }
+}

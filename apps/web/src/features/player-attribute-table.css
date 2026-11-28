@@ -1,0 +1,5 @@
+.player-attribute-table { display: grid; gap: 12px; min-width: 0; }
+.player-attribute-controls { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; }
+.player-attribute-controls label, .player-attribute-field { display: grid; gap: 5px; color: var(--text-sub); font-size: 12px; }
+.player-attribute-controls select { min-height: 34px; max-width: 100%; color: var(--text); background: var(--surface-up); border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; }
+.player-attribute-controls .player-attribute-sort { display: flex; align-items: center; gap: 6px; min-height: 34px; }

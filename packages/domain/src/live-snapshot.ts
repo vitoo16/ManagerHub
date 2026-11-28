@@ -5,6 +5,16 @@ import { isSupportedFm2013ImagePath } from './live-session.ts';
 import type { EvidenceField, MissingReason } from './types';
 
 export type LiveNativeKind = 'player' | 'playerStaff';
+
+/** The capture profile, not the export/save-decoder schema, defines these evidence groups. */
+export const LIVE_ATTRIBUTE_CATEGORIES = ['technical', 'mental', 'physical', 'goalkeeping'] as const;
+export type LiveAttributeCategory = typeof LIVE_ATTRIBUTE_CATEGORIES[number];
+const liveAttributeCategoryByKey = new Map(profile.attributes.map(item => [item.key, item.category] as const));
+
+export function liveAttributeCategory(key: string): LiveAttributeCategory | 'other' {
+  const category = liveAttributeCategoryByKey.get(key);
+  return LIVE_ATTRIBUTE_CATEGORIES.find(item => item === category) ?? 'other';
+}
 export interface LiveSnapshotContext {
   readonly snapshotId: string;
   readonly careerId: string;

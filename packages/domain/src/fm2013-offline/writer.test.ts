@@ -11,18 +11,18 @@ import {
   countDirtyFields,
   createEmptyEditorState,
   decodeFm2013Save,
-  deriveFm2013SigningKeyFromExecutable,
   EMPTY_SAVE_DRAFT_OVERLAY,
   extractFm2013Member,
+  matchesDecodedWriteSource,
   parseFm2013Container,
   parseFm2013LangDb,
   redoEditorTransaction,
   saveDatabaseToPlayerDataset,
   summarizeDraftChanges,
   undoEditorTransaction,
-  validateDecodedSaveDatabase,
-  writePatchedFm2013Save
+  validateDecodedSaveDatabase
 } from './index';
+import { deriveFm2013SigningKeyFromExecutable, writePatchedFm2013Save } from './writer';
 import { buildSyntheticFm2013LangDb } from './lang-db';
 import { buildSyntheticFm2013Save, SYNTHETIC_TEST_HMAC_KEY } from './synthetic';
 import { makeSavedSquadPlans, restoreSavedSquadPlans, squadPlanStorageKey } from '../squad-plan-library';
@@ -71,6 +71,21 @@ describe('FM2013 P0 integrity, mode-independent persistence, transactions, and l
     const fmfDb = await decodeFm2013Save(fmfBytes, { fileName: 'research-fmf.fm' });
     expect(fmfDb.source.compatibilityStatus).toBe('research_only');
     expect(fmfDb.coverage.verifiedDomains).toEqual([]);
+  });
+
+  it('only reattaches original bytes when cached writable records match a fresh decode', async () => {
+    const bytes = await buildSyntheticFm2013Save();
+    const cached = await decodeFm2013Save(bytes, { fileName: 'cached.fm' });
+    const fresh = await decodeFm2013Save(bytes, { fileName: 'renamed.fm' });
+    expect(matchesDecodedWriteSource(cached, fresh)).toBe(true);
+    expect(matchesDecodedWriteSource(cached, {
+      ...fresh, players: fresh.players.map((player, i) => i === 0 ? { ...player, actualCa: 1 } : player)
+    })).toBe(false);
+    expect(matchesDecodedWriteSource(cached, { ...fresh, source: { ...fresh.source, family: 'fmf' } })).toBe(false);
+    expect(matchesDecodedWriteSource(cached, { ...fresh, source: { ...fresh.source, gameDate: '2015-01-01' } })).toBe(false);
+    expect(matchesDecodedWriteSource(cached, { ...fresh, staff: [] })).toBe(false);
+    expect(matchesDecodedWriteSource(cached, { ...fresh, clubs: [] })).toBe(false);
+    expect(matchesDecodedWriteSource(cached, { ...fresh, stadiums: [] })).toBe(false);
   });
 
   it('resolves base stadium, competition, and city names from lang_db.dat with exact EOF (Gate B)', async () => {
@@ -128,7 +143,7 @@ describe('FM2013 P0 integrity, mode-independent persistence, transactions, and l
   });
 
   it('supports Undo/Redo, FMRTE13 Presets, Mass Edit, Realism write-blocking, and lossless Save As .fm roundtrip (S06, S08)', async () => {
-    const originalBytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+    const originalBytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe', gameVersion: '13.3.3f359652' });
     const immutableSnapshot = originalBytes.slice();
     const baseDb = await decodeFm2013Save(originalBytes, {
       fileName: 'career.fm',
@@ -289,7 +304,7 @@ describe('FM2013 P0 integrity, mode-independent persistence, transactions, and l
   });
 
   it('rejects invalid direct writer overlays before serializing (R02)', async () => {
-    const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+    const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe', gameVersion: '13.3.3f359652' });
     const original = bytes.slice();
     const options = { signingKey: SYNTHETIC_TEST_HMAC_KEY };
     await expect(writePatchedFm2013Save(bytes, {
@@ -304,8 +319,14 @@ describe('FM2013 P0 integrity, mode-independent persistence, transactions, and l
     expect(bytes).toEqual(original);
   });
 
+  it('keeps coarse versions read-only even with a matching signing key', async () => {
+    const bytes = await buildSyntheticFm2013Save({ gameVersion: '13.3.3' });
+    await expect(writePatchedFm2013Save(bytes, EMPTY_SAVE_DRAFT_OVERLAY, { signingKey: SYNTHETIC_TEST_HMAC_KEY }))
+      .rejects.toThrow('Experimental Save As requires FM2013 13.3.3f359652');
+  });
+
   it('supports canonical AFE v4 container saves and printable ASCII space (0x20) in PE key derivation', async () => {
-    const v4Bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+    const v4Bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe', gameVersion: '13.3.3f359652' });
     expect(new DataView(v4Bytes.buffer, v4Bytes.byteOffset, 18).getUint16(6, true)).toBe(4);
 
     const decodedV4 = await decodeFm2013Save(v4Bytes, {
@@ -352,5 +373,73 @@ describe('FM2013 P0 integrity, mode-independent persistence, transactions, and l
     const derived = await deriveFm2013SigningKeyFromExecutable(syntheticPe);
     expect(derived.byteLength).toBe(32);
     expect(new DataView(derived.buffer).getUint16(8, true)).toBe(0x20);
+  });
+
+  it('preserves PA, marketValueGbp (Price), and all unrelated raw member bytes across controlled CA increase & decrease cases (P0)', async () => {
+    const saveBytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe', gameVersion: '13.3.3f359652' });
+    const baseDb = await decodeFm2013Save(saveBytes, {
+      fileName: 'ca-controlled.fm',
+      signingKey: SYNTHETIC_TEST_HMAC_KEY
+    });
+
+    const beforeContainer = await parseFm2013Container(saveBytes);
+    const beforeMembers = new Map<string, Uint8Array>();
+    for (const member of beforeContainer.members) {
+      const raw = await extractFm2013Member(saveBytes, beforeContainer, member.filename);
+      if (raw) beforeMembers.set(member.filename, raw);
+    }
+
+    // Controlled CA increase (+12 on UID 10011) and decrease (-15 on UID 20001), leaving UID 20002 untouched
+    const p1 = baseDb.players.find(p => p.uid === 10011)!;
+    const p2 = baseDb.players.find(p => p.uid === 20001)!;
+    const p3 = baseDb.players.find(p => p.uid === 20002)!;
+    const nextCa1 = Math.min(200, p1.actualCa + 12);
+    const nextCa2 = Math.max(1, p2.actualCa - 15);
+
+    const written = await writePatchedFm2013Save(
+      saveBytes,
+      {
+        ...EMPTY_SAVE_DRAFT_OVERLAY,
+        players: {
+          [p1.uid]: { actualCa: nextCa1 },
+          [p2.uid]: { actualCa: nextCa2 }
+        }
+      },
+      { signingKey: SYNTHETIC_TEST_HMAC_KEY, outputFileName: 'ca-controlled-edited.fm' }
+    );
+
+    const afterContainer = await parseFm2013Container(written.bytes);
+    let totalPayloadDiffBytes = 0;
+    for (const [name, beforeRaw] of beforeMembers.entries()) {
+      const afterRaw = (await extractFm2013Member(written.bytes, afterContainer, name))!;
+      expect(afterRaw.length).toBe(beforeRaw.length);
+      // game_db.dat ends with a 64-byte HMAC-SHA512 trailer that updates whenever any database byte changes
+      const payloadEnd = name === 'game_db.dat' && beforeRaw.length > 64 ? beforeRaw.length - 64 : beforeRaw.length;
+      for (let i = 0; i < payloadEnd; i++) {
+        if (beforeRaw[i] !== afterRaw[i]) totalPayloadDiffBytes += 1;
+      }
+    }
+    // Across ALL decompressed archive member payloads (excluding the 64-byte HMAC trailer), ONLY the 2 uint16 CA fields (at most 4 bytes) may differ
+    expect(totalPayloadDiffBytes).toBeGreaterThan(0);
+    expect(totalPayloadDiffBytes).toBeLessThanOrEqual(4);
+
+    // Re-decode and verify PA invariance, marketValueGbp (Price) invariance, and untouched player identity
+    const afterDb = await decodeFm2013Save(written.bytes, {
+      fileName: 'ca-controlled-edited.fm',
+      signingKey: SYNTHETIC_TEST_HMAC_KEY
+    });
+    const afterP1 = afterDb.players.find(p => p.uid === p1.uid)!;
+    const afterP2 = afterDb.players.find(p => p.uid === p2.uid)!;
+    const afterP3 = afterDb.players.find(p => p.uid === p3.uid)!;
+
+    expect(afterP1.actualCa).toBe(nextCa1);
+    expect(afterP1.potentialAbility).toBe(p1.potentialAbility);
+    expect(afterP1.marketValueGbp).toBe(p1.marketValueGbp);
+
+    expect(afterP2.actualCa).toBe(nextCa2);
+    expect(afterP2.potentialAbility).toBe(p2.potentialAbility);
+    expect(afterP2.marketValueGbp).toBe(p2.marketValueGbp);
+
+    expect(afterP3).toEqual(p3);
   });
 });

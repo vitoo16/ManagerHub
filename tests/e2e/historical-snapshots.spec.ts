@@ -32,7 +32,7 @@ function makePass(nativeKind: 'player' | 'playerStaff', records: ReturnType<type
   };
 }
 
-function syntheticWire(passingByte = 75) {
+function syntheticWire(passingByte = 75, rosterSize = 1) {
   return JSON.stringify({
     schema: profile.schema,
     profileVersion: profile.profileVersion,
@@ -45,7 +45,7 @@ function syntheticWire(passingByte = 75) {
     },
     gameDateBytes: [59, 0, 209, 7],
     passes: [
-      makePass('player', [makePlayer(42, passingByte)]),
+      makePass('player', Array.from({ length: rosterSize }, (_, index) => makePlayer(42 + index * 2, passingByte))),
       makePass('playerStaff', [makePlayer(43)])
     ]
   });
@@ -56,7 +56,8 @@ async function importSynthetic(
   mode: 'Editor' | 'Realism' = 'Editor',
   careerLabel = 'Synthetic FM2013 career',
   captureTime = '2026-10-31T09:00',
-  passingByte = 75
+  passingByte = 75,
+  rosterSize = 1
 ) {
   await page.getByLabel('Career label (user-declared)').fill(careerLabel);
   await page.getByLabel('Capture time (declared by source workflow)').fill(captureTime);
@@ -65,7 +66,7 @@ async function importSynthetic(
   await page.locator('input[type=file]').setInputFiles({
     name: 'synthetic-fm2013-capture.json',
     mimeType: 'application/json',
-    buffer: Buffer.from(syntheticWire(passingByte), 'utf8')
+    buffer: Buffer.from(syntheticWire(passingByte, rosterSize), 'utf8')
   });
   await page.getByRole('button', { name: 'Validate and import' }).click();
   await expect(page.getByText('Capture parsed. Review its source, coverage and unknown fields before saving.')).toBeVisible();
@@ -81,6 +82,7 @@ test('MH-04 compares user-selected captures without implying verified identity o
   await page.getByRole('button', { name: 'Save snapshot locally' }).click();
   await expect(page.getByRole('list', { name: 'Saved historical snapshots' }).getByRole('listitem')).toHaveCount(2);
 
+  await page.getByRole('tablist', { name: 'Historical snapshot sections' }).getByRole('tab', { name: 'Compare historical observations' }).click();
   const compare = page.locator('.historical-comparison');
   await expect(compare.getByText('Player identity, career lineage, capture order and game-time progression are unverified.', { exact: false })).toBeVisible();
   await compare.getByLabel('Second saved snapshot').selectOption({ index: 1 });
@@ -90,6 +92,11 @@ test('MH-04 compares user-selected captures without implying verified identity o
   const passing = compare.locator('.historical-comparison-table').first().getByRole('row').filter({ hasText: 'Passing' });
   await expect(passing).toContainText('16');
   await expect(passing).toContainText('15');
+  await expect(passing).toContainText('-1');
+  await compare.getByLabel('Evidence group').selectOption('positions');
+  await expect(compare.getByRole('table')).toHaveCount(1);
+  await expect(passing).toHaveCount(0);
+  await compare.getByLabel('Evidence group').selectOption('technical');
   await expect(passing).toContainText('-1');
 
   await page.getByRole('button', { name: 'Realism', exact: true }).click();
@@ -135,7 +142,9 @@ test('imports, browses, saves, reloads and switches safely between Editor and Re
   const passing = page.locator('.historical-value-row').filter({ hasText: 'Passing' });
   await expect(passing.locator('strong')).toHaveText('15');
   await expect(page.getByText('Derived calendar age').first()).toBeVisible();
+  await page.getByLabel('Evidence group').selectOption('ability');
   await expect(page.getByText('Not verified').first()).toBeVisible();
+  await page.getByLabel('Evidence group').selectOption('technical');
 
   await page.getByRole('button', { name: 'Save snapshot locally' }).click();
   await expect(page.getByRole('button', { name: 'Saved on this browser' })).toBeDisabled();
@@ -734,4 +743,42 @@ test('keeps the workspace keyboard-accessible, reduced-motion friendly and usabl
   }));
   expect(motion.transition).toBe('0s');
   expect(motion.animation).toBe('0s');
+});
+
+
+test('historical evidence sections keep native observations bounded and preserve missingness', async ({ page }) => {
+  await page.goto('/#/history');
+  await importSynthetic(page, 'Editor');
+  const group = page.getByLabel('Evidence group');
+  await expect(page.locator('.historical-value-row')).toHaveCount(14);
+  await group.selectOption('positions');
+  await expect(page.locator('.historical-value-row')).toHaveCount(15);
+  await group.selectOption('physical');
+  await expect(page.locator('.historical-value-row')).toHaveCount(10);
+  await group.selectOption('technical');
+  await expect(page.locator('.historical-value-row').filter({ hasText: 'Passing' }).locator('strong')).toHaveText('15');
+  const tabs = page.getByRole('tablist', { name: 'Historical snapshot sections' });
+  await tabs.getByRole('tab', { name: 'Capture evidence' }).click();
+  await expect(page.getByRole('heading', { name: 'Scan coverage' })).toBeVisible();
+  await expect(page.locator('.historical-value-row')).toHaveCount(0);
+  await tabs.getByRole('tab', { name: 'Player records' }).click();
+  await page.getByRole('button', { name: 'Realism', exact: true }).click();
+  await expect(page.locator('.historical-value-row').filter({ hasText: 'Passing' }).locator('strong')).toHaveText('Hidden in Realism mode');
+});
+
+
+test('historical roster uses fixed pages instead of accumulating rendered rows', async ({ page }) => {
+  await page.goto('/#/history');
+  await importSynthetic(page, 'Editor', 'Paged capture', '2026-10-31T09:00', 75, 85);
+  const table = page.getByRole('table', { name: 'Historical player records' });
+  const pager = page.getByRole('group', { name: 'Captured players page' });
+  await expect(table.locator('tbody tr')).toHaveCount(40);
+  await pager.getByRole('button', { name: 'Next page' }).click();
+  await expect(table.locator('tbody tr')).toHaveCount(40);
+  await pager.getByRole('button', { name: 'Next page' }).click();
+  await expect(table.locator('tbody tr')).toHaveCount(6);
+  await expect(pager.getByRole('button', { name: 'Next page' })).toBeDisabled();
+  await page.getByRole('searchbox', { name: 'Search captured players' }).fill('Synthetic Player 42');
+  await expect(table.locator('tbody tr')).toHaveCount(1);
+  await expect(pager).toHaveCount(0);
 });

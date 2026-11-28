@@ -4,7 +4,8 @@ import {
   projectPlayerHiddenFields,
   projectStaffAbility,
   type DecodedSaveDatabase,
-  type DecodedSaveMode
+  type DecodedSaveMode,
+  type SaveDraftOverlay
 } from '@managerhub/domain/fm2013-offline';
 import { Button, Icon, Status, Surface } from '@managerhub/ui';
 import { registerSaveDbI18n } from '../../i18n/register-save-db-i18n';
@@ -48,6 +49,7 @@ function teamTypeLabel(teamType: number, isNational: boolean): string {
 
 export interface SaveDatabaseExplorerProps {
   readonly database: DecodedSaveDatabase;
+  readonly draft: SaveDraftOverlay | null;
   readonly allDecodedSaves: readonly DecodedSaveDatabase[];
   readonly saveMode: DecodedSaveMode;
   readonly isSavedInBrowser: boolean;
@@ -64,6 +66,7 @@ export interface SaveDatabaseExplorerProps {
 
 function SaveDatabaseExplorerView({
   database,
+  draft,
   allDecodedSaves,
   saveMode,
   isSavedInBrowser,
@@ -118,6 +121,7 @@ function SaveDatabaseExplorerView({
   }, [database.clubs]);
 
   const filteredPlayers = useMemo(() => {
+    if (tab !== 'players') return [];
     const selectedClubUid = clubFilter === 'all' ? null : Number(clubFilter);
     const list = database.players.filter(player => {
       if (selectedClubUid !== null && player.clubUid !== selectedClubUid) return false;
@@ -130,7 +134,7 @@ function SaveDatabaseExplorerView({
         player.positionSummary.toLowerCase().includes(deferredQuery)
       );
     });
-    const sorted = [...list];
+    const sorted = list;
     sorted.sort((a, b) => {
       switch (playerSort) {
         case 'name': return a.displayName.localeCompare(b.displayName);
@@ -144,9 +148,10 @@ function SaveDatabaseExplorerView({
       }
     });
     return sorted;
-  }, [database.players, clubFilter, deferredQuery, playerSort, saveMode]);
+  }, [tab, database.players, clubFilter, deferredQuery, playerSort, saveMode]);
 
   const filteredClubs = useMemo(() => {
+    if (tab !== 'clubs') return [];
     const list = database.clubs.filter(club => {
       if (clubsWithPlayersOnly && club.playerCount === 0) return false;
       if (!deferredQuery) return true;
@@ -156,7 +161,7 @@ function SaveDatabaseExplorerView({
         (club.nationName?.toLowerCase().includes(deferredQuery) ?? false)
       );
     });
-    const sorted = [...list];
+    const sorted = list;
     sorted.sort((a, b) => {
       switch (clubSort) {
         case 'name': return a.fullName.localeCompare(b.fullName);
@@ -168,9 +173,10 @@ function SaveDatabaseExplorerView({
       }
     });
     return sorted;
-  }, [database.clubs, clubsWithPlayersOnly, deferredQuery, clubSort]);
+  }, [tab, database.clubs, clubsWithPlayersOnly, deferredQuery, clubSort]);
 
   const filteredStaff = useMemo(() => {
+    if (tab !== 'staff') return [];
     const list = database.staff.filter(member => {
       if (!deferredQuery) return true;
       return (
@@ -179,10 +185,11 @@ function SaveDatabaseExplorerView({
         (member.primaryNationName?.toLowerCase().includes(deferredQuery) ?? false)
       );
     });
-    return [...list].sort((a, b) => Number(b.isHuman) - Number(a.isHuman) || a.displayName.localeCompare(b.displayName));
-  }, [database.staff, deferredQuery]);
+    return list.sort((a, b) => Number(b.isHuman) - Number(a.isHuman) || a.displayName.localeCompare(b.displayName));
+  }, [tab, database.staff, deferredQuery]);
 
   const filteredTeams = useMemo(() => {
+    if (tab !== 'teams') return [];
     return database.teams.filter(team => {
       if (!deferredQuery) return true;
       return (
@@ -190,9 +197,10 @@ function SaveDatabaseExplorerView({
         String(team.uid).includes(deferredQuery)
       );
     });
-  }, [database.teams, deferredQuery]);
+  }, [tab, database.teams, deferredQuery]);
 
   const filteredStadiums = useMemo(() => {
+    if (tab !== 'stadiums') return [];
     const list = database.stadiums.filter(stadium => {
       if (!deferredQuery) return true;
       return (
@@ -201,10 +209,11 @@ function SaveDatabaseExplorerView({
         String(stadium.uid).includes(deferredQuery)
       );
     });
-    return [...list].sort((a, b) => b.capacity - a.capacity);
-  }, [database.stadiums, deferredQuery]);
+    return list.sort((a, b) => b.capacity - a.capacity);
+  }, [tab, database.stadiums, deferredQuery]);
 
   const filteredNations = useMemo(() => {
+    if (tab !== 'nations') return [];
     const list = database.nations.filter(nation => {
       if (!deferredQuery) return true;
       return (
@@ -212,10 +221,11 @@ function SaveDatabaseExplorerView({
         nation.shortName.toLowerCase().includes(deferredQuery)
       );
     });
-    return [...list].sort((a, b) => b.playerCount - a.playerCount || a.fullName.localeCompare(b.fullName));
-  }, [database.nations, deferredQuery]);
+    return list.sort((a, b) => b.playerCount - a.playerCount || a.fullName.localeCompare(b.fullName));
+  }, [tab, database.nations, deferredQuery]);
 
   const filteredCompetitions = useMemo(() => {
+    if (tab !== 'competitions') return [];
     const list = database.competitions.filter(comp => {
       if (!deferredQuery) return true;
       return (
@@ -224,8 +234,8 @@ function SaveDatabaseExplorerView({
         String(comp.uid).includes(deferredQuery)
       );
     });
-    return [...list].sort((a, b) => b.teamCount - a.teamCount);
-  }, [database.competitions, deferredQuery]);
+    return list.sort((a, b) => b.teamCount - a.teamCount);
+  }, [tab, database.competitions, deferredQuery]);
 
   const totalCount =
     tab === 'players' ? filteredPlayers.length :
@@ -270,6 +280,7 @@ function SaveDatabaseExplorerView({
             </p>
           </div>
           <div className="save-db-header__badges">
+            {database.source.compatibilityStatus !== 'verified' && <Status tone="warning">{t('Research-only decode · Not independently verified')}</Status>}
             {database.coverage.gameDbExactEof && <Status tone="positive">{t('Exact EOF verified')}</Status>}
             <Status tone="info">{t('Read-only · Original .fm unchanged')}</Status>
           </div>
@@ -315,7 +326,7 @@ function SaveDatabaseExplorerView({
             <p className="save-db-mode-note">
               {t(saveMode === 'realism'
                 ? 'Realism mode hides Actual CA, Actual PA, reputations, and hidden personality/playing traits.'
-                : 'Editor mode displays verified Actual CA, Actual PA, reputations, and hidden traits decoded from the .fm save.')}
+                : 'Editor mode displays decoded values and any unsaved draft edits.')}
             </p>
           </div>
 
@@ -484,11 +495,11 @@ function SaveDatabaseExplorerView({
               </thead>
               <tbody>
                 {filteredPlayers.slice(startIdx, endIdx).map(player => {
+                  const patch = draft?.players[player.uid];
                   const hidden = projectPlayerHiddenFields(
                     player,
                     saveMode,
-                    database.source.edition,
-                    database.source.build
+                    database.source
                   );
                   return (
                     <tr key={player.uid}>
@@ -505,8 +516,12 @@ function SaveDatabaseExplorerView({
                       <td className="save-db-num">{formatGbp(player.marketValueGbp)}</td>
                       <td className="save-db-num">{player.contract ? formatGbp(player.contract.weeklyWageGbp) : '—'}</td>
                       <td className="save-db-num">{player.contract?.expiresAt ?? '—'}</td>
-                      {saveMode === 'editor' && <td className="save-db-num"><strong>{hidden.actualCa.value ?? '—'}</strong></td>}
-                      {saveMode === 'editor' && <td className="save-db-num"><strong>{hidden.potentialAbility.value ?? '—'}</strong></td>}
+                      {saveMode === 'editor' && <td className="save-db-num"><strong>{hidden.actualCa.value ?? '—'}</strong>
+                        {patch?.actualCa !== undefined && <span className="save-db-sub">{t('Draft CA')}</span>}
+                      </td>}
+                      {saveMode === 'editor' && <td className="save-db-num"><strong>{hidden.potentialAbility.value ?? '—'}</strong>
+                        {patch?.potentialAbility !== undefined && <span className="save-db-sub">{t('Draft PA')}</span>}
+                      </td>}
                       <td>
                         <div className="save-db-row-actions">
                           {saveMode === 'editor' && onEditEntity && (
@@ -609,8 +624,7 @@ function SaveDatabaseExplorerView({
                   const projected = projectStaffAbility(
                     member,
                     saveMode,
-                    database.source.edition,
-                    database.source.build
+                    database.source
                   );
                   const staffAttrs = projected.attributes.value;
                   return (

@@ -41,6 +41,7 @@ test('complete offline FM2013 save workflow: decode, explore, Realism/Editor iso
   const saveBytes = await buildSyntheticFm2013Save({
     compressed: true,
     family: 'afe',
+    gameVersion: '13.3.3f359652',
     managerName: 'Alex Mercer'
   });
 
@@ -123,9 +124,13 @@ test('complete offline FM2013 save workflow: decode, explore, Realism/Editor iso
   await expect(page.locator('.scout-metrics')).toContainText('168');
   await expect(page.locator('.scout-metrics')).toContainText('182');
   await expect(page.locator('.scout-metrics')).toContainText('Decoded from save · Verified');
+  const reportTabs = page.getByRole('tablist', { name: 'Player report' });
+  await expect(page.getByText('Contract & physical profile')).toHaveCount(0);
+  await reportTabs.getByRole('tab', { name: 'Contract & positions' }).click();
   await expect(page.getByText('Contract & physical profile')).toBeVisible();
   await expect(page.getByText('£145,000')).toBeVisible();
   await expect(page.getByText('Positional familiarity (1–20)')).toBeVisible();
+  await reportTabs.getByRole('tab', { name: 'Personality & hidden traits' }).click();
   await expect(page.getByText('Hidden attributes & personality (Editor mode)')).toBeVisible();
   await expect(page.getByText('Professionalism')).toBeVisible();
 
@@ -134,7 +139,8 @@ test('complete offline FM2013 save workflow: decode, explore, Realism/Editor iso
   await expect(page.locator('.scout-metrics')).toContainText('Hidden in Realism mode');
   await expect(page.locator('.scout-metrics')).not.toContainText('168');
   await expect(page.locator('.scout-metrics')).not.toContainText('182');
-  await expect(page.getByText('Switch to Editor mode to view verified Actual CA')).toBeVisible();
+  await expect(page.getByText('Switch to Editor mode to view decoded Actual CA', { exact: false })).toBeVisible();
+  await expect(page.getByText('Professionalism', { exact: true })).toHaveCount(0);
 
   // 8. Navigate to Squad Planner -> managed club XI solved directly from .fm save
   await page.keyboard.press('Control+k');
@@ -142,6 +148,7 @@ test('complete offline FM2013 save workflow: decode, explore, Realism/Editor iso
   await expect(page.getByRole('heading', { name: 'Squad Planner' })).toBeVisible();
   await expect(page.locator('.squad-decoded-bar')).toContainText('northbridge-career.fm');
   await expect(page.getByText('Starting eleven ready').first()).toBeVisible();
+  await page.getByRole('tablist', { name: 'Squad planner sections' }).getByRole('tab', { name: 'Tactical Lab', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Tactical Lab' })).toBeVisible();
 
   // 9. Persist decoded database in browser IndexedDB (never saving raw .fm), reload, and reopen
@@ -236,6 +243,7 @@ test('multi-save isolation across compressed AFE and uncompressed FMF, VI/EN tog
   });
   await expect(explorer).toContainText('beta-uncompressed.fm');
   await expect(explorer).toContainText('FMF (raw)');
+  await expect(explorer).toContainText('Research-only decode · Not independently verified');
   await expect(explorer).toContainText('Elena Vance · Valeria');
   await expect(explorer.locator('tbody')).toContainText('Marco Reyes');
   await expect(explorer.locator('tbody')).not.toContainText('Owen Shaw');
@@ -296,11 +304,12 @@ test('multi-save isolation across compressed AFE and uncompressed FMF, VI/EN tog
   }
 });
 
-test('P0 unified SaveSession (S01-S08): non-remounting continuity, decoupled club filter, mode-independent shortlist, lang_db, Undo/Redo, and certified Save As .fm roundtrip', async ({ page }) => {
+test('P0 unified SaveSession (S01-S08): non-remounting continuity, decoupled club filter, mode-independent shortlist, lang_db, Undo/Redo, and experimental Save As .fm roundtrip', async ({ page }) => {
   test.setTimeout(120_000);
   const saveBytes = await buildSyntheticFm2013Save({
     compressed: true,
     family: 'afe',
+    gameVersion: '13.3.3f359652',
     managerName: 'Alex Mercer'
   });
   const langDbBytes = await buildSyntheticFm2013LangDb();
@@ -380,7 +389,7 @@ test('P0 unified SaveSession (S01-S08): non-remounting continuity, decoupled clu
   await expect(searchInput).toHaveValue('Owen');
   await searchInput.fill('');
 
-  // 5. S06 & S08: Switch to Editor mode -> Edit Owen Shaw + Club Finances -> Test Undo/Redo -> Certified Save As .fm roundtrip
+  // 5. S06 & S08: Switch to Editor mode -> Edit Owen Shaw + Club Finances -> Test Undo/Redo -> experimental Save As .fm roundtrip
   await toolbar.getByRole('group', { name: 'Global display mode' }).getByRole('button', { name: 'Editor mode' }).click();
   await toolbar.locator('input[accept=".exe"]').setInputFiles({
     name: 'synthetic-test-only.exe',
@@ -400,6 +409,19 @@ test('P0 unified SaveSession (S01-S08): non-remounting continuity, decoupled clu
 
   await modal.getByLabel('Actual CA (1–200)').fill('191');
   await modal.getByLabel('Actual PA (1–200)').fill('198');
+  const sectionTabs = modal.getByRole('tablist', { name: 'Player editor sections' });
+  await sectionTabs.getByRole('tab', { name: 'Active Contract' }).click();
+  await expect(modal.getByLabel('Weekly wage (£)')).toBeVisible();
+  await expect(modal.getByLabel('Contract expiry')).toBeVisible();
+  await expect(modal.getByLabel('Actual CA (1–200)')).toHaveCount(0);
+  await sectionTabs.getByRole('tab', { name: 'Personality (1–20)' }).click();
+  await expect(modal.getByLabel('Professionalism', { exact: true })).toBeVisible();
+  await sectionTabs.getByRole('tab', { name: 'Hidden Playing Traits (1–20)' }).click();
+  await expect(modal.getByLabel('Consistency', { exact: true })).toBeVisible();
+  await sectionTabs.getByRole('tab', { name: 'Ability, Reputation & Bio' }).click();
+  await expect(modal.getByLabel('Actual CA (1–200)')).toHaveValue('191');
+  await expect(modal.getByLabel('Actual PA (1–200)')).toHaveValue('198');
+  await modal.getByRole('tab', { name: 'Quick presets' }).click();
   await modal.getByRole('button', { name: 'Inspire morale' }).click();
   await modal.getByRole('button', { name: 'Done' }).click();
   await expect(modal).toHaveCount(0);
@@ -426,7 +448,7 @@ test('P0 unified SaveSession (S01-S08): non-remounting continuity, decoupled clu
   await modal.getByRole('button', { name: 'Done' }).click();
   await expect(northbridgeRow).toContainText('£120.00M');
 
-  // Open Save As .fm modal -> verify diff preview -> download certified .fm -> re-import & verify roundtrip!
+  // Open Save As .fm modal -> verify diff preview -> download experimental .fm -> re-import & verify roundtrip!
   await toolbar.getByRole('button', { name: 'Save As .fm' }).click();
   await expect(modal).toContainText('Save As .fm (Experimental Offline Copy)');
   await expect(modal).toContainText('HMAC-SHA512 signing key ready');
@@ -486,6 +508,87 @@ test('browser cache stores immutable source rather than dirty editor projection 
   await expect(toolbar).not.toContainText('unsaved edits');
 });
 
+test('restored save reattaches exact original bytes without discarding draft or history', async ({ page }) => {
+  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe', gameVersion: '13.3.3f359652' });
+  await page.goto('/#/saves');
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'reattach.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const toolbar = page.getByRole('region', { name: 'Active save session' });
+  const explorer = page.locator('.save-db-explorer');
+  await expect(toolbar).toBeVisible({ timeout: 20_000 });
+  await explorer.getByRole('button', { name: 'Save database on this browser' }).click();
+  await expect(explorer.getByRole('button', { name: 'Remove saved database' })).toBeVisible();
+  await page.reload();
+  await page.getByRole('button', { name: 'Open save', exact: true }).click();
+  await expect(toolbar).toBeVisible();
+  await toolbar.getByRole('group', { name: 'Global display mode' }).getByRole('button', { name: 'Editor mode' }).click();
+  const row = explorer.locator('tbody tr', { hasText: 'Owen Shaw' });
+  await row.getByRole('button', { name: 'Edit' }).click();
+  const dialog = page.getByRole('dialog');
+  await dialog.getByLabel('Actual CA (1–200)').fill('199');
+  await dialog.getByRole('button', { name: 'Done' }).click();
+  await expect(toolbar).toContainText('1 unsaved edits');
+  await toolbar.getByRole('button', { name: 'Save As .fm' }).click();
+  await expect(dialog).toContainText('restored without its original .fm bytes');
+  await expect(dialog.getByRole('button', { name: 'Download experimental Save As .fm' })).toBeDisabled();
+  await dialog.getByRole('button', { name: 'Done' }).click();
+
+  let confirmations = 0;
+  page.on('dialog', async prompt => { confirmations += 1; await prompt.dismiss(); });
+  await toolbar.locator('input[accept=".fm"]').setInputFiles({
+    name: 'same-content-renamed.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  await expect(toolbar.getByRole('button', { name: 'Switch .fm' })).toBeEnabled({ timeout: 20_000 });
+  expect(confirmations).toBe(0);
+  await expect(row).toContainText('199');
+  await toolbar.getByRole('button', { name: 'Undo last edit' }).click();
+  await expect(row).toContainText('168');
+  await toolbar.getByRole('button', { name: 'Redo edit' }).click();
+  await expect(row).toContainText('199');
+
+  const different = await buildSyntheticFm2013Save({ managerName: 'Different career' });
+  await toolbar.locator('input[accept=".fm"]').setInputFiles({
+    name: 'different-career.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(different)
+  });
+  await expect.poll(() => confirmations).toBe(1);
+  await expect(toolbar.getByRole('button', { name: 'Switch .fm' })).toBeEnabled();
+  await expect(toolbar).toContainText('reattach.fm');
+  await expect(row).toContainText('199');
+});
+
+test('cancel from Player Lab preserves the active source and ignores a pending worker', async ({ page }) => {
+  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+  await page.goto('/#/saves');
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'active-career.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const toolbar = page.getByRole('region', { name: 'Active save session' });
+  await expect(toolbar).toBeVisible({ timeout: 20_000 });
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' }).getByRole('button', { name: /Player Lab/ }).click();
+  await expect(page.getByRole('heading', { name: 'Player Lab' })).toBeVisible();
+
+  await page.evaluate(() => {
+    const post = Worker.prototype.postMessage;
+    Worker.prototype.postMessage = function (message: unknown, ...args: unknown[]) {
+      if (typeof message === 'object' && message !== null && 'file' in message &&
+          message.file instanceof File && message.file.name === 'cancel-next.fm') return;
+      Reflect.apply(post, this, [message, ...args]);
+    };
+  });
+  await toolbar.locator('input[accept=".fm"]').setInputFiles({
+    name: 'cancel-next.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const cancel = page.getByRole('button', { name: 'Cancel decode' });
+  await expect(cancel).toBeVisible();
+  await cancel.click();
+  await expect(cancel).toHaveCount(0);
+  await expect(toolbar).toContainText('active-career.fm');
+  await expect(toolbar.getByRole('button', { name: 'Switch .fm' })).toBeEnabled();
+  await expect(page.getByRole('heading', { name: 'Player Lab' })).toBeVisible();
+});
+
 test('legacy decoded browser cache without source provenance is rejected (R01)', async ({ page }) => {
   const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
   await page.goto('/#/saves');
@@ -541,13 +644,16 @@ test('compact player attribute groups retain draft editing and undo/redo', async
   const openAttributes = async () => {
     await row.getByRole('button', { name: 'Edit' }).click();
     const dialog = page.getByRole('dialog');
-    await dialog.getByRole('tab', { name: 'Visible & Hidden Attributes' }).click();
+    await dialog.getByRole('tab', { name: 'Attributes' }).click();
     return dialog;
   };
   let dialog = await openAttributes();
   for (const name of ['Technical', 'Mental', 'Physical', 'Goalkeeping']) {
+    await dialog.getByLabel('Attribute group', { exact: true }).selectOption(name);
     await expect(dialog.getByRole('group', { name, exact: true })).toBeVisible();
+    await expect(dialog.locator('.mh-attribute-group')).toHaveCount(1);
   }
+  await dialog.getByLabel('Attribute group', { exact: true }).selectOption('Technical');
   const technical = dialog.getByRole('group', { name: 'Technical', exact: true });
   const finishing = technical.getByRole('spinbutton', { name: 'Finishing', exact: true });
   await expect(finishing).toBeEnabled();
@@ -566,4 +672,277 @@ test('compact player attribute groups retain draft editing and undo/redo', async
   await toolbar.getByRole('button', { name: 'Redo edit' }).click();
   dialog = await openAttributes();
   await expect(dialog.getByRole('spinbutton', { name: 'Finishing', exact: true })).toHaveValue(changed);
+});
+
+
+test('editor record navigation shares a single draft across player and club records', async ({ page }) => {
+  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+  await page.goto('/#/saves');
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'editor-records.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const toolbar = page.getByRole('region', { name: 'Active save session' });
+  await expect(toolbar).toBeVisible({ timeout: 20_000 });
+  await toolbar.getByRole('button', { name: 'Editor mode' }).click();
+  const row = page.locator('.save-db-explorer tbody tr', { hasText: 'Owen Shaw' });
+  await row.getByRole('button', { name: 'Edit' }).click();
+  const dialog = page.getByRole('dialog');
+  const records = dialog.getByRole('group', { name: 'Open records' });
+  await expect(records.getByRole('button', { name: /Owen Shaw/ })).toHaveAttribute('aria-pressed', 'true');
+  await dialog.getByLabel('Actual CA (1–200)').fill('191');
+  await dialog.getByLabel('Record type').selectOption('club');
+  await dialog.getByLabel('Find record by name or UID').fill('Northbridge');
+  await dialog.getByRole('group', { name: 'Matching records' }).getByRole('button', { name: /Northbridge Athletic/ }).click();
+  await expect(dialog).toContainText('Edit club & finances · Northbridge Athletic');
+  const clubTab = records.locator('button[aria-pressed]').filter({ hasText: 'Northbridge Athletic' });
+  const playerTab = records.locator('button[aria-pressed]').filter({ hasText: 'Owen Shaw' });
+  await expect(clubTab).toHaveAttribute('aria-pressed', 'true');
+  await expect(clubTab).toBeFocused();
+  await dialog.getByLabel('Balance (£)').fill('120000000');
+  await playerTab.click();
+  await expect(dialog.getByLabel('Actual CA (1–200)')).toHaveValue('191');
+  await dialog.getByLabel('Find record by name or UID').fill('#9001');
+  await dialog.getByRole('group', { name: 'Matching records' }).getByRole('button', { name: /Northbridge Athletic/ }).click();
+  await expect(records.locator('button[aria-pressed]')).toHaveCount(2);
+  await expect(dialog.getByLabel('Balance (£)')).toHaveValue('120000000');
+  await records.getByRole('button', { name: /Close record Northbridge Athletic/ }).click();
+  await expect(playerTab).toBeFocused();
+  await expect(records.getByRole('button', { name: /Northbridge Athletic/ })).toHaveCount(0);
+  await dialog.getByRole('button', { name: 'Done' }).click();
+  await expect(row).toContainText('191');
+  await toolbar.getByRole('button', { name: 'Undo last edit' }).click();
+  await expect(row).toContainText('191');
+  await toolbar.getByRole('button', { name: 'Undo last edit' }).click();
+  await expect(row).toContainText('168');
+  await toolbar.getByRole('button', { name: 'Redo edit' }).click();
+  await toolbar.getByRole('button', { name: 'Redo edit' }).click();
+  await expect(row).toContainText('191');
+  await toolbar.getByRole('button', { name: 'Realism mode' }).click();
+  await expect(row.getByRole('button', { name: 'Edit' })).toHaveCount(0);
+});
+
+
+test('Classic Editor shares Quick Edit records and draft state across workspaces and clears records in Realism', async ({ page }) => {
+  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+  await page.goto('/#/editor');
+  await expect(page.getByRole('heading', { name: 'Classic Editor', exact: true })).toBeVisible();
+  await expect(page.getByText('Open a decoded FM2013 save in Save Library to use Classic Editor.')).toBeVisible();
+  await page.getByRole('button', { name: 'Save Library', exact: true }).click();
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'classic-workbench.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const toolbar = page.getByRole('region', { name: 'Active save session' });
+  await expect(toolbar).toBeVisible({ timeout: 20_000 });
+  await toolbar.getByRole('button', { name: 'Editor mode' }).click();
+  await page.locator('.save-db-explorer tbody tr', { hasText: 'Owen Shaw' }).getByRole('button', { name: 'Edit' }).click();
+  const dialog = page.getByRole('dialog');
+  await dialog.getByLabel('Actual CA (1–200)').fill('191');
+  await dialog.getByRole('button', { name: 'Open in Classic Editor' }).click();
+  await expect(dialog).toHaveCount(0);
+  const editor = page.locator('.editor-workspace-body');
+  await expect(editor.getByLabel('Actual CA (1–200)')).toHaveValue('191');
+  await editor.getByLabel('Record type').selectOption('club');
+  await editor.getByLabel('Find record by name or UID').fill('Northbridge');
+  await editor.getByRole('group', { name: 'Matching records' }).getByRole('button', { name: /Northbridge Athletic/ }).click();
+  await editor.getByLabel('Balance (£)').fill('120000000');
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' }).getByRole('button', { name: 'Overview' }).click();
+  await expect(page.locator('.editor-workspace-body')).toHaveCount(0);
+  await page.keyboard.press('Control+k');
+  await page.getByRole('dialog', { name: 'Quick navigation' }).getByRole('button', { name: 'Classic Editor' }).click();
+  await expect(editor.getByLabel('Balance (£)')).toHaveValue('120000000');
+  await editor.getByRole('group', { name: 'Open records' }).locator('button[aria-pressed]').filter({ hasText: 'Owen Shaw' }).click();
+  await expect(editor.getByLabel('Actual CA (1–200)')).toHaveValue('191');
+  await toolbar.getByRole('button', { name: 'Realism mode' }).click();
+  await expect(editor).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Enable Editor mode' })).toBeVisible();
+  await page.getByRole('button', { name: 'Enable Editor mode' }).click();
+  await expect(editor.getByRole('group', { name: 'Open records' })).toHaveCount(0);
+  await expect(editor.getByLabel('Actual CA (1–200)')).toHaveCount(0);
+});
+
+
+test('mass edit requires explicit fields and confirmation and leaves PA and morale unchanged for CA-only edits', async ({ page }) => {
+  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+  await page.goto('/#/saves');
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'mass-explicit.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const toolbar = page.getByRole('region', { name: 'Active save session' });
+  await expect(toolbar).toBeVisible({ timeout: 20_000 });
+  await toolbar.getByRole('button', { name: 'Editor mode' }).click();
+  const row = page.locator('.save-db-explorer tbody tr', { hasText: 'Owen Shaw' });
+  await row.getByRole('button', { name: 'Edit' }).click();
+  const dialog = page.getByRole('dialog');
+  const beforePa = await dialog.getByLabel('Actual PA (1–200)').inputValue();
+  const beforeMorale = await dialog.getByLabel('Morale (1–20)').inputValue();
+  await dialog.getByRole('button', { name: 'Done' }).click();
+  await toolbar.getByRole('button', { name: 'Presets & Mass Edit' }).click();
+  const apply = dialog.getByRole('button', { name: 'Apply mass edit to draft' });
+  await expect(apply).toBeDisabled();
+  await dialog.getByLabel('Filter by club', { exact: true }).selectOption('all');
+  await dialog.getByLabel('Optional Actual CA (1–200)').fill('190');
+  page.once('dialog', prompt => prompt.dismiss());
+  await apply.click();
+  await expect(toolbar.getByRole('button', { name: 'Undo last edit' })).toBeDisabled();
+  page.once('dialog', prompt => prompt.accept());
+  await apply.click();
+  await expect(toolbar.getByRole('button', { name: 'Undo last edit' })).toBeEnabled();
+  await dialog.getByRole('button', { name: 'Done' }).click();
+  await row.getByRole('button', { name: 'Edit' }).click();
+  await expect(dialog.getByLabel('Actual CA (1–200)')).toHaveValue('190');
+  await expect(dialog.getByLabel('Actual PA (1–200)')).toHaveValue(beforePa);
+  await expect(dialog.getByLabel('Morale (1–20)')).toHaveValue(beforeMorale);
+});
+
+
+test('advanced club mass edit previews exact targets and skips unchanged or unavailable fields', async ({ page }) => {
+  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+  await page.goto('/#/saves');
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'mass-club.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const toolbar = page.getByRole('region', { name: 'Active save session' });
+  await expect(toolbar).toBeVisible({ timeout: 20_000 });
+  await toolbar.getByRole('button', { name: 'Editor mode' }).click();
+  await toolbar.getByRole('button', { name: 'Presets & Mass Edit' }).click();
+  const dialog = page.getByRole('dialog');
+  const undo = toolbar.getByRole('button', { name: 'Undo last edit' });
+  await dialog.getByRole('button', { name: 'Inspire squad' }).click();
+  await expect(dialog.getByRole('heading', { name: /Preset change preview/ })).toBeVisible();
+  await expect(undo).toBeDisabled();
+  await dialog.getByRole('button', { name: 'Cancel', exact: true }).click();
+  await expect(undo).toBeDisabled();
+  await dialog.getByRole('button', { name: 'Inspire squad' }).click();
+  await dialog.getByRole('button', { name: 'Apply preset to draft' }).click();
+  await expect(undo).toBeEnabled();
+  await dialog.getByRole('button', { name: 'Done' }).click();
+  await undo.click();
+  await toolbar.getByRole('button', { name: 'Presets & Mass Edit' }).click();
+  await dialog.getByRole('tab', { name: 'Club fields' }).click();
+  await dialog.getByLabel('Field to change').selectOption('balanceGbp');
+  await dialog.getByLabel('New integer value').fill('120000000');
+  const apply = dialog.getByRole('button', { name: 'Apply mass edit to draft' });
+  await expect(apply).toBeDisabled();
+  await dialog.getByLabel('Filter records by name, club, nation or UID').fill('Northbridge Athletic');
+  const preview = dialog.getByRole('table', { name: 'Mass edit change preview' });
+  await expect(preview.locator('tbody tr')).toHaveCount(1);
+  await expect(preview).toContainText('120000000');
+  page.once('dialog', prompt => prompt.accept());
+  await apply.click();
+  await expect(toolbar.getByRole('button', { name: 'Undo last edit' })).toBeEnabled();
+  await expect(apply).toBeDisabled();
+  await dialog.getByRole('button', { name: 'Done' }).click();
+  await page.locator('.save-db-explorer').getByRole('tab', { name: /Clubs/ }).click();
+  await page.locator('.save-db-explorer tbody tr', { hasText: 'Northbridge Athletic' }).getByRole('button', { name: 'Edit' }).click();
+  await expect(dialog.getByLabel('Balance (£)')).toHaveValue('120000000');
+});
+
+
+test('compact RCA remains unavailable and manual editor development cannot create a save transaction', async ({ page }) => {
+  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+  await page.goto('/#/saves');
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'development-isolation.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const toolbar = page.getByRole('region', { name: 'Active save session' });
+  await expect(toolbar).toBeVisible({ timeout: 20_000 });
+  await toolbar.getByRole('button', { name: 'Editor mode' }).click();
+  await page.locator('.save-db-explorer tbody tr', { hasText: 'Owen Shaw' }).getByRole('button', { name: 'Edit' }).click();
+  const dialog = page.getByRole('dialog');
+  const ca = await dialog.getByLabel('Actual CA (1–200)').inputValue();
+  const pa = await dialog.getByLabel('Actual PA (1–200)').inputValue();
+  await expect(dialog.getByRole('checkbox', { name: 'Auto match CA with RCA' })).toBeDisabled();
+  await expect(dialog.locator('.ability-budget').getByText('Not verified', { exact: true })).toBeVisible();
+  await expect(dialog.locator('.ability-budget .insight-line').filter({ hasText: 'Advisory RCA (research profile)' })).toBeVisible();
+  await expect(dialog.locator('.ability-budget .insight-line').filter({ hasText: 'Remaining potential' })).toContainText(String(Number(pa) - Number(ca)));
+  const tabs = dialog.getByRole('tablist', { name: 'Player editor sections' });
+  await tabs.getByRole('tab', { name: 'Development' }).click();
+  const panel = dialog.locator('.development-panel');
+  await panel.getByLabel('Target position').selectOption('ST');
+  await panel.getByLabel('Target role').selectOption('poacher');
+  await expect(panel.getByRole('columnheader', { name: 'RCA weight' })).toBeVisible();
+  const finishing = panel.getByRole('spinbutton', { name: 'Proposed Finishing', exact: true });
+  const before = await finishing.inputValue();
+  await finishing.fill(String(Math.min(20, Number(before) + 1)));
+  await expect(panel.locator('.insight-line').filter({ hasText: 'Advisory RCA before / after' })).toBeVisible();
+  await expect(toolbar.getByRole('button', { name: 'Undo last edit' })).toBeDisabled();
+  await tabs.getByRole('tab', { name: 'Ability, Reputation & Bio' }).click();
+  await expect(dialog.getByLabel('Actual CA (1–200)')).toHaveValue(ca);
+  await expect(dialog.getByLabel('Actual PA (1–200)')).toHaveValue(pa);
+  await dialog.getByRole('button', { name: 'Done' }).click();
+  await toolbar.getByRole('button', { name: 'Realism mode' }).click();
+  await expect(page.locator('.development-panel')).toHaveCount(0);
+});
+
+
+test('saved development assumptions reject stale visible inputs without editing the draft', async ({ page }) => {
+  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+  await page.goto('/#/saves');
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'stale-development.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const toolbar = page.getByRole('region', { name: 'Active save session' });
+  await expect(toolbar).toBeVisible({ timeout: 20_000 });
+  await toolbar.getByRole('button', { name: 'Editor mode' }).click();
+  await page.locator('.save-db-explorer tbody tr', { hasText: 'Owen Shaw' }).getByRole('button', { name: 'Edit' }).click();
+  const dialog = page.getByRole('dialog');
+  const tabs = dialog.getByRole('tablist', { name: 'Player editor sections' });
+  await tabs.getByRole('tab', { name: 'Development' }).click();
+  const panel = dialog.locator('.development-panel');
+  await panel.getByLabel('Target position').selectOption('ST');
+  await panel.getByLabel('Target role').selectOption('poacher');
+  await panel.locator('summary').filter({ hasText: 'Saved development scenarios' }).click();
+  const library = panel.getByRole('region', { name: 'Saved development scenarios' });
+  await library.getByLabel('Scenario name').fill('Before edit');
+  await expect(library.getByRole('button', { name: 'Save scenario A' })).toBeEnabled();
+  await library.getByRole('button', { name: 'Save scenario A' }).click();
+  await expect(toolbar.getByRole('button', { name: 'Undo last edit' })).toBeDisabled();
+  await tabs.getByRole('tab', { name: 'Attributes' }).click();
+  const finishing = dialog.getByRole('spinbutton', { name: 'Finishing', exact: true });
+  const old = Number(await finishing.inputValue());
+  await finishing.fill(String(old === 20 ? 19 : old + 1));
+  await tabs.getByRole('tab', { name: 'Development' }).click();
+  await panel.locator('summary').filter({ hasText: 'Saved development scenarios' }).click();
+  await library.getByRole('button', { name: 'Before edit', exact: true }).click();
+  await expect(library.getByText('Source changed', { exact: true })).toBeVisible();
+  await expect(library.getByRole('button', { name: 'Restore into scenario A' })).toBeDisabled();
+  await expect(library.getByRole('button', { name: 'Export scenario JSON' })).toBeEnabled();
+  await library.getByRole('button', { name: 'Review scenario rebase' }).click();
+  await expect(library.getByRole('region', { name: 'Scenario rebase preview' })).toBeVisible();
+  await library.getByLabel('Scenario name').fill('After edit');
+  await library.getByRole('button', { name: 'Save rebased copy' }).click();
+  await expect(library.getByRole('button', { name: 'After edit', exact: true })).toBeVisible();
+  await expect(library.getByRole('button', { name: 'Before edit', exact: true })).toBeVisible();
+  await expect(library.getByText('Source changed', { exact: true })).toBeVisible();
+  await expect(library.getByRole('button', { name: 'Restore into scenario A' })).toBeEnabled();
+  await expect(toolbar.getByRole('button', { name: 'Undo last edit' })).toBeEnabled();
+});
+
+test('Player Lab Development hides RCA and budget diagnostics in Realism and on Editor to Realism transition', async ({ page }) => {
+  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+  await page.goto('/#/saves');
+  await page.locator('.file-drop input[type="file"]').setInputFiles({
+    name: 'development-realism.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
+  });
+  const toolbar = page.getByRole('region', { name: 'Active save session' });
+  await expect(toolbar).toBeVisible({ timeout: 20_000 });
+  await page.locator('.save-db-explorer tbody tr', { hasText: 'Owen Shaw' }).getByRole('button', { name: 'Open in Player Lab' }).click();
+  await page.getByRole('tablist', { name: 'Player report' }).getByRole('tab', { name: 'Development' }).click();
+  const panel = page.locator('.development-panel');
+  const expectRestricted = async () => {
+    await expect(panel).toBeVisible();
+    await expect(panel.getByRole('table', { name: 'Development attribute assumptions' })).toBeVisible();
+    await expect(panel.locator('.ability-budget, .rca-provenance')).toHaveCount(0);
+    await expect(panel.getByRole('columnheader', { name: /RCA/ })).toHaveCount(0);
+    await expect(panel).not.toContainText(/Advisory RCA|Remaining potential|Recommended CA|Actual CA|Actual PA|Weaker foot RCA/);
+  };
+  await expectRestricted();
+  await toolbar.getByRole('button', { name: 'Editor mode' }).click();
+  await expect(panel.locator('.ability-budget')).toBeVisible();
+  await expect(panel.getByRole('columnheader', { name: 'RCA weight' })).toBeVisible();
+  await expect(panel.getByRole('columnheader', { name: 'Advisory RCA Δ' })).toBeVisible();
+  await expect(panel.getByText('Advisory RCA (research profile)')).toBeVisible();
+  await toolbar.getByRole('button', { name: 'Realism mode' }).click();
+  await expectRestricted();
 });

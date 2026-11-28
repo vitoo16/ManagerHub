@@ -7,14 +7,15 @@ import { readableImportWarning } from '../../../i18n/player-import-copy';
 function PlayerDatasetSummary({ dataset }: { dataset: PlayerDataset }) {
   const { t } = useTranslation();
   const isDecoded = dataset.source === 'decoded_save';
+  const verified = isDecoded && dataset.saveVerification === 'verified';
   return <>
     <div className="dataset-banner">
       <div>
         <strong>{dataset.players.length.toLocaleString()} {t('player records')}</strong>
         <span>{dataset.fileName} · {dataset.attributeColumns.length} {t('recognized attributes')}</span>
       </div>
-      <Status tone={isDecoded ? 'positive' : 'warning'}>
-        {t(isDecoded ? 'Decoded from save · Verified' : 'From your export (not game-verified)')}
+      <Status tone={verified ? 'positive' : 'warning'}>
+        {t(isDecoded ? verified ? 'Decoded from save · Verified' : 'Research-only decode · Not independently verified' : 'From your export (not game-verified)')}
       </Status>
     </div>
     {dataset.warnings.length > 0 && <div className="dataset-warnings" role="status">

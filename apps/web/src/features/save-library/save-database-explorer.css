@@ -1,54 +1,4 @@
 /* Offline decoded save database explorer — opaque data surfaces, accessible contrast, zero decorative glass over tables. */
-.save-decode-progress {
-  display: grid;
-  gap: 10px;
-  margin: 16px 0;
-  padding: 16px 18px;
-}
-
-.save-decode-progress__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.save-decode-progress__head strong {
-  font-size: 13px;
-}
-
-.save-decode-progress__head span {
-  font-size: 11px;
-  color: var(--text-sub);
-  font-variant-numeric: tabular-nums;
-}
-
-.save-decode-progress__track {
-  height: 8px;
-  border-radius: 99px;
-  background: var(--surface-up);
-  border: 1px solid var(--line);
-  overflow: hidden;
-}
-
-.save-decode-progress__bar {
-  height: 100%;
-  border-radius: 99px;
-  background: var(--accent-strong);
-  transition: width .16s ease;
-}
-
-.save-decode-progress__foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-  font-size: 11px;
-  color: var(--text-sub);
-}
-
 .saved-decoded-library {
   padding: 18px 20px;
   margin: 18px 0;
@@ -554,7 +504,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .save-decode-progress__bar {
-    transition: none;
-  }
+}
+.inspection-technical > summary {
+  min-block-size: 24px;
+  padding-block: 4px;
+  cursor: pointer;
 }

@@ -30,6 +30,7 @@ import { parseFm2013GameDb, type GameDbEditableOffsetMap } from './game-db-parse
 import { computeSha256Hex, decodeFm2013Save } from './index';
 import {
   FM2013DecodeError,
+  FM2013_EXPERIMENTAL_WRITE_BUILD,
   type DecodedHiddenPlayingAttributes,
   type DecodedPersonalityAttributes,
   type DecodedPositionRatings,
@@ -377,7 +378,7 @@ export interface WrittenFm2013SaveResult {
 }
 
 /**
- * Certified offline `Save As .fm` surgical writer (`Gate C`).
+ * Experimental offline `Save As .fm` surgical writer (`Gate C`).
  *
  * Guarantees:
  * 1. Original `source` (`File` or `Uint8Array`) is NEVER mutated.
@@ -394,7 +395,7 @@ export async function writePatchedFm2013Save(
   if (!(options.signingKey instanceof Uint8Array) || options.signingKey.byteLength !== 32) {
     throw new FM2013DecodeError(
       'UNSUPPORTED_WRITE_TARGET',
-      'Certified Save As .fm requires an authorized 32-byte FM2013 signing key.'
+      'Experimental Save As .fm requires an authorized 32-byte FM2013 signing key.'
     );
   }
 
@@ -410,7 +411,7 @@ export async function writePatchedFm2013Save(
   if (container.family !== 'afe' || container.formatVersion !== 4) {
     throw new FM2013DecodeError(
       'UNSUPPORTED_WRITE_TARGET',
-      'Certified offline Save As .fm is supported only for verified FM2013 AFE v4 saves.'
+      'Experimental Save As .fm requires a verified FM2013 AFE v4 read profile.'
     );
   }
 
@@ -422,7 +423,7 @@ export async function writePatchedFm2013Save(
   if (!summaryBytes || !gameDbBytes) {
     throw new FM2013DecodeError(
       'UNSUPPORTED_WRITE_TARGET',
-      'Save is missing save_game_summary.dat or game_db.dat required for exact-build writer certification.'
+      'Save is missing save_game_summary.dat or game_db.dat required for exact-build write validation.'
     );
   }
 
@@ -432,10 +433,10 @@ export async function writePatchedFm2013Save(
     edition: summary?.gameVersion ? 'FM2013' : null,
     build: summary?.gameVersion ?? null
   });
-  if (compat.status !== 'verified') {
+  if (compat.status !== 'verified' || summary?.gameVersion !== FM2013_EXPERIMENTAL_WRITE_BUILD) {
     throw new FM2013DecodeError(
       'UNSUPPORTED_WRITE_TARGET',
-      `Refusing to write unverified FM2013 save build "${summary?.gameVersion ?? 'unknown'}" (${compat.status}).`
+      `Experimental Save As requires FM2013 ${FM2013_EXPERIMENTAL_WRITE_BUILD}; source reports ${summary?.gameVersion ?? 'unknown'}.`
     );
   }
 
@@ -591,15 +592,94 @@ export async function writePatchedFm2013Save(
   };
 }
 
-/** Sanitize a default `Save As .fm` download filename so it never overwrites the original name silently. */
-export function buildEditedSaveFileName(originalFileName: string): string {
-  const stem = originalFileName
-    .replace(/\.fm$/iu, '')
-    .replace(/[^a-zA-Z0-9._ -]+/gu, '-')
-    .trim()
-    .slice(0, 80) || 'career';
-  if (stem.toLowerCase().endsWith('-edited')) {
-    return `${stem}.fm`;
+/**
+ * Derive the 32-byte UTF-16LE `game_db.dat` HMAC-SHA512 key dynamically at runtime
+ * from the user's own local `fm.exe` (`13.3.3f359652`) PE `.rdata` section (VA `0x2474be0`).
+ * Zero proprietary bytes are stored in ManagerHub source code or persisted to disk.
+ */
+export async function deriveFm2013SigningKeyFromExecutable(
+  exeSource: BinarySliceSource
+): Promise<Uint8Array> {
+  const size = exeSource instanceof Uint8Array ? exeSource.byteLength : exeSource.size;
+  if (size < 4 * 1024 * 1024 || size > 128 * 1024 * 1024) {
+    throw new FM2013DecodeError('INVALID_FILE', 'Selected file is not a valid FM2013 fm.exe binary.');
   }
-  return `${stem}-edited.fm`;
+  const headerSlice = await readSlice(exeSource, 0, 4096);
+  const dv = new DataView(headerSlice.buffer, headerSlice.byteOffset, headerSlice.byteLength);
+  if (headerSlice[0] !== 0x4d || headerSlice[1] !== 0x5a) {
+    throw new FM2013DecodeError('INVALID_FILE', 'Selected file does not have a valid Windows PE MZ header.');
+  }
+  const peOffset = dv.getUint32(0x3c, true);
+  if (peOffset < 0x40 || peOffset + 0xf8 > headerSlice.byteLength) {
+    throw new FM2013DecodeError('INVALID_FILE', 'PE header offset is outside expected bounds.');
+  }
+  if (
+    headerSlice[peOffset] !== 0x50 ||
+    headerSlice[peOffset + 1] !== 0x45 ||
+    headerSlice[peOffset + 2] !== 0 ||
+    headerSlice[peOffset + 3] !== 0
+  ) {
+    throw new FM2013DecodeError('INVALID_FILE', 'Selected file is missing the PE\\0\\0 signature.');
+  }
+  const numSections = dv.getUint16(peOffset + 6, true);
+  const optHeaderSize = dv.getUint16(peOffset + 20, true);
+  const optMagic = dv.getUint16(peOffset + 24, true);
+  if (optMagic !== 0x10b || numSections < 1 || numSections > 32) {
+    throw new FM2013DecodeError('INVALID_FILE', 'Expected 32-bit x86 Football Manager 2013 executable.');
+  }
+  const imageBase = dv.getUint32(peOffset + 24 + 28, true);
+  const targetVa = 0x2474be0;
+  if (targetVa <= imageBase) {
+    throw new FM2013DecodeError('INVALID_FILE', 'Unexpected PE ImageBase for FM2013 executable.');
+  }
+  const targetRva = targetVa - imageBase;
+  const secTableStart = peOffset + 24 + optHeaderSize;
+  if (secTableStart + numSections * 40 > headerSlice.byteLength) {
+    throw new FM2013DecodeError('INVALID_FILE', 'PE section table exceeds header slice.');
+  }
+
+  let fileOffset: number | null = null;
+  for (let i = 0; i < numSections; i++) {
+    const base = secTableStart + i * 40;
+    const virtualSize = dv.getUint32(base + 8, true);
+    const virtualAddress = dv.getUint32(base + 12, true);
+    const sizeOfRawData = dv.getUint32(base + 16, true);
+    const pointerToRawData = dv.getUint32(base + 20, true);
+    const span = Math.max(virtualSize, sizeOfRawData);
+    if (targetRva >= virtualAddress && targetRva + 17 <= virtualAddress + span) {
+      const delta = targetRva - virtualAddress;
+      if (delta + 17 <= sizeOfRawData) {
+        fileOffset = pointerToRawData + delta;
+        break;
+      }
+    }
+  }
+
+  if (fileOffset === null || fileOffset + 17 > size) {
+    throw new FM2013DecodeError(
+      'INVALID_FILE',
+      'Could not locate FM2013 13.3.3f359652 database signing table in executable.'
+    );
+  }
+
+  const rawAscii = await readSlice(exeSource, fileOffset, fileOffset + 17);
+  if (rawAscii[16] !== 0) {
+    throw new FM2013DecodeError(
+      'INVALID_FILE',
+      'Executable build does not match FM2013 13.3.3f359652 signing layout.'
+    );
+  }
+  const utf16Key = new Uint8Array(32);
+  const outDv = new DataView(utf16Key.buffer);
+  for (let i = 0; i < 16; i++) {
+    const ch = rawAscii[i]!;
+    if (ch < 0x20 || ch > 0x7e) {
+      throw new FM2013DecodeError(
+        'INVALID_FILE',
+        'Executable signing key bytes failed printable ASCII sanity check.'
+      );
+    }
+    outDv.setUint16(i * 2, ch, true);
+  }
+  return utf16Key;
 }

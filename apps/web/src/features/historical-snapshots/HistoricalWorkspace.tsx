@@ -1,52 +1,32 @@
-import { memo, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
+import { useCallback, useDeferredValue, useEffect, useId, useMemo, useRef, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { i18n } from '../../i18n';
 import historicalVi from '../../i18n/historical-vi';
 import {
-  type EvidenceField, type HistoricalSnapshotMode, type HistoricalSnapshotRecord,
-  type HistoricalSnapshotSummary, type LivePlayer, type MissingReason
+  type HistoricalSnapshotMode, type HistoricalSnapshotRecord
 } from '@managerhub/domain';
-import { Button, Icon, SectionHeading, Status } from '@managerhub/ui';
+import { Button, Icon, SectionHeading, SectionTabs, Status } from '@managerhub/ui';
 import { getHistoricalSnapshot } from '@managerhub/storage/historical-live-snapshots';
 import { importHistoricalCapture, type HistoricalImportStage } from '../../import-historical-capture';
 import { useHistoricalSnapshotLibrary } from '../../useHistoricalSnapshotLibrary';
 import { HistoricalCaptureGuide } from './HistoricalCaptureGuide';
 import { HistoricalObservationComparison } from './HistoricalObservationComparison';
+import { HistoricalPlayerDetail } from './HistoricalPlayerDetail';
+import { HistoricalCoveragePanel } from './HistoricalCoveragePanel';
+import { HistoricalSnapshotList } from './HistoricalSnapshotList';
+import { fieldText, formatBytes, formatDate } from './historical-format';
+import { ReportPagination, reportPage } from '../ReportPagination';
 import './historical-workspace.css';
 
 i18n.addResourceBundle('vi', 'translation', historicalVi, true, true);
 
-const PAGE_SIZE = 80;
-const MISSING_COPY: Record<MissingReason, string> = {
-  not_present: 'Not present in this capture',
-  not_decoded: 'Not decoded',
-  not_verified: 'Not verified',
-  incompatible_build: 'Incompatible build',
-  redacted: 'Hidden in Realism mode',
-  not_applicable: 'Not applicable'
-};
-
-function fieldText<T>(field: EvidenceField<T>, t: (key: string) => string, format: (value: T) => string = String): string {
-  return field.value === null ? t(MISSING_COPY[field.missingReason ?? 'not_decoded']) : format(field.value);
-}
-
+const PAGE_SIZE = 40;
+const SNAPSHOT_SECTIONS = [{ id: 'players', label: 'Player records' }, { id: 'coverage', label: 'Capture evidence' }, { id: 'compare', label: 'Compare historical observations' }] as const;
+type SnapshotSection = typeof SNAPSHOT_SECTIONS[number]['id'];
 function statusCopy(status: HistoricalSnapshotRecord['status'], t: (key: string) => string): string {
   if (status === 'ready') return t('Payload accepted · roster completeness unverified');
   if (status === 'partial') return t('Partial capture · some records or scan coverage are missing');
   return t('No accepted player records in this capture');
-}
-
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return bytes + ' B';
-  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-  return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
-}
-
-function formatDate(value: string, language = 'en'): string {
-  const date = new Date(value);
-  return Number.isFinite(date.getTime()) ? new Intl.DateTimeFormat(language.startsWith('vi') ? 'vi-VN' : 'en-US', {
-    dateStyle: 'medium', timeStyle: 'short'
-  }).format(date) : value;
 }
 
 function progressCopy(stage: HistoricalImportStage, t: (key: string) => string): string {
@@ -58,135 +38,6 @@ function progressCopy(stage: HistoricalImportStage, t: (key: string) => string):
   };
   return t(labels[stage] ?? 'Checking snapshot provenance and privacy…');
 }
-
-const SnapshotList = memo(function SnapshotList({ items, loading, disabled, selectedId, pendingDelete, onOpen, onDelete, onCancelDelete }:
-  { items: readonly HistoricalSnapshotSummary[]; loading: boolean; disabled: boolean; selectedId: string | null; pendingDelete: string | null;
-    onOpen: (id: string) => void; onDelete: (id: string) => void; onCancelDelete: () => void }) {
-  const { t, i18n } = useTranslation();
-  return <section className="historical-panel historical-library" aria-labelledby="historical-library-title">
-    <SectionHeading id="historical-library-title" eyebrow={t('Local historical library')} title={t('Saved snapshots')}/>
-    {loading ? <p className="historical-muted" role="status">{t('Loading saved snapshots…')}</p> :
-      items.length === 0 ? <div className="historical-empty">
-        <Icon name="database" size={22}/>
-        <strong>{t('No historical snapshots saved')}</strong>
-        <p>{t('Import a capture, review its coverage, then save it on this browser. The source JSON is never stored.')}</p>
-      </div> :
-      <ul className="historical-snapshot-list" aria-label={t('Saved historical snapshots')}>
-        {items.map(item => <li key={item.id} className={selectedId === item.id ? 'historical-snapshot-row historical-snapshot-row--active' : 'historical-snapshot-row'}>
-          <button className="historical-snapshot-open" onClick={() => onOpen(item.id)} disabled={disabled}>
-            <span className="historical-snapshot-name">{item.careerLabel}</span>
-            <span className="historical-snapshot-file">{item.fileName}</span>
-            <span className="historical-snapshot-meta">
-              <span>{item.playerCount.toLocaleString()} {t('observed records')}</span>
-              <span>{formatDate(item.capturedAt, i18n.language)}</span>
-            </span>
-            <span className="historical-snapshot-status">
-              <Status tone={item.status === 'ready' ? 'info' : item.status === 'partial' ? 'warning' : 'neutral'}>{t(item.status)}</Status>
-              <span>{item.mode === 'editor' ? t('Editor projection') : t('Realism projection')}</span>
-            </span>
-          </button>
-          <div className="historical-snapshot-actions">
-            <Button variant="quiet" onClick={() => onOpen(item.id)} disabled={disabled}>{t('Open')}</Button>
-            <Button variant="quiet" onClick={() => onDelete(item.id)} disabled={disabled}>{pendingDelete === item.id ? t('Confirm delete') : t('Delete')}</Button>
-            {pendingDelete === item.id && <Button variant="quiet" onClick={onCancelDelete} disabled={disabled}>{t('Cancel')}</Button>}
-          </div>
-          {pendingDelete === item.id && <p className="historical-destructive-warning" role="status">
-            {t('Deleting removes this snapshot and any saved Editor or Realism projection. This cannot be undone; keep the source JSON to reimport.')}
-          </p>}
-        </li>)}
-      </ul>}
-  </section>;
-});
-
-const CoveragePanel = memo(function CoveragePanel({ record }: { record: HistoricalSnapshotRecord }) {
-  const { t } = useTranslation();
-  return <section className="historical-panel" aria-labelledby="historical-coverage-title">
-    <SectionHeading id="historical-coverage-title" eyebrow={t('Capture evidence')} title={t('Scan coverage')}/>
-    <div className="historical-coverage-grid">
-      {record.snapshot.captureCoverage.map(item => <div className="historical-coverage-item" key={item.nativeKind}>
-        <div className="historical-coverage-heading">
-          <strong>{item.nativeKind === 'player' ? t('Player records') : t('PlayerStaff records')}</strong>
-          <Status tone="warning">{t('Provisional')}</Status>
-        </div>
-        <dl>
-          <div><dt>{t('Observed records')}</dt><dd>{item.observedRecordCount.toLocaleString()}</dd></div>
-          <div><dt>{t('Candidates matched')}</dt><dd>{item.matches.toLocaleString()}</dd></div>
-          <div><dt>{t('Rejected / duplicate')}</dt><dd>{item.rejected.toLocaleString()} / {item.duplicates.toLocaleString()}</dd></div>
-          <div><dt>{t('Read faults')}</dt><dd>{item.faultCount.toLocaleString()}</dd></div>
-          <div><dt>{t('Bytes scanned')}</dt><dd>{formatBytes(item.bytesScanned)}</dd></div>
-          <div><dt>{t('Elapsed')}</dt><dd>{item.elapsedMs.toLocaleString()} ms</dd></div>
-          <div><dt>{t('Stop reason')}</dt><dd>{item.stopReason ? t(item.stopReason) : t('No stop limit reported')}</dd></div>
-          <div><dt>{t('Selected mappings exhausted')}</dt><dd>{item.selectedMappingsExhausted ? t('Yes') : t('No')}</dd></div>
-        </dl>
-      </div>)}
-      {record.snapshot.captureCoverage.length === 0 && <p className="historical-muted">{t('No native pass coverage was supplied.')}</p>}
-    </div>
-    <p className="historical-footnote">{t('Coverage is caller-declared research telemetry. It does not prove a complete roster, atomic game state or a currently loaded career.')}</p>
-  </section>;
-});
-
-const PlayerDetail = memo(function PlayerDetail({ player }: { player: LivePlayer }) {
-  const { t } = useTranslation();
-  const attributes = Object.entries(player.attributes);
-  const positions = Object.entries(player.positions);
-  const club = player.club.value;
-  const nation = player.primaryNation.value;
-  return <div className="historical-player-detail">
-    <section className="historical-panel">
-      <div className="historical-player-heading">
-        <div>
-          <span className="mh-eyebrow">{t('Snapshot-local player ID')} · {t(player.nativeKind)}</span>
-          <h3>{fieldText(player.name, t)}</h3>
-          <p>{t('Native ID')} {player.nativeId} · {t('This identity is scoped to this snapshot only.')}</p>
-        </div>
-        <Status tone="warning">{t('Provisional')}</Status>
-      </div>
-      <dl className="historical-facts">
-        <div><dt>{t('First name')}</dt><dd>{fieldText(player.firstName, t)}</dd></div>
-        <div><dt>{t('Last name')}</dt><dd>{fieldText(player.lastName, t)}</dd></div>
-        <div><dt>{t('Date of birth')}</dt><dd>{fieldText(player.birthDate, t)}</dd></div>
-        <div><dt>{t('Derived calendar age')}</dt><dd>{fieldText(player.calendarAge, t, value => value + ' ' + t('years'))}</dd></div>
-        <div><dt>{t('Primary nation link')}</dt><dd>{nation ? nation.name + ' · ' + t('Observed person link; not citizenship') : fieldText(player.primaryNation, t)}</dd></div>
-        <div><dt>{t('Club / team link')}</dt><dd>{club ? club.name + ' · ' + t(club.relation === 'player_team_pointer' ? 'Observed player-team pointer' : 'Observed primary-contract team') : fieldText(player.club, t)}</dd></div>
-      </dl>
-      <p className="historical-footnote">{t('A primary-nation link does not establish citizenship or eligibility. A club/team pointer does not establish current employment or loan status.')}</p>
-    </section>
-
-    <section className="historical-panel">
-      <SectionHeading eyebrow={t('49 ordinary attributes')} title={t('Attribute evidence')}/>
-      <div className="historical-value-grid">
-        {attributes.map(([key, field]) => <div className="historical-value-row" key={key}>
-          <span>{field.sourceName}</span>
-          <strong className={field.value === null ? 'is-unknown' : ''}>{fieldText(field, t)}</strong>
-        </div>)}
-      </div>
-      <p className="historical-footnote">{t('Values are provisional source observations, not Actual CA, PA or a calibrated player rating model. Zero and unknown are kept distinct.')}</p>
-    </section>
-
-    <section className="historical-panel">
-      <SectionHeading eyebrow={t('15 position familiarity values')} title={t('Position evidence')}/>
-      <div className="historical-value-grid historical-value-grid--positions">
-        {positions.map(([key, field]) => <div className="historical-value-row" key={key}>
-          <span>{field.nativeCode} · {t(key)}</span>
-          <strong className={field.value === null ? 'is-unknown' : ''}>{fieldText(field, t)}</strong>
-        </div>)}
-      </div>
-      <p className="historical-footnote">{t('Position familiarity is not certified eligibility and is not converted into tactical roles.')}</p>
-    </section>
-
-    <section className="historical-panel">
-      <SectionHeading eyebrow={t('Unverified fields')} title={t('Ability and contract data')}/>
-      <dl className="historical-facts historical-facts--compact">
-        <div><dt>{t('Actual CA')}</dt><dd>{fieldText(player.actualCa, t)}</dd></div>
-        <div><dt>{t('Potential ability')}</dt><dd>{fieldText(player.potentialAbility, t)}</dd></div>
-        <div><dt>{t('Weekly wage')}</dt><dd>{fieldText(player.contract.weeklyWage, t)}</dd></div>
-        <div><dt>{t('Wage frequency')}</dt><dd>{fieldText(player.contract.wageFrequency, t)}</dd></div>
-        <div><dt>{t('Currency')}</dt><dd>{fieldText(player.contract.currency, t)}</dd></div>
-        <div><dt>{t('Contract expiry')}</dt><dd>{fieldText(player.contract.expiresAt, t)}</dd></div>
-      </dl>
-    </section>
-  </div>;
-});
 
 export default function HistoricalWorkspace() {
   const { t, i18n } = useTranslation();
@@ -205,7 +56,9 @@ export default function HistoricalWorkspace() {
   const [importError, setImportError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [search, setSearch] = useState('');
-  const [visibleLimit, setVisibleLimit] = useState(PAGE_SIZE);
+  const [playerPage, setPlayerPage] = useState(0);
+  const [section, setSection] = useState<SnapshotSection>('players');
+  const sectionId = useId();
   const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const [pendingClear, setPendingClear] = useState(false);
@@ -276,7 +129,7 @@ export default function HistoricalWorkspace() {
       setActiveSaved(false);
       setSelectedPlayerId(result.record.snapshot.players[0]?.id ?? null);
       setSearch('');
-      setVisibleLimit(PAGE_SIZE);
+      setPlayerPage(0);
       setNotice(t('Capture parsed. Review its source, coverage and unknown fields before saving.'));
     } catch (cause) {
       if (abortRef.current === controller) {
@@ -345,7 +198,7 @@ export default function HistoricalWorkspace() {
     setActiveSaved(true);
     setSelectedPlayerId(opened.snapshot.players[0]?.id ?? null);
     setSearch('');
-    setVisibleLimit(PAGE_SIZE);
+    setPlayerPage(0);
     setNotice(null);
     setImportError(null);
   }, [library.open, library.activity, library.loading, importing, switchingMode, mode]);
@@ -379,6 +232,7 @@ export default function HistoricalWorkspace() {
       pendingImport?.abort();
       setImporting(false);
       setSearch('');
+      setPlayerPage(0);
       setSelectedPlayerId(null);
       setNotice(null);
       setImportError(null);
@@ -432,7 +286,8 @@ export default function HistoricalWorkspace() {
       return name.includes(deferredSearch) || club.includes(deferredSearch) || String(player.nativeId).includes(deferredSearch);
     });
   }, [players, deferredSearch]);
-  const visiblePlayers = filteredPlayers.slice(0, visibleLimit);
+  const playerRange = reportPage(filteredPlayers.length, playerPage, PAGE_SIZE);
+  const visiblePlayers = filteredPlayers.slice(playerRange.start, playerRange.end);
   const selectedPlayer = useMemo(() =>
     filteredPlayers.find(player => player.id === selectedPlayerId) ?? filteredPlayers[0] ?? null,
   [filteredPlayers, selectedPlayerId]);
@@ -496,7 +351,7 @@ export default function HistoricalWorkspace() {
     </section>
 
     <div className="historical-library-layout">
-      <SnapshotList items={library.items} loading={library.loading} disabled={importing || switchingMode || library.activity !== null || library.error !== null} selectedId={activeId}
+      <HistoricalSnapshotList items={library.items} loading={library.loading} disabled={importing || switchingMode || library.activity !== null || library.error !== null} selectedId={activeId}
         pendingDelete={pendingDelete} onOpen={id => void onOpenSaved(id)} onDelete={id => void onDelete(id)}
         onCancelDelete={() => setPendingDelete(null)}/>
       <section className="historical-detail-column">
@@ -534,15 +389,19 @@ export default function HistoricalWorkspace() {
             <p className="historical-footnote">{t('The capture is historical. PID, file hash, declared career label and timestamp do not prove a currently running process, loaded save lineage or authenticated runtime image bytes.')}</p>
           </section>
 
-          <CoveragePanel record={record}/>
-
+          <SectionTabs<SnapshotSection> id={sectionId} label={t('Historical snapshot sections')}
+            items={SNAPSHOT_SECTIONS.map(item => ({ ...item, label: t(item.label) }))}
+            active={section} onChange={setSection}/>
+          <div className="historical-section-panel" role="tabpanel" id={sectionId + '-panel'}
+            aria-labelledby={sectionId + '-tab-' + section}>
+          {section === 'players' && <>
           <section className="historical-panel">
             <SectionHeading eyebrow={t('Player records')} title={t('Browse captured players')}>
               <span className="historical-count">{filteredPlayers.length.toLocaleString()} / {players.length.toLocaleString()}</span>
             </SectionHeading>
             <label className="historical-search">
               <Icon name="search" size={16}/>
-              <input type="search" value={search} onChange={event => { setSearch(event.currentTarget.value); setVisibleLimit(PAGE_SIZE); }}
+              <input type="search" value={search} onChange={event => { setSearch(event.currentTarget.value); setPlayerPage(0); }}
                 placeholder={t('Search name, observed club or native ID…')} aria-label={t('Search captured players')}/>
             </label>
             <div className="historical-player-browser">
@@ -561,15 +420,19 @@ export default function HistoricalWorkspace() {
                   </tbody>
                 </table>
               </div>
-              {visiblePlayers.length < filteredPlayers.length && <Button variant="quiet" onClick={() => setVisibleLimit(limit => limit + PAGE_SIZE)}>{t('Show more players')}</Button>}
+              <ReportPagination label={t('Captured players page')} range={playerRange} onChange={setPlayerPage}/>
               <p className="historical-footnote">{t('Player IDs are snapshot-local. Search is limited to this capture; no automatic cross-career identity merge is performed.')}</p>
             </div>
           </section>
 
-          {selectedPlayer && <PlayerDetail player={selectedPlayer}/>}
-          {selectedPlayer && <HistoricalObservationComparison key={`${record.id}:${record.mode}`} record={record} player={selectedPlayer}
+          {selectedPlayer && <HistoricalPlayerDetail key={`${record.id}:${record.mode}:${selectedPlayer.id}`} player={selectedPlayer}/>}
+          </>}
+          {section === 'compare' && selectedPlayer && <HistoricalObservationComparison key={`${record.id}:${record.mode}`} record={record} player={selectedPlayer}
             items={library.items} busy={importing || switchingMode || library.loading || library.activity !== null || library.error !== null}
             revision={library.syncedExternalRevision}/>}
+          {section === 'compare' && !selectedPlayer && <p className="historical-muted">{t('No player selected for comparison.')}</p>}
+          {section === 'coverage' && <>
+          <HistoricalCoveragePanel record={record}/>
           <section className="historical-panel">
             <SectionHeading eyebrow={t('Source diagnostics')} title={t('What this capture does not prove')}/>
             <ul className="historical-diagnostics">
@@ -579,6 +442,8 @@ export default function HistoricalWorkspace() {
               <li>{t('No native save writer, live process watcher or desktop IPC is active.')}</li>
             </ul>
           </section>
+          </>}
+          </div>
         </>}
       </section>
     </div>

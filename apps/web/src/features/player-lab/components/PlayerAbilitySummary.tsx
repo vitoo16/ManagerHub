@@ -18,15 +18,15 @@ function PlayerAbilitySummary({
 }) {
   const { t } = useTranslation();
   const isDecoded = dataset?.source === 'decoded_save';
-  const showVerifiedCaPa = isDecoded && dataset.saveMode === 'editor' && player?.actualCa != null && player?.potentialAbility != null;
+  const showCaPa = isDecoded && dataset.saveMode === 'editor' && player?.actualCa != null && player?.potentialAbility != null;
   const isRedactedRealism = isDecoded && dataset.saveMode === 'realism';
 
   return <>
     <div className="scout-metrics">
       <div>
-        <span>{t("Actual CA")}</span>
-        <strong>{showVerifiedCaPa ? player.actualCa : '—'}</strong>
-        <small>{t(showVerifiedCaPa ? 'Decoded from save · Verified' : isRedactedRealism ? 'Hidden in Realism mode' : 'Not verified')}</small>
+        <span>{t(player?.draftCa ? 'Draft CA' : 'Actual CA')}</span>
+        <strong>{showCaPa ? player.actualCa : '—'}</strong>
+        <small>{t(showCaPa ? player.draftCa ? 'Unsaved draft value' : player.verification === 'verified' ? 'Decoded from save · Verified' : 'Research-only decode · Not independently verified' : isRedactedRealism ? 'Hidden in Realism mode' : 'Not verified')}</small>
       </div>
       <div>
         <span>{t("Attribute summary")}</span>
@@ -39,9 +39,9 @@ function PlayerAbilitySummary({
         <small>{topRole?.title ? t(topRole.title) : t('Insufficient data')}</small>
       </div>
       <div>
-        <span>PA</span>
-        <strong>{showVerifiedCaPa ? player.potentialAbility : '—'}</strong>
-        <small>{t(showVerifiedCaPa ? 'Decoded from save · Verified' : isRedactedRealism ? 'Hidden in Realism mode' : 'Not verified')}</small>
+        <span>{player?.draftPa ? t('Draft PA') : 'PA'}</span>
+        <strong>{showCaPa ? player.potentialAbility : '—'}</strong>
+        <small>{t(showCaPa ? player.draftPa ? 'Unsaved draft value' : player.verification === 'verified' ? 'Decoded from save · Verified' : 'Research-only decode · Not independently verified' : isRedactedRealism ? 'Hidden in Realism mode' : 'Not verified')}</small>
       </div>
     </div>
     <details className="ca-guide">

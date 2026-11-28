@@ -1,10 +1,9 @@
 import { memo, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { PlayerDataset } from '@managerhub/domain';
 import { Button, Icon, Surface } from '@managerhub/ui';
-import { usePlayerLibrary } from '../../../usePlayerLibrary';
+import { usePlayerLibrary, type OpenPlayerDataset } from '../../../usePlayerLibrary';
 
-interface Props { readonly onDataset: (dataset: PlayerDataset) => void }
+interface Props { readonly onDataset: OpenPlayerDataset }
 
 /** Reuse the same explicitly saved IndexedDB exports as Player Lab. */
 function SavedSquadRosterPicker({ onDataset }: Props) {
@@ -16,8 +15,7 @@ function SavedSquadRosterPicker({ onDataset }: Props) {
     if (!selectedId || opening) return;
     setOpening(true);
     try {
-      const dataset = await library.open(selectedId);
-      if (dataset) onDataset(dataset);
+      await onDataset(() => library.open(selectedId));
     } finally { setOpening(false); }
   }, [selectedId, opening, library.open, onDataset]);
 

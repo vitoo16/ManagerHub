@@ -9,6 +9,7 @@ This file routes coding agents to **one source of truth per concern**. It is not
 - Keep original save files immutable until an exact-build writer has passed the certification and user-consent gates.
 - Never invent football data, verified CA/PA, source values, model accuracy, player access or native-reader capabilities. Label experimental capture, read-only research and estimated metrics honestly.
 - Respect local-first privacy, Editor/Realism field isolation, and Vietnamese/English i18n.
+- **Keep production source free of research-only evidence.** Do not add evidence-only registries/modules, REA or tool-specific evidence IDs, research receipts, artifact hashes/paths, exploratory dumps, or temporary probes to production source or runtime exports merely to document research. Put reproducible research evidence in `docs/research/`, isolated research tooling/fixtures in their appropriate non-runtime locations, and private/raw artifacts in excluded local evidence storage. Preserve minimal runtime metadata genuinely required for compatibility, uncertainty or user-facing provenance, and retain regression tests and required fixtures. Existing evidence-only code is deferred cleanup debt: do not remove or refactor it as part of unrelated tasks. Review new imports/exports and bundle impact to prevent further accumulation.
 
 ## Canonical references and ownership
 

@@ -28,7 +28,6 @@ export * from './lang-db';
 export * from './projection';
 export * from './validation';
 export * from './editor-transactions';
-export * from './writer';
 
 export interface DecodeFm2013SaveOptions {
   readonly fileName?: string;

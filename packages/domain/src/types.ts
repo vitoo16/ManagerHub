@@ -42,5 +42,5 @@ export interface DerivedMetric {
   readonly explanation: readonly string[];
 }
 
-export type WorkspaceKey = 'overview' | 'saves' | 'players' | 'squad' | 'history' | 'architecture' | 'modules';
+export type WorkspaceKey = 'overview' | 'saves' | 'editor' | 'players' | 'squad' | 'history' | 'architecture' | 'modules';
 export type CapabilityStatus = 'available' | 'not_implemented' | 'unsupported';

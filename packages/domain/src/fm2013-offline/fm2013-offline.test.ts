@@ -105,6 +105,10 @@ describe('FM2013 offline save decoder (synthetic fixtures)', () => {
     expect(dbFmf.source.family).toBe('fmf');
     expect(dbFmf.source.compressed).toBe(false);
     expect(dbFmf.players).toHaveLength(14);
+    expect(saveDatabaseToPlayerDataset(dbFmf, 'editor').saveVerification).toBe('provisional');
+    expect(saveDatabaseToPlayerDataset(dbFmf, 'editor').players[0]?.verification).toBe('provisional');
+    expect(projectPlayerHiddenFields(dbFmf.players[0]!, 'editor', dbFmf.source).actualCa.verification).toBe('provisional');
+
   });
 
   it('strictly enforces Editor vs Realism redaction and feeds Squad Planner directly with zero CSV', async () => {
@@ -113,20 +117,20 @@ describe('FM2013 offline save decoder (synthetic fixtures)', () => {
     const player = db.players[0]!;
     const staff = db.staff[0]!;
 
-    const realismHidden = projectPlayerHiddenFields(player, 'realism', db.source.edition, db.source.build);
+    const realismHidden = projectPlayerHiddenFields(player, 'realism', db.source);
     expect(realismHidden.actualCa.value).toBeNull();
     expect(realismHidden.actualCa.missingReason).toBe('redacted');
     expect(realismHidden.potentialAbility.value).toBeNull();
     expect(realismHidden.hiddenPlaying.value).toBeNull();
     expect(realismHidden.personality.value).toBeNull();
 
-    const editorHidden = projectPlayerHiddenFields(player, 'editor', db.source.edition, db.source.build);
+    const editorHidden = projectPlayerHiddenFields(player, 'editor', db.source);
     expect(editorHidden.actualCa.value).toBe(player.actualCa);
     expect(editorHidden.actualCa.verification).toBe('verified');
     expect(editorHidden.actualCa.source).toBe('decoded_save');
     expect(editorHidden.personality.value?.professionalism).toBe(17);
 
-    const staffRealism = projectStaffAbility(staff, 'realism', db.source.edition, db.source.build);
+    const staffRealism = projectStaffAbility(staff, 'realism', db.source);
     expect(staffRealism.staffCa.value).toBeNull();
     expect(staffRealism.staffCa.missingReason).toBe('redacted');
 

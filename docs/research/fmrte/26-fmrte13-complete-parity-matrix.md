@@ -1,5 +1,8 @@
 # FMRTE 13 (`13.3.3.62`) vs ManagerHub Complete Feature Parity Matrix
 
+**Independent review qualification (PR #120):** capability labels below describe draft/write-copy implementation, not certified native field writes; same-decoder synthetic reparse is not independent game readback. See [field-specific evidence audit](RCA-WRITER-EVIDENCE-AUDIT.md). No acceptance elevation.
+
+
 **Review status:** PARTIAL inventory, not full feature parity or certified writer. Grouped capability rows below require stable requirement IDs, per-feature installed FMRTE13 evidence and separate offline/live acceptance. Persisted structures not yet decoded or writable must not be assumed live-only. Real-game UAT is pending.
 
 **Date:** 2026-11-25  

@@ -14,7 +14,9 @@ Header: player identity, age, club, position, foot, condition, injury, contract,
 Hero KPI strip: Actual CA [when verified] / eCA with uncertainty / PA [when verified] / role fit / tactical fit / availability.
 Persistent switch: Realistic Scouting (hidden attributes restricted) vs Editor Data (requires authorized, verified decoder).
 Tabs:
-- Overview: analyst summary, six attribute families, strengths, weaknesses, caveats.
+- Overview: compact attribute-group mean and coverage, strengths, weaknesses and caveats; no repeated role ranking or full profile.
+- Contract & positions: contract, physical details and positional familiarity for decoded saves.
+- Personality & hidden traits: exact numeric properties, restricted in Realism mode.
 - Abilities: attributes table, eCA, diagnostic Actual CA – eCA (only if both), estimated CA explanation, sensitivity toggles, model card.
 - Position & Roles: pitch heatmap of position suitability, top roles in possession and out of possession if supported, natural familiarity vs retraining, weaknesses.
 - Performance: supported match statistics, minutes, sample size and league/role cohorts.
@@ -28,7 +30,7 @@ Tabs:
 | Visualization | Question answered | Minimum inputs | Caveat |
 |---|---|---|---|
 | Radar / pizza of ability dimensions | What kind of footballer? | Relevant attributes or stats | Label whether absolute 1–20 attributes or cohort percentiles |
-| Horizontal attribute bars | Which exact qualities drive role? | Complete attributes with valid edition scale | Show required vs optional values |
+| Compact attribute property table | Which exact qualities drive role? | Observed edition attributes | Grouped exact values, seven-tier text colors, missing values explicit; no bar per field |
 | Role fit bars/top-5 | Where can he play well? | Verified edition roles, attributes, position familiarity | Not actual match-engine role star |
 | Pitch suitability map | Natural position vs retraining opportunities | Positions/familiarity and verified attribute groups | Never imply training instantly completed |
 | Percentile radar | How he ranks among peers? | Statistics, minutes and named cohort | Show percentile cohort, sample threshold |

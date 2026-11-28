@@ -8,9 +8,10 @@ import type {
   DecodedSaveDatabase,
   DecodedSaveMode,
   FM2013DecodeProgress,
-  FM2013DecodeStage
+  SaveDraftOverlay
 } from '@managerhub/domain/fm2013-offline';
 import { Button, Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
+import { SaveDecodeProgress } from '../save-session/SaveDecodeProgress';
 import { useSaveInspectionLibrary } from '../../useSaveInspectionLibrary';
 import { useDecodedSaveLibrary } from '../../useDecodedSaveLibrary';
 import type { SaveInspectionResult } from '@managerhub/domain/save-library';
@@ -54,15 +55,6 @@ function coverageStateLabel(state: SaveCoverageState): string {
   }
 }
 
-function decodeStageLabel(stage: FM2013DecodeStage): string {
-  switch (stage) {
-    case 'hashing': return 'Calculating SHA-256 fingerprint…';
-    case 'reading_container': return 'Reading save archive container…';
-    case 'decrypting_database': return 'Decrypting and inflating game database…';
-    case 'parsing_tables': return 'Parsing persisted football tables…';
-    case 'indexing_database': return 'Indexing clubs, players, contracts and staff…';
-  }
-}
 
 function SaveInspector({
   imports,
@@ -78,6 +70,7 @@ function SaveInspector({
   decodeNotice,
   decodedSaves,
   activeDecodedSave,
+  draft,
   saveMode,
   onSetSaveMode,
   onOpenDecodedSave,
@@ -100,6 +93,7 @@ function SaveInspector({
   decodeNotice: string | null;
   decodedSaves: Readonly<Record<string, DecodedSaveDatabase>>;
   activeDecodedSave: DecodedSaveDatabase | null;
+  draft: SaveDraftOverlay | null;
   saveMode: DecodedSaveMode;
   onSetSaveMode: (mode: DecodedSaveMode) => void;
   onOpenDecodedSave: (saveId: string, read: (saveId: string) => Promise<DecodedSaveDatabase | null>) => Promise<void>;
@@ -169,7 +163,7 @@ function SaveInspector({
     <div className="page-title">
       <div className="mh-eyebrow">{t("GAME DATA / LOCAL FILES")}</div>
       <h1>{t("Save Library")}</h1>
-      <p>{t("Load a Football Manager .fm save to decode the full football database offline, or inspect header metadata for unrecognized builds.")}</p>
+      <p>{t("Load a Football Manager .fm save to decode supported football data offline, or inspect header metadata for unrecognized builds.")}</p>
     </div>
 
     <Surface className={'file-drop ' + (drag ? 'file-drop--drag' : '')} onDragOver={e => {e.preventDefault(); setDrag(true);}} onDragLeave={() => setDrag(false)} onDrop={handleDrop}>
@@ -182,26 +176,7 @@ function SaveInspector({
       <span className="file-drop__limit">{t("Browser inspection limit · 256 MB · No cloud upload")}</span>
     </Surface>
 
-    {busy && (
-      <Surface className="save-decode-progress" role="status" aria-live="polite">
-        <div className="save-decode-progress__head">
-          <strong>{t('Decoding .fm save offline…')}</strong>
-          <span>{Math.round(decodeProgress?.percent ?? 10)}%</span>
-        </div>
-        <div className="save-decode-progress__track">
-          <div
-            className="save-decode-progress__bar"
-            style={{ width: `${Math.max(5, Math.min(100, decodeProgress?.percent ?? 10))}%` }}
-          />
-        </div>
-        <div className="save-decode-progress__foot">
-          <span>{decodeProgress ? t(decodeStageLabel(decodeProgress.stage)) : t('Reading save archive container…')}</span>
-          <Button type="button" variant="quiet" onClick={onCancelDecode}>
-            <Icon name="close" size={14} /> {t('Cancel decode')}
-          </Button>
-        </div>
-      </Surface>
-    )}
+    {busy && <SaveDecodeProgress progress={decodeProgress} onCancel={onCancelDecode}/>}
 
     {error && <div role="alert" className="inline-alert"><Icon name="warning" size={18}/><span>{t(error)}</span><button aria-label={t("Choose another file")} onClick={openPicker}>{t("Choose another file")}</button></div>}
     {saveLibrary.error && <div role="alert" className="inline-alert"><Icon name="warning" size={18}/><span>{t(saveLibrary.error)}</span>
@@ -265,6 +240,7 @@ function SaveInspector({
       <Suspense fallback={<div className="workspace-loading" role="status" aria-live="polite">{t('Loading…')}</div>}>
         <SaveDatabaseExplorer
           database={activeDecodedSave}
+          draft={draft}
           allDecodedSaves={allDecodedSaves}
           saveMode={saveMode}
           isSavedInBrowser={isActiveDbSaved}
@@ -325,7 +301,7 @@ function SaveInspector({
             <dt>{t("Header bytes")}</dt><dd className="mono">{selected.signature}</dd>
             <dt>{t("SHA-256")}</dt><dd className="mono digest">{selected.sha256 || t('Not calculated')}</dd>
             {!selected.sha256 && <><dt>{t('Identification')}</dt><dd>{t('Unique inspection record; file duplicates cannot be detected')}</dd></>}
-            <dt>{t("Player / CA / PA")}</dt><dd>{isSelectedDecoded ? t(saveMode === 'editor' ? 'Decoded from save · Verified' : 'Hidden in Realism mode') : t("Not decoded")}</dd>
+            <dt>{t("Player / CA / PA")}</dt><dd>{isSelectedDecoded ? t(saveMode === 'editor' ? compatibility?.resolution.status === 'verified' ? 'Decoded from save · Verified' : 'Research-only decode · Not independently verified' : 'Hidden in Realism mode') : t("Not decoded")}</dd>
           </dl>
           <details className="inspection-technical save-coverage">
             <summary>{t('Data coverage')}</summary>
@@ -341,7 +317,7 @@ function SaveInspector({
               {t('Additional indexed groups')}: {selected.archiveIndex.nestedGroups.map(group =>
                 group.name + ' (' + group.memberCount + ')').join(', ')}
             </p>}
-            <div className="archive-preview__list" role="list" aria-label={t("Internal save archive members")}>
+            <div className="archive-preview__list" role="list" tabIndex={0} aria-label={t("Internal save archive members")}>
               {selected.archiveIndex.members.slice(visibleMemberPage * memberPageSize, (visibleMemberPage + 1) * memberPageSize).map((entry, i) => <div className="archive-preview__row" role="listitem" key={entry.filename + i}>
                 <span className="archive-preview__filename" title={entry.filename}>{entry.filename}</span><span>{formatBytes(entry.storedBytes)}</span>
               </div>)}
@@ -356,7 +332,7 @@ function SaveInspector({
             {selected.archiveIndex.gapObservations && selected.archiveIndex.gapObservations.length > 0 && <details className="inspection-technical">
               <summary>{t('Unindexed data gaps')} ({selected.archiveIndex.gapObservations.length})</summary>
               <p>{t('Experimental counts of repeated byte patterns only. Gaps are not decoded player records.')}</p>
-              <div className="archive-preview__list" role="list" aria-label={t('Unindexed data gaps')}>
+              <div className="archive-preview__list" role="list" tabIndex={0} aria-label={t('Unindexed data gaps')}>
                 {selected.archiveIndex.gapObservations.map((gap, i) => <div className="archive-preview__row" role="listitem" key={gap.afterMember + gap.beforeMember + i}>
                   <span className="archive-preview__filename">{gap.afterMember} → {gap.beforeMember}</span>
                   <span>{formatBytes(gap.sizeBytes)}</span>
@@ -368,7 +344,7 @@ function SaveInspector({
             {selected.archiveIndex.probes && selected.archiveIndex.probes.length > 0 && <details className="inspection-technical member-probe">
               <summary>{t('Member header diagnostics')} ({selected.archiveIndex.probes.length})</summary>
               <p>{t('Only the first 16 bytes of each bounded member are sampled. Signatures are checked both at the start and after the first 8 bytes as an experimental offset; matches are candidates, not confirmed codecs. No member contents are decoded.')}</p>
-              <div className="archive-preview__list" role="list" aria-label={t('Member header diagnostics')}>
+              <div className="archive-preview__list" role="list" tabIndex={0} aria-label={t('Member header diagnostics')}>
                 {selected.archiveIndex.probes.slice(0, 32).map(probe => <div className="archive-preview__row" role="listitem" key={probe.filename}>
                   <span className="archive-preview__filename" title={probe.filename}>{probe.filename}</span>
                   <span className="mono">{probe.prefixKind}</span>

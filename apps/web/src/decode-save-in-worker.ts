@@ -3,9 +3,12 @@ import {
   type DecodedSaveDatabase,
   type FM2013DecodeProgress
 } from '@managerhub/domain/fm2013-offline';
-import type { SaveInspectionResult } from '@managerhub/domain/save-library';
+import { isSaveInspectionResult, type SaveInspectionResult } from '@managerhub/domain/save-library';
 
 const DECODE_TIMEOUT_MS = 90_000;
+const DECODE_STAGES = new Set<FM2013DecodeProgress['stage']>([
+  'hashing', 'reading_container', 'decrypting_database', 'parsing_tables', 'indexing_database'
+]);
 
 export interface SaveDecodeWorkerResult {
   readonly inspection: SaveInspectionResult;
@@ -17,11 +20,19 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
 
-/**
- * Run complete offline FM2013 .fm save decoding and fallback inspection in a
- * bounded Web Worker. Cancellation immediately terminates the worker so stale
- * results can never overwrite active application state.
- */
+function hasExactKeys(value: Record<string, unknown>, keys: readonly string[]): boolean {
+  return Object.keys(value).length === keys.length && keys.every(key => Object.hasOwn(value, key));
+}
+
+function isDecodeProgress(value: unknown): value is FM2013DecodeProgress {
+  return isRecord(value) &&
+    (hasExactKeys(value, ['stage', 'percent']) || hasExactKeys(value, ['stage', 'percent', 'detail'])) &&
+    typeof value.stage === 'string' && DECODE_STAGES.has(value.stage as FM2013DecodeProgress['stage']) &&
+    typeof value.percent === 'number' && Number.isFinite(value.percent) && value.percent >= 0 && value.percent <= 100 &&
+    (value.detail === undefined || (typeof value.detail === 'string' && value.detail.length <= 1024));
+}
+
+/** Run offline decoding and fallback inspection in a bounded, cancellable worker. */
 export async function decodeSaveInWorker(
   file: File,
   options: {
@@ -75,55 +86,69 @@ export async function decodeSaveInWorker(
         finish(new Error('Background save inspection returned an invalid result.'));
         return;
       }
+      const invalidReply = () => finish(new Error('Background save inspection returned an invalid result.'));
       if (data.kind === 'progress') {
-        if (isRecord(data.progress) && typeof data.progress.stage === 'string' && typeof data.progress.percent === 'number') {
-          onProgress?.(data.progress as unknown as FM2013DecodeProgress);
+        if (!hasExactKeys(data, ['kind', 'progress']) || !isDecodeProgress(data.progress)) {
+          invalidReply();
+          return;
         }
+        onProgress?.(data.progress);
         return;
       }
       if (data.kind !== 'done' || typeof data.ok !== 'boolean') {
-        finish(new Error('Background save inspection returned an invalid result.'));
+        invalidReply();
         return;
       }
       if (data.ok === false) {
-        const message = typeof data.error === 'string' && data.error.length > 0 && data.error.length <= 1024
-          ? data.error
-          : 'Background save inspection returned an invalid result.';
-        finish(new Error(message));
+        if (!hasExactKeys(data, ['kind', 'ok', 'error']) ||
+            typeof data.error !== 'string' || data.error.length === 0 || data.error.length > 1024) {
+          invalidReply();
+        } else {
+          finish(new Error(data.error));
+        }
         return;
       }
       const inspection = data.inspection;
-      if (!isRecord(inspection) ||
-          inspection.name !== file.name ||
-          inspection.size !== file.size ||
-          inspection.lastModified !== file.lastModified) {
-        finish(new Error('Background save inspection returned an invalid result.'));
+      if (!hasExactKeys(data, ['kind', 'ok', 'inspection', 'database', 'decodeNotice']) ||
+          !isSaveInspectionResult(inspection) ||
+          inspection.name !== file.name || inspection.size !== file.size ||
+          inspection.lastModified !== file.lastModified ||
+          !(data.decodeNotice === null || (typeof data.decodeNotice === 'string' && data.decodeNotice.length <= 1024))) {
+        invalidReply();
         return;
       }
       let database: DecodedSaveDatabase | null;
       if (data.database === null) {
+        if (inspection.support === 'decoded') {
+          invalidReply();
+          return;
+        }
         database = null;
       } else {
         try {
-          const validated = validateDecodedSaveDatabase(
-            data.database,
-            typeof inspection.sha256 === 'string' && inspection.sha256.length === 64 ? inspection.sha256 : undefined
-          );
-          if (validated.source.fileName !== file.name || validated.source.fileSize !== file.size) {
-            finish(new Error('Background save inspection returned an invalid result.'));
+          if (inspection.support !== 'decoded' || inspection.sha256 === null || data.decodeNotice !== null) {
+            invalidReply();
+            return;
+          }
+          const validated = validateDecodedSaveDatabase(data.database, inspection.sha256);
+          const source = validated.source;
+          if (source.fileName !== inspection.name || source.fileSize !== inspection.size ||
+              source.lastModified !== inspection.lastModified || source.signature !== inspection.signature ||
+              source.family !== inspection.detectedFamily || source.edition !== inspection.edition ||
+              source.build !== inspection.build) {
+            invalidReply();
             return;
           }
           database = validated;
         } catch {
-          finish(new Error('Background save inspection returned an invalid result.'));
+          invalidReply();
           return;
         }
       }
-      const decodeNotice = typeof data.decodeNotice === 'string' ? data.decodeNotice : null;
       finish(undefined, {
-        inspection: inspection as unknown as SaveInspectionResult,
+        inspection,
         database,
-        decodeNotice
+        decodeNotice: data.decodeNotice
       });
     };
 

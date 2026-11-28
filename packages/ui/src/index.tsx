@@ -73,3 +73,68 @@ export function AttributeInput({ value, allowZero = false, ...props }:
   Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'value'> & { value: number | null | undefined; allowZero?: boolean }) {
   return <input {...props} type="number" value={value ?? ''} data-attribute-tier={getAttributeTier(value, allowZero)}/>;
 }
+
+interface AttributeProperty<Key extends string> {
+  readonly key: Key;
+  readonly label: string;
+  readonly value: number | null | undefined;
+}
+
+interface AttributePropertyGroupProps<Key extends string> {
+  readonly title: string;
+  readonly fields: readonly AttributeProperty<Key>[];
+  readonly onChange?: (key: Key, raw: string, previous: number) => void;
+}
+
+/** Exact numeric properties shared by reports and draft editors. Authorization stays with the caller. */
+export function AttributePropertyGroup<Key extends string>({ title, fields, onChange }: AttributePropertyGroupProps<Key>) {
+  return <fieldset className="mh-attribute-group">
+    <legend>{title}</legend>
+    {onChange ? fields.map(field => (
+      <label className="mh-attribute-row" key={field.key}>
+        <span>{field.label}</span>
+        <AttributeInput min={1} max={20} value={field.value} disabled={field.value == null}
+          onChange={event => {
+            if (field.value == null) return;
+            onChange(field.key, event.currentTarget.value, field.value);
+          }}/>
+      </label>
+    )) : <dl className="mh-attribute-properties">
+      {fields.map(field => <div className="mh-attribute-row" key={field.key}>
+        <dt>{field.label}</dt><dd><AttributeValue value={field.value}/></dd>
+      </div>)}
+    </dl>}
+  </fieldset>;
+}
+
+interface SectionTab<Key extends string> {
+  readonly id: Key;
+  readonly label: string;
+}
+
+interface SectionTabsProps<Key extends string> {
+  readonly id: string;
+  readonly label: string;
+  readonly items: readonly SectionTab<Key>[];
+  readonly active: Key;
+  readonly onChange: (key: Key) => void;
+}
+
+/** Shared manual-activation tablist with roving focus and a single active panel. */
+export function SectionTabs<Key extends string>({ id, label, items, active, onChange }: SectionTabsProps<Key>) {
+  return <div className="mh-section-tabs" role="tablist" aria-label={label}>
+    {items.map((item, index) => <button key={item.id} type="button" role="tab"
+      id={id + '-tab-' + item.id} aria-controls={active === item.id ? id + '-panel' : undefined}
+      aria-selected={active === item.id} tabIndex={active === item.id ? 0 : -1}
+      onClick={() => onChange(item.id)}
+      onKeyDown={event => {
+        const nextIndex = event.key === 'ArrowRight' ? (index + 1) % items.length
+          : event.key === 'ArrowLeft' ? (index + items.length - 1) % items.length
+          : event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : -1;
+        if (nextIndex < 0) return;
+        event.preventDefault();
+        const next = event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[nextIndex];
+        next?.focus();
+      }}>{item.label}</button>)}
+  </div>;
+}

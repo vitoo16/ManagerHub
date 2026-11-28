@@ -5,6 +5,10 @@ import {
   listSavedPlayerExports, savePlayerExport
 } from '@managerhub/storage';
 
+export type OpenPlayerDataset = (
+  load: (() => Promise<PlayerDataset | null>) | null
+) => Promise<boolean>;
+
 type Activity = 'saving' | 'opening' | 'deleting' | null;
 
 /** IndexedDB is opt-in: importing a player file never persists anything automatically. */

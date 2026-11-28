@@ -1,6 +1,6 @@
 import { setAppLocale } from './i18n';
 import { useTranslation } from 'react-i18next';
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createDefaultSquadPlans, type SquadPlanKey, type SquadPlans } from '@managerhub/domain/squad-scenarios';
 import { defaultTacticalScenarios, tacticalScenarioForFormation } from '@managerhub/domain/tactical-state';
 import type { TacticalScenarios } from '@managerhub/domain/tactical-scenarios';
@@ -15,11 +15,14 @@ import type {
   Fm2013LangDbLookup,
   SaveDraftOverlay
 } from '@managerhub/domain/fm2013-offline';
-import type { EditorModalTarget } from './features/save-session/SaveEntityEditorModal';
-import { Icon, Status } from '@managerhub/ui';
+import { canOpenEditorRecord, closeEditorRecord, createRecordState, openEditorRecord, type EditorModalTarget, type EditorRecordState, type EditorRecordTarget } from './features/save-session/editor-records';
+import { Button, Icon, Status, Surface } from '@managerhub/ui';
 import { useReducedMotion } from '@managerhub/motion/reduced';
 import { readableSaveInspectionError } from './i18n/save-inspection-copy';
 import { registerSaveDbI18n } from './i18n/register-save-db-i18n';
+import { SaveDecodeProgress } from './features/save-session/SaveDecodeProgress';
+import { useDialogFocus } from './useDialogFocus';
+import type { OpenPlayerDataset } from './usePlayerLibrary';
 import './app.css';
 
 registerSaveDbI18n();
@@ -38,6 +41,7 @@ const SaveEntityEditorModal = lazy(() => import('./features/save-session/SaveEnt
 const NAV: { key: WorkspaceKey; title: string; detail: string; icon: 'grid' | 'database' | 'layers' | 'shield' | 'compass' | 'history' }[] = [
   { key: 'overview', title: 'Overview', detail: 'Command center', icon: 'grid' },
   { key: 'saves', title: 'Save Library', detail: 'Local inspection', icon: 'database' },
+  { key: 'editor', title: 'Classic Editor', detail: 'Edit decoded records', icon: 'layers' },
   { key: 'players', title: 'Player Lab', detail: 'Exported player scouting', icon: 'compass' },
   { key: 'history', title: 'Historical snapshots', detail: 'FM2013 research captures', icon: 'history' },
   { key: 'squad', title: 'Squad Planner', detail: 'Verified position assignments', icon: 'layers' },
@@ -163,6 +167,7 @@ export default function App() {
   const [runtimeSigningKey, setRuntimeSigningKey] = useState<Uint8Array | null>(null);
   const [session, setSession] = useState<SaveSession>({ mode: 'realism', source: null });
   const [editorModalTarget, setEditorModalTarget] = useState<EditorModalTarget | null>(null);
+  const [editorRecords, setEditorRecords] = useState<EditorRecordState | null>(null);
   const [writingSave, setWritingSave] = useState(false);
   const [writeError, setWriteError] = useState<string | null>(null);
   const [selectedPlayerIdForLab, setSelectedPlayerIdForLab] = useState<string | null>(null);
@@ -177,6 +182,7 @@ export default function App() {
   const [decodeNotice, setDecodeNotice] = useState<string | null>(null);
   const inspectionAbortRef = useRef<AbortController | null>(null);
   const inspectionRevisionRef = useRef(0);
+  const exportRequestRef = useRef(0);
   const openPendingRef = useRef(false);
   const writePendingRef = useRef(false);
   const langRequestRef = useRef(0);
@@ -187,49 +193,46 @@ export default function App() {
 
   const saveMode = session.mode;
   const saveSource = session.source?.kind === 'save' ? session.source : null;
+  // Depend on the actual projection inputs, not the whole session source.
+  // Club filters and navigation must not rebuild the decoded database or the unrelated dataset.
+  const nativeDatabase = saveSource?.baseDatabase ?? null;
+  const offlineTools = saveSource?.tools ?? null;
+  const draftOverlay = saveSource?.editorState.present ?? null;
+  const exportedDataset = session.source?.kind === 'export' ? session.source.dataset : null;
   const baseDecodedSave = useMemo(() => {
-    if (!saveSource) return null;
+    if (!nativeDatabase || !offlineTools) return null;
     return langDbLookup
-      ? saveSource.tools.applyLangDbToSaveDatabase(saveSource.baseDatabase, langDbLookup)
-      : saveSource.baseDatabase;
-  }, [saveSource, langDbLookup]);
+      ? offlineTools.applyLangDbToSaveDatabase(nativeDatabase, langDbLookup)
+      : nativeDatabase;
+  }, [nativeDatabase, offlineTools, langDbLookup]);
 
   const activeDecodedSave = useMemo(() => {
-    if (!saveSource || !baseDecodedSave) return null;
-    return saveSource.tools.applyDraftOverlayToDatabase(baseDecodedSave, saveSource.editorState.present);
-  }, [saveSource, baseDecodedSave]);
+    if (!offlineTools || !baseDecodedSave || !draftOverlay) return null;
+    return offlineTools.applyDraftOverlayToDatabase(baseDecodedSave, draftOverlay);
+  }, [offlineTools, baseDecodedSave, draftOverlay]);
 
   const activeSaveId = activeDecodedSave?.source.saveId ?? null;
   const managedClubUid = saveSource?.managedClubUid ?? null;
   const playerLabClubFilterUid = saveSource?.playerLabClubFilterUid ?? null;
 
   const dirtyEntityCount = useMemo(
-    () => (saveSource ? saveSource.tools.countDirtyEntities(saveSource.editorState.present) : 0),
-    [saveSource]
+    () => offlineTools && draftOverlay ? offlineTools.countDirtyEntities(draftOverlay) : 0,
+    [offlineTools, draftOverlay]
   );
   const dirtyFieldCount = useMemo(
-    () => (saveSource ? saveSource.tools.countDirtyFields(saveSource.editorState.present) : 0),
-    [saveSource]
+    () => offlineTools && draftOverlay ? offlineTools.countDirtyFields(draftOverlay) : 0,
+    [offlineTools, draftOverlay]
   );
 
-  // Squad Planner & Overview bind to `managedClubUid`; Player Lab binds independently to `playerLabClubFilterUid` (`AUD-03`).
-  const squadDataset = useMemo(() => {
-    const source = session.source;
-    if (!source) return null;
-    if (source.kind === 'export') return source.dataset;
-    return activeDecodedSave
-      ? source.tools.saveDatabaseToPlayerDataset(activeDecodedSave, session.mode, { clubUid: source.managedClubUid })
-      : null;
-  }, [session.source, session.mode, activeDecodedSave]);
+  const squadDataset = useMemo(() => activeDecodedSave && offlineTools
+    ? offlineTools.saveDatabaseToPlayerDataset(activeDecodedSave, saveMode, { clubUid: managedClubUid, draft: draftOverlay })
+    : exportedDataset,
+  [activeDecodedSave, offlineTools, saveMode, managedClubUid, draftOverlay, exportedDataset]);
 
-  const playerLabDataset = useMemo(() => {
-    const source = session.source;
-    if (!source) return null;
-    if (source.kind === 'export') return source.dataset;
-    return activeDecodedSave
-      ? source.tools.saveDatabaseToPlayerDataset(activeDecodedSave, session.mode, { clubUid: source.playerLabClubFilterUid })
-      : null;
-  }, [session.source, session.mode, activeDecodedSave]);
+  const playerLabDataset = useMemo(() => activeDecodedSave && offlineTools
+    ? offlineTools.saveDatabaseToPlayerDataset(activeDecodedSave, saveMode, { clubUid: playerLabClubFilterUid, draft: draftOverlay })
+    : exportedDataset,
+  [activeDecodedSave, offlineTools, saveMode, playerLabClubFilterUid, draftOverlay, exportedDataset]);
 
   const activeRawSaveFile = activeSaveId ? (rawSaveFiles[activeSaveId] ?? null) : null;
   const effectiveSigningKey = runtimeSigningKey;
@@ -269,6 +272,8 @@ export default function App() {
       t('You have unsaved draft edits on the active save. Discard pending changes and continue?')
     );
   }, [dirtyEntityCount, t]);
+  const confirmDiscardRef = useRef(confirmDiscardIfDirty);
+  useLayoutEffect(() => { confirmDiscardRef.current = confirmDiscardIfDirty; }, [confirmDiscardIfDirty]);
 
   const onCancelDecode = useCallback(() => {
     inspectionRevisionRef.current += 1;
@@ -279,15 +284,24 @@ export default function App() {
     setDecodeProgress(null);
   }, []);
 
-  const onPlayerDatasetChange = useCallback((next: PlayerDataset | null) => {
-    if (writePendingRef.current || next?.source === 'decoded_save') return;
-    if (!confirmDiscardIfDirty()) return;
+  const onPlayerDatasetChange = useCallback<OpenPlayerDataset>(async load => {
+    if (writePendingRef.current || openPendingRef.current) return false;
+    const revision = inspectionRevisionRef.current;
+    const request = ++exportRequestRef.current;
+    const next = load ? await load() : null;
+    if (request !== exportRequestRef.current || revision !== inspectionRevisionRef.current ||
+        writePendingRef.current || (load && !next) || next?.source === 'decoded_save' ||
+        !confirmDiscardRef.current()) return false;
     onCancelDecode();
+    setLangDbLookup(null);
+    setRuntimeSigningKey(null);
     setEditorModalTarget(null);
+    setEditorRecords(null);
     setSession(current => ({ ...current, source: next ? { kind: 'export', dataset: next } : null }));
     resetSquadSessionState();
     resetPlayerLabSessionState();
-  }, [confirmDiscardIfDirty, onCancelDecode, resetSquadSessionState, resetPlayerLabSessionState]);
+    return true;
+  }, [onCancelDecode, resetSquadSessionState, resetPlayerLabSessionState]);
 
   const loadOfflineTools = useCallback(
     (): Promise<OfflineDomainModule> => import('@managerhub/domain/fm2013-offline'), []
@@ -311,6 +325,7 @@ export default function App() {
     setImports(prev => [inspection, ...prev.filter(item => item.id !== inspection.id)]);
     setSelectedId(inspection.id);
     setEditorModalTarget(null);
+    setEditorRecords(null);
     setWriteError(null);
     setSession(current => ({
       ...current,
@@ -365,7 +380,9 @@ export default function App() {
     if (writePendingRef.current) return;
     if (nextMode === 'realism') {
       authorizationRequestRef.current += 1;
+      setRuntimeSigningKey(null);
       setEditorModalTarget(null);
+      setEditorRecords(null);
     }
     setSession(current => (current.mode === nextMode ? current : { ...current, mode: nextMode }));
   }, []);
@@ -401,7 +418,8 @@ export default function App() {
     if (openPendingRef.current || writePendingRef.current) return;
     setWriteError(null);
     setSession(current => {
-      if (current.source?.kind !== 'save' || !baseDecodedSave) return current;
+      if (current.source?.kind !== 'save' || current.mode !== 'editor' || !baseDecodedSave ||
+          current.source.baseDatabase.source.saveId !== baseDecodedSave.source.saveId) return current;
       try {
         const nextEditorState = current.source.tools.commitEditorTransaction(
           current.source.editorState,
@@ -482,8 +500,9 @@ export default function App() {
   }, [saveSource, loadOfflineTools]);
 
   const onAuthorizeFmExe = useCallback(async (file: File) => {
-    if (!saveSource || !activeRawSaveFile || saveMode !== 'editor' ||
-        openPendingRef.current || writePendingRef.current) return;
+    if (!import.meta.env.DEV || !saveSource || !activeRawSaveFile || saveMode !== 'editor' ||
+        saveSource.baseDatabase.source.build !== saveSource.tools.FM2013_EXPERIMENTAL_WRITE_BUILD ||
+        saveSource.baseDatabase.source.compatibilityStatus !== 'verified' || openPendingRef.current || writePendingRef.current) return;
     const revision = inspectionRevisionRef.current;
     const request = ++authorizationRequestRef.current;
     setRuntimeSigningKey(null);
@@ -491,8 +510,9 @@ export default function App() {
     setWriteError(null);
     setError(null);
     try {
-      const tools = saveSource?.tools ?? await loadOfflineTools();
-      const key = await tools.deriveFm2013SigningKeyFromExecutable(file);
+      const tools = saveSource.tools;
+      const { deriveFm2013SigningKeyFromExecutable } = await import('@managerhub/domain/fm2013-experimental-writer');
+      const key = await deriveFm2013SigningKeyFromExecutable(file);
       const container = await tools.parseFm2013Container(activeRawSaveFile);
       const member = await tools.extractFm2013Member(activeRawSaveFile, container, 'game_db.dat');
       if (!member || !await tools.verifyGameDbHmacSha512(member, key)) {
@@ -505,10 +525,10 @@ export default function App() {
       setWriteError(msg);
       setError(msg);
     }
-  }, [saveSource, activeRawSaveFile, saveMode, loadOfflineTools]);
+  }, [saveSource, activeRawSaveFile, saveMode]);
 
   const onSaveAsFm = useCallback(async (outputFileName: string) => {
-    if (saveMode !== 'editor' || openPendingRef.current || writePendingRef.current ||
+    if (!import.meta.env.DEV || saveMode !== 'editor' || openPendingRef.current || writePendingRef.current ||
         !saveSource || !baseDecodedSave || !activeRawSaveFile || !effectiveSigningKey) return;
     writePendingRef.current = true;
     const revision = inspectionRevisionRef.current;
@@ -516,7 +536,8 @@ export default function App() {
     setWriteError(null);
     let url: string | null = null;
     try {
-      const result = await saveSource.tools.writePatchedFm2013Save(
+      const { writePatchedFm2013Save } = await import('@managerhub/domain/fm2013-experimental-writer');
+      const result = await writePatchedFm2013Save(
         activeRawSaveFile,
         saveSource.editorState.present,
         {
@@ -573,30 +594,15 @@ export default function App() {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-        event.preventDefault(); setCommandOpen(open => !open);
+        event.preventDefault();
+        if (!editorModalTarget) setCommandOpen(open => !open);
       }
       if (event.key === 'Escape') { setCommandOpen(false); setMenuOpen(false); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
-  useEffect(() => {
-    if (!commandOpen) return;
-    const restore = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    const first = commandDialogRef.current?.querySelector<HTMLButtonElement>('.command-item');
-    first?.focus();
-    const trap = (event: KeyboardEvent) => {
-      if (event.key !== 'Tab') return;
-      const buttons = Array.from(commandDialogRef.current?.querySelectorAll<HTMLButtonElement>('button:not([disabled])') ?? []);
-      if (!buttons.length) return;
-      const firstButton = buttons[0];
-      const lastButton = buttons[buttons.length - 1];
-      if (event.shiftKey && document.activeElement === firstButton) { event.preventDefault(); lastButton?.focus(); }
-      else if (!event.shiftKey && document.activeElement === lastButton) { event.preventDefault(); firstButton?.focus(); }
-    };
-    window.addEventListener('keydown', trap);
-    return () => { window.removeEventListener('keydown', trap); restore?.focus(); };
-  }, [commandOpen]);
+  }, [editorModalTarget]);
+  useDialogFocus(commandDialogRef, commandOpen, '.command-item');
 
   const navigate = useCallback((key: WorkspaceKey) => {
     setVisitedViews(prev => (prev.has(key) ? prev : new Set([...prev, key])));
@@ -609,6 +615,31 @@ export default function App() {
   const openSquad = useCallback(() => navigate('squad'), [navigate]);
   const openPlayers = useCallback(() => navigate('players'), [navigate]);
   const openSaves = useCallback(() => navigate('saves'), [navigate]);
+
+  const onOpenEditorRecord = useCallback((record: EditorRecordTarget) => {
+    if (saveMode !== 'editor' || !activeSaveId || openPendingRef.current || writePendingRef.current) return;
+    setEditorRecords(current => current ? openEditorRecord(current, record) : createRecordState(record));
+  }, [saveMode, activeSaveId]);
+  const onCloseEditorRecord = useCallback((record: EditorRecordTarget) => {
+    if (saveMode !== 'editor' || openPendingRef.current || writePendingRef.current) return;
+    setEditorRecords(current => current ? closeEditorRecord(current, record) : null);
+  }, [saveMode]);
+  const onQuickEdit = useCallback((record: EditorRecordTarget) => {
+    if (saveMode !== 'editor' || !activeSaveId || openPendingRef.current || writePendingRef.current) return;
+    if (!canOpenEditorRecord(editorRecords, record)) {
+      // Never show another record under the requested edit action when capacity is exhausted.
+      setEditorModalTarget(null);
+      navigate('editor');
+      return;
+    }
+    onOpenEditorRecord(record);
+    setEditorModalTarget(record);
+  }, [saveMode, activeSaveId, editorRecords, onOpenEditorRecord, navigate]);
+  const onOpenClassicEditor = useCallback(() => {
+    if (writePendingRef.current) return;
+    setEditorModalTarget(null);
+    navigate('editor');
+  }, [navigate]);
 
   const onOpenPlayerFromSave = useCallback((playerUid: number, clubUid: number | null) => {
     if (!activeDecodedSave) return;
@@ -634,7 +665,7 @@ export default function App() {
   }, []);
 
   const onInspect = useCallback(async (file: File) => {
-    if (writePendingRef.current || !confirmDiscardIfDirty()) return;
+    if (writePendingRef.current) return;
     openPendingRef.current = true;
     setEditorModalTarget(null);
     const revision = ++inspectionRevisionRef.current;
@@ -644,7 +675,7 @@ export default function App() {
     setBusy(true);
     setError(null);
     setDecodeNotice(null);
-    setDecodeProgress({ stage: 'reading_container', percent: 5 });
+    setDecodeProgress(null);
     try {
       const { decodeSaveInWorker } = await import('./decode-save-in-worker');
       const result = await decodeSaveInWorker(file, {
@@ -659,12 +690,24 @@ export default function App() {
       if (result.database) {
         const tools = await loadOfflineTools();
         if (controller.signal.aborted || revision !== inspectionRevisionRef.current) return;
-        commitDecodedSave(result.database, tools, result.inspection, file);
+        if (result.database.source.saveId === activeSaveId && nativeDatabase) {
+          if (!activeRawSaveFile && !tools.matchesDecodedWriteSource(nativeDatabase, result.database)) {
+            setError('The cached records differ from the original save. Close the cached session in Save Library and reopen the original .fm.');
+            return;
+          }
+          setRawSaveFiles(previous => ({ ...previous, [activeSaveId]: file }));
+          setSelectedId(activeSaveId);
+        } else {
+          if (!confirmDiscardIfDirty()) return;
+          commitDecodedSave(result.database, tools, result.inspection, file);
+        }
       } else {
-        setImports(previous => [result.inspection, ...previous.filter(item => item.id !== result.inspection.id)]);
+        setImports(previous => previous.some(item => item.id === result.inspection.id && item.support === 'decoded')
+          ? previous
+          : [result.inspection, ...previous.filter(item => item.id !== result.inspection.id)]);
         setSelectedId(result.inspection.id);
       }
-      setDecodeNotice(result.decodeNotice);
+      setDecodeNotice(result.database ? null : result.decodeNotice ?? 'No supported FM2013 database was activated. The previous active session is unchanged.');
     } catch (exception) {
       if (!controller.signal.aborted && revision === inspectionRevisionRef.current) {
         setError(readableSaveInspectionError(exception));
@@ -677,7 +720,7 @@ export default function App() {
         setDecodeProgress(null);
       }
     }
-  }, [confirmDiscardIfDirty, loadOfflineTools, commitDecodedSave]);
+  }, [activeSaveId, nativeDatabase, activeRawSaveFile, confirmDiscardIfDirty, loadOfflineTools, commitDecodedSave]);
 
   const remove = useCallback((id: string) => {
     if (writePendingRef.current) return;
@@ -698,7 +741,10 @@ export default function App() {
     });
     if (activeSaveId === id) {
       onCancelDecode();
+      setLangDbLookup(null);
+      setRuntimeSigningKey(null);
       setEditorModalTarget(null);
+      setEditorRecords(null);
       setSession(current =>
         current.source?.kind === 'save' && current.source.baseDatabase.source.saveId === id
           ? { ...current, source: null }
@@ -709,11 +755,35 @@ export default function App() {
     }
   }, [activeSaveId, confirmDiscardIfDirty, onCancelDecode, resetSquadSessionState, resetPlayerLabSessionState]);
 
+  const editorProps = baseDecodedSave && activeDecodedSave && saveSource ? {
+    baseDatabase: baseDecodedSave,
+    workingDatabase: activeDecodedSave,
+    overlay: saveSource.editorState.present,
+    managedClubUid,
+    hasRawSaveBytes: activeRawSaveFile !== null,
+    writerKeyReady: effectiveSigningKey !== null,
+    writingSave,
+    writeError,
+    dirtyFieldCount,
+    recordState: editorRecords,
+    onOpenRecord: onOpenEditorRecord,
+    onCloseRecord: onCloseEditorRecord,
+    onClose: () => { if (!writePendingRef.current) setEditorModalTarget(null); },
+    onCommitOverlay: onCommitEditorOverlay,
+    onDiscardAll: onDiscardAllEdits,
+    onAuthorizeFmExe: (file: File) => void onAuthorizeFmExe(file),
+    onSaveAsFm: (fileName: string) => void onSaveAsFm(fileName)
+  } : null;
+
   const selected = imports.find(f => f.id === selectedId) ?? imports[0] ?? null;
   const activeItem = NAV.find(n => n.key === view) ?? NAV[0];
 
   return <div className="app-frame">
-    <a className="skip-link" href="#main-content">{t('Skip to main content')}</a>
+    <a className="skip-link" href="#main-content" onClick={event => {
+      event.preventDefault();
+      viewScope.current?.focus();
+      viewScope.current?.scrollIntoView({ block: 'start' });
+    }}>{t('Skip to main content')}</a>
     {menuOpen && <button className="mobile-backdrop" aria-label={t("Close navigation menu")} onClick={() => setMenuOpen(false)}/>}
     <aside className={'sidebar mh-surface mh-surface--glass ' + (menuOpen ? 'sidebar--open' : '')} aria-label={t("Primary sidebar")}><Rail current={view} onNavigate={navigate} onClose={() => setMenuOpen(false)}/></aside>
     <div className="app-column">
@@ -722,7 +792,7 @@ export default function App() {
           <div className="topbar-breadcrumb"><span>{t("ManagerHub")}</span><Icon name="chevron" size={14}/><strong>{t(activeItem?.title ?? 'Overview')}</strong></div>
         </div>
         <div className="topbar-right">
-          <button className="command-trigger" onClick={() => setCommandOpen(true)}>
+          <button className="command-trigger" disabled={editorModalTarget !== null} onClick={() => setCommandOpen(true)}>
             <Icon name="search" size={15}/><span>{t("Quick navigate")}</span>
           </button>
           <div className="language-switch" role="group" aria-label={t('Change language')}>
@@ -767,6 +837,10 @@ export default function App() {
       )}
 
       <main ref={viewScope} className="main-area" id="main-content" tabIndex={-1}>
+        {view !== 'saves' && busy && <SaveDecodeProgress progress={decodeProgress} onCancel={onCancelDecode}/>}
+        {view !== 'saves' && (error || decodeNotice) && (
+          <div role="alert" className="inline-alert"><Icon name="warning" size={18}/><span>{error ? t(error) : decodeNotice ? t(decodeNotice) : null}</span></div>
+        )}
         <Suspense fallback={null}><WorkspaceAnimator scope={viewScope} view={view} reduced={reduced}/></Suspense>
         {visitedViews.has('overview') && (
           <div hidden={view !== 'overview'} data-animate={view === 'overview' ? 'workspace' : undefined}>
@@ -796,7 +870,7 @@ export default function App() {
                 clubFilterUid={playerLabClubFilterUid}
                 onClubFilterChange={onPlayerLabClubFilterChange}
                 initialPlayerId={selectedPlayerIdForLab}
-                onEditPlayer={saveMode === 'editor' ? uid => setEditorModalTarget({ kind: 'player', uid }) : undefined}
+                onEditPlayer={saveMode === 'editor' && !busy && !writingSave ? uid => onQuickEdit({ kind: 'player', uid }) : undefined}
               />
             </Suspense>
           </div>
@@ -846,18 +920,36 @@ export default function App() {
                 decodeNotice={decodeNotice}
                 decodedSaves={decodedSaves}
                 activeDecodedSave={activeDecodedSave}
+                draft={saveMode === 'editor' ? draftOverlay : null}
                 saveMode={saveMode}
                 onSetSaveMode={onSetSaveMode}
                 onOpenDecodedSave={openDecodedSave}
                 onSwitchDecodedSave={onSwitchDecodedSave}
                 onOpenPlayerFromSave={onOpenPlayerFromSave}
                 onLoadClubInSquad={onLoadClubInSquad}
-                onEditEntity={saveMode === 'editor' && !busy && !writingSave ? target => setEditorModalTarget(target) : undefined}
+                onEditEntity={saveMode === 'editor' && !busy && !writingSave ? onQuickEdit : undefined}
                 onOpenSaveAsModal={saveMode === 'editor' && !busy && !writingSave ? () => setEditorModalTarget({ kind: 'save_as' }) : undefined}
               />
             </Suspense>
           </div>
         )}
+        {view === 'editor' && <div className="view-flow" data-animate="workspace">
+          <div className="page-title">
+            <h1>{t('Classic Editor')}</h1>
+            <p>{t('Edit records from the active save without leaving your other workspaces.')}</p>
+          </div>
+          {!editorProps ? <Surface className="editor-workspace-empty">
+            <p>{t('Open a decoded FM2013 save in Save Library to use Classic Editor.')}</p>
+            <Button onClick={openSaves}>{t('Save Library')}</Button>
+          </Surface> : saveMode !== 'editor' ? <Surface className="editor-workspace-empty">
+            <p>{t('Classic Editor is unavailable in Realism mode. Enable Editor mode to edit native records.')}</p>
+            <Button disabled={busy || writingSave} onClick={() => onSetSaveMode('editor')}>{t('Enable Editor mode')}</Button>
+          </Surface> : (busy || writingSave) ? <p role="status">{t('Loading workspace…')}</p> : !editorModalTarget && (
+            <Suspense fallback={<WorkspaceLoading/>}>
+              <SaveEntityEditorModal key={baseDecodedSave?.source.saveId} {...editorProps} target={{ kind: 'browse' }} embedded/>
+            </Suspense>
+          )}
+        </div>}
         {visitedViews.has('modules') && (
           <div hidden={view !== 'modules'} data-animate={view === 'modules' ? 'workspace' : undefined}>
             <Suspense fallback={<WorkspaceLoading/>}>
@@ -876,29 +968,19 @@ export default function App() {
       </main>
     </div>
 
-    {editorModalTarget && !busy && saveMode === 'editor' && baseDecodedSave && activeDecodedSave && saveSource && (
+    {editorModalTarget && !busy && saveMode === 'editor' && editorProps && (
       <Suspense fallback={null}>
         <SaveEntityEditorModal
+          key={`${editorProps.baseDatabase.source.saveId}:${editorModalTarget.kind}:${'uid' in editorModalTarget ? editorModalTarget.uid : ''}`}
           target={editorModalTarget}
-          baseDatabase={baseDecodedSave}
-          workingDatabase={activeDecodedSave}
-          overlay={saveSource.editorState.present}
-          managedClubUid={managedClubUid}
-          hasRawSaveBytes={activeRawSaveFile !== null}
-          writerKeyReady={effectiveSigningKey !== null}
-          writingSave={writingSave}
-          writeError={writeError}
-          onClose={() => { if (!writePendingRef.current) setEditorModalTarget(null); }}
-          onCommitOverlay={onCommitEditorOverlay}
-          onDiscardAll={onDiscardAllEdits}
-          onAuthorizeFmExe={file => void onAuthorizeFmExe(file)}
-          onSaveAsFm={fileName => void onSaveAsFm(fileName)}
+          {...editorProps}
+          onOpenWorkspace={onOpenClassicEditor}
         />
       </Suspense>
     )}
 
     {commandOpen && <div className="command-overlay" role="presentation" onMouseDown={event => {if(event.target === event.currentTarget) setCommandOpen(false);}}>
-      <div ref={commandDialogRef} className="command-dialog mh-surface mh-surface--glass" role="dialog" aria-modal="true" aria-label={t("Quick navigation")}>
+      <div ref={commandDialogRef} className="command-dialog mh-surface mh-surface--glass" role="dialog" tabIndex={-1} aria-modal="true" aria-label={t("Quick navigation")}>
         <div className="command-top"><Icon name="search" size={19}/><span>{t("Jump to a workspace")}</span><button className="icon-action" onClick={() => setCommandOpen(false)} aria-label={t("Close quick navigation")}><Icon name="close" size={17}/></button></div>
         {NAV.map(item => <button key={item.key} className="command-item" onClick={() => navigate(item.key)}><Icon name={item.icon}/><span>{t(item.title)}</span><Icon name="arrow" size={15}/></button>)}
         <div className="command-footer">{t("Esc to close · Ctrl/⌘ K to open")}</div>

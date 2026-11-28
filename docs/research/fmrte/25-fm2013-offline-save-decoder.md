@@ -2,7 +2,7 @@
 
 **Date:** 2026-11-25  
 **Scope:** Football Manager 2013 PC (`13.3.3f359652`, verified `afe` v4 builds `13.0.0d288310`–`13.3.3f359652` and `game_db.dat` schema versions `0x757`–`0x774`)  
-**Status:** Verified offline decoder, optional `lang_db.dat` static name resolver, and gated surgical `Save As .fm` copy writer implemented in `@managerhub/domain/fm2013-offline`. Original `.fm` files remain strictly immutable.
+**Status:** Historically reported offline read validation, optional `lang_db.dat` static name resolver, and experimental gated surgical `Save As .fm` copy writer implemented in `@managerhub/domain/fm2013-offline`. Original `.fm` files remain strictly immutable.
 
 ---
 
@@ -49,8 +49,10 @@ Three archive members plus an optional external language database supply the com
 
 ## 3. Surgical Lossless `Save As .fm` Writer & Safety Gates
 
-1. **Strict Gating:** `writePatchedFm2013Save` requires `mode === 'editor'`, `compatibilityStatus === 'verified'`, `afe` v5 container, non-empty 64-byte `signingKey`, and `incomingChecksum === 'verified_hmac_sha512'`. Realism mode, tampered saves, `fmf` containers, and unverified builds fail closed.
+1. **Strict Gating:** `writePatchedFm2013Save` requires `mode === 'editor'`, `compatibilityStatus === 'verified'`, `afe` v4 container, non-empty 64-byte `signingKey`, and `incomingChecksum === 'verified_hmac_sha512'`. Realism mode, tampered saves, `fmf` containers, and unverified builds fail closed.
 2. **Surgical In-Place Byte Patching:** Only recorded fixed-width scalar offsets (`GameDbEditableOffsetMap`) inside a copy of `game_db.dat` are modified; variable-length arrays and all 773 other archive members (`rgman/*` and container slack gaps) are spliced byte-for-byte without re-encoding.
-3. **Cryptographic Re-Signing & Independent Roundtrip Verification:** After patching `game_db.dat`, `HMAC-SHA512` is recomputed, the member is compressed and encrypted in a fresh CSPRNG AES-128-CTR envelope, recursive FMF v4 directory offsets after `game_db.dat` are shifted by `deltaBytes`, `directoryPtr` is updated to `newDirOffset - 9`, and the resulting `.fm` buffer is **independently re-decoded and schema-validated** (`validateDecodedSaveDatabase` + `HMAC-SHA512` re-check) before returning a new downloadable `.fm` copy. Original `.fm` files on disk are never mutated.
+3. **Cryptographic Re-Signing & Independent Roundtrip Verification:** After patching `game_db.dat`, `HMAC-SHA512` is recomputed, the member is compressed and encrypted in a fresh CSPRNG AES-128-CTR envelope, recursive FMF v4 directory offsets after `game_db.dat` are shifted by `deltaBytes`, `directoryPtr` is updated to `newDirOffset - 9`, and the resulting `.fm` buffer is **re-decoded by ManagerHub and schema-validated** (`validateDecodedSaveDatabase` + `HMAC-SHA512` re-check) before returning a new downloadable `.fm` copy. Original `.fm` files on disk are never mutated.
 
 See [FMRTE 13 Complete Parity Matrix](26-fmrte13-complete-parity-matrix.md) for the full feature-by-feature comparison.
+
+**PR #120 evidence qualification:** same-implementation re-decode is a safety check, not an independent oracle; field-specific real-save readback and game reload evidence is missing. See [writer evidence audit](RCA-WRITER-EVIDENCE-AUDIT.md).

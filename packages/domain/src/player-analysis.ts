@@ -1,4 +1,6 @@
 import { ATTRIBUTE_GROUPS, ATTRIBUTE_LABELS, type AttributeKey, type PlayerExport } from './player-import';
+import { ROLE_PROFILES, type RoleProfile } from './football-role-registry';
+export { ROLE_PROFILES, type RoleProfile } from './football-role-registry';
 
 export interface ScoredRole {
   readonly id: string;
@@ -9,31 +11,11 @@ export interface ScoredRole {
   readonly evidence: readonly { attribute: AttributeKey; value: number; weight: number }[];
   readonly missing: readonly AttributeKey[];
 }
-export interface RoleProfile {
-  readonly id: string;
-  readonly title: string;
-  readonly slot: string;
-  readonly demands: Readonly<Partial<Record<AttributeKey, number>>>;
-}
-/** Product-designed role heuristics, not Sports Interactive's underlying match engine. */
-export const ROLE_PROFILES: readonly RoleProfile[] = [
-  {id:'advanced-forward',title:'Advanced Forward',slot:'ST',demands:{finishing:3,offTheBall:3,acceleration:2,pace:2,anticipation:2,composure:2,firstTouch:1}},
-  {id:'target-forward',title:'Target Forward',slot:'ST',demands:{strength:3,heading:3,jumpingReach:2,bravery:2,firstTouch:2,teamwork:1,finishing:1}},
-  {id:'winger',title:'Winger',slot:'AM (L/R)',demands:{dribbling:3,crossing:3,acceleration:2,pace:2,agility:1,offTheBall:2,firstTouch:1}},
-  {id:'advanced-playmaker',title:'Advanced Playmaker',slot:'AM/CM',demands:{passing:3,vision:3,decisions:2,firstTouch:2,technique:2,composure:1,flair:1}},
-  {id:'deep-playmaker',title:'Deep-Lying Playmaker',slot:'CM/DM',demands:{passing:3,vision:3,decisions:2,composure:2,firstTouch:2,teamwork:1,positioning:1}},
-  {id:'box-to-box',title:'Box-to-Box Midfielder',slot:'CM',demands:{stamina:3,workRate:3,teamwork:2,offTheBall:2,positioning:2,passing:1,tackling:1}},
-  {id:'ball-winner',title:'Ball-Winning Midfielder',slot:'CM/DM',demands:{tackling:3,positioning:3,workRate:2,aggression:2,stamina:2,anticipation:1,teamwork:1}},
-  {id:'centre-back',title:'Central Defender',slot:'CB',demands:{marking:3,tackling:3,positioning:3,heading:2,jumpingReach:2,concentration:2,strength:1}},
-  {id:'wing-back',title:'Wing-Back',slot:'D/WB',demands:{crossing:3,stamina:3,pace:2,workRate:2,acceleration:2,positioning:1,tackling:1}},
-  {id:'goalkeeper',title:'Goalkeeper',slot:'GK',demands:{handling:3,reflexes:3,oneOnOnes:2,aerialReach:2,communication:2,positioning:2,concentration:1}}
-];
-
 /**
  * Returns a role attribute-fit estimate, not native positional familiarity.
  * Score is suppressed when fewer than 65% weighted requirements are observed.
  */
-export function scoreRole(player:PlayerExport,role:RoleProfile):ScoredRole {
+export function scoreRole<T extends Pick<PlayerExport,'attributes'>>(player:T,role:RoleProfile):ScoredRole {
   const demands=Object.entries(role.demands) as [AttributeKey,number][];
   const total=demands.reduce((sum,[,w])=>sum+w,0);
   let seen=0,sum=0;
@@ -41,7 +23,7 @@ export function scoreRole(player:PlayerExport,role:RoleProfile):ScoredRole {
   const missing:AttributeKey[]=[];
   for(const [attribute,weight] of demands){
     const value=player.attributes[attribute];
-    if(value===undefined){missing.push(attribute);continue;}
+    if(value===undefined || !Number.isInteger(value) || value<1 || value>20){missing.push(attribute);continue;}
     evidence.push({attribute,value,weight});
     seen+=weight;sum+=((value-1)/19)*weight;
   }

@@ -150,31 +150,6 @@
   margin: 0;
 }
 
-.editor-modal__tabs {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  border-bottom: 1px solid var(--line);
-  padding-bottom: 8px;
-}
-
-.editor-modal__tab {
-  min-height: 32px;
-  padding: 0 12px;
-  border-radius: 9px;
-  border: 1px solid var(--line);
-  background: var(--surface-up);
-  color: var(--text-sub);
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.editor-modal__tab[aria-selected='true'] {
-  background: var(--accent);
-  color: var(--accent-ink);
-  border-color: var(--accent);
-}
-
 .editor-presets {
   display: flex;
   align-items: center;
@@ -230,7 +205,8 @@
   color: var(--text-sub);
 }
 
-.editor-field span {
+.editor-field span,
+.editor-field label {
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -288,52 +264,40 @@
 .editor-field input[data-attribute-tier] { color: var(--attribute-color); }
 .editor-field input[data-attribute-tier]:disabled { color: var(--text-sub); }
 
-/* Compact property rows; labels wrap rather than truncating localized names. */
-.editor-attribute-groups {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
-  align-items: start;
-  gap: 12px;
-}
+/* Record workbench: compact shell, no extra save/session state. */
+.editor-modal--records { width: min(1240px, 100%); }
+.editor-record-navigator { display: grid; gap: 8px; min-width: 0; }
+.editor-record-tabs { display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+.editor-record-tab { display: flex; min-width: 0; max-width: 100%; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-up); }
+.editor-record-tab__select { display: grid; min-width: 0; gap: 2px; text-align: start; padding: 6px 10px; border: 0; border-radius: 5px; background: transparent; color: var(--text); }
+.editor-record-tab__select small { font-size: 10px; color: var(--text-sub); overflow-wrap: anywhere; }
+.editor-record-tab__select strong { font-size: 12px; overflow-wrap: anywhere; }
+.editor-record-tab__select[aria-pressed='true'] { background: var(--accent); color: var(--accent-ink); }
+.editor-record-tab__select[aria-pressed='true'] small { color: inherit; }
+.editor-record-tab__close.mh-button { padding: 0 7px; min-width: 32px; min-height: 32px; align-self: stretch; }
+.editor-record-search { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 8px; }
+.editor-record-search .editor-field span { white-space: normal; }
+.editor-record-search input, .editor-record-search select { width: 100%; min-width: 0; }
+.editor-record-results { display: flex; flex-wrap: wrap; gap: 6px; max-height: 180px; overflow: auto; padding: 4px; }
+.editor-record-results .mh-button { max-width: 100%; min-height: 34px; white-space: normal; overflow-wrap: anywhere; text-align: start; }
+.editor-record-results .mh-button span { min-width: 0; }
+.editor-record-results .mh-button small { color: var(--text-sub); }
+.editor-record-hint { font-size: 12px; color: var(--text-sub); }
+@media (max-width: 520px) { .editor-record-search { grid-template-columns: minmax(0, 1fr); } }
 
-.editor-attribute-group {
-  min-inline-size: 0;
-  margin: 0;
-  padding: 8px;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-}
+.editor-record-panel { display: grid; gap: 12px; min-width: 0; }
+.editor-record-panel .editor-field span { white-space: normal; overflow-wrap: anywhere; }
+.editor-record-panel .editor-field input, .editor-record-panel .editor-field select { min-width: 0; width: 100%; }
 
-.editor-attribute-group legend {
-  max-width: 100%;
-  padding-inline: 4px;
-  color: var(--text-sub);
-  font-size: 12px;
-  font-weight: 700;
-  overflow-wrap: anywhere;
-}
+/* Non-modal editor shares record presentation and transaction controls with Quick Edit. */
+.editor-workspace-shell { min-width: 0; }
+.editor-workspace-body { display: grid; gap: 14px; min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.editor-workspace-body .editor-record-panel { max-width: 100%; }
+.editor-workspace-empty { display: grid; gap: 12px; justify-items: start; padding: 16px; }
+.editor-workspace-empty p { margin: 0; }
+.editor-modal__head > div { min-width: 0; }
+.editor-modal__head h2 { overflow-wrap: anywhere; }
+@media (max-width: 560px) { .editor-workspace-body { padding: 10px; } .editor-modal__head { flex-wrap: wrap; } }
 
-.editor-attribute-row {
-  grid-template-columns: minmax(0, 1fr) 64px;
-  align-items: center;
-  gap: 8px;
-  min-height: 32px;
-  padding-block: 2px;
-  border-bottom: 1px solid var(--line);
-}
-
-.editor-attribute-row:last-child { border-bottom: 0; }
-
-.editor-attribute-row span {
-  white-space: normal;
-  overflow-wrap: anywhere;
-  overflow: visible;
-}
-
-.editor-attribute-row input {
-  width: 100%;
-  min-width: 0;
-  height: 30px;
-  padding-inline: 6px;
-  border-radius: 4px;
-}
+.editor-mass-all { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text); }
+.editor-mass-all input { flex: 0 0 auto; }

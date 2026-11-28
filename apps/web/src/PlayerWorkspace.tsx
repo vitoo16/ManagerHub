@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { PlayerDataset } from '@managerhub/domain';
 import type { DecodedSaveDatabase, DecodedSaveMode } from '@managerhub/domain/fm2013-offline';
 import { Icon, Status, Surface } from '@managerhub/ui';
-import { usePlayerLibrary } from './usePlayerLibrary';
+import { usePlayerLibrary, type OpenPlayerDataset } from './usePlayerLibrary';
 import PlayerDetails from './features/player-lab/components/PlayerDetails';
 import PlayerDatasetSummary from './features/player-lab/components/PlayerDatasetSummary';
 import PlayerImportIntro from './features/player-lab/components/PlayerImportIntro';
@@ -21,7 +21,7 @@ type Props = {
   dataset: PlayerDataset | null;
   shortlistIds: readonly string[];
   setShortlistIds: Dispatch<SetStateAction<string[]>>;
-  onDataset: (dataset: PlayerDataset | null) => void;
+  onDataset: OpenPlayerDataset;
   onOpenSquad: () => void;
   activeDecodedSave?: DecodedSaveDatabase | null;
   saveMode?: DecodedSaveMode;
@@ -60,9 +60,9 @@ function PlayerWorkspaceView({
     }
   }, [initialPlayerId]);
 
-  const onImportParsed = useCallback((parsed: PlayerDataset) => {
-    onDataset(parsed);
-    setChosenId(parsed.players[0]?.id ?? null);
+  const onImportParsed = useCallback(async (load: () => Promise<PlayerDataset | null>) => {
+    if (!await onDataset(load)) return;
+    setChosenId(null);
     setSearch('');
     setVisibleLimit(100);
     setPendingDelete(null);
@@ -103,15 +103,9 @@ function PlayerWorkspaceView({
   );
 
   const onOpenSaved = useCallback(async (id: string) => {
-    const restored = await library.open(id);
-    if (!restored) return;
-    onDataset(restored);
-    setChosenId(restored.players[0]?.id ?? null);
-    setSearch('');
-    setVisibleLimit(100);
-    setPendingDelete(null);
+    await onImportParsed(() => library.open(id));
     clearError();
-  }, [library.open, onDataset, clearError]);
+  }, [library.open, onImportParsed, clearError]);
 
   const onDeleteSaved = useCallback(async (id: string) => {
     if (pendingDelete !== id) {
@@ -127,8 +121,8 @@ function PlayerWorkspaceView({
   }, []);
   const onChoosePlayer = useCallback((id: string) => setChosenId(id), []);
   const onShowMore = useCallback(() => setVisibleLimit(limit => limit + 100), []);
-  const onClearSession = useCallback(() => {
-    onDataset(null);
+  const onClearSession = useCallback(async () => {
+    if (!await onDataset(null)) return;
     setChosenId(null);
     setSearch('');
     setVisibleLimit(100);
@@ -253,7 +247,9 @@ function PlayerWorkspaceView({
     <div className="coverage-note">
       <Icon name="shield" size={16}/>
       <p><strong>{t("Data integrity:")}</strong> {t(isDecodedSource
-        ? 'This report uses verified attributes decoded offline from your .fm save. Original save bytes remain untouched.'
+        ? dataset?.saveVerification === 'verified'
+          ? 'This report uses verified attributes decoded offline from your .fm save. Original save bytes remain untouched.'
+          : 'This report uses provisional attributes decoded offline. This build or container is not independently verified.'
         : 'CA, PA and hidden personality are not recovered from a CSV unless independently verified. Role profiles are authored ManagerHub heuristics, not Sports Interactive ratings. Player identities in different imports are not assumed to match.')}</p>
     </div>
   </div>;
