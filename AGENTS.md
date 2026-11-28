@@ -36,6 +36,11 @@ This file routes coding agents to **one source of truth per concern**. It is not
 5. Preserve trust boundaries, data compatibility, safe async lifecycle, UI accessibility, clear VI/EN copy, and measured performance. Never claim tests or validations that were not run.
 6. Verify relevant automated/manual checks, update acceptance evidence when changed, and report the exact commands/results, limitations, and PR. Stop at an evidence-backed blocker instead of faking success.
 
+- **Feature branches:** start independent work from the latest accepted default branch. Continue remediation on the existing PR branch when assigned to that PR.
+- **Implementation:** reuse domain rules, justify each new dependency, and preserve regression coverage when replacing old paths. Base compatibility claims on recorded evidence for the relevant build and workflow.
+- **Branch cleanup:** verify reachability, open PRs and worktree ownership. Save and verify the recovery bundle before deleting any refs.
+- **Acceptance:** keep runtime checks, independent real-save validation and research evidence distinct. Use the [acceptance ledger](docs/implementation/05-feature-acceptance-ledger.md) for product status.
+
 ## Status vs aspirations
 
 The current repository uses **npm workspaces, React/Vite, TypeScript, browser storage and bounded read-only research**. Earlier plan/prompt examples discuss possible future Tauri, Rust, SQLite, pnpm and other packages. **These are architecture candidates, not instructions to replace existing implementations.** Changes to package manager, persistence engine or native runtime require an explicit architecture decision, migration plan and tests.

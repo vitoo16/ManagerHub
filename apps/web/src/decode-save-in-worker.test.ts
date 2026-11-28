@@ -54,7 +54,7 @@ describe('offline save decode worker admission and lifecycle', () => {
       onProgress: event => progressEvents.push(event.percent)
     });
     const worker = FakeWorker.latest;
-    expect(worker?.requests).toHaveLength(1);
+    expect(worker?.requests).toEqual([{ file }]);
 
     worker?.onmessage?.({
       data: { kind: 'progress', progress: { stage: 'decrypting_database', percent: 45 } }
@@ -136,6 +136,7 @@ describe('offline save decode worker admission and lifecycle', () => {
       { kind: 'progress', progress: { stage: 'hashing', percent: -1 } },
       { kind: 'progress', progress: { stage: 'hashing', percent: 101 } },
       { kind: 'done', ok: true, inspection: { ...inspection, name: 'other.fm' }, database: null, decodeNotice: null },
+      { kind: 'done', ok: true, inspection: { ...inspection, size: headerOnlyFile.size + 1 }, database: null, decodeNotice: null },
       { kind: 'done', ok: true, inspection, database: { source: { fileName: 'other.fm' } }, decodeNotice: null },
       { kind: 'done', ok: false, error: '' }
     ]) {
@@ -147,12 +148,25 @@ describe('offline save decode worker admission and lifecycle', () => {
     }
   });
 
+  it('passes a bounded parser error and ignores any later reply', async () => {
+    const pending = decodeSaveInWorker(headerOnlyFile);
+    const worker = FakeWorker.latest;
+    const onMessage = worker?.onmessage;
+    expect(onMessage).toBeTypeOf('function');
+    onMessage?.({ data: { kind: 'done', ok: false, error: 'Select a Football Manager .fm save file.' } } as MessageEvent);
+    onMessage?.({ data: { kind: 'done', ok: false, error: 'Late error' } } as MessageEvent);
+    await expect(pending).rejects.toThrow('Select a Football Manager');
+    expect(worker?.terminated).toBe(true);
+    expect(worker?.onmessage).toBeNull();
+  });
+
   it('cancels cleanly via AbortSignal and terminates the worker immediately', async () => {
     const controller = new AbortController();
     const pending = decodeSaveInWorker(headerOnlyFile, { signal: controller.signal });
     const worker = FakeWorker.latest;
+    const onMessage = worker?.onmessage;
     controller.abort();
-    worker?.onmessage?.({
+    onMessage?.({
       data: { kind: 'done', ok: false, error: 'late' }
     } as MessageEvent);
     await expect(pending).rejects.toMatchObject({ name: 'AbortError' });
