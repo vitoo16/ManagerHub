@@ -16,6 +16,8 @@ The decoded address-free wire file is 1,434,825 characters, SHA-256 `7290120eda9
 
 [fm2013-live-profile.json](../../../packages/domain/src/fm2013-live-profile.json) is the shared source for exact executable identity, native kinds, 49 ordinary definitions, 15 position definitions and resource limits. The existing ordinary-field module imports this catalogue rather than maintaining duplicate offsets.
 
+The [live profile provenance manifest](fm2013-live-profile-provenance.json) preserves the reference FMRTE binary identity, IL tokens and getter digests. To reconstruct the prior profile, merge the two source FMRTE identifiers and the game date evidence into their matching objects, then join the manifest's attribute and position maps by field key. The executable digest, offsets, labels and limits remain in the runtime profile.
+
 [parseFm2013LiveCapture](../../../packages/domain/src/live-snapshot.ts) accepts only `fm2013-live-capture-v1` / `fm2013-live-research-1`, the exact path/hash, x86 and four-byte pointers. It validates unknown fields, numeric/text bounds, field counts, duplicate native IDs/kinds, scan counters and stop reasons. Addresses, ability words, extra contract data and claimed certification are rejected. Input is bounded to 12 million text characters and 10,000 records. Snapshots, fields, coverage and diagnostics are deeply frozen.
 
 | Contract decision | Result |
