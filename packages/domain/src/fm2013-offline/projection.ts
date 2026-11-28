@@ -1,6 +1,6 @@
 import { ATTRIBUTE_GROUPS, type AttributeKey, type PlayerDataset, type PlayerExport } from '../player-import';
 import type { EvidenceField } from '../types';
-import type { SaveDraftOverlay } from './editor-transactions';
+import type { PlayerDraftPatch, SaveDraftOverlay } from './editor-transactions';
 import {
   DECODED_SAVE_DB_SCHEMA_VERSION,
   type DecodedHiddenPlayingAttributes,
@@ -132,7 +132,12 @@ export function projectStaffAbility(
  * without any CSV or HTML export step.
  */
 /** Canonical visibility-aware projection for a single record or a whole roster. */
-export function projectSavePlayer(player: DecodedSavePlayer, source: DecodedSaveSourceMetadata, mode: DecodedSaveMode): PlayerExport {
+export function projectSavePlayer(
+  player: DecodedSavePlayer,
+  source: DecodedSaveSourceMetadata,
+  mode: DecodedSaveMode,
+  draft?: PlayerDraftPatch
+): PlayerExport {
   return {
     id: `${source.saveId.slice(0, 12)}:${player.uid}`,
     nativeId: player.uid,
@@ -160,6 +165,8 @@ export function projectSavePlayer(player: DecodedSavePlayer, source: DecodedSave
       ? {
           actualCa: player.actualCa,
           potentialAbility: player.potentialAbility,
+          ...(draft?.actualCa !== undefined && { draftCa: true as const }),
+          ...(draft?.potentialAbility !== undefined && { draftPa: true as const }),
           homeReputation: player.homeReputation,
           currentReputation: player.currentReputation,
           worldReputation: player.worldReputation,
@@ -191,16 +198,7 @@ export function saveDatabaseToPlayerDataset(
     ? db.clubs.find(c => c.uid === clubUid) ?? null
     : null;
 
-  const players = filtered.map(player => {
-    const projected = projectSavePlayer(player, db.source, mode);
-    const draft = mode === 'editor' ? options.draft?.players[player.uid] : undefined;
-    if (!draft) return projected;
-    return {
-      ...projected,
-      ...(draft.actualCa !== undefined && { draftCa: true as const }),
-      ...(draft.potentialAbility !== undefined && { draftPa: true as const })
-    };
-  });
+  const players = filtered.map(player => projectSavePlayer(player, db.source, mode, options.draft?.players[player.uid]));
 
   const warnings: string[] = [];
   if (mode === 'realism') {

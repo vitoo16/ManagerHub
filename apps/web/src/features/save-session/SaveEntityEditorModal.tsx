@@ -231,7 +231,7 @@ function SaveEntityEditorModal({
         {target.kind === 'browse' && <p className="module-disclaimer">{t('Search players, staff, clubs or stadiums by name or UID. Open records stay available while you browse this save.')}</p>}
         {writeError && <div className="inline-alert" role="alert">{writeError}</div>}
 
-        {target.kind === 'player' && player && <PlayerEditorRecord key={player.uid} player={player} source={workingDatabase.source} applyPlayerField={applyPlayerField} applyPlayerPreset={applyPlayerPreset}/>}
+        {target.kind === 'player' && player && <PlayerEditorRecord key={player.uid} player={player} source={workingDatabase.source} draft={overlay.players[player.uid]} applyPlayerField={applyPlayerField} applyPlayerPreset={applyPlayerPreset}/>}
 
         {target.kind === 'staff' && staffMember && <StaffEditorRecord key={staffMember.uid} staffMember={staffMember} applyStaffField={applyStaffField}/>}
 

@@ -4,7 +4,8 @@ import {
   projectPlayerHiddenFields,
   projectStaffAbility,
   type DecodedSaveDatabase,
-  type DecodedSaveMode
+  type DecodedSaveMode,
+  type SaveDraftOverlay
 } from '@managerhub/domain/fm2013-offline';
 import { Button, Icon, Status, Surface } from '@managerhub/ui';
 import { registerSaveDbI18n } from '../../i18n/register-save-db-i18n';
@@ -48,6 +49,7 @@ function teamTypeLabel(teamType: number, isNational: boolean): string {
 
 export interface SaveDatabaseExplorerProps {
   readonly database: DecodedSaveDatabase;
+  readonly draft: SaveDraftOverlay | null;
   readonly allDecodedSaves: readonly DecodedSaveDatabase[];
   readonly saveMode: DecodedSaveMode;
   readonly isSavedInBrowser: boolean;
@@ -64,6 +66,7 @@ export interface SaveDatabaseExplorerProps {
 
 function SaveDatabaseExplorerView({
   database,
+  draft,
   allDecodedSaves,
   saveMode,
   isSavedInBrowser,
@@ -323,9 +326,7 @@ function SaveDatabaseExplorerView({
             <p className="save-db-mode-note">
               {t(saveMode === 'realism'
                 ? 'Realism mode hides Actual CA, Actual PA, reputations, and hidden personality/playing traits.'
-                : database.source.compatibilityStatus === 'verified'
-                  ? 'Editor mode displays verified Actual CA, Actual PA, reputations, and hidden traits decoded from the .fm save.'
-                  : 'Editor mode displays provisional values from an unverified read profile.')}
+                : 'Editor mode displays decoded values and any unsaved draft edits.')}
             </p>
           </div>
 
@@ -494,6 +495,7 @@ function SaveDatabaseExplorerView({
               </thead>
               <tbody>
                 {filteredPlayers.slice(startIdx, endIdx).map(player => {
+                  const patch = draft?.players[player.uid];
                   const hidden = projectPlayerHiddenFields(
                     player,
                     saveMode,
@@ -514,8 +516,12 @@ function SaveDatabaseExplorerView({
                       <td className="save-db-num">{formatGbp(player.marketValueGbp)}</td>
                       <td className="save-db-num">{player.contract ? formatGbp(player.contract.weeklyWageGbp) : '—'}</td>
                       <td className="save-db-num">{player.contract?.expiresAt ?? '—'}</td>
-                      {saveMode === 'editor' && <td className="save-db-num"><strong>{hidden.actualCa.value ?? '—'}</strong></td>}
-                      {saveMode === 'editor' && <td className="save-db-num"><strong>{hidden.potentialAbility.value ?? '—'}</strong></td>}
+                      {saveMode === 'editor' && <td className="save-db-num"><strong>{hidden.actualCa.value ?? '—'}</strong>
+                        {patch?.actualCa !== undefined && <span className="save-db-sub">{t('Draft CA')}</span>}
+                      </td>}
+                      {saveMode === 'editor' && <td className="save-db-num"><strong>{hidden.potentialAbility.value ?? '—'}</strong>
+                        {patch?.potentialAbility !== undefined && <span className="save-db-sub">{t('Draft PA')}</span>}
+                      </td>}
                       <td>
                         <div className="save-db-row-actions">
                           {saveMode === 'editor' && onEditEntity && (

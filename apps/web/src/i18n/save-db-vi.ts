@@ -28,6 +28,7 @@ export default {
   "Hidden in Realism mode": "Đã ẩn ở chế độ Thực tế",
   "Research-only decode · Not independently verified": "Giải mã nghiên cứu · Chưa xác minh độc lập",
   "Editor mode displays provisional values from an unverified read profile.": "Chế độ Biên tập hiển thị giá trị tạm thời từ cấu hình đọc chưa xác minh.",
+  "Editor mode displays decoded values and any unsaved draft edits.": "Chế độ Biên tập hiển thị dữ liệu đã giải mã và các thay đổi nháp chưa lưu.",
   "This report uses provisional attributes decoded offline. This build or container is not independently verified.": "Báo cáo sử dụng chỉ số tạm thời được giải mã ngoại tuyến. Bản dựng hoặc định dạng này chưa được xác minh độc lập.",
   "Experimental Save As requires the exact FM2013 build {{build}}.": "Tính năng lưu bản sao thử nghiệm yêu cầu đúng bản dựng FM2013 {{build}}.",
   "Save As preview is available. Export requires a certified native writer.": "Có thể xem trước thay đổi. Tính năng xuất yêu cầu trình ghi bản lưu đã được chứng nhận.",

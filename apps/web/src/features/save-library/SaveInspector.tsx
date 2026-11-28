@@ -7,7 +7,8 @@ import {
 import type {
   DecodedSaveDatabase,
   DecodedSaveMode,
-  FM2013DecodeProgress
+  FM2013DecodeProgress,
+  SaveDraftOverlay
 } from '@managerhub/domain/fm2013-offline';
 import { Button, Icon, SectionHeading, Status, Surface } from '@managerhub/ui';
 import { SaveDecodeProgress } from '../save-session/SaveDecodeProgress';
@@ -69,6 +70,7 @@ function SaveInspector({
   decodeNotice,
   decodedSaves,
   activeDecodedSave,
+  draft,
   saveMode,
   onSetSaveMode,
   onOpenDecodedSave,
@@ -91,6 +93,7 @@ function SaveInspector({
   decodeNotice: string | null;
   decodedSaves: Readonly<Record<string, DecodedSaveDatabase>>;
   activeDecodedSave: DecodedSaveDatabase | null;
+  draft: SaveDraftOverlay | null;
   saveMode: DecodedSaveMode;
   onSetSaveMode: (mode: DecodedSaveMode) => void;
   onOpenDecodedSave: (saveId: string, read: (saveId: string) => Promise<DecodedSaveDatabase | null>) => Promise<void>;
@@ -237,6 +240,7 @@ function SaveInspector({
       <Suspense fallback={<div className="workspace-loading" role="status" aria-live="polite">{t('Loading…')}</div>}>
         <SaveDatabaseExplorer
           database={activeDecodedSave}
+          draft={draft}
           allDecodedSaves={allDecodedSaves}
           saveMode={saveMode}
           isSavedInBrowser={isActiveDbSaved}

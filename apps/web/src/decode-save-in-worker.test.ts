@@ -85,6 +85,8 @@ describe('offline save decode worker admission and lifecycle', () => {
       [{ ...inspection, build: '13.3.2' }, database],
       [inspection, { ...database, source: { ...database.source, lastModified: file.lastModified + 1 } }],
       [inspection, { ...database, humans: [null] }],
+      [inspection, { ...database, humans: Array(1) }],
+      [inspection, { ...database, players: database.players.map(player => ({ ...player, clubName: 1 })) }],
       [inspection, { ...database, players: database.players.map(player => ({ ...player, hiddenPlaying: null })) }]
     ]) {
       const pending = decodeSaveInWorker(file);

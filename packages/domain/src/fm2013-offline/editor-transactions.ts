@@ -1030,3 +1030,16 @@ export function buildMassEditClubsOverlay(
   }
   return { ...currentOverlay, clubs: nextClubs };
 }
+
+/** Sanitize a default `Save As .fm` download filename so it never overwrites the original name silently. */
+export function buildEditedSaveFileName(originalFileName: string): string {
+  const stem = originalFileName
+    .replace(/\.fm$/iu, '')
+    .replace(/[^a-zA-Z0-9._ -]+/gu, '-')
+    .trim()
+    .slice(0, 80) || 'career';
+  if (stem.toLowerCase().endsWith('-edited')) {
+    return `${stem}.fm`;
+  }
+  return `${stem}-edited.fm`;
+}

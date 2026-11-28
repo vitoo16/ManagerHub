@@ -25,11 +25,12 @@ const PLAYER_SECTIONS = [
 interface Props {
   readonly player: DecodedSaveDatabase['players'][number];
   readonly source: DecodedSaveDatabase['source'];
+  readonly draft?: PlayerDraftPatch;
   readonly applyPlayerField: (label: string, patch: PlayerDraftPatch) => void;
   readonly applyPlayerPreset: (preset: PlayerPresetKind, label: string) => void;
 }
 
-export function PlayerEditorRecord({ player, source, applyPlayerField, applyPlayerPreset }: Props) {
+export function PlayerEditorRecord({ player, source, draft, applyPlayerField, applyPlayerPreset }: Props) {
   const { t } = useTranslation();
   return <EditorRecordSections label="Player editor sections" items={PLAYER_SECTIONS}>
     {section => <>
@@ -57,7 +58,7 @@ export function PlayerEditorRecord({ player, source, applyPlayerField, applyPlay
           playerContext={player}/>
       </div>}
       {section === 'development' && <Suspense fallback={<p role="status">{t('Loading…')}</p>}>
-        <PlayerDevelopmentPanel visibility="editor" player={projectSavePlayer(player, source, 'editor')} edition={source.edition}
+        <PlayerDevelopmentPanel visibility="editor" player={projectSavePlayer(player, source, 'editor', draft)} edition={source.edition}
           build={source.build} sourceId={source.saveId}/>
       </Suspense>}
       {section === 'contract' && (player.contract ? <div className="editor-section">

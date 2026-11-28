@@ -139,7 +139,7 @@ test('complete offline FM2013 save workflow: decode, explore, Realism/Editor iso
   await expect(page.locator('.scout-metrics')).toContainText('Hidden in Realism mode');
   await expect(page.locator('.scout-metrics')).not.toContainText('168');
   await expect(page.locator('.scout-metrics')).not.toContainText('182');
-  await expect(page.getByText('Switch to Editor mode to view verified Actual CA')).toBeVisible();
+  await expect(page.getByText('Switch to Editor mode to view decoded Actual CA', { exact: false })).toBeVisible();
   await expect(page.getByText('Professionalism', { exact: true })).toHaveCount(0);
 
   // 8. Navigate to Squad Planner -> managed club XI solved directly from .fm save
@@ -509,7 +509,7 @@ test('browser cache stores immutable source rather than dirty editor projection 
 });
 
 test('restored save reattaches exact original bytes without discarding draft or history', async ({ page }) => {
-  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe' });
+  const bytes = await buildSyntheticFm2013Save({ compressed: true, family: 'afe', gameVersion: '13.3.3f359652' });
   await page.goto('/#/saves');
   await page.locator('.file-drop input[type="file"]').setInputFiles({
     name: 'reattach.fm', mimeType: 'application/octet-stream', buffer: Buffer.from(bytes)
@@ -816,7 +816,9 @@ test('advanced club mass edit previews exact targets and skips unchanged or unav
   await dialog.getByRole('button', { name: 'Inspire squad' }).click();
   await dialog.getByRole('button', { name: 'Apply preset to draft' }).click();
   await expect(undo).toBeEnabled();
+  await dialog.getByRole('button', { name: 'Done' }).click();
   await undo.click();
+  await toolbar.getByRole('button', { name: 'Presets & Mass Edit' }).click();
   await dialog.getByRole('tab', { name: 'Club fields' }).click();
   await dialog.getByLabel('Field to change').selectOption('balanceGbp');
   await dialog.getByLabel('New integer value').fill('120000000');

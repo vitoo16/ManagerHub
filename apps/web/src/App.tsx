@@ -510,8 +510,9 @@ export default function App() {
     setWriteError(null);
     setError(null);
     try {
-      const tools = saveSource?.tools ?? await loadOfflineTools();
-      const key = await tools.deriveFm2013SigningKeyFromExecutable(file);
+      const tools = saveSource.tools;
+      const { deriveFm2013SigningKeyFromExecutable } = await import('@managerhub/domain/fm2013-experimental-writer');
+      const key = await deriveFm2013SigningKeyFromExecutable(file);
       const container = await tools.parseFm2013Container(activeRawSaveFile);
       const member = await tools.extractFm2013Member(activeRawSaveFile, container, 'game_db.dat');
       if (!member || !await tools.verifyGameDbHmacSha512(member, key)) {
@@ -524,7 +525,7 @@ export default function App() {
       setWriteError(msg);
       setError(msg);
     }
-  }, [saveSource, activeRawSaveFile, saveMode, loadOfflineTools]);
+  }, [saveSource, activeRawSaveFile, saveMode]);
 
   const onSaveAsFm = useCallback(async (outputFileName: string) => {
     if (!import.meta.env.DEV || saveMode !== 'editor' || openPendingRef.current || writePendingRef.current ||
@@ -535,7 +536,8 @@ export default function App() {
     setWriteError(null);
     let url: string | null = null;
     try {
-      const result = await saveSource.tools.writePatchedFm2013Save(
+      const { writePatchedFm2013Save } = await import('@managerhub/domain/fm2013-experimental-writer');
+      const result = await writePatchedFm2013Save(
         activeRawSaveFile,
         saveSource.editorState.present,
         {
@@ -918,6 +920,7 @@ export default function App() {
                 decodeNotice={decodeNotice}
                 decodedSaves={decodedSaves}
                 activeDecodedSave={activeDecodedSave}
+                draft={saveMode === 'editor' ? draftOverlay : null}
                 saveMode={saveMode}
                 onSetSaveMode={onSetSaveMode}
                 onOpenDecodedSave={openDecodedSave}

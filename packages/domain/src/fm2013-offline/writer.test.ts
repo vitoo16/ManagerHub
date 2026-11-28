@@ -11,7 +11,6 @@ import {
   countDirtyFields,
   createEmptyEditorState,
   decodeFm2013Save,
-  deriveFm2013SigningKeyFromExecutable,
   EMPTY_SAVE_DRAFT_OVERLAY,
   extractFm2013Member,
   matchesDecodedWriteSource,
@@ -21,9 +20,9 @@ import {
   saveDatabaseToPlayerDataset,
   summarizeDraftChanges,
   undoEditorTransaction,
-  validateDecodedSaveDatabase,
-  writePatchedFm2013Save
+  validateDecodedSaveDatabase
 } from './index';
+import { deriveFm2013SigningKeyFromExecutable, writePatchedFm2013Save } from './writer';
 import { buildSyntheticFm2013LangDb } from './lang-db';
 import { buildSyntheticFm2013Save, SYNTHETIC_TEST_HMAC_KEY } from './synthetic';
 import { makeSavedSquadPlans, restoreSavedSquadPlans, squadPlanStorageKey } from '../squad-plan-library';
