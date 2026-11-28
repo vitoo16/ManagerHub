@@ -36,7 +36,7 @@ The module base changed from0x008c0000 to0x00a70000, as derived from the runtime
 
 ## Forty-nine ordinary fields
 
-[fm2013-ordinary-attributes.mjs](../../../scripts/fm2013-ordinary-attributes.mjs) preserves49 source-era names, categories, byte offsets, source getter/field tokens and getter IL hashes. There are11 goalkeeper,14 mental,10 physical and14 technical fields, including both feet. No personality, hidden attributes, positions or invented modern aliases are added. This research catalogue is separate from the product's canonical domain schema.
+[fm2013-ordinary-attributes.mjs](../../../scripts/fm2013-ordinary-attributes.mjs) uses the 49 source-era names, categories and byte offsets in the runtime profile. The [research provenance manifest](fm2013-live-profile-provenance.json) records the corresponding getter and field tokens and IL hashes. There are11 goalkeeper,14 mental,10 physical and14 technical fields, including both feet. No personality, hidden attributes, positions or invented modern aliases are added. This research catalogue is separate from the product's canonical domain schema.
 
 An original bounded constant-only reducer follows initializer596's flattened branches. Exact profile4bb calls596; all49 getters read a signed byte through42e and convert through8ed. Source hashes and49 address-fixture executions corroborate the catalogue. Scaling has a separate dependency:8ed uses Config14d9, which returns5 when `attributesRange ==20`, otherwise1. CA/PA mode3 does not select ordinary-attribute scale. The output deliberately retains `candidateScale5`; the147 reference matches establish agreement for this observed reference configuration, not every configuration.
 
